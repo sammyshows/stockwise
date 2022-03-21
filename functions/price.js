@@ -10,8 +10,6 @@ exports.handler = async function (event, context) {
   //   .then(response => response.json())
   //   .then(quote => price = quote["Global Quote"])
 
-  console.log(price)
-
   return {
     statusCode: 200,
     body: JSON.stringify({
