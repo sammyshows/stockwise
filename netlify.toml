@@ -9,6 +9,7 @@
   [headers.values]
     Access-Control-Allow-Origin = "www.stockwise.app"
 
+ # Although there is also this redirect rule in "/public/_redirects", this must be here for local redirects.
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"

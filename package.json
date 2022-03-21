@@ -5,6 +5,7 @@
     "build": "nuxi build",
     "start": "node .output/server/index.mjs"
   },
+  "type": "module",
   "devDependencies": {
     "nuxt3": "latest"
   }
