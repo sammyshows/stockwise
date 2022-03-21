@@ -29,7 +29,7 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.price = response
+      this.price = response.price["05. price"]
     }
   }
 })
