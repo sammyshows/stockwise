@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 exports.handler = async function (event, context) {
-  // const eventBody = JSON.parse(event.body)
+  const eventBody = JSON.parse(event.body)
 
   const data = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=B642KXFN4VUO0FC2`)
     .then(response => response.json())
@@ -10,7 +10,7 @@ exports.handler = async function (event, context) {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      price: data
+      price: eventBody
     })
   }
 }
