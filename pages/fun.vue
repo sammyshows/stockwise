@@ -5,7 +5,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import fetch from "node-fetch";
 
 export default defineComponent({
   name: "Fun",
