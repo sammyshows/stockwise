@@ -21,7 +21,12 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const response = await fetch('/.netlify/functions/price')
+      const response = await fetch('/.netlify/functions/price', {
+        method: 'GET',
+        body: JSON.stringify({
+          symbol: 'AAPL'
+        })
+      })
           .then(response => response.json())
 
       this.price = response
