@@ -5,6 +5,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue"
+import fetch from "node-fetch";
 
 export default defineComponent({
   name: "Fun",
@@ -21,10 +22,11 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const response = await fetch('/.netlify/functions/price')
+      const data = fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=B642KXFN4VUO0FC2`)
           .then(response => response.json())
+          .then(quote => quote["Global Quote"])
 
-      this.price = response
+      this.price = data
     }
   }
 })
