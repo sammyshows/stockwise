@@ -21,11 +21,10 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const data = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=B642KXFN4VUO0FC2`)
+      const response = await fetch('/.netlify/functions/price')
           .then(response => response.json())
-          .then(quote => quote["Global Quote"])
 
-      this.price = data
+      this.price = response
     }
   }
 })
