@@ -21,7 +21,7 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const response = await fetch('/functions/price')
+      const response = await fetch('/.netlify/functions/price')
           .then(response => response.json())
 
       this.price = response
