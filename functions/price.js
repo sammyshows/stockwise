@@ -1,19 +1,21 @@
 import fetch from 'node-fetch'
 
 exports.handler = async function (event, context) {
-  const eventBody = JSON.parse(event.body)
-  let price
+  // const eventBody = JSON.parse(event.body)
+  // let price
+  //
+  // fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${eventBody.symbol}&apikey=B642KXFN4VUO0FC2`, {
+  //   "method": "GET"
+  // })
+  //   .then(response => response.json())
+  //   .then(quote => price = quote["Global Quote"])
 
-  fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${eventBody.symbol}&apikey=B642KXFN4VUO0FC2`, {
-    "method": "GET"
-  })
-    .then(response => response.json())
-    .then(quote => price = quote["Global Quote"])
+  console.log(price)
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      price: price
+      price: "price"
     })
   }
 }
