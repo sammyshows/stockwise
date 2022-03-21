@@ -24,7 +24,7 @@ export default defineComponent({
       const response = await fetch('/.netlify/functions/price')
           .then(response => response.json())
 
-      this.price = response.price
+      this.price = response
     }
   }
 })
