@@ -21,7 +21,7 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const response = await fetch('/.netlify/functions/price', {
+      const response = await fetch('/api/price', {
         method: 'POST',
         body: JSON.stringify({
           symbol: "AAPL"
@@ -29,7 +29,7 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.price = response.price["05. price"]
+      this.price = response["price"]["05. price"]
     }
   }
 })
