@@ -1,5 +1,5 @@
 <template>
-  <h1>Well this is fun!</h1>
+  <h1>Well this is heaps of fun!</h1>
   <p>AAPL price: {{ price }}</p>
 </template>
 
