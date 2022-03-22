@@ -21,7 +21,7 @@ export default defineComponent({
 
   methods: {
     async fetchPrice() {
-      const response = await fetch('/api/price', {
+      const response = await fetch('/api/quote', {
         method: 'POST',
         body: JSON.stringify({
           symbol: "AAPL"
