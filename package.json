@@ -5,8 +5,10 @@
     "build": "nuxi build",
     "start": "node .output/server/index.mjs"
   },
-  "type": "module",
-  "devDependencies": {
-    "nuxt3": "latest"
+  "devDependencies": {},
+  "dependencies": {
+    "@heroicons/vue": "^1.0.6",
+    "nuxt3": "^3.0.0-27465718.edb3e50",
+    "vue": "^3.2.31"
   }
 }

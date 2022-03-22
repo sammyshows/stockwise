@@ -4,6 +4,10 @@
   functions = "functions"
   publish = "dist"
 
+[dev]
+  framework = "next"
+  command = "npm run dev"
+
 [[headers]]
   for = "/*"
   [headers.values]
@@ -14,6 +18,11 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+[functions]
+  directory = "functions"
+  node_bundler = "esbuild"
+
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.
