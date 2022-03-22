@@ -22,7 +22,7 @@ export default defineComponent({
 
   methods: {
     async fetchQuote() {
-      const response = await fetch('/api/stock-quote', {
+      const response = await fetch('/.netlify/functions/stock-quote', {
         method: 'POST',
         body: JSON.stringify({
           symbol: "AAPL"

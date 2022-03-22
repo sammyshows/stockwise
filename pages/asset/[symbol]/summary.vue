@@ -95,33 +95,33 @@
     </div>
   </div>
 
-  <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
-  <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-    <p class="text-xs">Income Statement</p>
-    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-  </div>
-  <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-    <p class="text-xs">Balance Sheet</p>
-    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-  </div>
-  <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">
-    <p class="text-xs">Cash Flow</p>
-    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-  </div>
+<!--  <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>-->
+<!--  <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">-->
+<!--    <p class="text-xs">Income Statement</p>-->
+<!--    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />-->
+<!--  </div>-->
+<!--  <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">-->
+<!--    <p class="text-xs">Balance Sheet</p>-->
+<!--    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />-->
+<!--  </div>-->
+<!--  <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">-->
+<!--    <p class="text-xs">Cash Flow</p>-->
+<!--    <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />-->
+<!--  </div>-->
 
   <button class="block mx-auto px-8 py-2 text-xl text-black bg-bright-cyan rounded-lg">Start a Study</button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { SpeakerphoneIcon } from "@heroicons/vue/solid"
+// import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
 export default defineComponent({
   name: "Asset Summary",
 
-  components: {
-    SpeakerphoneIcon
-  },
+  // components: {
+  //   SpeakerphoneIcon
+  // },
 
   props: [
     "companyOverview", "quote"
