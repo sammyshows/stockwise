@@ -6,7 +6,7 @@
 
   <div class="grid grid-cols-2 gap-x-4 mb-10">
     <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
-      <p class="text-tiny mb-0.5">High</p>
+      <p class="text-tiny mb-0.5">igh</p>
       <p class="text-tiny mb-0.5">{{ quote["03. high"] }}</p>
     </div>
     <div class="cols-span-1 flex justify-between"> <!-- 52 week high -->
