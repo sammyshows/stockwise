@@ -1,12 +1,12 @@
 <template>
-  <PageContainer>
+  <NuxtLayout name="page-container">
     <div class="flex justify-between">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <h2 class="mb-5 my-auto text-lg text-cyan-300">{{ quote["01. symbol"] }}</h2>
     </div>
     <NavigationTabs :tabs="tabs" />
     <NuxtPage :companyOverview="companyOverview" :quote="quote" />
-  </PageContainer>
+  </NuxtLayout>
 </template>
 
 <script lang="ts">
@@ -32,8 +32,8 @@ export default defineComponent({
       },
       symbol: this.$route.params.symbol,
       tabs: [
-        { name: 'SUMMARY', path: `/asset/${this.symbol}/summary` },
-        { name: 'CHART', path: `/asset/${this.symbol}/chart` }
+        { name: 'SUMMARY', path: `/asset/${this.$route.params.symbol}/summary` },
+        { name: 'CHART', path: `/asset/${this.$route.params.symbol}/chart` }
       ],
       companyOverview: {},
       quote: {} as StringObject

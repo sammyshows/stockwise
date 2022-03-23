@@ -1,5 +1,5 @@
 <template>
-  <PageContainer>
+  <NuxtLayout name="page-container">
     <PageTitle :pageDetails="pageDetails" />
 
     <div class="mt-1 relative rounded shadow-sm mb-5">
@@ -24,12 +24,11 @@
     <div v-else>
       <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
     </div>
-  </PageContainer>
+  </NuxtLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue"
-import PageContainer from "../components/PageContainer.vue"
 import PageTitle from "../components/PageTitle.vue"
 import { SearchIcon } from '@heroicons/vue/solid'
 
@@ -37,7 +36,7 @@ export default defineComponent({
   name: "Search",
 
   components: {
-    PageContainer, PageTitle, SearchIcon
+    PageTitle, SearchIcon
   },
 
   data() {

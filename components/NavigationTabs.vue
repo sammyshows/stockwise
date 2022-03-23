@@ -18,7 +18,7 @@ export default defineComponent({
 
   data() {
     return {
-      activeTab: window.location.pathname.split("/")[3]
+      activeTab: this.$route.path.split("/")[3]
     }
   },
 
