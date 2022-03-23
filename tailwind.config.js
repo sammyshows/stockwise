@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
   content: [
     "./components/**/*.{js,vue,ts}",
@@ -6,7 +8,19 @@ module.exports = {
     "./plugins/**/*.{js,ts}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        cyan: colors.cyan,
+        'bright-cyan': '#00FFD1',
+        'bright-green': '#45FF58'
+      },
+
+      fontSize: {
+        'tiny': '0.6rem'
+      }
+    },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ],
 }

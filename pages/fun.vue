@@ -1,7 +1,7 @@
 <template>
   <h1>Well this is fun!</h1>
   <div class="h-20"></div>
-  <p class="text-red-500">AAPL price: {{ price }}</p>
+  <p class="text-blue-500">AAPL price: {{ price }}</p>
 </template>
 
 <script lang="ts">

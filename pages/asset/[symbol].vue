@@ -19,24 +19,22 @@ interface StringObject {
 export default defineComponent({
   name: "Asset Detail",
 
-  created() {
-    this.fetchOverview()
+  mounted() {
     this.fetchQuote()
+    this.fetchOverview()
   },
 
   data() {
     return {
       pageDetails: {
         title: '',
-        returnPath: "/search"
+        returnPath: "/search",
       },
-
+      symbol: this.$route.params.symbol,
       tabs: [
-        { name: 'SUMMARY', path: '/search/code/summary' },
-        { name: 'CHART', path: '/search/code/chart' }
+        { name: 'SUMMARY', path: `/asset/${this.symbol}/summary` },
+        { name: 'CHART', path: `/asset/${this.symbol}/chart` }
       ],
-
-      symbol: window.location.pathname.split('/')[2],
       companyOverview: {},
       quote: {} as StringObject
     }
@@ -49,28 +47,28 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchQuote() {
+    async fetchQuote(): Promise<void> {
       const response = await fetch('/api/stock-quote', {
         method: 'POST',
         body: JSON.stringify({
-          symbol: "AAPL"
+          symbol: this.symbol
         })
       })
           .then(response => response.json())
 
-      this.price = response["data"]
+      this.quote = response["data"]
     },
 
-    async fetchOverview() {
+    async fetchOverview(): Promise<void> {
       const response = await fetch('/api/stock-overview', {
         method: 'POST',
         body: JSON.stringify({
-          symbol: "AAPL"
+          symbol: this.symbol
         })
       })
           .then(response => response.json())
 
-      this.price = response["data"]
+      this.companyOverview = response["data"]
     }
   }
 })

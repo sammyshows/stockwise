@@ -4,9 +4,10 @@ import fetch from 'node-fetch'
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    const data = await fetch(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${eventBody.symbol}&apikey=B642KXFN4VUO0FC2`)
+    const data = await fetch(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${eventBody.searchTerm}&apikey=B642KXFN4VUO0FC2`, {
+        "method": "GET"
+    })
         .then(response => response.json())
-        .catch(error => console.error(error))
 
     return {
         statusCode: 200,
