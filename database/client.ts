@@ -1,4 +1,4 @@
-const { Client } = require('pg-native');
+const { Client } = require('pg');
 
 const PgClient = (() => {
     if (process.env.NODE_ENV === 'development') {
@@ -10,7 +10,7 @@ const PgClient = (() => {
     } else {
         // If in a 'production' environment allow access ONLY WITH a ssl certificate
         return new Client({
-            connectionString: process.env.DATABASE_URL,
+            connectionString: process.env.PG_URI,
             ssl: {
                 rejectUnauthorized: false
             }
