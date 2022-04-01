@@ -1,5 +1,4 @@
-const { Client } = require('pg');
-delete Client.native;
+const { Client } = require('pg').native;
 
 const PgClient = (() => {
     if (process.env.NODE_ENV === 'development') {
