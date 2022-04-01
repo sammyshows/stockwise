@@ -6,6 +6,16 @@ export default defineNuxtConfig({
 
     modules: ['@nuxtjs/tailwindcss'],
 
+    auth: {
+        strategies: {
+            auth0: {
+                domain: 'dev-gyplclm4.us.auth0.com',
+                clientId: 'd30JYDEwwCxnMxLlH97ILh1o7h584Vm0',
+                audience: 'https://stockwise-api.app/'
+            }
+        }
+    },
+
     meta: {
         link: [
             { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
