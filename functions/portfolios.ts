@@ -15,7 +15,7 @@ const handler: Handler = async (event, context) => {
             }
         })
         .catch(error => {
-            console.error(error.stack)
+            console.error(error)
 
             return {
                 statusCode: 400
