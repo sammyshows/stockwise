@@ -18,7 +18,7 @@ const handler: Handler = async (event, context) => {
             console.error(error)
 
             return {
-                statusCode: 400
+                statusCode: 476
             }
         })
 }
