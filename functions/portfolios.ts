@@ -4,7 +4,7 @@ const client = require("../database/client.ts")
 
 const handler: Handler = async (event, context) => {
     return await client`
-        SELECT * FROM portfolios;`
+        SELECT table_schema,table_name FROM information_schema.tables;`
         .then(response => {
 
             return {
