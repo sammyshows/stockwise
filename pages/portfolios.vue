@@ -39,8 +39,6 @@ export default defineComponent({
       const response = await fetch('/api/portfolios', {
         method: 'GET'
       })
-          .then(response => response.json())
-      this.portfolios = response["data"]
       console.log(response)
     }
   }
