@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>hi index!</h1>
     <div v-for="portfolio in portfolios">
       <h1>{{ portfolio.name }}</h1>
     </div>
