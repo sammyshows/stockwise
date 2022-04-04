@@ -3,7 +3,7 @@ import client from "../database/client"
 
 
 const handler: Handler = async (event, context) => {
-    return await client`
+    return awai client`
         SELECT table_schema,table_name FROM information_schema.tables;`
         .then(response => {
             response.forEach(row => {
