@@ -36,10 +36,12 @@ export default defineComponent({
 
   methods: {
     async fetchPortfolios() {
-      const response = await fetch('/api/portfolios')
+      const response = await fetch('/api/portfolios', {
+        method: 'GET'
+      })
           .then(response => response.json())
       this.portfolios = response["data"]
-      console.log(this.portfolios)
+      console.log(response)
     }
   }
 })
