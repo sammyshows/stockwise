@@ -6,7 +6,6 @@ const handler: Handler = async (event, context) => {
     return await client`
         SELECT * FROM portfolios;`
         .then(response => {
-            client.end()
 
             return {
                 statusCode: 200,
@@ -17,7 +16,6 @@ const handler: Handler = async (event, context) => {
         })
         .catch(error => {
             console.error(error.stack)
-            client.end()
 
             return {
                 statusCode: 400
