@@ -12,7 +12,8 @@ module.exports = {
       colors: {
         cyan: colors.cyan,
         'bright-cyan': '#00FFD1',
-        'bright-green': '#45FF58'
+        'bright-green': '#45FF58',
+        'bright-red': '#FF4545'
       },
 
       fontSize: {

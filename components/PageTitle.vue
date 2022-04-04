@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex ml-5">
     <NuxtLink v-if="pageDetails?.returnPath" :to="pageDetails?.returnPath">
       <ChevronLeftIcon class="h-8 w-8 mr-2 -ml-2.5" />
     </NuxtLink>
