@@ -8,10 +8,10 @@ const PgClient = (() => {
         })
     } else {
         // If in a 'production' environment allow access ONLY WITH a ssl certificate
-        return postgres(process.env.DATABASE_URL, {
+        return postgres(process.env.PG_URI, {
             ssl: { rejectUnauthorized: false }
         })
     }
 })()
 
-export default PgClient
+module.exports = PgClient
