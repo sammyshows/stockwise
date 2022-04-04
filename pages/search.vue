@@ -1,7 +1,6 @@
 <template>
   <NuxtLayout name="page-container">
     <PageTitle :pageDetails="pageDetails" />
-    <button @click="login">LOGIN</button>
 
     <div class="mt-1 relative rounded shadow-sm mb-5">
       <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
@@ -54,10 +53,6 @@ export default defineComponent({
   },
 
   methods: {
-    login() {
-      this.$auth.loginWith('auth0')
-    },
-
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
         method: 'POST',

@@ -1,19 +1,15 @@
-const { Client } = require('pg');
+import postgres from "postgres";
 
 const PgClient = (() => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.DEVELOPMENT) {
         // If in a 'development' environment allow access WITHOUT a ssl certificate
-        return new Client({
-            connectionString: process.env.DATABASE_URL,
-            ssl: false
+        return postgres(process.env.PG_URI,{
+            ssl: { rejectUnauthorized: false }
         })
     } else {
         // If in a 'production' environment allow access ONLY WITH a ssl certificate
-        return new Client({
-            connectionString: process.env.PG_URI,
-            ssl: {
-                rejectUnauthorized: false
-            }
+        return postgres(process.env.PG_URI, {
+            ssl: { rejectUnauthorized: true }
         })
     }
 })()

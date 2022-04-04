@@ -1,15 +1,14 @@
 import { Handler } from "@netlify/functions";
 const client = require("../database/client.ts")
 
-client.connect();
 
 const handler: Handler = async (event, context) => {
-    return await client
-        .query('SELECT table_schema,table_name FROM information_schema.tables;')
+    return await client`
+        SELECT table_schema,table_name FROM information_schema.tables;`
         .then(response => {
-            for (let row of response.rows) {
+            response.forEach(row => {
                 console.log(JSON.stringify(row))
-            }
+            })
             client.end()
 
             return {

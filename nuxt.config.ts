@@ -4,17 +4,9 @@ import { defineNuxtConfig } from 'nuxt3'
 export default defineNuxtConfig({
     buildModules: ['@vueuse/nuxt'],
 
-    modules: ['@nuxtjs/tailwindcss'],
-
-    auth: {
-        strategies: {
-            auth0: {
-                domain: 'dev-gyplclm4.us.auth0.com',
-                clientId: 'd30JYDEwwCxnMxLlH97ILh1o7h584Vm0',
-                audience: 'https://stockwise-api.app/'
-            }
-        }
-    },
+    modules: [
+        '@nuxtjs/tailwindcss'
+    ],
 
     meta: {
         link: [
