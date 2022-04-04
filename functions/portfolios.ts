@@ -1,5 +1,5 @@
 import { Handler } from "@netlify/functions";
-const client = require("../database/client.ts")
+import client from "../database/client"
 
 
 const handler: Handler = async (event, context) => {

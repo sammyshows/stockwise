@@ -14,4 +14,4 @@ const PgClient = (() => {
     }
 })()
 
-module.exports = PgClient
+export default PgClient
