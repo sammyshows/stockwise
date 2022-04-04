@@ -39,10 +39,6 @@ export default defineComponent({
     PageTitle, SearchIcon
   },
 
-  async mounted() {
-    await fetch('/api/add-test-data')
-  },
-
   data() {
     return {
       pageDetails: {

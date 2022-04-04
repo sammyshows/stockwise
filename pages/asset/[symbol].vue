@@ -4,7 +4,7 @@
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <h2 class="mb-5 my-auto text-lg text-cyan-300">{{ quote["01. symbol"] }}</h2>
     </div>
-    <NavigationTabs :tabs="tabs" />
+    <NavigationTabs :tabConfig="tabConfig" />
     <NuxtPage :companyOverview="companyOverview" :quote="quote" />
   </NuxtLayout>
 </template>
@@ -31,10 +31,13 @@ export default defineComponent({
         returnPath: "/search",
       },
       symbol: this.$route.params.symbol,
-      tabs: [
-        { name: 'SUMMARY', path: `/asset/${this.$route.params.symbol}/summary` },
-        { name: 'CHART', path: `/asset/${this.$route.params.symbol}/chart` }
-      ],
+      tabConfig: {
+        activeTab: 'SUMMARY',
+        tabs: [
+          {name: 'SUMMARY', path: `/asset/${this.$route.params.symbol}/summary`},
+          {name: 'CHART', path: `/asset/${this.$route.params.symbol}/chart`}
+        ]
+      },
       companyOverview: {},
       quote: {} as StringObject
     }

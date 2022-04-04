@@ -1,6 +1,6 @@
 <template>
   <nav class="flex justify-around mb-5" aria-label="Tabs">
-    <NuxtLink @click="updateActive(tab.name)" v-for="tab in tabs" :to="tab.path" :class="[tab.name == activeTab.toUpperCase() ? 'border-cyan-300 text-cyan-300' : 'border-transparent text-gray-500 hover:text-gray-700', 'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-xs']">
+    <NuxtLink v-for="tab in tabConfig.tabs" @click="updateActive(tab.name)" :to="tab.path" :class="[tab.name == activeTab.toUpperCase() ? 'border-cyan-300 text-cyan-300' : 'border-transparent text-gray-500 hover:text-gray-700', 'whitespace-nowrap py-2 px-1 border-b-2 font-medium text-xs']">
       {{ tab.name }}
     </NuxtLink>
   </nav>
@@ -13,12 +13,12 @@ export default defineComponent({
   name: "NavigationTabs",
 
   props: [
-    'tabs'
+    'tabConfig'
   ],
 
   data() {
     return {
-      activeTab: this.$route.path.split("/")[3]
+      activeTab: this.tabConfig?.activeTab
     }
   },
 
