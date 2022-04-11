@@ -22,7 +22,8 @@ export default defineComponent({
     return {
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
-        title: this.$route.params.portfolioName
+        title: this.$route.params.portfolioName,
+        returnPath: '/overview'
       },
       tabConfig: {
         activeTab: 'HOLDINGS',
