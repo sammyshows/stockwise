@@ -1,10 +1,10 @@
 <template>
-  <NuxtLayout name="page-container">
+  <NuxtLayout name="page-container" activeButton="overview">
     <div class="flex justify-between">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
     <NavigationTabs :tabConfig="tabConfig" />
-    <NuxtPage :portfolios="portfolios" />
+    <NuxtChild :portfolios="portfolios" />
   </NuxtLayout>
 </template>
 
@@ -26,8 +26,8 @@ export default defineComponent({
       tabConfig: {
         activeTab: 'PORTFOLIOS',
         tabs: [
-          { name: 'PORTFOLIOS', path: `/portfolios` },
-          { name: 'CHART', path: `/portfolios/chart` }
+          { name: 'PORTFOLIOS', path: `/overview` },
+          { name: 'CHART', path: `/overview/chart` }
         ]
       },
       portfolios: []
@@ -35,9 +35,11 @@ export default defineComponent({
   },
 
   methods: {
-    async fetchPortfolios() {
-      const response = await fetch('/api/portfolios')
-        .then(response => response.json())
+    async fetchPortfolios(): Promise<void> {
+      const response = await fetch('/api/portfolios', {
+        method: 'GET'
+      })
+          .then(response => response.json())
       this.portfolios = response.data
     }
   }

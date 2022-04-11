@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container">
+  <NuxtLayout name="page-container" activeButton="search">
     <PageTitle :pageDetails="pageDetails" />
 
     <div class="mt-1 relative rounded shadow-sm mb-5">

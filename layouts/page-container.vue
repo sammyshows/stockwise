@@ -3,7 +3,7 @@
     <div class="h-full px-3 mb-4 overflow-scroll">
       <slot></slot>
     </div>
-    <NavigationBar></NavigationBar>
+    <NavigationBar :activeButton="activeButton"></NavigationBar>
   </div>
 </template>
 
@@ -12,6 +12,8 @@ import NavigationBar from "../components/NavigationBar"
 
 export default {
   name: "PageContainer",
+
+  props: ['activeButton'],
 
   components: {
     NavigationBar
