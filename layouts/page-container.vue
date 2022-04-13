@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:style="{ height: '740px' }" class="flex flex-col justify-between pt-10 pb-4">
+  <div v-bind:style="pageStyle" class="flex flex-col justify-between pt-10 pb-4">
     <div class="h-full px-3 mb-4 overflow-scroll">
       <slot></slot>
     </div>
@@ -20,7 +20,9 @@ export default {
   },
 
   mounted() {
-    this.pageStyle.height = window.innerHeight
+    this.pageStyle = {
+      height: `${window.innerHeight}px`
+    }
   },
 
   data() {
