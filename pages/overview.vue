@@ -36,7 +36,7 @@ export default defineComponent({
 
   methods: {
     async fetchPortfolios(): Promise<void> {
-      const response = await fetch('/api/portfolios', {
+      const response = await fetch('/api/portfolios-read', {
         method: 'GET'
       })
           .then(response => response.json())
