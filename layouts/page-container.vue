@@ -19,10 +19,14 @@ export default {
     NavigationBar
   },
 
+  mounted() {
+    this.pageStyle.height = window.innerHeight
+  },
+
   data() {
     return {
       pageStyle: {
-        height: window.innerHeight
+        height: '100px'
       }
     }
   }
