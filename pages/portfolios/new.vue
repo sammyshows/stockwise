@@ -8,8 +8,8 @@
       <div class="flex flex-col grow justify-between px-6">
         <div class="flex flex-col grow gap-y-6">
           <div>
-            <label for="name" class="flex items-end">PORTFOLIO NAME</label>
-            <input @click="invalidName = false" v-model="portfolioDetails.name" autocomplete="off" id="name" type="text" :class="{ 'border-red-600': invalidName }" class="w-full py-5 h-8 bg-transparent text-white border border-0 border-b border-gray-600 focus:ring-0 focus:border-gray-300" autofocus>
+            <label for="name" class="flex items-end">PORTFOLIO NAME<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input @click="invalidName = false" v-model="portfolioDetails.name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-5 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300" autofocus>
           </div>
           <div class="flex justify-between">
             <label for="included" class="flex items-center">INCLUDED IN TOTALS</label>
