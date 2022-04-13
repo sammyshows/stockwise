@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col justify-between pt-10 pb-4">
+  <div v-bind:style="pageStyle" class="flex flex-col justify-between pt-10 pb-4">
     <div class="h-full px-3 mb-4 overflow-scroll">
       <slot></slot>
     </div>
@@ -17,6 +17,14 @@ export default {
 
   components: {
     NavigationBar
+  },
+
+  data() {
+    return {
+      pageStyle: {
+        height: window.innerHeight
+      }
+    }
   }
 }
 </script>
