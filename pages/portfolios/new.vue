@@ -70,5 +70,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+input:-webkit-autofill{
+  -webkit-text-fill-color: yellow !important;
+}
 </style>
