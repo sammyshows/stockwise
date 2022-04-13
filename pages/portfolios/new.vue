@@ -8,12 +8,12 @@
       <div class="flex flex-col grow justify-between px-6">
         <div class="flex flex-col grow gap-y-8">
           <div>
-            <label for="name" class="flex items-end mb-4">PORTFOLIO NAME</label>
-            <input @click="invalidName = false" v-model="portfolioDetails.name" name="name" id="name" type="text" :class="{ 'border-red-600': invalidName }" class="w-full py-4 h-8 bg-transparent border border-0 border-b border-gray-600 rounded-sm text-white">
+            <label for="name" class="flex items-end">PORTFOLIO NAME</label>
+            <input @click="invalidName = false" v-model="portfolioDetails.name" id="name" type="text" :class="{ 'border-red-600': invalidName }" class="w-full py-4 h-8 bg-transparent border border-0 border-b border-gray-600 rounded-sm text-white">
           </div>
           <div class="flex justify-between">
             <label for="included" class="flex items-center">INCLUDED IN TOTALS</label>
-            <input v-model="portfolioDetails.included" name="included" id="included" type="checkbox" class="w-8 h-8 text-bright-green bg-transparent rounded-sm">
+            <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-8 h-8 text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
           </div>
         </div>
         <div class="text-right">
@@ -68,3 +68,7 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+
+</style>
