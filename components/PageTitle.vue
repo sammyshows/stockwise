@@ -1,9 +1,9 @@
 <template>
   <div class="flex ml-5">
     <NuxtLink v-if="pageDetails?.returnPath" :to="pageDetails?.returnPath">
-      <ChevronLeftIcon class="h-8 w-8 mr-2 -ml-2.5" />
+      <ChevronLeftIcon class="h-8 w-8 mr-6 -ml-2.5" />
     </NuxtLink>
-    <h1 class="text-2xl font-medium mb-5 truncate">{{ pageDetails.title }}</h1>
+    <h1 class="text-2xl font-medium truncate">{{ pageDetails.title }}</h1>
   </div>
 </template>
 

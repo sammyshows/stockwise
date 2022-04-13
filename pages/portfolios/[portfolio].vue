@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="flex justify-between">
+    <div class="flex justify-between mb-5">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
     <NavigationTabs :tabConfig="tabConfig" />
