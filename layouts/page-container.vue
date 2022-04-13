@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       pageStyle: {
-        height: '100px'
+        height: '100vh'
       }
     }
   }
