@@ -6,33 +6,34 @@
       <p class="w-16 text-right ml-2">DAILY</p>
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
-
-    <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
-      <div class="flex justify-end">
-        <div class="grow">
-          <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.name }}</h2>
-          <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.data.transaction_count }} TRANSACTIONS</p>
+    <div class="overflow-scroll">
+      <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
+        <div class="flex justify-end">
+          <div class="grow">
+            <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.name }}</h2>
+            <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.data.transaction_count }} TRANSACTIONS</p>
+          </div>
+          <div class="w-20 text-right mt-0.5 ml-2">
+            <p class="h-5 text-xs font-light">A${{ portfolio.data.current_value }}</p>
+            <p class="text-tiny text-gray-500">A${{ portfolio.data.initial_value }}</p>
+          </div>
+          <div class="w-16 text-right mt-0.5 ml-2">
+            <p class="h-5 text-xs font-light text-bright-red">A${{ portfolio.data.daily_value }}</p>
+            <p class="text-tiny text-bright-red">{{ portfolio.data.daily_percent }}%</p>
+          </div>
+          <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
+          should show active transactions but this requires the addition of an 'active' column in the database table    -->
+          <div class="w-16 text-right mt-0.5 ml-2">
+            <p class="h-5 text-xs font-light text-bright-green">A${{ (portfolio.data.current_value - portfolio.data.initial_value).toFixed(2) }}</p>
+            <p class="text-tiny text-bright-green">{{ portfolio.data.total_percent }}%</p>
+          </div>
         </div>
-        <div class="w-20 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light">A${{ portfolio.data.current_value }}</p>
-          <p class="text-tiny text-gray-500">A${{ portfolio.data.initial_value }}</p>
-        </div>
-        <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light text-bright-red">A${{ portfolio.data.daily_value }}</p>
-          <p class="text-tiny text-bright-red">{{ portfolio.data.daily_percent }}%</p>
-        </div>
-        <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-        should show active transactions but this requires the addition of an 'active' column in the database table    -->
-        <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light text-bright-green">A${{ (portfolio.data.current_value - portfolio.data.initial_value).toFixed(2) }}</p>
-          <p class="text-tiny text-bright-green">{{ portfolio.data.total_percent }}%</p>
-        </div>
-      </div>
-      <!--   These two lines should show the all-time & realised values. This will again require the 'active'
-      column (same as abaove) to determine which transactions are complete   -->
-      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (portfolio.data.current_value - portfolio.data.initial_value).toFixed(2) }}({{ portfolio.data.total_percent }}%)</span></p>
-      <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
-    </NuxtLink>
+        <!--   These two lines should show the all-time & realised values. This will again require the 'active'
+        column (same as abaove) to determine which transactions are complete   -->
+        <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (portfolio.data.current_value - portfolio.data.initial_value).toFixed(2) }}({{ portfolio.data.total_percent }}%)</span></p>
+        <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
+      </NuxtLink>
+    </div>
   </div>
 </template>
 
