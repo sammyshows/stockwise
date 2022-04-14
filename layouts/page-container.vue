@@ -23,6 +23,11 @@ export default {
     this.pageStyle = {
       height: `${window.innerHeight}px`
     }
+    window.addEventListener("resize", this.setHeight);
+  },
+
+  destroyed() {
+    window.removeEventListener("resize", this.setHeight);
   },
 
   data() {
@@ -30,6 +35,12 @@ export default {
       pageStyle: {
         height: '100%'
       }
+    }
+  },
+
+  methods: {
+    setHeight() {
+      this.height = `${window.innerHeight}px`
     }
   }
 }
