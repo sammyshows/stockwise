@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="overflow-hidden flex flex-col">
     <div class="flex justify-end mb-2 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
-    <div class="overflow-scroll">
+    <div class="overflow-scroll flex-1">
       <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
         <div class="flex justify-end">
           <div class="grow">
