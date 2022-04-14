@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container">
+  <NuxtLayout name="page-container" activeButton="search">
     <div class="flex justify-between mb-5">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <h2 class="mb-5 my-auto text-lg text-cyan-300">{{ quote["01. symbol"] }}</h2>

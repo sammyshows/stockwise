@@ -30,3 +30,23 @@ INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_ra
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) VALUES (2, 'BUY', 3, 172.11, 1.344);
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) VALUES (2, 'BUY', 3, 156.18, 1.344);
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) VALUES (3, 'BUY', 12, 180.90, 1.344);
+
+CREATE FUNCTION uspReadPortfolios() RETURNS TABLE (id INT, name VARCHAR(50), transaction_count BIGINT, initial_value NUMERIC(10,3), current_value NUMERIC (10,3), total_percent NUMERIC (10,2), daily_value NUMERIC(10,3), daily_percent NUMERIC(10,2)) LANGUAGE plpgsql AS $$ DECLARE portfolio RECORD;
+BEGIN FOR portfolio IN SELECT portfolio_id AS id, portfolios.name FROM portfolios LOOP
+RETURN QUERY
+SELECT portfolio.id,
+       portfolio.name,
+       count(transactions),
+       ROUND(Sum(initial_price*quantity), 2),
+       ROUND(Sum(current_price*quantity), 2),
+       ROUND((Sum(current_price*quantity)-Sum(initial_price*quantity))*100.0 / Sum(initial_price*quantity), 2),
+       ROUND(Sum(current_price*quantity)-Sum(prev_close*quantity), 2),
+       ROUND((Sum(current_price*quantity)-Sum(prev_close*quantity))*100.0 / Sum(prev_close*quantity), 2)
+FROM transactions
+    INNER JOIN holdings ON holdings.holding_id = transactions.holding_id
+    INNER JOIN assets ON holdings.asset_id = assets.asset_id
+WHERE portfolio_id = portfolio.id;
+END LOOP;
+END;
+$$;
+
