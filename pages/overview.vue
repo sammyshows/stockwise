@@ -47,7 +47,7 @@ export default defineComponent({
       const response = await fetch('/api/portfolios-read', {
         method: 'GET'
       })
-          .then(response => response.json())
+        .then(response => response.json())
       this.portfolios = response.data
     }
   }

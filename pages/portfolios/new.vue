@@ -58,7 +58,7 @@ export default defineComponent({
 
     async createPortfolio(): Promise<void> {
       if (this.validateForm()) {
-        await fetch('/api/portfolios-create', {
+        await fetch('/api/portfolio-create', {
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)
         })
