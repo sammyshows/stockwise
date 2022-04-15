@@ -4,12 +4,13 @@ const client = require("../database/client.ts")
 
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
-
-    await client`
-        DELETE FROM portfolios WHERE id = ${eventBody.portfolioId}`
+    const portfolio = await client`SELECT id, name, included FROM portfolios WHERE id = ${eventBody.portfolioId};`
 
     return {
-        statusCode: 200
+        statusCode: 200,
+        body: JSON.stringify({
+            data: portfolio
+        })
     }
 }
 

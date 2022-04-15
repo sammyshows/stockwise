@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col flex-1">
     <div class="flex justify-end mb-2 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
@@ -34,6 +34,7 @@
       <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (holding.current_value - holding.initial_value).toFixed(2) }}({{ holding.total_percent }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
     </div>
+    <p v-if="holdings && holdings.length === 0" class="grow flex items-center text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
 <!--    </NuxtLink>-->
   </div>
 </template>

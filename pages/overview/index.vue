@@ -7,7 +7,7 @@
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
     <div class="overflow-scroll flex-1">
-      <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
+      <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio-holdings', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
         <div class="flex justify-end">
           <div class="grow">
             <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.name }}</h2>
