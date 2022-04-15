@@ -45,10 +45,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Holdings",
 
-  props: ['holdings'],
-
-  mounted() {
-    setTimeout(() => {console.log(this.holdings)}, 2000)
-  }
+  props: ['holdings']
 })
 </script>
