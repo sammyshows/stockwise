@@ -70,7 +70,6 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.holdings = response.data
-      console.log(this.holdings)
       if (response.data.length > 0)
         this.pageDetails.title = response.data[0].portfolio
     },
