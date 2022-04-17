@@ -2,7 +2,7 @@
   <div class="h-full flex flex-col">
     <div class="flex flex-col grow px-5">
       <div class="relative">
-        <input @keyup="" type="text" name="search" placeholder="Find your stock" class="focus:ring-indigo-500 focus:border-indigo-500 block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
+        <input @keyup="" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
         <div class="absolute max-h-48 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-opaque-cyan backdrop-blur-3xl rounded-b-lg">
           <div v-for="result in searchResults" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
             <p class="w-2/5">{{ result.symbol + " : " + result.exchange }}</p>
@@ -17,17 +17,21 @@
         <p class="text-xs">Daily movement: <span class="text-bright-green">6.21 (4.98%)</span></p>
       </div>
       <div class="flex flex-col grow justify-between mt-3">
-        <div class="flex flex-col grow gap-y-6 text-sm">
+        <div class="flex flex-col grow gap-y-4 text-sm">
           <div>
-            <label for="type" class="flex items-end">Transaction Type<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <select v-model="transactionDetails.type" autocomplete="off" id="type" type="select" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
+            <label for="type" class="flex items-end">Transaction Type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <select v-model="transactionDetails.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="BUY">BUY</option>
               <option value="SELL">SELL</option>
             </select>
           </div>
-          <div class="flex justify-between">
-            <label for="included" class="flex items-center">INCLUDED IN TOTALS</label>
-            <input v-model="transactionDetails.shares" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+          <div>
+            <label for="included" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transactionDetails.shares" id="included" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+          </div>
+          <div>
+            <label for="included" class="flex items-end">Exchange Rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transactionDetails.shares" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
         </div>
         <div class="text-right mb-14">
@@ -54,18 +58,21 @@ export default defineComponent({
   data() {
     return {
       searchResults: [
-        { symbol: "TSLA", exchange: "NAS", securityName: "Tesla Inc" },
-        { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
-        { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" },
-        { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
-        { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" }
+        // { symbol: "TSLA", exchange: "NAS", securityName: "Tesla Inc" },
+        // { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
+        // { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" },
+        // { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
+        // { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" }
       ],
+      invalidType: false,
+      invalidShares: false,
+      invalidExchange: false,
       holdingDetails: {
         symbol: ''
       },
       transactionDetails: {
         type: '',
-        shares: '',
+        shares: null as (number | null),
         price: 0
       }
     }
