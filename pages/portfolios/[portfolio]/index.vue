@@ -34,7 +34,7 @@
       <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (holding.current_value - holding.initial_value).toFixed(2) }}({{ holding.total_percent }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
     </div>
-    <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+    <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
 <!--    </NuxtLink>-->
   </div>
 </template>

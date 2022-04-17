@@ -21,7 +21,6 @@
         </div>
       </div>
     </div>
-    <NuxtPage :holdings="holdings" />
   </NuxtLayout>
 </template>
 
@@ -29,9 +28,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Holdings",
-
-  props: ['holdings'],
+  name: "New",
 
   data() {
     return {

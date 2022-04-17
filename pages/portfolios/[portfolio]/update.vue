@@ -53,7 +53,7 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
         title: 'Edit Portfolio',
-        returnPath: `/portfolios/${this.$route.params.portfolio}/holdings`
+        returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioDetails: {},
       invalidName: false

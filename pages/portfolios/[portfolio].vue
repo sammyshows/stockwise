@@ -1,28 +1,34 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div v-if="[`/portfolios/${portfolioId}/holdings`, `/portfolios/${portfolioId}/chart`].includes($route.path)" class="flex-1 flex flex-col">
+    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex-1 flex flex-col">
       <div class="flex justify-between mb-5">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }">
-          <PencilIcon @click="openUpdate = true" class="h-6 w-6 mr-3 my-auto" />
-        </NuxtLink>
+        <div class="flex mr-1 gap-x-3">
+          <NuxtLink :to="{ path: `/portfolios/${portfolioId}/holdings/new` }">
+            <PlusIcon class="h-8 w-8" />
+          </NuxtLink>
+          <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }" class="my-auto">
+            <PencilIcon @click="openUpdate = true" class="h-6 w-6" />
+          </NuxtLink>
+        </div>
       </div>
       <NavigationTabs :tabConfig="tabConfig" />
       <NuxtPage :holdings="holdings" />
     </div>
-    <NuxtPage v-else class="flex-1"/>
+    <NuxtPage v-else class="grow"/>
   </NuxtLayout>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
+import { PlusIcon } from "@heroicons/vue/solid";
 
 export default defineComponent({
   name: "Portfolio Holdings",
 
   components: {
-    PencilIcon
+    PencilIcon, PlusIcon
   },
 
   mounted() {
@@ -39,9 +45,9 @@ export default defineComponent({
         returnPath: '/overview'
       },
       tabConfig: {
-        activeTab: this.$route.path.split('/')[3],
+        activeTab: this.$route.path.split('/')[3] || 'HOLDINGS',
         tabs: [
-          { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}/holdings` },
+          { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}` },
           { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/chart` }
         ]
       },
