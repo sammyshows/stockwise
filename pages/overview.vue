@@ -3,7 +3,7 @@
     <div class="flex justify-between mb-5">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
       <NuxtLink :to="{ path: '/portfolios/new' }">
-        <PlusIcon class="h-8 w-8 mr-3" />
+        <PlusIcon class="h-8 w-8" />
       </NuxtLink>
     </div>
     <NavigationTabs :tabConfig="tabConfig" />
