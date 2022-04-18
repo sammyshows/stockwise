@@ -1,37 +1,61 @@
 <template>
   <div class="h-full flex flex-col">
     <div class="flex flex-col grow px-5">
-      <div class="relative">
-        <input @keyup="" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
-        <div class="absolute max-h-48 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-opaque-cyan backdrop-blur-3xl rounded-b-lg">
-          <div v-for="result in searchResults" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
-            <p class="w-2/5">{{ result.symbol + " : " + result.exchange }}</p>
+      <div class="relative mb-3">
+        <input @keyup="fetchSearch($event.target.value)" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
+        <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-gray-800 border border-t-0 border-gray-600 rounded-b-lg z-10">
+          <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+            <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
             <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
           </div>
         </div>
       </div>
-      <div class="flex flex-col justify-between items-center w-full mt-3 mb-5 px-3 gap-x-3">
-        <p class="w-full text-lg truncate">International Business Machines Corporation</p>
-        <p class="text-xs">IBM : NAS</p>
-        <p class="text-xs">Current price: <span>126.56</span></p>
-        <p class="text-xs">Daily movement: <span class="text-bright-green">6.21 (4.98%)</span></p>
+      <div v-if="quote" class="h-20 px-3">
+        <p class="text-center truncate">{{ quote.companyName }}</p>
+        <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
+          <div class="w-1 grow text-right">
+            <p class="truncate">{{ quote.symbol }}</p>
+            <p class="truncate">Current price</p>
+            <p class="truncate">Daily movement</p>
+          </div>
+          <div class="w-3 text-center">
+            <p>:</p>
+            <p>:</p>
+            <p>:</p>
+          </div>
+          <div class="w-1 grow">
+            <p class="truncate">{{ quote.primaryExchange }}</p>
+            <p class="truncate">{{ quote.latestPrice }}</p>
+            <p class="text-bright-green truncate">{{ quote.change }} ({{ (quote.changePercent * 100).toFixed(2) }}%)</p>
+          </div>
+        </div>
+        <div v-else class="w-full h-full flex justify-center items-center">
+          <svg class="spinner" viewBox="0 0 50 50">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+          </svg>
+        </div>
       </div>
       <div class="flex flex-col grow justify-between mt-3">
         <div class="flex flex-col grow gap-y-4 text-sm">
           <div>
-            <label for="type" class="flex items-end">Transaction Type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <select v-model="transactionDetails.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <option value="" disabled selected hidden></option>
               <option value="BUY">BUY</option>
               <option value="SELL">SELL</option>
             </select>
           </div>
           <div>
-            <label for="included" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transactionDetails.shares" id="included" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="shares" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transactionDetails.shares" id="shares" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="included" class="flex items-end">Exchange Rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transactionDetails.shares" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="price" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transactionDetails.price" id="price" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+          </div>
+          <div>
+            <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transactionDetails.exchange" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
         </div>
         <div class="text-right mb-14">
@@ -57,15 +81,12 @@ export default defineComponent({
 
   data() {
     return {
-      searchResults: [
-        // { symbol: "TSLA", exchange: "NAS", securityName: "Tesla Inc" },
-        // { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
-        // { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" },
-        // { symbol: "TSLA-SE", exchange: "SWX", securityName: "" },
-        // { symbol: "TSLX", exchange: "NYS", securityName: "Sixth Street Specialty Lending Inc" }
-      ],
+      searchResults: [],
+      quote: null as ({} | null),
+      invalidStock: false,
       invalidType: false,
       invalidShares: false,
+      invalidPrice: false,
       invalidExchange: false,
       holdingDetails: {
         symbol: ''
@@ -73,12 +94,49 @@ export default defineComponent({
       transactionDetails: {
         type: '',
         shares: null as (number | null),
-        price: 0
+        price: null as (number | null),
+        exchange: null as (number | null)
       }
     }
   },
 
+  async mounted() {
+    await fetch('/api/asset-upsert', {
+      method: 'POST',
+      body: JSON.stringify({
+        symbol: 'msft',
+        name: 'Microsofty',
+        exchange: 'NASDQ'
+      })
+    })
+  },
+
   methods: {
+    async fetchSearch(searchTerm: string): Promise<void> {
+      const data = await fetch('/api/stock-search', {
+        method: 'POST',
+        body: JSON.stringify({
+          searchTerm: searchTerm
+        })
+      })
+        .then(response => response.json())
+
+      this.searchResults = data.data.slice(0,10)
+    },
+
+    async fetchQuote(symbol: string): Promise<void> {
+      this.searchResults = []
+      this.quote = {}
+      const quote = await fetch('/api/stock-quote', {
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: symbol
+        })
+      })
+        .then(response => response.json())
+      this.quote = quote.quote
+    },
+
     clearSearchResults(): void {
       this.searchResults = []
     },
@@ -89,3 +147,37 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+  .spinner {
+    animation: rotate 2s linear infinite;
+    width: 40px;
+    height: 40px;
+  }
+  .path {
+    stroke: #00FFD1;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+  }
+
+  @keyframes rotate {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes dash {
+    0% {
+      stroke-dasharray: 1, 150;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -35;
+    }
+    100% {
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: -124;
+    }
+  }
+</style>

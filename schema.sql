@@ -14,7 +14,7 @@ CREATE TABLE portfolios (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), u
 INSERT INTO portfolios (user_id, name, included) VALUES ((SELECT id FROM users WHERE email='sammymac.eng@gmail.com'), 'AUS EQUITIES', TRUE);
 INSERT INTO portfolios (user_id, name, included) VALUES ((SELECT id FROM users WHERE email='sammymac.eng@gmail.com'), 'U.S. EQUITIES', TRUE);
 
-CREATE TABLE assets (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), current_price NUMERIC(10,3), prev_close NUMERIC(10,3), symbol TEXT, name TEXT, exchange TEXT);
+CREATE TABLE assets (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), current_price NUMERIC(10,3), prev_close NUMERIC(10,3), symbol TEXT UNIQUE, name TEXT, exchange TEXT);
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange) VALUES ('aapl', 293.98, 282.71, 'Apple Technologies', 'NASDAQ');
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange) VALUES ('tsla', 189.92, 180.71, 'Tesla Motor Company', 'NASDAQ');
 

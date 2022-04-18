@@ -57,18 +57,7 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.sortResults(data["data"]["bestMatches"])
-    },
-
-    sortResults(data): void {
-      const results = data.slice(0, 5)
-      results.forEach((result: any) => {
-        const searchResult = {
-          name: result["2. name"],
-          symbol: result["1. symbol"]
-        }
-        this.searchResults.push(searchResult)
-      })
+      this.searchResults = data.data.slice(0,5)
     }
   }
 })
