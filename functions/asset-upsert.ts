@@ -4,7 +4,6 @@ import fetch from 'node-fetch'
 
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
-
     const asset = await fetch('http://localhost:8888/api/stock-quote', {
         method: 'POST',
         body: JSON.stringify({
@@ -12,7 +11,7 @@ const handler: Handler = async (event, context) => {
         })
     })
         .then(response => response.json())
-        .then(asset => asset["data"])
+        .then(asset => asset["quote"])
 
     await client`
         INSERT INTO assets (symbol, current_price, prev_close, name, exchange)
