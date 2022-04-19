@@ -2,7 +2,7 @@
   <div class="h-full flex flex-col">
     <div class="flex flex-col grow px-5">
       <div class="relative mb-3">
-        <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
+        <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-900 w-full border-gray-600 rounded-md" />
         <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-gray-800 border border-t-0 border-gray-600 rounded-b-lg z-10">
           <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
             <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
