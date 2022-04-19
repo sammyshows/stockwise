@@ -2,7 +2,7 @@
   <div class="h-full flex flex-col">
     <div class="flex flex-col grow px-5">
       <div class="relative mb-3">
-        <input @keyup="fetchSearch($event.target.value)" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
+        <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock" class="focus:ring-0 focus:border-white block bg-gray-900 w-full text-xs border-gray-600 rounded-md" />
         <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-gray-800 border border-t-0 border-gray-600 rounded-b-lg z-10">
           <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
             <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
@@ -29,14 +29,10 @@
             <p class="text-bright-green truncate">{{ quote.change }} ({{ (quote.changePercent * 100).toFixed(2) }}%)</p>
           </div>
         </div>
-        <div v-else class="w-full h-full flex justify-center items-center">
-          <svg class="spinner" viewBox="0 0 50 50">
-            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-          </svg>
-        </div>
+        <Spinner v-else />
       </div>
-      <div class="flex flex-col grow justify-between mt-3">
-        <div class="flex flex-col grow gap-y-4 text-sm">
+      <div class="flex flex-col grow justify-between gap-y-4 mt-3">
+        <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
             <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <select v-model="transactionDetails.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
@@ -58,7 +54,7 @@
             <input v-model="transactionDetails.exchange" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
         </div>
-        <div class="text-right mb-14">
+        <div class="text-right mb-7">
           <button @click="addHolding()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
         </div>
       </div>
@@ -147,37 +143,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-  .spinner {
-    animation: rotate 2s linear infinite;
-    width: 40px;
-    height: 40px;
-  }
-  .path {
-    stroke: #00FFD1;
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
-  }
-
-  @keyframes rotate {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes dash {
-    0% {
-      stroke-dasharray: 1, 150;
-      stroke-dashoffset: 0;
-    }
-    50% {
-      stroke-dasharray: 90, 150;
-      stroke-dashoffset: -35;
-    }
-    100% {
-      stroke-dasharray: 90, 150;
-      stroke-dashoffset: -124;
-    }
-  }
-</style>

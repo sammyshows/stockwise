@@ -6,7 +6,7 @@
       <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
         <SearchIcon class="h-7 w-7" aria-hidden="true" />
       </div>
-      <input @keyup.enter="fetchSearch($event.target.value)" type="text" name="search" placeholder="Search" class="focus:ring-indigo-500 focus:border-indigo-500 block bg-gray-900 w-full pl-12 text-xs border-gray-600 rounded-md" />
+      <input @keyup.enter="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search" class="focus:ring-indigo-500 focus:border-indigo-500 block bg-gray-900 w-full pl-12 text-xs border-gray-600 rounded-md" />
     </div>
 
     <div v-if="searchResults.length > 0">
