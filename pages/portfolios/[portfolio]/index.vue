@@ -7,8 +7,7 @@
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
 
-<!--    <NuxtLink v-for="holding in holdings" :to="{ name: 'holdings-holding', params: { holding: holding.id } }" class="mb-5">-->
-    <div v-for="holding in holdings"> <!--   temp div until nuxtlink has valid route   -->
+    <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, holdingName: holding.name } }">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ holding.symbol.toUpperCase() }}</h2>
@@ -33,9 +32,8 @@
       column (same as abaove) to determine which transactions are complete   -->
       <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (holding.current_value - holding.initial_value).toFixed(2) }}({{ holding.total_percent }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
-    </div>
+    </NuxtLink>
     <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
-<!--    </NuxtLink>-->
   </div>
 </template>
 

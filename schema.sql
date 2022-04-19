@@ -50,12 +50,13 @@ END;
 $$;
 
 
-CREATE FUNCTION uspReadPortfolio(portfolio_id INT) RETURNS TABLE (id INT, portfolio VARCHAR(50), symbol TEXT, transaction_count BIGINT, initial_value NUMERIC(10,3), current_value NUMERIC (10,3), total_percent NUMERIC (10,2), daily_value NUMERIC(10,3), daily_percent NUMERIC(10,2)) LANGUAGE plpgsql AS $$ DECLARE portfolio RECORD;
+CREATE FUNCTION uspReadHoldings(portfolio_id INT) RETURNS TABLE (id INT, portfolio VARCHAR(50), symbol TEXT, name TEXT, transaction_count BIGINT, initial_value NUMERIC(10,3), current_value NUMERIC (10,3), total_percent NUMERIC (10,2), daily_value NUMERIC(10,3), daily_percent NUMERIC(10,2)) LANGUAGE plpgsql AS $$ DECLARE portfolio RECORD;
 BEGIN
 RETURN QUERY
 SELECT holdings.id,
        portfolios.name,
        assets.symbol,
+       assets.name,
        count(transactions),
        ROUND(Sum(initial_price*quantity), 2),
        ROUND(Sum(current_price*quantity), 2),
@@ -68,6 +69,27 @@ FROM transactions
          INNER JOIN portfolios ON holdings.portfolio_id = portfolios.id
 WHERE portfolios.id = $1
 GROUP BY holdings.id, assets.id, portfolios.id;
+END;
+$$;
+
+
+CREATE FUNCTION uspReadTransactions(holding_id INT) RETURNS TABLE (id INT, symbol TEXT, name TEXT, shares NUMERIC(50,50), price NUMERIC(50,50), initial_value NUMERIC(10,3), current_value NUMERIC (10,3), total_percent NUMERIC (10,2), daily_value NUMERIC(10,3), daily_percent NUMERIC(10,2)) LANGUAGE plpgsql AS $$ DECLARE portfolio RECORD;
+BEGIN
+    RETURN QUERY
+        SELECT transactions.id,
+               assets.symbol,
+               assets.name,
+               ROUND(transactions.quantity, 3),
+               ROUND(transactions.initial_price, 3),
+               ROUND(initial_price*quantity, 2),
+               ROUND(current_price*quantity, 2),
+               ROUND((current_price*quantity-initial_price*quantity)*100.0 / initial_price*quantity, 2),
+               ROUND(current_price*quantity-prev_close*quantity, 2),
+               ROUND((current_price*quantity-prev_close*quantity)*100.0 / prev_close*quantity, 2)
+        FROM transactions
+                 INNER JOIN holdings ON holdings.id = transactions.holding_id
+                 INNER JOIN assets ON holdings.asset_id = assets.id
+        WHERE holdings.id = $1;
 END;
 $$;
 

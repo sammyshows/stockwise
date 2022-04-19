@@ -77,6 +77,7 @@ export default defineComponent({
 
   data() {
     return {
+      portfolioId: this.$route.params.portfolio,
       searchResults: [],
       quote: null as ({} | null),
       invalidStock: false,
@@ -84,9 +85,6 @@ export default defineComponent({
       invalidShares: false,
       invalidPrice: false,
       invalidExchange: false,
-      holdingDetails: {
-        symbol: ''
-      },
       transactionDetails: {
         type: '',
         shares: null as (number | null),
@@ -137,8 +135,17 @@ export default defineComponent({
       this.searchResults = []
     },
 
-    addHolding(): void {
-
+    async addHolding(): Promise<void> {
+      await fetch('/api/asset-upsert', {
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.quote.symbol
+        })
+      })
+        .then(response => {
+          if (response.status === 200)
+            this.$router.push(`/portfolios/${this.portfolioId}`)
+        })
     }
   }
 })

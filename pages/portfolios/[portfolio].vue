@@ -8,7 +8,7 @@
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
           <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }" class="my-auto">
-            <PencilIcon @click="openUpdate = true" class="h-6 w-6" />
+            <PencilIcon class="h-6 w-6" />
           </NuxtLink>
         </div>
       </div>
@@ -33,12 +33,10 @@ export default defineComponent({
 
   mounted() {
     this.getHoldings()
-    this.getPortfolio()
   },
 
   data() {
     return {
-      openUpdate: false,
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
         title: this.$route.params.portfolioName,
@@ -56,19 +54,8 @@ export default defineComponent({
   },
 
   methods: {
-    async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
-        method: 'POST',
-        body: JSON.stringify({
-          portfolioId: this.portfolioId
-        })
-      })
-        .then(response => response.json())
-      this.pageDetails.title = response.data[0].name
-    },
-
     async getHoldings(): Promise<void> {
-      const response = await fetch('/api/holdings', {
+      const response = await fetch('/api/holdings-read', {
         method: 'POST',
         body: JSON.stringify({
           portfolioId: this.portfolioId
@@ -78,10 +65,6 @@ export default defineComponent({
       this.holdings = response.data
       if (response.data.length > 0)
         this.pageDetails.title = response.data[0].portfolio
-    },
-
-    closeUpdate() {
-      this.openUpdate = false
     }
   }
 })
