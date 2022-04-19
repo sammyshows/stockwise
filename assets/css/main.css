@@ -6,6 +6,6 @@ body {
     margin: 0;
     font-family: Poppins;
     font-weight: 300;
-    background: linear-gradient(225deg, hsla(0, 0%, 0%, 1) 20%, hsla(180, 17%, 53%, 1) 100%);
+    background: linear-gradient(225deg, hsla(0, 0%, 0%, 1) 20%, hsla(180, 17%, 53%, 1) 100%), no-repeat, center top fixed;
     color: white;
 }
