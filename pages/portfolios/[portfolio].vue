@@ -33,6 +33,7 @@ export default defineComponent({
 
   mounted() {
     this.getHoldings()
+    this.getPortfolio()
   },
 
   watch: {
@@ -72,6 +73,17 @@ export default defineComponent({
       this.holdings = response.data
       if (response.data.length > 0)
         this.pageDetails.title = response.data[0].portfolio
+    },
+
+    async getPortfolio(): Promise<void> {
+      const response = await fetch('/api/portfolio-read', {
+        method: 'POST',
+        body: JSON.stringify({
+          portfolioId: this.portfolioId
+        })
+      })
+        .then(response => response.json())
+      this.pageDetails.title = response.data[0].name
     },
 
     setActiveTab(newTab) {

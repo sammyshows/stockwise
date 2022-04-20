@@ -43,6 +43,8 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Transactions",
 
-  props: ['transactions']
+  props: [
+    'transactions'
+  ]
 })
 </script>

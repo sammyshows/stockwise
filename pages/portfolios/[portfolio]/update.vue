@@ -3,7 +3,7 @@
     <div class="h-full pb-12 flex flex-col">
       <div class="flex justify-between mb-14">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3 my-auto" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
       </div>
 
       <div class="flex flex-col grow justify-between px-6">

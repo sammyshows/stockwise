@@ -33,7 +33,6 @@ export default defineComponent({
 
   mounted() {
     this.getTransactions()
-    console.log(this.$route.params)
   },
 
   watch: {

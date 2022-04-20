@@ -69,7 +69,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.pageDetails.title = response.asset[0].name
+      this.pageDetails.title = response.asset[0].symbol + " : " + response.asset[0].exchange
     },
 
     async getPortfolios(): Promise<void> {
@@ -83,10 +83,10 @@ export default defineComponent({
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId,
-          portfolioId: this.portfolioId
+          portfolioId: this.selectedPortfolio
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+        .then(this.$router.push(`/portfolios/${this.portfolioId}`))
     },
 
     closeModal(): void {
