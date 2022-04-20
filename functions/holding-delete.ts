@@ -6,11 +6,7 @@ const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        UPDATE portfolios
-        SET name = ${eventBody.name},
-            included = ${eventBody.included}
-        WHERE id = ${eventBody.id};`
-
+        DELETE FROM holdings WHERE id = ${eventBody.holdingId}`
 
     return {
         statusCode: 200

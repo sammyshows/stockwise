@@ -82,9 +82,7 @@ export default defineComponent({
     async updatePortfolio(): Promise<void> {
       await fetch('/api/portfolio-update', {
         method: 'POST',
-        body: JSON.stringify({
-          portfolio: JSON.stringify(this.portfolioDetails)
-        })
+        body: JSON.stringify(this.portfolioDetails)
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}`))
     },

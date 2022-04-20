@@ -1,12 +1,12 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="flex justify-between mb-5">
+    <div class="flex justify-between h-14">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
       <NuxtLink :to="{ path: '/portfolios/new' }">
         <PlusIcon class="h-8 w-8" />
       </NuxtLink>
     </div>
-    <NavigationTabs :tabConfig="tabConfig" />
+    <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
     <NuxtChild :portfolios="portfolios" />
   </NuxtLayout>
 </template>
@@ -32,7 +32,7 @@ export default defineComponent({
         title: 'Portfolio Overview'
       },
       tabConfig: {
-        activeTab: 'PORTFOLIOS',
+        activeTab: this.$route.path === '/overview' ? 'PORTFOLIOS' : 'CHART',
         tabs: [
           { name: 'PORTFOLIOS', path: `/overview` },
           { name: 'CHART', path: `/overview/chart` }
@@ -48,7 +48,11 @@ export default defineComponent({
         method: 'GET'
       })
         .then(response => response.json())
-      this.portfolios = response.data
+      this.portfolios = response.portfolios
+    },
+
+    setActiveTab(newTab) {
+      this.tabConfig.activeTab = newTab
     }
   }
 })

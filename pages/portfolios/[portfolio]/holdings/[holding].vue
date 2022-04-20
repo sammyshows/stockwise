@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div class="flex flex-col grow">
     <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex-1 flex flex-col">
-      <div class="flex justify-between mb-5">
+      <div class="h-14 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ path: `/portfolios/${$route.params.portfolio}/holdings/${holdingId}/transactions/new` }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ path: `/portfolios/${$route.params.portfolio}/holdings/${holdingId}/update` }" class="my-auto">
-            <PencilIcon class="h-6 w-6" />
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, holdingName: pageDetails.title } }">
+            <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
       </div>
-      <NavigationTabs :tabConfig="tabConfig" />
+      <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <NuxtPage :transactions="transactions" />
     </div>
-    <NuxtPage v-else class="grow"/>
+    <NuxtPage v-else class="flex flex-col grow"/>
   </div>
 </template>
 
@@ -33,17 +33,26 @@ export default defineComponent({
 
   mounted() {
     this.getTransactions()
+    console.log(this.$route.params)
+  },
+
+  watch: {
+    $route (to, from){
+      if (from.name === 'portfolios-portfolio-holdings-holding-update')
+        this.tabConfig.activeTab = 'TRANSACTIONS'
+    }
   },
 
   data() {
     return {
       holdingId: this.$route.params.holding,
       pageDetails: {
-        title: this.$route.params.holdingName,
+        title: this.$route.params.assetSymbol,
+        subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       tabConfig: {
-        activeTab: this.$route.path.split('/')[5] || 'TRANSACTIONS',
+        activeTab: this.$route.name !== `portfolios-portfolio-holdings-holding-chart` ? 'TRANSACTIONS' : 'CHART',
         tabs: [
           { name: 'TRANSACTIONS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}` },
           { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/chart` }
@@ -63,8 +72,12 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.transactions = response.data
-      if (response.data.length > 0)
-        this.pageDetails.title = response.data[0].name
+      this.pageDetails.title = response.data[0].symbol + " : " + response.data[0].exchange
+      this.pageDetails.subtitle = response.data[0].name
+    },
+
+    setActiveTab(newTab) {
+      this.tabConfig.activeTab = newTab
     }
   }
 })

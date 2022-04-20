@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
     <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex-1 flex flex-col">
-      <div class="flex justify-between mb-5">
+      <div class="flex justify-between h-14">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ path: `/portfolios/${portfolioId}/holdings/new` }">
@@ -12,7 +12,7 @@
           </NuxtLink>
         </div>
       </div>
-      <NavigationTabs :tabConfig="tabConfig" />
+      <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <NuxtPage :holdings="holdings" />
     </div>
     <NuxtPage v-else class="grow"/>
@@ -35,6 +35,13 @@ export default defineComponent({
     this.getHoldings()
   },
 
+  watch: {
+    $route (to, from) {
+      if (from.name === 'portfolios-portfolio-update')
+        this.tabConfig.activeTab = 'HOLDINGS'
+    }
+  },
+
   data() {
     return {
       portfolioId: this.$route.params.portfolio,
@@ -43,7 +50,7 @@ export default defineComponent({
         returnPath: '/overview'
       },
       tabConfig: {
-        activeTab: this.$route.path.split('/')[3] || 'HOLDINGS',
+        activeTab: this.$route.path !== `/portfolios/${this.$route.params.portfolio}/chart` ? 'HOLDINGS' : 'CHART',
         tabs: [
           { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}` },
           { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/chart` }
@@ -65,6 +72,10 @@ export default defineComponent({
       this.holdings = response.data
       if (response.data.length > 0)
         this.pageDetails.title = response.data[0].portfolio
+    },
+
+    setActiveTab(newTab) {
+      this.tabConfig.activeTab = newTab
     }
   }
 })

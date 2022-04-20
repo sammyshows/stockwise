@@ -1,8 +1,8 @@
 <template>
   <NuxtLayout name="page-container" activeButton="search">
-    <div class="flex justify-between mb-5">
+    <div class="flex justify-between h-14">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-      <h2 class="mb-5 my-auto text-lg text-cyan-300">{{ quote["01. symbol"] }}</h2>
+      <h2 class="h-14 my-auto text-lg text-cyan-300">{{ quote["01. symbol"] }}</h2>
     </div>
     <NavigationTabs :tabConfig="tabConfig" />
     <NuxtPage :companyOverview="companyOverview" :quote="quote" />

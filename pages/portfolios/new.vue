@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="h-full pb-12 flex flex-col">
+    <div class="h-full flex flex-col">
       <div class="flex justify-between mb-14">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       </div>
@@ -16,7 +16,7 @@
             <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
           </div>
         </div>
-        <div class="text-right">
+        <div class="text-right mb-7">
           <button @click="createPortfolio()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
         </div>
       </div>
