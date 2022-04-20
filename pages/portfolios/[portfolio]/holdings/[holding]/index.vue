@@ -15,7 +15,7 @@
         </div>
         <div class="w-20 text-right mt-0.5 ml-2">
           <p class="h-5 text-xs font-light">A${{ transaction.current_value }}</p>
-          <p class="text-tiny text-gray-500">A${{ transaction.initial_value }}</p>
+          <p class="text-tiny text-gray-300">A${{ transaction.initial_value }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2">
           <p class="h-5 text-xs font-light text-bright-red">A${{ transaction.daily_value }}</p>
