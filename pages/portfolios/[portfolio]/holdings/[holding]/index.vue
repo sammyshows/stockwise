@@ -7,7 +7,7 @@
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
 
-    <NuxtLink v-for="transaction in transactions" :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.id, holdingName: transaction.name } }">
+    <NuxtLink v-for="transaction in transactions" :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.id, assetName: transaction.name, assetSymbol: transaction.symbol + ' : ' + transaction.exchange, assetName: transaction.name } }">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ transaction.shares }}</h2>

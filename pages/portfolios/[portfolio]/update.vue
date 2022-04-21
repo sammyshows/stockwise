@@ -1,7 +1,7 @@
 <template>
   <div class="grow">
     <div class="h-full pb-12 flex flex-col">
-      <div class="flex justify-between mb-14">
+      <div class="h-20 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
       </div>

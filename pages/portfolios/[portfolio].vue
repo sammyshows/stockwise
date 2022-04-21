@@ -7,8 +7,8 @@
           <NuxtLink :to="{ path: `/portfolios/${portfolioId}/holdings/new` }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }" class="my-auto">
-            <PencilIcon class="h-6 w-6" />
+          <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }">
+            <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
       </div>
