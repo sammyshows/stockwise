@@ -18,20 +18,20 @@
           <p class="text-tiny text-gray-500">A${{ holding.initial_value }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light text-bright-red">A${{ holding.daily_value }}</p>
-          <p class="text-tiny text-bright-red">{{ holding.daily_percent }}%</p>
+          <p class="h-5 text-xs font-light" :class="{ 'text-bright-red': holding.daily_value < 0, 'text-bright-green': holding.daily_value > 0 }">{{ $addSign(holding.daily_value) }}</p>
+          <p class="text-tiny" :class="{ 'text-bright-red': holding.daily_percent < 0, 'text-bright-green': holding.daily_percent > 0 }">{{ $addSign(holding.daily_percent) }}%</p>
         </div>
         <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
         should show active transactions but this requires the addition of an 'active' column in the database table    -->
         <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light text-bright-green">A${{ (holding.current_value - holding.initial_value).toFixed(2) }}</p>
-          <p class="text-tiny text-bright-green">{{ holding.total_percent }}%</p>
+          <p class="h-5 text-xs font-light" :class="{ 'text-bright-red': totalChange(holding) < 0, 'text-bright-green': totalChange(holding) > 0 }">{{ $addSign(totalChange(holding)) }}</p>
+          <p class="text-tiny" :class="{ 'text-bright-red': holding.total_percent < 0, 'text-bright-green': holding.total_percent > 0 }">{{ $addSign(holding.total_percent) }}%</p>
         </div>
       </div>
       <!--   These two lines should show the all-time & realised values. This will again require the 'active'
-      column (same as abaove) to determine which transactions are complete   -->
-      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (holding.current_value - holding.initial_value).toFixed(2) }}({{ holding.total_percent }}%)</span></p>
-      <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
+      column (same as above) to determine which transactions are complete   -->
+      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">{{ $addSign((holding.current_value - holding.initial_value).toFixed(2)) }}({{ $addSign(holding.total_percent) }}%)</span></p>
+      <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">+322.91(+43%)</span></p>
     </NuxtLink>
     <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
   </div>
@@ -43,6 +43,12 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Holdings",
 
-  props: ['holdings']
+  props: ['holdings'],
+
+  methods: {
+    totalChange(holding) {
+      return (holding.current_value - holding.initial_value).toFixed(2)
+    }
+  }
 })
 </script>
