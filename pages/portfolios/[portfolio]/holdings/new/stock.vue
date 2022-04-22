@@ -165,7 +165,7 @@ export default defineComponent({
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,
-            assetSymbol: `${this.quote.symbol} : ${this.quote.exchange}`,
+            assetSymbol: this.quote.symbol + ' : ' + this.quote.primaryExchange,
             assetName: this.quote.companyName
           }
         }))
