@@ -1,12 +1,12 @@
 <template>
-  <div class="flex ml-5">
+  <div class="flex ml-5 w-full">
     <NuxtLink v-if="pageDetails?.returnPath" :to="pageDetails?.returnPath">
       <ChevronLeftIcon class="h-8 w-8 mr-6 -ml-2.5" />
     </NuxtLink>
 
     <h1 v-if="!pageDetails.subtitle" class="text-2xl font-medium truncate">{{ pageDetails.title }}</h1>
 
-    <div v-if="pageDetails.subtitle">
+    <div v-if="pageDetails.subtitle" class="overflow-hidden">
       <h1 class="text-lg font-medium truncate">{{ pageDetails.title }}</h1>
       <p class="text-xs">{{ pageDetails.subtitle }}</p>
     </div>

@@ -35,27 +35,27 @@
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
             <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <select v-model="transactionDetails.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="" disabled selected hidden></option>
               <option value="BUY">BUY</option>
               <option value="SELL">SELL</option>
             </select>
           </div>
           <div>
-            <label for="shares" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transactionDetails.shares" id="shares" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="quantity" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="price" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transactionDetails.price" id="price" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="initialPrice" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
             <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transactionDetails.exchange" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
         </div>
         <div class="text-right mb-7">
-          <button @click="addHolding()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+          <button @click="upsertAsset()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
         </div>
       </div>
     </div>
@@ -85,24 +85,13 @@ export default defineComponent({
       invalidShares: false,
       invalidPrice: false,
       invalidExchange: false,
-      transactionDetails: {
+      transaction: {
         type: '',
-        shares: null as (number | null),
-        price: null as (number | null),
-        exchange: null as (number | null)
+        quantity: null as (number | null),
+        initialPrice: null as (number | null),
+        exchangeRate: null as (number | null)
       }
     }
-  },
-
-  async mounted() {
-    await fetch('/api/asset-upsert', {
-      method: 'POST',
-      body: JSON.stringify({
-        symbol: 'msft',
-        name: 'Microsofty',
-        exchange: 'NASDQ'
-      })
-    })
   },
 
   methods: {
@@ -135,18 +124,45 @@ export default defineComponent({
       this.searchResults = []
     },
 
-    async addHolding(): Promise<void> {
-      await fetch('/api/asset-upsert', {
+    async upsertAsset(): Promise<void> {
+      const assetId = await fetch('/api/asset-upsert', {
         method: 'POST',
         body: JSON.stringify({
           symbol: this.quote.symbol
         })
       })
-        .then(response => {
-          if (response.status === 200)
-            this.$router.push(`/portfolios/${this.portfolioId}`)
+        .then(response => response.json())
+        .then(data => data.asset[0].id)
+      await this.addHolding(assetId)
+    },
+
+    async addHolding(assetId): Promise<void> {
+      const holdingId = await fetch('/api/holding-create', {
+        method: 'POST',
+        body: JSON.stringify({
+          portfolio: this.portfolioId,
+          asset: assetId
         })
-    }
+      })
+        .then(response => response.json())
+        .then(data => data.holding[0].id)
+
+      await this.addTransaction(holdingId)
+    },
+
+    async addTransaction(holdingId): Promise<void> {
+      await fetch('/api/transaction-create', {
+        method: 'POST',
+        body: JSON.stringify({
+          holding: holdingId,
+          type: this.transaction.type,
+          quantity: this.transaction.quantity,
+          initialPrice: this.transaction.initialPrice,
+          exchangeRate: this.transaction.exchangeRate
+        })
+      })
+        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${holdingId}`))
+    },
   }
 })
 </script>
