@@ -161,8 +161,15 @@ export default defineComponent({
           exchangeRate: this.transaction.exchangeRate
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${holdingId}`))
-    },
+        .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+          params: {
+            portfolio: this.portfolioId,
+            holding: holdingId,
+            assetSymbol: `${this.quote.symbol} : ${this.quote.exchange}`,
+            assetName: this.quote.companyName
+          }
+        }))
+    }
   }
 })
 </script>

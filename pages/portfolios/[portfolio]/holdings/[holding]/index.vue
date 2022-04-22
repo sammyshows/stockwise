@@ -33,7 +33,6 @@
       <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">A${{ (transaction.current_value - transaction.initial_value).toFixed(2) }}({{ transaction.total_percent }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">A$322.91(43%)</span></p>
     </NuxtLink>
-    <p v-if="transactions != null && transactions.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
   </div>
 </template>
 

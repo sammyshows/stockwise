@@ -4,7 +4,6 @@ const client = require("../database/client.ts")
 
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
-    console.log(eventBody)
 
     await client`
         INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) 

@@ -7,7 +7,7 @@
       <p class="w-16 text-right ml-2">ALL-TIME</p>
     </div>
 
-    <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, assetSymbol: holding.symbol + ' : ' + holding.exchange, assetName: holding.name } }">
+    <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, assetSymbol: `${holding.symbol} : ${holding.exchange}`, assetName: holding.name } }">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ holding.symbol.toUpperCase() }}</h2>
