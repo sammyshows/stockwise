@@ -17,15 +17,13 @@
           <p class="h-5 text-xs font-light">A${{ holding.current_value }}</p>
           <p class="text-tiny text-gray-300">A${{ holding.initial_value }}</p>
         </div>
-        <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light" :class="{ 'text-bright-red': holding.daily_value < 0, 'text-bright-green': holding.daily_value > 0 }">{{ $addSign(holding.daily_value) }}</p>
-          <p class="text-tiny" :class="{ 'text-bright-red': holding.daily_percent < 0, 'text-bright-green': holding.daily_percent > 0 }">{{ $addSign(holding.daily_percent) }}%</p>
+        <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
+          <p class="h-5 text-xs font-light">{{ $addSign(holding.daily_change) }}</p>
+          <p class="text-tiny">{{ $addSign(holding.daily_percent) }}%</p>
         </div>
-        <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-        should show active transactions but this requires the addition of an 'active' column in the database table    -->
-        <div class="w-16 text-right mt-0.5 ml-2">
-          <p class="h-5 text-xs font-light" :class="{ 'text-bright-red': totalChange(holding) < 0, 'text-bright-green': totalChange(holding) > 0 }">{{ $addSign(totalChange(holding)) }}</p>
-          <p class="text-tiny" :class="{ 'text-bright-red': holding.total_percent < 0, 'text-bright-green': holding.total_percent > 0 }">{{ $addSign(holding.total_percent) }}%</p>
+        <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
+          <p class="h-5 text-xs font-light">{{ $addSign(holding.total_change) }}</p>
+          <p class="text-tiny">{{ $addSign((holding.total_change / holding.initial_value * 100).toFixed(2)) }}%</p>
         </div>
       </div>
       <!--   These two lines should show the all-time & realised values. This will again require the 'active'
@@ -43,12 +41,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Holdings",
 
-  props: ['holdings'],
-
-  methods: {
-    totalChange(holding) {
-      return (holding.current_value - holding.initial_value).toFixed(2)
-    }
-  }
+  props: ['holdings']
 })
 </script>
