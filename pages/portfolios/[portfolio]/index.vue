@@ -4,7 +4,7 @@
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
-      <p class="w-16 text-right ml-2">ALL-TIME</p>
+      <p class="w-16 text-right ml-2">TOTAL</p>
     </div>
 
     <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, assetSymbol: holding.symbol + ' : ' + holding.exchange, assetName: holding.name } }">
@@ -15,7 +15,7 @@
         </div>
         <div class="w-20 text-right mt-0.5 ml-2">
           <p class="h-5 text-xs font-light">A${{ holding.current_value }}</p>
-          <p class="text-tiny text-gray-500">A${{ holding.initial_value }}</p>
+          <p class="text-tiny text-gray-300">A${{ holding.initial_value }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2">
           <p class="h-5 text-xs font-light" :class="{ 'text-bright-red': holding.daily_value < 0, 'text-bright-green': holding.daily_value > 0 }">{{ $addSign(holding.daily_value) }}</p>

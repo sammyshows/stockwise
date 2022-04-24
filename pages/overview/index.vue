@@ -4,7 +4,7 @@
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
-      <p class="w-16 text-right ml-2">ALL-TIME</p>
+      <p class="w-16 text-right ml-2">TOTAL</p>
     </div>
     <div class="overflow-scroll flex-1">
       <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
@@ -15,7 +15,7 @@
           </div>
           <div class="w-20 text-right mt-0.5 ml-2">
             <p class="h-5 text-xs font-light">A${{ portfolio.current_value }}</p>
-            <p class="text-tiny text-gray-500">A${{ portfolio.initial_value }}</p>
+            <p class="text-tiny text-gray-300">A${{ portfolio.initial_value }}</p>
           </div>
           <div class="w-16 text-right mt-0.5 ml-2">
             <p class="h-5 text-xs font-light text-bright-red">A${{ portfolio.daily_value }}</p>

@@ -26,13 +26,13 @@
           <div class="w-1 grow">
             <p class="truncate">{{ quote.primaryExchange }}</p>
             <p class="truncate">{{ quote.latestPrice }}</p>
-            <p class="text-bright-green truncate">{{ quote.change }} ({{ (quote.changePercent * 100).toFixed(2) }}%)</p>
+            <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign(quote.change) }} ({{ $addSign((quote.changePercent * 100).toFixed(2)) }}%)</p>
           </div>
         </div>
         <Spinner v-else />
       </div>
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
-        <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
+        <div class="h-0 px-2 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
             <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">

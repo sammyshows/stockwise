@@ -4,7 +4,7 @@
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
-      <p class="w-16 text-right ml-2">ALL-TIME</p>
+      <p class="w-16 text-right ml-2">TOTAL</p>
     </div>
 
     <NuxtLink v-for="transaction in transactions" :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.id, assetName: transaction.name, assetSymbol: transaction.symbol + ' : ' + transaction.exchange, assetName: transaction.name } }">
