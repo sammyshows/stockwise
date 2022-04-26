@@ -1,42 +1,15 @@
 {
-  "packageId": "stockwise.app",
-  "host": "stockwise.app",
   "name": "Stockwise",
-  "launcherName": "Stockwise",
+  "short_name": "Stockwise",
+  "start_url": "/",
   "display": "standalone",
-  "themeColor": "#000000",
-  "navigationColor": "#000000",
-  "navigationColorDark": "#000000",
-  "navigationDividerColor": "#000000",
-  "navigationDividerColorDark": "#000000",
-  "backgroundColor": "#000000",
-  "enableNotifications": true,
-  "startUrl": "/",
-  "iconUrl": "https://img.icons8.com/ios-filled/344/bull.png",
-  "splashScreenFadeOutDuration": 300,
-  "signingKey": {
-    "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
-    "alias": "android"
-  },
-  "appVersionName": "0",
-  "appVersionCode": 0,
-  "shortcuts": [],
-  "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://stockwise.app/manifest.json",
-  "fallbackType": "customtabs",
-  "features": {
-    "playBilling": {
-      "enabled": true
+  "background_color": "#000",
+  "description": "Study stocks and track your wealth with Stockwise.",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/ios-filled/344/bull.png",
+      "sizes": "72x72",
+      "type": "image/png"
     }
-  },
-  "alphaDependencies": {
-    "enabled": true
-  },
-  "enableSiteSettingsShortcut": true,
-  "isChromeOSOnly": false,
-  "orientation": "default",
-  "fingerprints": [],
-  "additionalTrustedOrigins": [],
-  "retainedBundles": [],
-  "appVersion": "0"
+  ]
 }
