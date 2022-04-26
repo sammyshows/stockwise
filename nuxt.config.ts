@@ -11,7 +11,22 @@ export default defineNuxtConfig({
     ],
 
     pwa: {
-
+        manifest: {
+            name: 'Stockwise',
+            shortName: 'Stockwise',
+            description: 'An app for studying stocks and tracking your wealth',
+            icons: [
+                {
+                    "src": "https://www.mustakbil.com/content/images/ic_launcher.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ],
+            start_url: "/",
+            display: 'standalone',
+            background_color: '#000',
+            theme_color: '#000'
+        }
     },
 
     meta: {
