@@ -11,12 +11,11 @@
   "navigationDividerColorDark": "#000000",
   "backgroundColor": "#000000",
   "enableNotifications": true,
-  "startUrl": "/overview/",
+  "startUrl": "/",
   "iconUrl": "https://img.icons8.com/ios-filled/344/bull.png",
-  "maskableIconUrl": "https://img.icons8.com/ios-filled/344/bull.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
-    "path": "Users/sammccarthy/code/keystores/android.jks",
+    "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
     "alias": "android"
   },
   "appVersionName": "0",

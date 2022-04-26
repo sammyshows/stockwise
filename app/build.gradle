@@ -23,7 +23,7 @@ plugins {
 def twaManifest = [
     applicationId: 'stockwise.app',
     hostName: 'stockwise.app', // The domain being opened in the TWA.
-    launchUrl: '/overview/', // The start path for the TWA. Must be relative to the domain.
+    launchUrl: '/', // The start path for the TWA. Must be relative to the domain.
     name: 'Stockwise', // The application name.
     launcherName: 'Stockwise', // The name shown on the Android Launcher.
     themeColor: '#000000', // The color used for the status bar.
