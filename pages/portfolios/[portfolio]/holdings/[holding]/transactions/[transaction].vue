@@ -31,6 +31,11 @@
         </div>
       </div>
     </div>
+    <DeleteConfirmation :open="openModal"
+                        title="Delete Transaction"
+                        message="Are you sure you want to delete this holding? This transaction within it will be deleted from our servers. This action cannot be undone."
+                        @close="closeModal"
+                        @delete="deleteTransaction" />
   </div>
 </template>
 
@@ -60,6 +65,7 @@ export default defineComponent({
     return {
       holdingId: this.$route.params.holding,
       portfolioId: this.$route.params.portfolio,
+      openModal: false,
       pageDetails: {
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
@@ -75,8 +81,7 @@ export default defineComponent({
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null)
-      },
-      openModal: false
+      }
     }
   },
 
@@ -102,6 +107,20 @@ export default defineComponent({
       await fetch('/api/transaction-update', {
         method: 'POST',
         body: JSON.stringify(this.transaction)
+      })
+        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+    },
+
+    closeModal(): void {
+      this.openModal = false
+    },
+
+    async deleteTransaction(): Promise<void> {
+      await fetch('/api/transaction-delete', {
+        method: 'POST',
+        body: JSON.stringify({
+          transactionId: this.transaction.id
+        })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
     }

@@ -28,7 +28,7 @@ INSERT INTO assets (symbol, current_price, prev_close, name, exchange) VALUES ('
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange) VALUES ('MSFT', 120.58, 127.30, 'Microsoft Inc', 'NASDAQ');
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange) VALUES ('NNOX', 12.22, 11.76, 'Nano X Technology', 'NASDAQ');
 
-CREATE TABLE holdings (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), portfolio_id INT, asset_id INT, share_count NUMERIC, initial_value NUMERIC, transaction_count INT, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id), CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id));
+CREATE TABLE holdings (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), portfolio_id INT, asset_id INT, share_count NUMERIC, initial_value NUMERIC, transaction_count INT, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id));
 INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES (1, 1, 4, 858.07, 2);
 INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES (1, (SELECT id FROM assets WHERE symbol = 'TSLA'), 6, 984.87, 2);
 INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES (2, 1, 13, 2347, 2);

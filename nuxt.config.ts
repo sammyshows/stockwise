@@ -2,11 +2,17 @@ import { defineNuxtConfig } from 'nuxt3'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
-    buildModules: ['@vueuse/nuxt'],
+    buildModules: [
+        '@vueuse/nuxt', '@nuxtjs/pwa'
+    ],
 
     modules: [
         '@nuxtjs/tailwindcss'
     ],
+
+    pwa: {
+
+    },
 
     meta: {
         meta: [

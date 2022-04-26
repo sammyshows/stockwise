@@ -23,7 +23,7 @@
     <DeleteConfirmation :open="openModal"
                         title="Delete Holding"
                         message="Are you sure you want to delete this holding? This portfolio and all holdings within it will be deleted from our servers. This action cannot be undone."
-                        @open="closeModal"
+                        @close="closeModal"
                         @delete="deleteHolding" />
   </div>
 </template>
