@@ -30,7 +30,7 @@
       </div>
       <!--   These two lines should show the all-time & realised values. This will again require the 'active'
       column (same as above) to determine which transactions are complete   -->
-      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">{{ $addSign((transaction.current_value - transaction.initial_value).toFixed(2)) }}({{ $addSign(transaction.total_percent) }}%)</span></p>
+      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">{{ $addSign($round(transaction.total_change, 2)) }}({{ $addSign($round(transaction.total_change / transaction.initial_value * 100, 2)) }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">+322.91(43%)</span></p>
     </NuxtLink>
   </div>
