@@ -22,8 +22,8 @@
           <p class="text-tiny">{{ $addSign(holding.daily_percent) }}%</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
-          <p class="h-5 text-xs font-light">{{ $addSign(holding.total_change) }}</p>
-          <p class="text-tiny">{{ $addSign((holding.total_change / holding.initial_value * 100).toFixed(2)) }}%</p>
+          <p class="h-5 text-xs font-light">{{ $addSign($round(holding.total_change, 2)) }}</p>
+          <p class="text-tiny">{{ $addSign($round(holding.total_change / holding.initial_value * 100, 2)) }}%</p>
         </div>
       </div>
       <!--   These two lines should show the all-time & realised values. This will again require the 'active'

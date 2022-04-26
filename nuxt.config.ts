@@ -17,8 +17,7 @@ export default defineNuxtConfig({
         link: [
             { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
             { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-            { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap' },
-            { rel: 'manifest', href: 'manifest.json' }
+            { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap' }
         ]
     },
 

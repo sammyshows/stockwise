@@ -1,11 +1,11 @@
 export default defineNuxtPlugin(() => {
     return {
         provide: {
-            addSign: (number) => {
-                if (number > 0)
-                    return '+' + number
-                else if (number < 0)
-                    return number
+            addSign: (numberString) => {
+                if (numberString > 0)
+                    return '+' + numberString
+                else if (numberString < 0)
+                    return numberString
             }
         }
     }
