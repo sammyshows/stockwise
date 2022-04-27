@@ -141,7 +141,9 @@ export default defineComponent({
         method: 'POST',
         body: JSON.stringify({
           portfolio: this.portfolioId,
-          asset: assetId
+          asset: assetId,
+          quantity: this.transaction.quantity,
+          initialValue: this.transaction.initialPrice * this.transaction.quantity
         })
       })
         .then(response => response.json())

@@ -8,6 +8,9 @@ const handler: Handler = async (event, context) => {
     await client`
         DELETE FROM transactions WHERE id = ${eventBody.transactionId}`
 
+    await client`
+        CALL uspUpdateHolding(${eventBody.holdingId});`
+
     return {
         statusCode: 200
     }

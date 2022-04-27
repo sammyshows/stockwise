@@ -106,7 +106,14 @@ export default defineComponent({
     async updateTransaction() {
       await fetch('/api/transaction-update', {
         method: 'POST',
-        body: JSON.stringify(this.transaction)
+        body: JSON.stringify({
+          transactionId: this.transaction.id,
+          holdingId: this.holdingId,
+          type: this.transaction.type,
+          quantity: this.transaction.quantity,
+          initialPrice: this.transaction.initialPrice,
+          exchangeRate: this.transaction.exchangeRate
+        })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
     },
@@ -119,7 +126,8 @@ export default defineComponent({
       await fetch('/api/transaction-delete', {
         method: 'POST',
         body: JSON.stringify({
-          transactionId: this.transaction.id
+          transactionId: this.transaction.id,
+          holdingId: this.holdingId
         })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))

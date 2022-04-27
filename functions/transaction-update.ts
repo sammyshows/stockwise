@@ -11,7 +11,10 @@ const handler: Handler = async (event, context) => {
             quantity = ${eventBody.quantity},
             initial_price = ${eventBody.initialPrice},
             exchange_rate = ${eventBody.exchangeRate}
-        WHERE id = ${eventBody.id};`
+        WHERE id = ${eventBody.transactionId};`
+
+    await client`
+        CALL uspUpdateHolding(${eventBody.holdingId});`
 
     return {
         statusCode: 200

@@ -6,15 +6,15 @@ const handler: Handler = async () => {
     const portfolios = await client`
         SELECT portfolios.id,
                portfolios.name,
-               SUM(transaction_count) as transactions,
+               COUNT(*) as holding_count,
                ROUND(SUM(initial_value), 2) as initial_value,
                ROUND(SUM(current_price*share_count), 2) as current_value,
                ROUND(SUM((current_price - prev_close) * share_count), 2) as daily_change,
                ROUND(SUM((current_price - prev_close)*100 / prev_close), 2) as daily_percent,
                SUM(current_price*share_count - initial_value) as total_change
-        FROM holdings
-            INNER JOIN assets ON holdings.asset_id = assets.id
-            INNER JOIN portfolios ON holdings.portfolio_id = portfolios.id
+        FROM portfolios
+             INNER JOIN holdings ON portfolios.id = holdings.portfolio_id
+             INNER JOIN assets ON holdings.asset_id = assets.id
         GROUP BY portfolios.id
         ORDER BY portfolios.created_at;
     `

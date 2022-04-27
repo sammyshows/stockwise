@@ -28,7 +28,7 @@
       </div>
       <!--   These two lines should show the all-time & realised values. This will again require the 'active'
       column (same as above) to determine which transactions are complete   -->
-      <p class="font-light text-tiny h-4">All-time: <span class="text-bright-green">{{ $addSign((holding.current_value - holding.initial_value).toFixed(2)) }}({{ $addSign($round(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
+      <p class="font-light text-tiny h-4">All-time: <span :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">{{ $addSign($round(holding.total_change, 2)) }}({{ $addSign($round(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
       <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">+322.91(+43%)</span></p>
     </NuxtLink>
     <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
