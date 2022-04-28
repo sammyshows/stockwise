@@ -4,7 +4,7 @@
       <div class="h-14 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ path: `/portfolios/${$route.params.portfolio}/holdings/${holdingId}/transactions/new` }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle } }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, holdingName: pageDetails.title } }">
@@ -44,6 +44,7 @@ export default defineComponent({
 
   data() {
     return {
+      portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
       pageDetails: {
         title: this.$route.params.assetSymbol,

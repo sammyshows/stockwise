@@ -7,7 +7,10 @@ const handler: Handler = async (event, context) => {
 
     await client`
         INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) 
-        VALUES (${eventBody.holding}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate})`
+        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate})`
+
+    await client`
+        CALL uspUpdateHolding(${eventBody.holdingId});`
 
     return {
         statusCode: 200
