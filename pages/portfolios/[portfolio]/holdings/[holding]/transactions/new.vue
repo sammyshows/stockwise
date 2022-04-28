@@ -15,23 +15,29 @@
             </select>
           </div>
           <div>
-            <label for="quantity" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="initialPrice" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
-
-          <ClientOnly><Datepicker v-model="transaction.date" class="bg-transparent" /></ClientOnly>
-          <input type="date" />
-          <input type="time" />
-
+          <div class="w-full flex justify-between gap-x-4">
+            <div>
+              <label for="date">Date</label>
+              <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
+            <div>
+              <label for="time">Time</label>
+              <input v-model="transaction.time" id="time" type="time" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
+          </div>
         </div>
+
         <div class="text-right mb-7">
           <button @click="createTransaction()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
         </div>
@@ -48,6 +54,7 @@ export default defineComponent({
 
   mounted() {
     this.getTransaction()
+    this.getDate()
   },
 
   data() {
@@ -68,7 +75,8 @@ export default defineComponent({
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),
-        date: null as (Date | null)
+        date: null as (string | null),
+        time: null as (string | null)
       }
     }
   },
@@ -106,11 +114,23 @@ export default defineComponent({
             assetName: this.pageDetails.subtitle
           }
         }))
+    },
+
+    getDate(): void {
+      const date = new Date()
+
+      // Create the date format
+      const dd = String(date.getDate()).padStart(2, '0')
+      const MM = String(date.getMonth() + 1).padStart(2, '0')
+      const yyyy = date.getFullYear()
+
+      // Create the time format
+      const mm = String(date.getMinutes()).padStart(2, '0')
+      const hh = String(date.getHours()).padStart(2, '0')
+
+      this.transaction.date = yyyy + '-' + MM + '-' + dd
+      this.transaction.time = hh + ':' + mm
     }
   }
 })
 </script>
-
-<style scoped>
-
-</style>

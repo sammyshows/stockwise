@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col flex-1">
     <div class="flex justify-end mb-2 text-xs text-gray-400">
-      <p class="grow">NAME</p>
+      <p class="grow">SHARES</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
       <p class="w-16 text-right ml-2">TOTAL</p>
