@@ -29,6 +29,7 @@
 
           <ClientOnly><Datepicker v-model="transaction.date" class="bg-transparent" /></ClientOnly>
           <input type="date" />
+          <input type="time" />
 
         </div>
         <div class="text-right mb-7">
