@@ -6,11 +6,8 @@ const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate) 
-        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate})`
-
-    await client`
-        CALL uspUpdateHolding(${eventBody.holdingId});`
+        INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) 
+        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate}, ${eventBody.timestamp});`
 
     return {
         statusCode: 200

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col grow">
     <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex-1 flex flex-col">
-      <div class="h-14 flex justify-between">
+      <div class="min-h-min flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle } }">
@@ -33,6 +33,7 @@ export default defineComponent({
 
   mounted() {
     this.getTransactions()
+    this.updateAssets()
   },
 
   watch: {
@@ -74,6 +75,15 @@ export default defineComponent({
       this.transactions = response.data
       this.pageDetails.title = response.data[0].symbol + " : " + response.data[0].exchange
       this.pageDetails.subtitle = response.data[0].name
+    },
+
+    // This is NOT a permanent solution, but at the time it was either update every asset price like this
+    // or pay for a CRON job with heroku, and although this is repeated every 30 seconds, it will certainly
+    // be a while before the app goes live and this overloads the system.
+    async updateAssets(): Promise<void> {
+      await fetch('/api/assets-update')
+        .then(this.getTransactions)
+      setTimeout(this.updateAssets, 3000)
     },
 
     setActiveTab(newTab) {

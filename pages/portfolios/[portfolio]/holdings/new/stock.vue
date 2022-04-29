@@ -53,6 +53,16 @@
             <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
+          <div class="w-full flex justify-around gap-x-4">
+            <div>
+              <label for="date">Date</label>
+              <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
+            <div>
+              <label for="time">Time</label>
+              <input v-model="transaction.time" id="time" type="time" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
+          </div>
         </div>
         <div class="text-right mb-7">
           <button @click="upsertAsset()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
@@ -75,6 +85,10 @@ export default defineComponent({
     SearchIcon
   },
 
+  mounted() {
+    this.setDateTime()
+  },
+
   data() {
     return {
       portfolioId: this.$route.params.portfolio,
@@ -89,7 +103,9 @@ export default defineComponent({
         type: '',
         quantity: null as (number | null),
         initialPrice: null as (number | null),
-        exchangeRate: null as (number | null)
+        exchangeRate: null as (number | null),
+        date: null as (string | null),
+        time: null as (string | null)
       }
     }
   },
@@ -124,6 +140,27 @@ export default defineComponent({
       this.searchResults = []
     },
 
+    setDateTime(): void {
+      const date = new Date()
+
+      // Create the date format
+      const dd = String(date.getDate()).padStart(2, '0')
+      const MM = String(date.getMonth() + 1).padStart(2, '0')
+      const yyyy = date.getFullYear()
+
+      // Create the time format
+      const mm = String(date.getMinutes()).padStart(2, '0')
+      const hh = String(date.getHours()).padStart(2, '0')
+
+      this.transaction.date = yyyy + '-' + MM + '-' + dd
+      this.transaction.time = hh + ':' + mm
+    },
+
+    parseDate() {
+      const date = new Date(this.transaction.date + 'T' + this.transaction.time)
+      return date.toISOString()
+    },
+
     async upsertAsset(): Promise<void> {
       const assetId = await fetch('/api/asset-upsert', {
         method: 'POST',
@@ -156,11 +193,12 @@ export default defineComponent({
       await fetch('/api/transaction-create', {
         method: 'POST',
         body: JSON.stringify({
-          holding: holdingId,
+          holdingId: holdingId,
           type: this.transaction.type,
           quantity: this.transaction.quantity,
           initialPrice: this.transaction.initialPrice,
-          exchangeRate: this.transaction.exchangeRate
+          exchangeRate: this.transaction.exchangeRate,
+          timestamp: this.parseDate()
         })
       })
         .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',

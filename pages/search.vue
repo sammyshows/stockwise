@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="search">
-    <PageTitle :pageDetails="pageDetails" class="h-14" />
+    <PageTitle :pageDetails="pageDetails" class="min-h-min" />
 
     <div class="mt-1 relative rounded shadow-sm mb-5">
       <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">

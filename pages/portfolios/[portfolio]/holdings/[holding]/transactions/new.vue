@@ -54,7 +54,7 @@ export default defineComponent({
 
   mounted() {
     this.getTransaction()
-    this.getDate()
+    this.setDateTime()
   },
 
   data() {
@@ -103,7 +103,8 @@ export default defineComponent({
           type: this.transaction.type,
           quantity: this.transaction.quantity,
           initialPrice: this.transaction.initialPrice,
-          exchangeRate: this.transaction.exchangeRate
+          exchangeRate: this.transaction.exchangeRate,
+          timestamp: this.parseDate()
         })
       })
         .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',
@@ -116,7 +117,7 @@ export default defineComponent({
         }))
     },
 
-    getDate(): void {
+    setDateTime(): void {
       const date = new Date()
 
       // Create the date format
@@ -130,6 +131,11 @@ export default defineComponent({
 
       this.transaction.date = yyyy + '-' + MM + '-' + dd
       this.transaction.time = hh + ':' + mm
+    },
+
+    parseDate() {
+      const date = new Date(this.transaction.date + 'T' + this.transaction.time)
+      return date.toISOString()
     }
   }
 })

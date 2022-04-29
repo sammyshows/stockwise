@@ -1,5 +1,4 @@
 import { Handler } from "@netlify/functions";
-import transaction from "~/pages/portfolios/[portfolio]/holdings/[holding]/transactions/[transaction].vue";
 const client = require("../database/client.ts")
 
 

@@ -8,22 +8,34 @@
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
-            <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="type">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option v-for="type in ['BUY', 'SELL']" :value="type" :selected="type === transaction.type">{{ type }}</option>
+              <option value="" :selected="!transaction.type" disabled hidden></option>
+              <option value="BUY">BUY</option>
+              <option value="SELL">SELL</option>
             </select>
           </div>
           <div>
-            <label for="quantity" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="initialPrice" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+          </div>
+          <div class="w-full flex justify-between gap-x-4">
+            <div>
+              <label for="date">Date</label>
+              <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
+            <div>
+              <label for="time">Time</label>
+              <input v-model="transaction.time" id="time" type="time" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            </div>
           </div>
         </div>
         <div class="text-right mb-7">
@@ -80,7 +92,9 @@ export default defineComponent({
         type: '',
         quantity: null as (number | null),
         initialPrice: null as (number | null),
-        exchangeRate: null as (number | null)
+        exchangeRate: null as (number | null),
+        date: null as (string | null),
+        time: null as (string | null)
       }
     }
   },
@@ -97,6 +111,7 @@ export default defineComponent({
         .then(data => data.transaction[0])
       this.pageDetails.title = response.symbol + " : " + response.exchange
       this.pageDetails.subtitle = response.name
+      this.setDateTime(response.timestamp)
       this.transaction.type = response.type
       this.transaction.quantity = response.quantity
       this.transaction.initialPrice = response.initial_price
@@ -112,10 +127,32 @@ export default defineComponent({
           type: this.transaction.type,
           quantity: this.transaction.quantity,
           initialPrice: this.transaction.initialPrice,
-          exchangeRate: this.transaction.exchangeRate
+          exchangeRate: this.transaction.exchangeRate,
+          timestamp: this.parseDate()
         })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+    },
+
+    setDateTime(dateString): void {
+      const date = new Date(dateString)
+
+      // Create the date format
+      const dd = String(date.getDate()).padStart(2, '0')
+      const MM = String(date.getMonth() + 1).padStart(2, '0')
+      const yyyy = date.getFullYear()
+
+      // Create the time format
+      const mm = String(date.getMinutes()).padStart(2, '0')
+      const hh = String(date.getHours()).padStart(2, '0')
+
+      this.transaction.date = yyyy + '-' + MM + '-' + dd
+      this.transaction.time = hh + ':' + mm
+    },
+
+    parseDate() {
+      const date = new Date(this.transaction.date + 'T' + this.transaction.time)
+      return date.toISOString()
     },
 
     closeModal(): void {

@@ -10,7 +10,8 @@ const handler: Handler = async (event, context) => {
         SET type = ${eventBody.type},
             quantity = ${eventBody.quantity},
             initial_price = ${eventBody.initialPrice},
-            exchange_rate = ${eventBody.exchangeRate}
+            exchange_rate = ${eventBody.exchangeRate},
+            timestamp = ${eventBody.timestamp}
         WHERE id = ${eventBody.transactionId};`
 
     await client`
