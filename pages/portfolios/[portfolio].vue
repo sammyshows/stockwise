@@ -81,7 +81,7 @@ export default defineComponent({
     async updateAssets(): Promise<void> {
       await fetch('/api/assets-update')
         .then(this.getHoldings)
-      setTimeout(this.updateAssets, 3000)
+      setTimeout(this.updateAssets, 5000)
     },
 
     setActiveTab(newTab) {
