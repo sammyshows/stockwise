@@ -30,7 +30,7 @@ export default defineComponent({
   data() {
     return {
       pageDetails: {
-        title: 'Portfolio Overview'
+        title: 'Portfolios Overview'
       },
       tabConfig: {
         activeTab: this.$route.path === '/overview' ? 'PORTFOLIOS' : 'CHART',

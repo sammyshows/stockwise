@@ -11,27 +11,53 @@
         <div class="flex justify-end">
           <div class="grow">
             <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ holding.symbol.toUpperCase() }}</h2>
-            <p class="font-light text-tiny my-0.5 text-gray-300">{{ holding.transaction_count }} TRANSACTIONS</p>
+            <p class="text-tiny my-0.5 text-gray-300">{{ holding.transaction_count }} TRANSACTIONS</p>
           </div>
-          <div class="w-20 text-right mt-0.5 ml-2">
-            <p class="h-5 text-xs font-light">A${{ $formatNumber(holding.current_value, 2) }}</p>
+          <div class="w-20 text-right mt-0.5 ml-2 font-medium">
+            <p class="h-5 text-xs">A${{ $formatNumber(holding.current_value, 2) }}</p>
             <p class="text-tiny text-gray-300">A${{ $formatNumber(holding.initial_value, 2) }}</p>
           </div>
-          <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
-            <p class="h-5 text-xs font-light">{{ $addSign($formatNumber(holding.daily_change, 2)) }}</p>
+          <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
+            <p class="h-5 text-xs">{{ $addSign($formatNumber(holding.daily_change, 2)) }}</p>
             <p class="text-tiny">{{ $addSign($formatNumber(holding.daily_percent, 2)) }}%</p>
           </div>
-          <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
-            <p class="h-5 text-xs font-light">{{ $addSign($formatNumber(holding.total_change, 2)) }}</p>
+          <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
+            <p class="h-5 text-xs">{{ $addSign($formatNumber(holding.total_change, 2)) }}</p>
             <p class="text-tiny">{{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%</p>
           </div>
         </div>
         <!--   These two lines should show the all-time & realised values. This will again require the 'active'
         column (same as above) to determine which transactions are complete   -->
-        <p class="font-light text-tiny h-4">All-time: <span :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">{{ $addSign($formatNumber(holding.total_change, 2)) }}({{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
-        <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">+322.91(+43%)</span></p>
+        <p class="font-light text-tiny h-4">All-time: <span class="font-medium" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">{{ $addSign($formatNumber(holding.total_change, 2)) }}({{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
+        <p class="font-light text-tiny mb-5">Realised: <span class="font-medium text-bright-green">+322.91(+43%)</span></p>
       </NuxtLink>
     </div>
+
+    <div v-if="holdings != null && holdings.length > 0" class="py-2 border-t border-gray-300" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+      <div class="flex justify-end">
+        <div class="grow">
+          <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>
+          <p class="font-light text-tiny my-0.5 text-gray-300">{{ holdings.length }} HOLDINGS</p>
+        </div>
+        <div class="w-20 text-right mt-0.5 ml-2 font-medium">
+          <p class="h-5 text-xs">A${{ $formatNumber(total.current_value, 2) }}</p>
+          <p class="text-tiny text-gray-300">A${{ $formatNumber(total.initial_value, 2) }}</p>
+        </div>
+        <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
+          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.daily_change, 2)) }}</p>
+          <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change / (total.current_value - total.daily_change) * 100, 2)) }}%</p>
+        </div>
+        <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
+        should show active transactions but this requires the addition of an 'active' column in the database table    -->
+        <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
+          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}</p>
+          <p class="text-tiny">{{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%</p>
+        </div>
+      </div>
+      <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}({{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%)</span></p>
+      <p class="text-tiny my-0.5 text-gray-300">Realised: <span class="font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">+376.82(+8.37%)</span></p>
+    </div>
+
     <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
   </div>
 </template>
@@ -42,6 +68,23 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Holdings",
 
-  props: ['holdings']
+  props: ['holdings'],
+
+  computed: {
+    total: function() {
+      return this.holdings.reduce((total, { current_value, initial_value, daily_change }) => {
+            total.current_value += parseFloat(current_value)
+            total.initial_value += parseFloat(initial_value)
+            total.daily_change += parseFloat(daily_change)
+            return total
+          },
+          // This is the initial value, `total`, passed to reduce:
+          {
+            current_value: 0,
+            initial_value: 0,
+            daily_change: 0
+          })
+    }
+  }
 })
 </script>
