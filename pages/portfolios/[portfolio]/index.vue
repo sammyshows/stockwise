@@ -14,21 +14,21 @@
             <p class="font-light text-tiny my-0.5 text-gray-300">{{ holding.transaction_count }} TRANSACTIONS</p>
           </div>
           <div class="w-20 text-right mt-0.5 ml-2">
-            <p class="h-5 text-xs font-light">A${{ holding.current_value }}</p>
-            <p class="text-tiny text-gray-300">A${{ holding.initial_value }}</p>
+            <p class="h-5 text-xs font-light">A${{ $formatNumber(holding.current_value, 2) }}</p>
+            <p class="text-tiny text-gray-300">A${{ $formatNumber(holding.initial_value, 2) }}</p>
           </div>
           <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
             <p class="h-5 text-xs font-light">{{ $addSign(holding.daily_change) }}</p>
             <p class="text-tiny">{{ $addSign(holding.daily_percent) }}%</p>
           </div>
           <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
-            <p class="h-5 text-xs font-light">{{ $addSign($round(holding.total_change, 2)) }}</p>
-            <p class="text-tiny">{{ $addSign($round(holding.total_change / holding.initial_value * 100, 2)) }}%</p>
+            <p class="h-5 text-xs font-light">{{ $addSign($formatNumber(holding.total_change, 2)) }}</p>
+            <p class="text-tiny">{{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%</p>
           </div>
         </div>
         <!--   These two lines should show the all-time & realised values. This will again require the 'active'
         column (same as above) to determine which transactions are complete   -->
-        <p class="font-light text-tiny h-4">All-time: <span :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">{{ $addSign($round(holding.total_change, 2)) }}({{ $addSign($round(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
+        <p class="font-light text-tiny h-4">All-time: <span :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">{{ $addSign($formatNumber(holding.total_change, 2)) }}({{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%)</span></p>
         <p class="font-light text-tiny mb-5">Realised: <span class="text-bright-green">+322.91(+43%)</span></p>
       </NuxtLink>
     </div>

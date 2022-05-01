@@ -2,9 +2,9 @@ export default defineNuxtPlugin(() => {
     return {
         provide: {
             addSign: (numberString) => {
-                if (numberString > 0)
+                if (numberString.replace(/,/g, '') > 0)
                     return '+' + numberString
-                else if (numberString < 0)
+                else
                     return numberString
             }
         }
