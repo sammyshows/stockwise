@@ -18,8 +18,8 @@
             <p class="text-tiny text-gray-300">A${{ $formatNumber(holding.initial_value, 2) }}</p>
           </div>
           <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
-            <p class="h-5 text-xs font-light">{{ $addSign(holding.daily_change) }}</p>
-            <p class="text-tiny">{{ $addSign(holding.daily_percent) }}%</p>
+            <p class="h-5 text-xs font-light">{{ $addSign($formatNumber(holding.daily_change, 2)) }}</p>
+            <p class="text-tiny">{{ $addSign($formatNumber(holding.daily_percent, 2)) }}%</p>
           </div>
           <div class="w-16 text-right mt-0.5 ml-2" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
             <p class="h-5 text-xs font-light">{{ $addSign($formatNumber(holding.total_change, 2)) }}</p>

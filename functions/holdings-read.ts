@@ -12,10 +12,10 @@ const handler: Handler = async (event, context) => {
                assets.exchange,
                assets.name,
                transaction_count, 
-               ROUND(initial_value, 2) as initial_value,
-               ROUND(current_price*share_count, 2) AS current_value, 
-               ROUND((current_price - prev_close) * share_count, 2) AS daily_change,
-               ROUND((current_price - prev_close)*100 / prev_close, 2) AS daily_percent,
+               initial_value as initial_value,
+               current_price*share_count AS current_value, 
+               (current_price - prev_close) * share_count AS daily_change,
+               (current_price - prev_close)*100 / prev_close AS daily_percent,
                current_price*share_count - initial_value AS total_change
         FROM holdings 
             INNER JOIN assets ON holdings.asset_id = assets.id 
