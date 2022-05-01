@@ -44,7 +44,7 @@ INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_ra
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (7, 'BUY', 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
 
 
-CREATE OR REPLACE FUNCTION update_column_updated_at()
+CREATE OR REPLACE FUNCTION updateColumnUpdatedAt()
     RETURNS TRIGGER AS $$
         BEGIN
             NEW.updated_at = now();
@@ -52,11 +52,11 @@ CREATE OR REPLACE FUNCTION update_column_updated_at()
         END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER update_user_update_time BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE update_column_updated_at();
-CREATE TRIGGER update_portfolio_update_time BEFORE UPDATE ON portfolios FOR EACH ROW EXECUTE PROCEDURE update_column_updated_at();
-CREATE TRIGGER update_asset_update_time BEFORE UPDATE ON assets FOR EACH ROW EXECUTE PROCEDURE update_column_updated_at();
-CREATE TRIGGER update_holding_update_time BEFORE UPDATE ON holdings FOR EACH ROW EXECUTE PROCEDURE update_column_updated_at();
-CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE update_column_updated_at();
+CREATE TRIGGER update_user_update_time BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_portfolio_update_time BEFORE UPDATE ON portfolios FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_asset_update_time BEFORE UPDATE ON assets FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_holding_update_time BEFORE UPDATE ON holdings FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 
 
 
@@ -83,22 +83,28 @@ END;
 $$;
 
 
-CREATE OR REPLACE PROCEDURE uspUpdateHolding(holding_id INT) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspUpdateHolding()
+    RETURNS TRIGGER AS $$
     BEGIN
         WITH txs AS (
             SELECT SUM(quantity) as share_count,
                    SUM(initial_value) as initial_value,
                    COUNT(*) as transaction_count
             FROM transactions
-            WHERE transactions.holding_id = $1
+            WHERE transactions.holding_id = NEW.holding_id
         )
         UPDATE holdings
         SET share_count = txs.share_count,
             initial_value = txs.initial_value,
             transaction_count = txs.transaction_count
         FROM txs
-        WHERE id = $1;
+        WHERE id = NEW.holding_id;
+        RETURN NEW;
     END;
-$$;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_holding_calculations AFTER INSERT ON transactions FOR EACH ROW EXECUTE PROCEDURE uspUpdateHolding();
+CREATE TRIGGER update_holding_calculations AFTER UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE uspUpdateHolding();
+
 
 

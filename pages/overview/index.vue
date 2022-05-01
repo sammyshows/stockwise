@@ -67,10 +67,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Portfolios",
 
-  mounted() {
-    setTimeout(() => console.log(this.portfolioTotal), 1000)
-  },
-
   computed: {
     total: function() {
       return this.portfolios.reduce((total, { current_value, initial_value, daily_change, holding_count }) => {
