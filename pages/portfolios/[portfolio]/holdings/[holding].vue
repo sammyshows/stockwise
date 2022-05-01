@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col grow">
-    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex flex-col grow">
+  <div class="flex flex-col grow overflow-hidden">
+    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">

@@ -14,17 +14,17 @@
               <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.name }}</h2>
               <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.holding_count }} HOLDINGS</p>
             </div>
-            <div class="w-20 text-right mt-0.5 ml-2 font-medium">
+            <div class="w-20 text-right mt-0.5 ml-2 font-normal">
               <p class="h-5 text-xs">A${{ $formatNumber(portfolio.current_value, 2) }}</p>
               <p class="text-tiny text-gray-300">A${{ $formatNumber(portfolio.initial_value, 2) }}</p>
             </div>
-            <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
+            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
               <p class="h-5 text-xs">{{ $addSign($formatNumber(portfolio.daily_change, 2)) || '---' }}</p>
               <p class="text-tiny">{{ $addSign($formatNumber(portfolio.daily_percent, 2)) }}%</p>
             </div>
             <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
             should show active transactions but this requires the addition of an 'active' column in the database table    -->
-            <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': portfolio.total_change < 0, 'text-bright-green': portfolio.total_change > 0 }">
+            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.total_change < 0, 'text-bright-green': portfolio.total_change > 0 }">
               <p class="h-5 text-xs">{{ $addSign($formatNumber(portfolio.total_change, 2)) || '---' }}</p>
               <p class="text-tiny">{{ $addSign($formatNumber(portfolio.total_change / portfolio.initial_value * 100, 2)) }}%</p>
             </div>
@@ -32,8 +32,8 @@
           <!--   These two lines should show the all-time & realised values. This will again require the 'active'
           column (same as abaove) to determine which transactions are complete   -->
           <div v-if="portfolio.holding_count > 0">
-            <p class="text-tiny h-4">All-time: <span class="font-medium" :class="{ 'text-bright-red': portfolio.total_change < 0, 'text-bright-green': portfolio.total_change > 0 }">{{ $addSign($formatNumber(portfolio.total_change, 2)) }}({{ $addSign($formatNumber(portfolio.total_change / portfolio.initial_value * 100, 2)) }}%)</span></p>
-            <p class="text-tiny">Realised: <span class="text-bright-green font-medium">+322.91(43%)</span></p>
+            <p class="text-tiny h-4">All-time: <span class="font-normal" :class="{ 'text-bright-red': portfolio.total_change < 0, 'text-bright-green': portfolio.total_change > 0 }">{{ $addSign($formatNumber(portfolio.total_change, 2)) }}({{ $addSign($formatNumber(portfolio.total_change / portfolio.initial_value * 100, 2)) }}%)</span></p>
+            <p class="text-tiny">Realised: <span class="text-bright-green font-normal">+322.91(43%)</span></p>
           </div>
         </div>
       </NuxtLink>
@@ -44,23 +44,23 @@
           <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>
           <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolios.length }} PORTFOLIOS</p>
         </div>
-          <div class="w-20 text-right mt-0.5 ml-2 font-medium">
+          <div class="w-20 text-right mt-0.5 ml-2 font-normal">
           <p class="h-5 text-xs">A${{ $formatNumber(total.current_value, 2) }}</p>
           <p class="text-tiny text-gray-300">A${{ $formatNumber(total.initial_value, 2) }}</p>
         </div>
-        <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
+        <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
           <p class="h-5 text-xs">{{ $addSign($formatNumber(total.daily_change, 2)) }}</p>
           <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change / (total.current_value - total.daily_change) * 100, 2)) }}%</p>
         </div>
         <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
         should show active transactions but this requires the addition of an 'active' column in the database table    -->
-        <div class="w-16 text-right mt-0.5 ml-2 font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
+        <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
           <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}</p>
           <p class="text-tiny">{{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%</p>
         </div>
       </div>
-      <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}({{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%)</span></p>
-      <p class="text-tiny my-0.5 text-gray-300">Realised: <span class="font-medium" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">+619.82(+5.98%)</span></p>
+      <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}({{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%)</span></p>
+      <p class="text-tiny my-0.5 text-gray-300">Realised: <span class="font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">+619.82(+5.98%)</span></p>
     </div>
   </div>
 </template>
