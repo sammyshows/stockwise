@@ -8,7 +8,7 @@
     </div>
     <div class="overflow-scroll grow">
       <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
-        <div class="mb-5">
+        <div class="mb-3">
           <div class="flex justify-end">
             <div class="grow">
               <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.name }}</h2>
@@ -38,7 +38,7 @@
         </div>
       </NuxtLink>
     </div>
-    <div v-if="portfolios != null && portfolios.length > 0" class="py-2 border-t border-gray-300" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+    <div v-if="portfolios != null && portfolios.length > 0" class="pt-2 border-t border-gray-300" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>
