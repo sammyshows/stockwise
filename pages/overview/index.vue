@@ -1,12 +1,12 @@
 <template>
   <div class="overflow-hidden flex flex-col grow">
-    <div class="flex justify-end mb-2 text-xs text-gray-400">
+    <div class="flex justify-end px-3 mb-2 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
       <p class="w-16 text-right ml-2">DAILY</p>
       <p class="w-16 text-right ml-2">TOTAL</p>
     </div>
-    <div class="overflow-scroll grow">
+    <div class="overflow-scroll grow px-3">
       <NuxtLink v-for="portfolio in portfolios" :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.id, portfolioName: portfolio.name } }">
         <div class="mb-3">
           <div class="flex justify-end">
@@ -38,7 +38,7 @@
         </div>
       </NuxtLink>
     </div>
-    <div v-if="portfolios != null && portfolios.length > 0" class="pt-2 border-t border-gray-300" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+    <div v-if="portfolios != null && portfolios.length > 0" class="py-2 px-3 border-t border-gray-300 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>

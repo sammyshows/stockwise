@@ -1,6 +1,6 @@
 <template>
   <div v-bind:style="pageStyle" class="flex flex-col justify-between pt-10 pb-4">
-    <div class="h-full px-3 mb-4 overflow-hidden flex flex-col flex-1">
+    <div class="h-full overflow-hidden flex flex-col flex-1">
       <slot></slot>
     </div>
     <NavigationBar :activeButton="activeButton"></NavigationBar>

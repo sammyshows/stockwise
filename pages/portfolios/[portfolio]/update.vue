@@ -1,5 +1,5 @@
 <template>
-  <div class="grow">
+  <div class="grow px-3">
     <div class="h-full pb-12 flex flex-col">
       <div class="h-20 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />

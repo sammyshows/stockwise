@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
     <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
-      <div class="flex justify-between min-h-min">
+      <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ path: `/portfolios/${portfolioId}/holdings/new` }">
@@ -15,7 +15,7 @@
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <NuxtPage :holdings="holdings" />
     </div>
-    <NuxtPage v-else class="grow"/>
+    <NuxtPage v-else/>
   </NuxtLayout>
 </template>
 

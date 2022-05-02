@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="h-full flex flex-col">
+    <div class="h-full flex flex-col px-3">
       <div class="flex justify-between mb-14">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       </div>

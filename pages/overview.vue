@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="flex justify-between min-h-min">
+    <div class="flex justify-between min-h-min px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
       <NuxtLink :to="{ path: '/portfolios/new' }">
         <PlusIcon class="h-8 w-8" />

@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-col grow">
+  <div class="flex flex-col grow px-3">
     <div class="h-full flex flex-col">
       <div class="flex justify-between mb-14">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3 my-auto" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
       </div>
 
       <div class="flex flex-col grow justify-between px-6">
@@ -44,6 +44,7 @@ export default defineComponent({
   mounted() {
     this.getHoldingDetails()
     this.getPortfolios()
+    console.log(this.$route.params)
   },
 
   data() {
@@ -52,7 +53,8 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
       pageDetails: {
-        title: this.$route.params.holdingName,
+        title: this.$route.params.assetSymbol,
+        subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       portfolios: [],
@@ -69,7 +71,9 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.pageDetails.title = response.asset[0].symbol + " : " + response.asset[0].exchange
+          .then(data => data.asset[0])
+      this.pageDetails.title = response.symbol + " : " + response.exchange
+      this.pageDetails.subtitle = response.name
     },
 
     async getPortfolios(): Promise<void> {
