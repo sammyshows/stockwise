@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div v-if="$route.path === '/portfolios' || $route.path === '/portfolios/chart'" class="flex flex-col grow overflow-hidden">
+    <div v-if="['/portfolios', '/portfolios/chart'].includes($route.path)" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
         <NuxtLink :to="{ path: '/portfolios/new' }">
