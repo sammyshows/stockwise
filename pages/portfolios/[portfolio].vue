@@ -49,7 +49,7 @@ export default defineComponent({
         returnPath: '/portfolios'
       },
       tabConfig: {
-        activeTab: this.$route.path !== `/portfolios/${this.$route.params.portfolio}/chart` ? 'HOLDINGS' : 'CHART',
+        activeTab: this.$route.path == `/portfolios/${this.$route.params.portfolio}/chart` ? 'CHART' : 'HOLDINGS',
         tabs: [
           { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}` },
           { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/chart` }

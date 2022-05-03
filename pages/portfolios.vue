@@ -36,10 +36,10 @@ export default defineComponent({
         title: 'Portfolios Overview'
       },
       tabConfig: {
-        activeTab: this.$route.path === '/portfolios' ? 'PORTFOLIOS' : 'CHART',
+        activeTab: this.$route.name === 'portfolios-chart' ? 'CHART' : 'PORTFOLIOS',
         tabs: [
-          { name: 'PORTFOLIOS', path: `/overview` },
-          { name: 'CHART', path: `/overview/chart` }
+          { name: 'PORTFOLIOS', path: `/portfolios` },
+          { name: 'CHART', path: `/portfolios/chart` }
         ]
       },
       portfolios: []
