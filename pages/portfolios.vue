@@ -1,13 +1,16 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div class="flex justify-between min-h-min px-3">
-      <PageTitle :pageDetails="pageDetails" class="truncate" />
-      <NuxtLink :to="{ path: '/portfolios/new' }">
-        <PlusIcon class="h-8 w-8" />
-      </NuxtLink>
+    <div v-if="$route.path === '/portfolios'" class="flex flex-col grow overflow-hidden">
+      <div class="flex justify-between min-h-min px-3">
+        <PageTitle :pageDetails="pageDetails" class="truncate" />
+        <NuxtLink :to="{ path: '/portfolios/new' }">
+          <PlusIcon class="h-8 w-8" />
+        </NuxtLink>
+      </div>
+      <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
+      <NuxtChild :portfolios="portfolios" />
     </div>
-    <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-    <NuxtChild :portfolios="portfolios" />
+    <NuxtChild v-else/>
   </NuxtLayout>
 </template>
 
@@ -33,7 +36,7 @@ export default defineComponent({
         title: 'Portfolios Overview'
       },
       tabConfig: {
-        activeTab: this.$route.path === '/overview' ? 'PORTFOLIOS' : 'CHART',
+        activeTab: this.$route.path === '/portfolios' ? 'PORTFOLIOS' : 'CHART',
         tabs: [
           { name: 'PORTFOLIOS', path: `/overview` },
           { name: 'CHART', path: `/overview/chart` }

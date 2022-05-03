@@ -37,7 +37,7 @@
       </NuxtLink>
     </div>
 
-    <div v-if="transactions != null && transactions.length > 0" class="py-2 px-3 border-t border-gray-300 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+    <div v-if="transactions != null && transactions.length > 0" class="py-2 px-3 border-y border-gray-300 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>

@@ -1,27 +1,25 @@
 <template>
-  <NuxtLayout name="page-container" activeButton="overview">
-    <div class="h-full flex flex-col px-3">
-      <div class="flex justify-between mb-14">
-        <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-      </div>
+  <div class="h-full flex flex-col px-3">
+    <div class="flex justify-between mb-14">
+      <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
+    </div>
 
-      <div class="flex flex-col grow justify-between px-6">
-        <div class="flex flex-col grow gap-y-6 text-sm">
-          <div>
-            <label for="name" class="flex items-end">Portfolio name<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input @click="invalidName = false" v-model="portfolioDetails.name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
-          </div>
-          <div class="flex justify-between">
-            <label for="included" class="flex items-center">Included in totals</label>
-            <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
-          </div>
+    <div class="flex flex-col grow justify-between px-6">
+      <div class="flex flex-col grow gap-y-6 text-sm">
+        <div>
+          <label for="name" class="flex items-end">Portfolio name<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+          <input @click="invalidName = false" v-model="portfolioDetails.name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
         </div>
-        <div class="text-right mb-7">
-          <button @click="createPortfolio()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+        <div class="flex justify-between">
+          <label for="included" class="flex items-center">Included in totals</label>
+          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
         </div>
+      </div>
+      <div class="text-right mb-7">
+        <button @click="createPortfolio()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
       </div>
     </div>
-  </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,7 +32,7 @@ export default defineComponent({
     return {
       pageDetails: {
         title: 'New Portfolio',
-        returnPath: '/overview'
+        returnPath: '/portfolios'
       },
       invalidName: false,
       portfolioDetails: {
