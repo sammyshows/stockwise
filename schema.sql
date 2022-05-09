@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS portfolios;
 DROP TABLE IF EXISTS users;
+DROP FUNCTION uspReadTransactions(holding_id INT);
+DROP FUNCTION uspUpdateHolding(holding_id INT);
 
 
 CREATE TABLE users (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id) , email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
@@ -30,18 +32,19 @@ INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transa
 INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES (3, 3, 12, 2284.32, 1);
 INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES (3, 4, 100.000009, 1049.7800944802, 1);
 
-CREATE TABLE transactions (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), holding_id INT, type TEXT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (1, 'BUY', 3.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (1, 'BUY', 1.2, 149.0023, 1.293, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (2, 'BUY', 3.9056, 934.11, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (2, 'BUY', 3.6657, 876.1878, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (3, 'BUY', 12.6562, 189.90, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (3, 'BUY', 1.1, 161.2011, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (4, 'BUY', 2.0069, 213.8, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (4, 'BUY', 4.3, 245.24, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (5, 'BUY', 2.78, 902.90, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (6, 'BUY', 12, 190.36, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (7, 'BUY', 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
+CREATE TABLE transactions (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), holding_id INT, type INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (1, 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (1, 0, 1.2, 149.0023, 1.293, '2022-04-29T10:02:01.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (1, 1, 13.68875, 153.27, 1.29, '2022-04-29T10:02:32.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (2, 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (2, 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (3, 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (3, 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (4, 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (4, 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (5, 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (6, 0, 12, 190.36, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (7, 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
 
 
 CREATE OR REPLACE FUNCTION updateColumnUpdatedAt()
@@ -60,10 +63,11 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id INT) RETURNS TABLE (id INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id INT) RETURNS TABLE (id INT, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT transactions.id,
+               transactions.type,
                assets.symbol,
                assets.exchange,
                assets.name,
@@ -78,7 +82,7 @@ BEGIN
                  INNER JOIN holdings ON holdings.id = transactions.holding_id
                  INNER JOIN assets ON holdings.asset_id = assets.id
         WHERE holdings.id = $1
-        ORDER BY transactions.created_at;
+        ORDER BY transactions.timestamp DESC;
 END;
 $$;
 

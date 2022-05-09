@@ -10,7 +10,6 @@ const handler: Handler = async () => {
                SUM(initial_value) as initial_value,
                SUM(current_price*share_count) as current_value,
                SUM((current_price - prev_close) * share_count) as daily_change,
-               SUM((current_price - prev_close)*100 / prev_close) as daily_percent,
                SUM(current_price*share_count - initial_value) as total_change
         FROM portfolios
              LEFT JOIN holdings ON portfolios.id = holdings.portfolio_id

@@ -20,7 +20,7 @@
             </div>
             <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
               <p class="h-5 text-xs">{{ $addSign($formatNumber(portfolio.daily_change, 2)) || '---' }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(portfolio.daily_percent, 2)) }}%</p>
+              <p class="text-tiny">{{ $addSign($formatNumber(portfolio.daily_change / (portfolio.current_value - portfolio.daily_change) *100, 2)) }}%</p>
             </div>
             <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
             should show active transactions but this requires the addition of an 'active' column in the database table    -->

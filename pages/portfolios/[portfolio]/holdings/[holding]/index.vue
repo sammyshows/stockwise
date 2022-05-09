@@ -9,30 +9,42 @@
 
     <div class="overflow-scroll grow px-3">
       <NuxtLink v-for="transaction in transactions" :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.id, assetName: transaction.name, assetSymbol: transaction.symbol + ' : ' + transaction.exchange, assetName: transaction.name } }">
-        <div class="mb-3">
-          <div class="flex justify-end">
-            <div class="grow">
-              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
-              <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
-            </div>
-            <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-              <p class="h-5 text-xs">A${{ $formatNumber(transaction.current_value, 2) }}</p>
-              <p class="text-tiny text-gray-300">A${{ $formatNumber(transaction.initial_value, 2) }}</p>
-            </div>
-            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.daily_change < 0, 'text-bright-green': transaction.daily_change > 0 }">
-              <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.daily_change, 2)) }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(transaction.daily_percent, 2)) }}%</p>
-            </div>
-            <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-            should show active transactions but this requires the addition of an 'active' column in the database table    -->
-            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
-              <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.total_change, 2)) }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(transaction.total_change / transaction.initial_value * 100, 2)) }}%</p>
-            </div>
+        <div v-if="transaction.type === 0" class="grid grid-cols-12 mb-3">
+          <div class="col-span-4">
+            <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+            <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
+          </div>
+          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
+            <p class="h-5 text-xs">A${{ $formatNumber(transaction.current_value, 2) }}</p>
+            <p class="text-tiny text-gray-300">A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+          </div>
+          <div class="col-span-2 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.daily_change < 0, 'text-bright-green': transaction.daily_change > 0 }">
+            <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.daily_change, 2)) }}</p>
+            <p class="text-tiny">{{ $addSign($formatNumber(transaction.daily_percent, 2)) }}%</p>
+          </div>
+          <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
+          should show active transactions but this requires the addition of an 'active' column in the database table    -->
+          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
+            <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.total_change, 2)) }}</p>
+            <p class="text-tiny">{{ $addSign($formatNumber(transaction.total_change / transaction.initial_value * 100, 2)) }}%</p>
           </div>
           <!--   These two lines should show the all-time & realised values. This will again require the 'active'
           column (same as above) to determine which transactions are complete   -->
-          <p v-if="transaction.total_change > 1000" class="font-light text-tiny">Realised: <span class="font-normal text-bright-green">+322.91(43%)</span></p>
+          <p class="col-span-12 font-light text-tiny">Realised: <span class="font-normal text-bright-green">+322.91(43%)</span></p>
+        </div>
+
+        <div v-else class="grid grid-cols-12 mb-3">
+          <div class="col-span-4">
+            <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+            <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
+          </div>
+          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
+            <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+          </div>
+          <div class="col-span-5"></div>
+          <!--   These two lines should show the all-time & realised values. This will again require the 'active'
+          column (same as above) to determine which transactions are complete   -->
+          <p class="col-span-12 font-light text-tiny">Realised: <span class="font-normal text-bright-green">+322.91(43%)</span></p>
         </div>
       </NuxtLink>
     </div>
@@ -76,18 +88,20 @@ export default defineComponent({
 
   computed: {
     total: function() {
-      return this.transactions.reduce((total, { current_value, initial_value, daily_change }) => {
+      return this.transactions.reduce((total, { current_value, initial_value, daily_change, type }) => {
+          if (type === 0) {
             total.current_value += parseFloat(current_value)
             total.initial_value += parseFloat(initial_value)
             total.daily_change += parseFloat(daily_change)
+          }
             return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_value: 0,
-            initial_value: 0,
-            daily_change: 0
-          })
+        },
+        // This is the initial value, `total`, passed to reduce:
+        {
+          current_value: 0,
+          initial_value: 0,
+          daily_change: 0
+        })
     }
   }
 })

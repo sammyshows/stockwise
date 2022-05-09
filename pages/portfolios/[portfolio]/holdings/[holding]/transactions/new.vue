@@ -10,8 +10,8 @@
             <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="" disabled selected hidden></option>
-              <option value="BUY">BUY</option>
-              <option value="SELL">SELL</option>
+              <option :value="0">BUY</option>
+              <option :value="1">SELL</option>
             </select>
           </div>
           <div>
@@ -101,7 +101,7 @@ export default defineComponent({
         body: JSON.stringify({
           holdingId: this.holdingId,
           type: this.transaction.type,
-          quantity: this.transaction.quantity,
+          quantity: this.getQuantity(),
           initialPrice: this.transaction.initialPrice,
           exchangeRate: this.transaction.exchangeRate,
           timestamp: this.parseDate()
@@ -115,6 +115,13 @@ export default defineComponent({
             assetName: this.pageDetails.subtitle
           }
         }))
+    },
+
+    getQuantity(): number {
+      if (this.transaction.type === 0)
+        return this.transaction.quantity
+      else if (this.transaction.type === 1)
+        return this.transaction.quantity * -1
     },
 
     setDateTime(): void {
