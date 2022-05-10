@@ -1,28 +1,24 @@
 <template>
   <NuxtLayout name="page-container" activeButton="search">
-    <PageTitle :pageDetails="pageDetails" class="min-h-min" />
+    <div class="px-3">
+      <PageTitle :pageDetails="pageDetails" class="min-h-min" />
 
-    <div class="mt-1 relative rounded shadow-sm mb-5">
-      <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
-        <SearchIcon class="h-7 w-7" aria-hidden="true" />
+      <div class="relative mb-3">
+        <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none">
+          <SearchIcon class="h-7 w-7" aria-hidden="true" />
+        </div>
+        <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-900 w-full pl-12 border-gray-600 rounded-md" />
+        <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-gray-800 border border-t-0 border-gray-600 rounded-b-lg z-10">
+          <NuxtLink v-for="result in searchResults" :to="{ name: 'asset-symbol-summary', params: { symbol: result.symbol, assetSymbol: result.symbol + ' : ' + result.exchange, assetName: result.securityName } }" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+            <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
+            <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+          </NuxtLink>
+        </div>
       </div>
-      <input @keyup.enter="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search" class="focus:ring-indigo-500 focus:border-indigo-500 block bg-gray-900 w-full pl-12 text-xs border-gray-600 rounded-md" />
-    </div>
 
-    <div v-if="searchResults.length > 0">
-      <h2 class="mb-3 py-2 border-b-4 border-white w-max font-medium">SEARCH RESULTS</h2>
-      <div class="flex justify-between px-1 py-2">
-        <p class="text-xs font-medium">NAME</p>
-        <p class="text-xs font-medium">TICKER</p>
+      <div v-if="searchResults.length === 0">
+        <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
       </div>
-      <NuxtLink v-for="result in searchResults" :to="{ name: 'asset-symbol-summary', params: { symbol: result.symbol } }" class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300 gap-x-10">
-        <p class="text-xs truncate">{{ result.name }}</p>
-        <p class="text-bright-cyan">{{ result.symbol }}</p>
-      </NuxtLink>
-    </div>
-
-    <div v-else>
-      <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
     </div>
   </NuxtLayout>
 </template>
@@ -43,7 +39,7 @@ export default defineComponent({
       pageDetails: {
         title: "Search",
       },
-      searchResults: [] as Array<{}>,
+      searchResults: [],
     }
   },
 
@@ -57,8 +53,8 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.searchResults = data.data.slice(0,5)
-    }
+      this.searchResults = data.data.slice(0,10)
+    },
   }
 })
 </script>
