@@ -60,7 +60,6 @@ export default defineComponent({
         .then(response => response.json())
 
       this.quote = response["data"]
-      console.log(response.data)
       this.pageDetails.title = response.data.symbol + " : " + response.data.primaryExchange
       this.pageDetails.subtitle = response.data.companyName
     },
