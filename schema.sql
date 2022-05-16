@@ -1,5 +1,6 @@
 \c stockwise
 
+DROP TABLE IF EXISTS studies;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS assets;
@@ -45,6 +46,11 @@ INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_ra
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (5, 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (6, 0, 12, 190.36, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES (7, 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
+
+CREATE TABLE studies (id INT GENERATED ALWAYS AS IDENTITY, PRIMARY KEY(id), user_id INT, asset_id INT, type INT, completed BOOLEAN, question_one INT, question_two INT, question_three INT, question_four INT, question_five INT, question_six NUMERIC, question_seven NUMERIC, question_eight INT, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO studies (user_id, asset_id, type, completed, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 1, 0, FALSE, 7, 8, 6, 8, 4, 1.345, 4.5661, NULL);
+INSERT INTO studies (user_id, asset_id, type, completed, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 2, 0, FALSE, 4, 5, 3, 8, 6, 4.49, NULL, NULL);
+INSERT INTO studies (user_id, asset_id, type, completed, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 3, 0, FALSE, 4, 5, 3, 9, NULL, NULL, NULL, NULL);
 
 
 CREATE OR REPLACE FUNCTION updateColumnUpdatedAt()

@@ -31,7 +31,7 @@
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Beta -->
         <p class="text-tiny mb-0.5">Beta</p>
-        <p class="text-tiny mb-0.5">{{ stats["beta"] || '-' }}</p>
+        <p class="text-tiny mb-0.5">{{ parseFloat(stats["beta"]).toFixed(2) || '-' }}</p>
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- P/E Ratio -->
         <p class="text-tiny mb-0.5">P/E</p>

@@ -5,7 +5,7 @@
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div>
           <h2 class="text-lg">${{ quote["latestPrice"] }}</h2> <!-- Will probably need to use regex to round to 2 or 3 decimals -->
-          <p class="text-xs text-bright-green font-medium">{{ quote["change"] }} ({{ (quote["changePercent"] * 100).toFixed(2) }}%)</p>
+          <p class="text-xs text-bright-green font-medium whitespace-nowrap">{{ quote["change"] }} ({{ (quote["changePercent"] * 100).toFixed(2) }}%)</p>
         </div>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />

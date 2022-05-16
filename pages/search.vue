@@ -20,7 +20,7 @@
         <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
 
         <div class="mt-2 divide-y divide-gray-300/20">
-          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'assets-symbol-summary', params: { symbol: asset.symbol } }" class="w-full flex justify-between p-2">
+          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'assets-symbol-summary', params: { symbol: asset.symbol, assetSymbol: asset.symbol + ' : ' + asset.exchange, assetName: asset.name } }" class="w-full flex justify-between p-2">
             <div class="flex">
               <p class="w-20 my-auto text-xs truncate">{{ asset.symbol + " : " + asset.exchange }}</p>
               <p class="w-44 my-auto ml-3 text-xs truncate">{{ asset.name }}</p>
@@ -75,7 +75,6 @@ export default defineComponent({
     getSearches() {
       if (localStorage.getItem('recentSearches'))
         this.recentSearches = JSON.parse(localStorage.getItem('recentSearches'))
-      console.log(this.recentSearches)
     },
 
     setSearches(asset) {

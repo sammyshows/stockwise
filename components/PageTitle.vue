@@ -8,7 +8,7 @@
 
     <div v-if="pageDetails.subtitle" class="overflow-hidden">
       <h1 class="text-lg font-medium truncate">{{ pageDetails.title }}</h1>
-      <p class="text-xs">{{ pageDetails.subtitle }}</p>
+      <p class="text-xs truncate">{{ pageDetails.subtitle }}</p>
     </div>
   </div>
 </template>

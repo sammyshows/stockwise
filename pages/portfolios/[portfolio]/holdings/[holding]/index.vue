@@ -30,7 +30,7 @@
           </div>
           <!--   These two lines should show the all-time & realised values. This will again require the 'active'
           column (same as above) to determine which transactions are complete   -->
-          <p class="col-span-12 font-light text-tiny">Realised: <span class="font-normal text-bright-green">+322.91(43%)</span></p>
+          <p v-if="transaction.initial_value > 1500" class="col-span-12 font-light text-tiny">Realised: <span class="font-normal text-bright-green">+322.91(43%)</span></p>
         </div>
 
         <div v-else class="grid grid-cols-12 mb-3">
