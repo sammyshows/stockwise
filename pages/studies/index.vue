@@ -6,7 +6,7 @@
       <p class="w-16 text-right ml-8">PROGRESS</p>
     </div>
     <div class="overflow-scroll flex flex-col grow px-3 divide-y divide-gray-700">
-      <NuxtLink v-for="study in uncompletedStudies" :to="{ name: 'studies-study', params: { studyId: study.id, assetName: study.name } }">
+      <NuxtLink v-for="study in uncompletedStudies" :to="{ name: 'studies-study', params: { study: study.id, assetName: study.name } }">
         <div class="flex justify-end py-2">
           <div class="flex flex-col justify-around grow">
             <h2 class="w-28 text-bright-cyan font-bold tracking-wider truncate">{{ study.symbol }}</h2>

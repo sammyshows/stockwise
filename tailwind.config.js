@@ -9,6 +9,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      width: {
+        '1/10': '10%',
+      },
+
       colors: {
         cyan: colors.cyan,
         'bright-cyan': '#00FFD1',

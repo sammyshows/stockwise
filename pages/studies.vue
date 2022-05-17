@@ -52,8 +52,8 @@ export default defineComponent({
         method: 'GET'
       })
           .then(response => response.json())
-      this.uncompletedStudies = response.data.filter(study => study.completed === false)
-      this.completedStudies = response.data.filter(study => study.completed === true)
+      this.uncompletedStudies = response.data.filter(study => study.completed_qs < 8)
+      this.completedStudies = response.data.filter(study => study.completed_qs === 8)
     },
 
     setActiveTab(newTab) {

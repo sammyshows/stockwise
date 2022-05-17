@@ -8,15 +8,7 @@ const handler: Handler = async () => {
                a.symbol,
                studies.id,
                type,
-               completed,
-               CASE WHEN question_one IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_two IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_three IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_four IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_five IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_six IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_seven IS NOT NULL THEN 1 ELSE 0 END + 
-               CASE WHEN question_eight IS NOT NULL THEN 1 ELSE 0 END AS completed_qs
+               completed_qs
         FROM studies
         INNER JOIN assets AS a ON a.id = studies.asset_id
         ORDER BY studies.updated_at DESC;
