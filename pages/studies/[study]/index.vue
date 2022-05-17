@@ -26,6 +26,10 @@ export default defineComponent({
     this.getStudy()
   },
 
+  beforeUnmount() {
+    this.updateStudy()
+  },
+
   data() {
     return {
       pageDetails: {
@@ -53,7 +57,23 @@ export default defineComponent({
 
     updateValue(question, newValue) {
       this.study[question] = newValue
-      console.log(this.study)
+    },
+
+    async updateStudy(): Promise<void> {
+      await fetch('/api/study-update', {
+        method: 'POST',
+        body: JSON.stringify({
+          studyId: this.studyId,
+          question_one: this.study.question_one,
+          question_two: this.study.question_two,
+          question_three: this.study.question_three,
+          question_four: this.study.question_four,
+          question_five: this.study.question_five,
+          question_six: this.study.question_six,
+          question_seven: this.study.question_seven,
+          question_eight: this.study.question_eight,
+        })
+      })
     },
 
     setActiveTab(newTab) {

@@ -1,0 +1,25 @@
+import { Handler } from "@netlify/functions";
+const client = require("../database/client.ts")
+
+
+const handler: Handler = async (event, context) => {
+    const eventBody = JSON.parse(event.body)
+
+    const study = await client`
+        UPDATE studies
+        SET question_one = ${eventBody.question_one},
+            question_two = ${eventBody.question_two},
+            question_three = ${eventBody.question_three},
+            question_four = ${eventBody.question_four},
+            question_five = ${eventBody.question_five},
+            question_six = ${eventBody.question_six},
+            question_seven = ${eventBody.question_seven},
+            question_eight = ${eventBody.question_eight}
+        WHERE studies.id = ${eventBody.studyId};`
+
+    return {
+        statusCode: 200
+    }
+}
+
+export { handler }
