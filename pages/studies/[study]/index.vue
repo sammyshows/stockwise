@@ -13,7 +13,7 @@
     <QuestionsStandardThree v-if="currentQuestion == 3" :currentValue="study?.question_three" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
     <QuestionsStandardFour v-if="currentQuestion == 4" :currentValue="study?.question_four" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
     <QuestionsStandardFive v-if="currentQuestion == 5" :currentValue="study?.question_five" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
-    <QuestionsStandardEight v-if="currentQuestion == 8" :currentValue="study?.question_six" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandardEight v-if="currentQuestion == 8" :currentValue="study?.question_eight" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
 
   </div>
 </template>
