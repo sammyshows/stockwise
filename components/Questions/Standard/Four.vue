@@ -1,14 +1,14 @@
 <template>
   <div class="flex flex-col grow min-h-min px-3">
     <div class="h-1/2 flex items-end pb-8">
-      <h2 class="text-2xl font-medium text-bright-cyan">IS THE BUSINESS SIMPLE AND UNDERSTANDABLE?</h2>
+      <h2 class="text-2xl font-medium text-bright-cyan">IS MANAGEMENT CANDID WITH ITS SHAREHOLDERS?</h2>
     </div>
     <div class="h-1/2">
       <div class="flex justify-between px-0.5 mt-1">
         <p class="text-tiny">NOT VERY</p>
         <p class="text-tiny">VERY</p>
       </div>
-      <RadioGroup v-model="selectedNumber" @click="$emit('updateValue' ,'question_one', this.selectedNumber)">
+      <RadioGroup v-model="selectedNumber" @click="$emit('updateValue' ,'question_four', this.selectedNumber)">
         <RadioGroupLabel class="sr-only">Choose a number</RadioGroupLabel>
         <div class="flex rounded divide-x border border-gray-200">
           <RadioGroupOption as="template" v-for="number in 10" :value="number" v-slot="{ checked }">
@@ -27,9 +27,7 @@
       </div>
     </div>
 
-    <div class="mb-7 flex justify-end">
-      <button @click="$emit('nextPage')" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
-    </div>
+    <PrevNextButtons @prevPage="$emit('prevPage')" @nextPage="$emit('nextPage')" />
   </div>
 </template>
 
@@ -39,7 +37,7 @@ import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline';
 
 export default defineComponent({
-  name: "Question Standard One",
+  name: "Question Standard Four",
 
   props: ['currentValue'],
 

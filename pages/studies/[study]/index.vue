@@ -3,16 +3,18 @@
     <div class="min-h-min flex justify-between px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
       <div v-if="study" class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
-        <p class="absolute left-2.5 top-1">{{ study.completed_qs + 1 }}</p>
+        <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
         <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
         <p class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
       </div>
     </div>
-    <QuestionsStandardOne :currentValue="study?.question_one" @updateValue="updateValue" />
-    <div class="mb-7 flex justify-between">
-      <button @click="prevPage" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
-      <button @click="nextPage" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
-    </div>
+    <QuestionsStandardOne v-if="currentQuestion == 1" :currentValue="study?.question_one" @updateValue="updateValue" @nextPage="nextPage" />
+    <QuestionsStandardTwo v-if="currentQuestion == 2" :currentValue="study?.question_two" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandardThree v-if="currentQuestion == 3" :currentValue="study?.question_three" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandardFour v-if="currentQuestion == 4" :currentValue="study?.question_four" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandardFive v-if="currentQuestion == 5" :currentValue="study?.question_five" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandardEight v-if="currentQuestion == 8" :currentValue="study?.question_six" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+
   </div>
 </template>
 
@@ -38,7 +40,8 @@ export default defineComponent({
         subtitle: 'STUDIES'
       },
       studyId: this.$route.params.study,
-      study: null as ({} | null)
+      study: null as ({} | null),
+      currentQuestion: this.$route.params.currentQuestion
     }
   },
 
@@ -53,10 +56,19 @@ export default defineComponent({
         .then(response => response.json())
       this.study = response.data
       this.pageDetails.title = response.data.name
+      this.currentQuestion = response.data.completed_qs + 1
     },
 
     updateValue(question, newValue) {
       this.study[question] = newValue
+    },
+
+    prevPage() {
+      this.currentQuestion -= 1
+    },
+
+    nextPage() {
+      this.currentQuestion += 1
     },
 
     async updateStudy(): Promise<void> {
