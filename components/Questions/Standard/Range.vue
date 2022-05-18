@@ -1,16 +1,15 @@
 <template>
   <div class="relative flex grow">
     <Transition name="question">
-      <div v-if="!moreInfo" class="absolute flex flex-col grow h-full px-3">
-        <div class="h-1/2 flex items-end pb-8">
-          <h2 class="text-xl font-medium text-bright-cyan">HOW MUCH DOES MANAGEMENT RESIST THE INSTITUTIONAL IMPERATIVE?</h2>
+      <div v-if="!showMoreInfo" class="absolute flex flex-col grow w-full h-full px-3">
+        <div v-html="moreInfo.title" class="h-1/2 flex items-end pb-8 text-2xl">
         </div>
         <div class="h-1/2">
           <div class="flex justify-between px-0.5 mt-1">
             <p class="text-tiny">NOT VERY</p>
             <p class="text-tiny">VERY</p>
           </div>
-          <RadioGroup v-model="selectedNumber" @click="$emit('updateValue' ,'question_five', this.selectedNumber)">
+          <RadioGroup v-model="selectedNumber" @click="$emit('updateValue' ,moreInfo.question, this.selectedNumber)">
             <RadioGroupLabel class="sr-only">Choose a number</RadioGroupLabel>
             <div class="flex rounded divide-x border border-gray-200">
               <RadioGroupOption as="template" v-for="number in 10" :value="number" v-slot="{ checked }">
@@ -34,12 +33,8 @@
     </Transition>
 
     <Transition name="info">
-      <div v-if="moreInfo" class="absolute flex flex-col grow h-full px-3">
-        <div class="h-4/5 flex flex-col gap-y-4 py-8">
-          <h2 class="text-lg font-medium text-bright-cyan">HOW MUCH DOES MANAGEMENT RESIST THE INSTITUTIONAL IMPERATIVE?</h2>
-          <p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.<br><br>
-          There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.<br><br>
-          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+      <div v-if="showMoreInfo" class="absolute flex flex-col grow h-full px-3">
+        <div v-html="moreInfo.title + moreInfo.info" class="h-4/5 flex flex-col gap-y-4 py-8 text-xl">
         </div>
         <div class="h-1/5">
           <div @click="toggleMoreInfo" class="flex mt-10">
@@ -61,7 +56,7 @@ import PrevNextButtons from "~/components/PrevNextButtons.vue";
 export default defineComponent({
   name: "Question Standard Five",
 
-  props: ['currentValue'],
+  props: ['currentValue', 'moreInfo'],
 
   watch: {
     currentValue(newNumber) {
@@ -76,32 +71,32 @@ export default defineComponent({
   data() {
     return {
       selectedNumber: this.currentValue,
-      moreInfo: false
+      showMoreInfo: false
     }
   },
 
   methods: {
     toggleMoreInfo() {
-      this.moreInfo = !this.moreInfo
+      this.showMoreInfo = !this.showMoreInfo
     }
   }
 })
 </script>
 
 <style scoped>
-  .question-enter-active, .question-leave-active {
-    transition: 400ms ease-in-out;
-  }
+.question-enter-active, .question-leave-active {
+  transition: 400ms ease-in-out;
+}
 
-  .question-leave-to, .question-enter-from {
-    transform: translateX(-360px);
-  }
+.question-leave-to, .question-enter-from {
+  transform: translateX(-360px);
+}
 
-  .info-enter-active, .info-leave-active {
-    transition: 400ms ease-in-out;
-  }
+.info-enter-active, .info-leave-active {
+  transition: 400ms ease-in-out;
+}
 
-  .info-enter-from, .info-leave-to {
-    transform: translateX(360px);
-  }
+.info-enter-from, .info-leave-to {
+  transform: translateX(360px);
+}
 </style>
