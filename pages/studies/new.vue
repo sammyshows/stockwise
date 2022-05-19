@@ -57,14 +57,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { SearchIcon } from '@heroicons/vue/solid'
 
 export default defineComponent({
-  name: "New Stock",
-
-  components: {
-    SearchIcon
-  },
+  name: "New Study",
 
   data() {
     return {
@@ -86,7 +81,7 @@ export default defineComponent({
           searchTerm: searchTerm
         })
       })
-          .then(response => response.json())
+        .then(response => response.json())
 
       this.searchResults = data.data.slice(0,10)
     },

@@ -76,14 +76,9 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { SearchIcon } from '@heroicons/vue/solid'
 
 export default defineComponent({
   name: "New Stock",
-
-  components: {
-    SearchIcon
-  },
 
   mounted() {
     this.setDateTime()
