@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <QuestionsStandardRange v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandard v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
   </div>
 </template>
 
@@ -75,7 +75,7 @@ export default defineComponent({
         },
         {
           question: 'question_six',
-          title: `<h2 class="font-medium text-bright-cyan">CALCULATE THE ROE</h2>`,
+          title: `<h2 class="font-medium text-bright-cyan">CALCULATE THE RETURN ON EQUITY (ROE)</h2>`,
           info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
           <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
           <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
