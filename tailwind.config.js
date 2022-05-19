@@ -13,6 +13,10 @@ module.exports = {
         '1/10': '10%',
       },
 
+      spacing: {
+        '0.75': '0.1875rem'
+      },
+
       colors: {
         cyan: colors.cyan,
         'bright-cyan': '#00FFD1',

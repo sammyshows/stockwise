@@ -2,22 +2,37 @@
   <div class="flex flex-col justify-between min-h-min px-3 grow">
     <div class="min-h-min flex justify-between px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
-      <div v-if="study" class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
-        <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
-        <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-        <p class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+
+      <div class="flex">
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5" />
+        <div v-if="study" class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
+          <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
+          <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
+          <p class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+        </div>
       </div>
     </div>
 
     <QuestionsStandard v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+
+    <DeleteConfirmation :open="openModal"
+                        title="Delete Study"
+                        message="Are you sure you want to delete this study? This study and all progress will be deleted from our servers. This action cannot be undone."
+                        @close="closeModal"
+                        @delete="deleteStudy" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { TrashIcon } from "@heroicons/vue/outline";
 
 export default defineComponent({
   name: "Portfolio Overview",
+
+  components: {
+    TrashIcon
+  },
 
   mounted() {
     this.getStudy()
@@ -94,7 +109,8 @@ export default defineComponent({
           <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
           <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
         }
-      ]
+      ],
+      openModal: false
     }
   },
 
@@ -140,6 +156,20 @@ export default defineComponent({
           question_eight: this.study.question_eight,
         })
       })
+    },
+
+    closeModal(): void {
+      this.openModal = false
+    },
+
+    async deleteStudy(): Promise<void> {
+      await fetch('/api/study-delete', {
+        method: 'POST',
+        body: JSON.stringify({
+          studyId: this.studyId
+        })
+      })
+        .then(this.$router.push('/studies'))
     },
 
     setActiveTab(newTab) {

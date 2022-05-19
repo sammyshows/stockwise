@@ -75,7 +75,7 @@ export default defineComponent({
           portfolioId: this.portfolioId
         })
       })
-          .then(response => response.json())
+        .then(response => response.json())
       this.portfolioDetails = response.data[0]
     },
 
