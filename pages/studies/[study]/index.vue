@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col justify-between min-h-min px-3 grow">
-    <div class="min-h-min flex justify-between px-3">
+    <div class="min-h-min flex justify-between pr-2">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
 
       <div :class="{ 'invisble': !study }" class="flex">
