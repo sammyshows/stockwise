@@ -3,12 +3,12 @@
     <div class="min-h-min flex justify-between px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
 
-      <div class="flex">
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5" />
-        <div v-if="study" class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
+      <div :class="{ 'invisble': !study }" class="flex">
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5 ml-3" />
+        <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-          <p class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+          <p v-if="study" class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
         </div>
       </div>
     </div>

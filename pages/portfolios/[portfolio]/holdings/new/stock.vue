@@ -65,7 +65,7 @@
           </div>
         </div>
         <div class="text-right mb-7">
-          <button @click="upsertAsset()" class="w-28 h-8 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+          <button @click="addHolding()" class="w-28 h-8 rounded-lg bg-bright-cyan text-black text-xl">SAVE</button>
         </div>
       </div>
     </div>
@@ -156,30 +156,18 @@ export default defineComponent({
       return date.toISOString()
     },
 
-    async upsertAsset(): Promise<void> {
-      const assetId = await fetch('/api/asset-upsert', {
-        method: 'POST',
-        body: JSON.stringify({
-          symbol: this.quote.symbol
-        })
-      })
-        .then(response => response.json())
-        .then(data => data.asset[0].id)
-      await this.addHolding(assetId)
-    },
-
-    async addHolding(assetId): Promise<void> {
+    async addHolding(): Promise<void> {
       const holdingId = await fetch('/api/holding-create', {
         method: 'POST',
         body: JSON.stringify({
           portfolio: this.portfolioId,
-          asset: assetId,
+          symbol: this.quote.symbol,
           quantity: this.transaction.quantity,
           initialValue: this.transaction.initialPrice * this.transaction.quantity
         })
       })
         .then(response => response.json())
-        .then(data => data.holding[0].id)
+        .then(data => data.holdingId)
 
       await this.addTransaction(holdingId)
     },

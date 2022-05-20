@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="text-right mb-7">
-        <button @click="upsertAsset()" class="w-32 h-8 rounded-lg bg-bright-cyan text-black text-xl">CREATE</button>
+        <button @click="addStudy()" class="w-32 h-8 rounded-lg bg-bright-cyan text-black text-xl">CREATE</button>
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->
@@ -103,24 +103,12 @@ export default defineComponent({
       this.searchResults = []
     },
 
-    async upsertAsset(): Promise<void> {
-      const assetId = await fetch('/api/asset-upsert', {
-        method: 'POST',
-        body: JSON.stringify({
-          symbol: this.quote.symbol
-        })
-      })
-        .then(response => response.json())
-        .then(data => data.asset[0].id)
-      await this.addStudy(assetId)
-    },
-
-    async addStudy(assetId): Promise<void> {
+    async addStudy(): Promise<void> {
       await fetch('/api/study-create', {
         method: 'POST',
         body: JSON.stringify({
           userId: 1,
-          assetId: assetId,
+          symbol: this.quote.symbol,
           type: this.studyType
         })
       })
