@@ -1,0 +1,135 @@
+<template>
+  <div class="flex flex-col min-h-min px-3 grow">
+    <div class="min-h-min flex justify-between pr-2">
+      <PageTitle :pageDetails="pageDetails" class="truncate" />
+      <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-1 ml-3" />
+    </div>
+
+    <div class="mt-6">
+      <h2 class="mb-0.5 text-sm">BUSINESS</h2>
+      <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 py-0.5 text-xs">
+        <p class="">{{ question.title }}</p>
+        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-yellow-200': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+      </div>
+
+      <h2 class="mt-5 mb-0.5 text-sm">MANAGEMENT</h2>
+      <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 py-0.5 text-xs">
+        <p class="">{{ question.title }}</p>
+        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-yellow-200': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+      </div>
+
+      <h2 class="mt-5 mb-0.5 text-sm">FINANCIAL</h2>
+      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 py-0.5 text-xs">
+        <p class="">{{ question.title }}</p>
+        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-yellow-200': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
+      </div>
+    </div>
+
+    <div class="flex items-center mt-10">
+      <LightBulbIcon class="h-5 mr-3" />
+      <h2>KEY INSIGHTS</h2>
+    </div>
+    <div class="mt-2 text-xs">
+      <p>A low <span class="text-bright-red">{{ questions[1].title }}</span> often suggests that the company is still quite young and is yet to prove its long-term earnings capability</p>
+      <p class="mt-2">A high <span class="text-bright-green">{{ questions[4].title }}</span> means that management is quite honest and transparent about the business which is important for maintaining trust with shareholders and consumers</p>
+    </div>
+
+    <DeleteConfirmation :open="openModal"
+                        title="Delete Study"
+                        message="Are you sure you want to delete this study? This study and all progress will be deleted from our servers. This action cannot be undone."
+                        @close="closeModal"
+                        @delete="deleteStudy" />
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import { TrashIcon, LightBulbIcon } from "@heroicons/vue/outline";
+
+export default defineComponent({
+  name: "Portfolio Overview",
+
+  components: {
+    TrashIcon, LightBulbIcon
+  },
+
+  mounted() {
+    this.getStudy()
+  },
+
+  data() {
+    return {
+      pageDetails: {
+        returnPath: '/studies/completed',
+        title: this.$route.params.assetName,
+        subtitle: 'STUDIES'
+      },
+      studyId: this.$route.params.study,
+      study: null as ({} | null),
+      questions: [
+        {
+          question: 'question_one',
+          title: 'Simplicity and Understandability'
+        },
+        {
+          question: 'question_two',
+          title: 'Operating History'
+        },
+        {
+          question: 'question_three',
+          title: 'Long-term Prospects'
+        },
+        {
+          question: 'question_eight',
+          title: 'Strength in Industry'
+        },
+        {
+          question: 'question_four',
+          title: 'Management Candor'
+        },
+        {
+          question: 'question_five',
+          title: 'Institutional Imperative Resistance'
+        },
+        {
+          question: 'question_six',
+          title: 'Return on Equity (ROE)'
+        },
+        {
+          question: 'question_seven',
+          title: 'Owner Earnings'
+        }
+      ],
+      openModal: false
+    }
+  },
+
+  methods: {
+    async getStudy(): Promise<void> {
+      const response = await fetch('/api/study-read', {
+        method: 'POST',
+        body: JSON.stringify({
+          studyId: this.studyId
+        })
+      })
+          .then(response => response.json())
+      this.study = response.data
+      this.pageDetails.title = response.data.name
+    },
+
+    closeModal(): void {
+      this.openModal = false
+    },
+
+    async deleteStudy(): Promise<void> {
+      await fetch('/api/study-delete', {
+        method: 'POST',
+        body: JSON.stringify({
+          studyId: this.studyId
+        })
+      })
+        .then(this.$router.push('/studies/completed'))
+    }
+  }
+})
+</script>

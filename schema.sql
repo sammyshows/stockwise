@@ -52,10 +52,10 @@ completed_qs INT GENERATED ALWAYS AS (CASE WHEN question_one IS NOT NULL THEN 1 
 created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 1, 0, 7, 8, 6, 8, 4, 1.345, 4.5661, NULL);
 INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 2, 0, 4, 5, 3, 8, 6, 4.49, NULL, NULL);
-INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 1, 0, 7, 8, 6, 8, 4, 1.345, 4.5661, 10);
+INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 1, 0, 7, 8, 6, 8, 4, NULL, NULL, NULL);
 INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 2, 0, 4, 5, 3, 8, 6, 4.49, 2.34, 7);
 INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (1, 3, 0, 4, 5, 3, 9, 3, 5.98, 2.43, 4);
-INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (3, 7, 4, 5, 3, 4 9, 3, 0.9, 3.3, 5);
+INSERT INTO studies (user_id, asset_id, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES (3, 7, 4, 5, 3, 4, 9, 3, 0.9, 3.3, 5);
 
 
 CREATE OR REPLACE FUNCTION updateColumnUpdatedAt()

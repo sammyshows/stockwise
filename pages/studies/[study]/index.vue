@@ -13,7 +13,11 @@
       </div>
     </div>
 
-    <QuestionsStandard v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]" @updateValue="updateValue" @prevPage="prevPage" @nextPage="nextPage" />
+    <QuestionsStandard v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]"
+                       @updateValue="updateValue"
+                       @prevPage="prevPage"
+                       @nextPage="nextPage"
+                       @submit="submit" />
 
     <DeleteConfirmation :open="openModal"
                         title="Delete Study"
@@ -124,7 +128,6 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.study = response.data
-      console.log(this.study)
       this.pageDetails.title = response.data.name
       this.currentQuestion = response.data.completed_qs + 1
     },
@@ -139,6 +142,16 @@ export default defineComponent({
 
     nextPage() {
       this.currentQuestion += 1
+    },
+
+    submit() {
+      this.$router.push({ name: 'studies-study-summary',
+        params: {
+          studyId: this.studyId,
+          assetName: this.study.name,
+          updatedDate: this.study.updated_date
+        }
+      })
     },
 
     async updateStudy(): Promise<void> {
@@ -170,10 +183,6 @@ export default defineComponent({
         })
       })
         .then(this.$router.push('/studies'))
-    },
-
-    setActiveTab(newTab) {
-      this.tabConfig.activeTab = newTab
     }
   }
 })

@@ -37,7 +37,8 @@
 
         <div class="mb-7 flex justify-between">
           <button @click="$emit('prevPage')" :class="{ 'invisible': moreInfo.question === 'question_one' }" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
-          <button @click="$emit('nextPage')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
+          <button v-if="moreInfo.question !== 'question_eight'" @click="$emit('nextPage')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
+          <button v-else @click="$emit('submit')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">FINISH</button>
         </div>
       </div>
     </Transition>

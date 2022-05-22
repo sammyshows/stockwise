@@ -8,7 +8,8 @@ const handler: Handler = async () => {
                a.symbol,
                studies.id,
                type,
-               completed_qs
+               completed_qs,
+               TO_CHAR(studies.updated_at, 'MM/DD/YYYY') AS updated_date
         FROM studies
         INNER JOIN assets AS a ON a.id = studies.asset_id
         ORDER BY studies.updated_at DESC;

@@ -29,6 +29,13 @@ export default defineComponent({
     this.getStudies()
   },
 
+  watch: {
+    $route (to, from) {
+      if (from.name === 'studies-study-summary')
+        this.tabConfig.activeTab = 'COMPLETED'
+    }
+  },
+
   data() {
     return {
       pageDetails: {
