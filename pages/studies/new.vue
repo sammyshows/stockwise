@@ -41,6 +41,7 @@
           </div>
 
           <div v-else key="3" class="w-full">
+            <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your study:</p>
             <div>
               <label for="name" class="flex items-end">Name</label>
               <input v-model="name" id="name" type="text" placeholder="e.g. Apple" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
