@@ -61,6 +61,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Study",
 
+  mounted() {
+    if (this.$route.params.assetSymbol)
+      this.fetchQuote(this.$route.params.assetSymbol)
+  },
+
   data() {
     return {
       pageDetails: {

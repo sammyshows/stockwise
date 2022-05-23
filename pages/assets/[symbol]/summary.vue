@@ -97,7 +97,7 @@
       <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
     </div>
 
-    <button class="block mx-auto px-8 py-2 text-xl text-black bg-bright-cyan rounded-lg">Start a Study</button>
+    <NuxtLink :to="{ name: 'studies-new', params: { assetSymbol: this?.quote.symbol } }" class="block w-max mx-auto px-8 py-2 text-xl font-normal text-black bg-bright-cyan rounded-lg">Start a Study</NuxtLink>
   </div>
 </template>
 
@@ -115,26 +115,6 @@ export default defineComponent({
   props: [
     "stats", "quote"
   ],
-
-  computed: {
-    price(): number | void {
-      let number = parseFloat(this.quote["05. price"])
-      if (number)
-        return this.roundToThree(number)
-    },
-
-    change(): number | void {
-      let number = parseFloat(this.quote["09. change"])
-      if (number)
-        return this.roundToThree(number)
-    },
-
-    margin(): number | void {
-      let number = parseFloat(this.quote["10. change percent"])
-      if (number)
-        return this.roundToTwo(number)
-    }
-  },
 
   methods: {
     roundToTwo(num: number): number {
