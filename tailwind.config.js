@@ -20,6 +20,7 @@ module.exports = {
       colors: {
         cyan: colors.cyan,
         'bright-cyan': '#00FFD1',
+        'bright-yellow': '#FFFF00',
         'opaque-cyan': 'rgba(0, 255, 187, 0.10)',
         'bright-green': '#45FF58',
         'bright-red': '#FF4545'

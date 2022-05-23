@@ -6,26 +6,26 @@
     </div>
 
     <div class="mt-6">
-      <h2 class="mb-0.5 text-sm">BUSINESS</h2>
-      <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 py-0.5 text-xs">
+      <h2 class="mb-0.5 text-xs">BUSINESS</h2>
+      <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 pt-0.5 text-tiny">
         <p class="">{{ question.title }}</p>
-        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-yellow-200': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
       </div>
 
-      <h2 class="mt-5 mb-0.5 text-sm">MANAGEMENT</h2>
-      <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 py-0.5 text-xs">
+      <h2 class="mt-1 mb-0.5 text-xs">MANAGEMENT</h2>
+      <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 pt-0.5 text-tiny">
         <p class="">{{ question.title }}</p>
-        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-yellow-200': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
       </div>
 
-      <h2 class="mt-5 mb-0.5 text-sm">FINANCIAL</h2>
-      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 py-0.5 text-xs">
+      <h2 class="mt-1 mb-0.5 text-xs">FINANCIAL</h2>
+      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 pt-0.5 text-tiny">
         <p class="">{{ question.title }}</p>
-        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-yellow-200': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
+        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-bright-yellow': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
       </div>
     </div>
 
-    <div class="flex items-center mt-10">
+    <div class="flex items-center mt-6">
       <LightBulbIcon class="h-5 mr-3" />
       <h2>KEY INSIGHTS</h2>
     </div>
@@ -34,14 +34,14 @@
       <p class="mt-2">A high <span class="text-bright-green">{{ questions[4].title }}</span> means that management is quite honest and transparent about the business which is important for maintaining trust with shareholders and consumers</p>
     </div>
 
-    <div class="relative mt-8">
+    <div class="relative mt-6">
       <div class="flex items-center">
         <PencilAltIcon class="h-5 mr-3" />
         <h2>NOTES</h2>
       </div>
       <div class="mt-2 border border-gray-400 rounded-md shadow-sm overflow-hidden">
         <label for="comment" class="sr-only">Add your notes</label>
-        <textarea v-model="notes" rows="4" name="comment" id="comment" class="bg-transparent block w-full py-1 border-0 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
+        <textarea v-model="notes" rows="5" name="comment" id="comment" class="bg-transparent block w-full py-1 border-0 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
 
         <!-- Spacer element to match the height of the toolbar -->
         <div v-if="study?.notes != notes" class="py-1" aria-hidden="true">
