@@ -146,7 +146,7 @@ export default defineComponent({
 
     async submit() {
       await this.updateStudy()
-      this.$router.push({ name: 'studies-study-summary',
+      await this.$router.push({ name: 'studies-study-summary',
         params: {
           studyId: this.studyId,
           assetName: this.study.name,

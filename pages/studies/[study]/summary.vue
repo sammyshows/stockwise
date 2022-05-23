@@ -39,9 +39,9 @@
         <PencilAltIcon class="h-5 mr-3" />
         <h2>NOTES</h2>
       </div>
-      <div class="mt-2 border border-gray-400 rounded-md shadow-sm overflow-hidden">
+      <div class="mt-2 overflow-hidden">
         <label for="comment" class="sr-only">Add your notes</label>
-        <textarea v-model="notes" rows="5" name="comment" id="comment" class="bg-transparent block w-full py-1 border-0 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
+        <textarea v-model="notes" rows="5" name="comment" id="comment" class="bg-transparent block w-full py-1 border border-gray-400 rounded-md focus:border-gray-300 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
 
         <!-- Spacer element to match the height of the toolbar -->
         <div v-if="study?.notes != notes" class="py-1" aria-hidden="true">

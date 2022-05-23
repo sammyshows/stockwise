@@ -5,50 +5,70 @@
     </div>
 
     <div class="flex flex-col justify-between grow px-5">
-      <div class="flex flex-col">
-        <p>
-          Study a company by answering a series of questions about the company's performance in different areas.
-
-        </p>
-        <div class="relative mb-3">
-          <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
-          <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
-            <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
-              <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
-              <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+      <div class="relative flex flex-col">
+        <TransitionGroup name="form">
+          <div v-if="!manualForm" class="w-full">
+            <div class="relative mb-3" key="1">
+              <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find a company..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
+              <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
+                <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                  <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
+                  <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+                </div>
+              </div>
+            </div>
+            <div v-if="quote" class="w-full h-20 px-3" key="2">
+              <p class="text-center truncate">{{ quote.companyName }}</p>
+              <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
+                <div class="w-1 grow text-right">
+                  <p class="truncate">{{ quote.symbol }}</p>
+                  <p class="truncate">Current price</p>
+                  <p class="truncate">Daily movement</p>
+                </div>
+                <div class="w-3 text-center">
+                  <p>:</p>
+                  <p>:</p>
+                  <p>:</p>
+                </div>
+                <div class="w-1 grow">
+                  <p class="truncate">{{ quote.primaryExchange }}</p>
+                  <p class="truncate">{{ quote.latestPrice }}</p>
+                  <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+                </div>
+              </div>
+              <Spinner v-else />
             </div>
           </div>
-        </div>
-        <div v-if="quote" class="h-20 px-3">
-          <p class="text-center truncate">{{ quote.companyName }}</p>
-          <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
-            <div class="w-1 grow text-right">
-              <p class="truncate">{{ quote.symbol }}</p>
-              <p class="truncate">Current price</p>
-              <p class="truncate">Daily movement</p>
+
+          <div v-else key="3" class="w-full">
+            <div>
+              <label for="name" class="flex items-end">Name</label>
+              <input v-model="name" id="name" type="text" placeholder="e.g. Apple" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
             </div>
-            <div class="w-3 text-center">
-              <p>:</p>
-              <p>:</p>
-              <p>:</p>
-            </div>
-            <div class="w-1 grow">
-              <p class="truncate">{{ quote.primaryExchange }}</p>
-              <p class="truncate">{{ quote.latestPrice }}</p>
-              <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+
+            <div class="mt-5">
+              <label for="symbol" class="flex items-end">Symbol</label>
+              <input v-model="symbol" id="symbol" type="text" placeholder="e.g. AAPL" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
             </div>
           </div>
-          <Spinner v-else />
-        </div>
 
-        <div class="mt-5 text-sm">
-          <label for="type" class="flex items-end">Study type</label>
-          <select v-model="studyType" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-            <option value="" disabled selected hidden></option>
-            <option :value="0">Standard</option>
-            <option :value="1">Advanced</option>
-          </select>
-        </div>
+          <div class="mt-5 text-sm" key="4">
+            <label for="type" class="flex items-end">Study type</label>
+            <select v-model="studyType" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <option value="" disabled selected hidden></option>
+              <option :value="0">Standard</option>
+              <option :value="1">Advanced</option>
+            </select>
+          </div>
+
+  <!--        <p class="mt-5 text-tiny text-gray-300 text-center">-->
+  <!--          Study a company by answering a series of questions about a company's performance in different areas.-->
+  <!--          When you are finished a summary is created showing a compilation of your answers and key insights. The idea-->
+  <!--          here is not to provide you with advice, but rather to give you an overall view of how you rate the company.-->
+  <!--        </p>-->
+
+          <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-10 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
+        </TransitionGroup>
       </div>
       <div class="text-right mb-7">
         <button @click="addStudy()" class="w-32 h-8 rounded-lg bg-bright-cyan text-black text-xl">CREATE</button>
@@ -76,8 +96,11 @@ export default defineComponent({
         returnPath: '/studies',
         title: 'Start a Study'
       },
+      manualForm: false,
       searchResults: [],
       quote: null as ({} | null),
+      name: null as (string | null),
+      symbol: null as (string | null),
       studyType: 0
     }
   },
@@ -104,7 +127,7 @@ export default defineComponent({
           symbol: symbol
         })
       })
-          .then(response => response.json())
+        .then(response => response.json())
       this.quote = quote.data
     },
 
@@ -112,12 +135,17 @@ export default defineComponent({
       this.searchResults = []
     },
 
+    toggleManual() {
+      this.manualForm = !this.manualForm
+    },
+
     async addStudy(): Promise<void> {
       await fetch('/api/study-create', {
         method: 'POST',
         body: JSON.stringify({
           userId: 1,
-          symbol: this.quote.symbol,
+          name: this.manualForm ? this.name : null,
+          symbol: this.manualForm ? this.symbol : this.quote.symbol,
           type: this.studyType
         })
       })
@@ -132,3 +160,28 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+.form-move, /* apply transition to moving elements */
+.form-enter-active {
+  transition: all 0.5s ease;
+}
+.form-leave-active {
+  transition: all 0.3s ease;
+}
+
+.form-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.form-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.form-leave-active {
+  position: absolute;
+}
+</style>

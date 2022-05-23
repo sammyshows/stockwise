@@ -6,12 +6,12 @@ const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const study = await client`
-        SELECT a.name,
-               a.symbol,
+        SELECT s.name,
+               s.symbol,
                type,
                completed_qs,
                notes,
-               TO_CHAR(studies.updated_at, 'MM/DD/YYYY') AS updated_date,
+               TO_CHAR(s.updated_at, 'MM/DD/YYYY') AS updated_date,
                question_one,
                question_two,
                question_three,
@@ -20,10 +20,9 @@ const handler: Handler = async (event, context) => {
                question_six,
                question_seven,
                question_eight
-        FROM studies
-        INNER JOIN assets AS a ON a.id = studies.asset_id
-        WHERE studies.id = ${eventBody.studyId}
-        ORDER BY studies.updated_at DESC;
+        FROM studies AS s
+        WHERE s.id = ${eventBody.studyId}
+        ORDER BY s.updated_at DESC;
     `
 
     return {
