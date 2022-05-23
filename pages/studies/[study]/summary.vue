@@ -41,10 +41,10 @@
       </div>
       <div class="mt-2 border border-gray-400 rounded-md shadow-sm overflow-hidden">
         <label for="comment" class="sr-only">Add your notes</label>
-        <textarea v-model="notes" rows="3" name="comment" id="comment" class="bg-transparent block w-full py-3 border-0 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
+        <textarea v-model="notes" rows="4" name="comment" id="comment" class="bg-transparent block w-full py-1 border-0 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
 
         <!-- Spacer element to match the height of the toolbar -->
-        <div v-if="study?.notes != notes" class="py-2" aria-hidden="true">
+        <div v-if="study?.notes != notes" class="py-1" aria-hidden="true">
           <!-- Matches height of button in toolbar (1px border + 36px content height) -->
           <div class="py-px">
             <div class="h-9" />
