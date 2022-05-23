@@ -6,6 +6,10 @@
 
     <div class="flex flex-col justify-between grow px-5">
       <div class="flex flex-col">
+        <p>
+          Study a company by answering a series of questions about the company's performance in different areas.
+
+        </p>
         <div class="relative mb-3">
           <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
           <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">

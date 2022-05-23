@@ -5,23 +5,23 @@
       <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-1 ml-3" />
     </div>
 
-    <div class="mt-6">
-      <h2 class="mb-0.5 text-xs">BUSINESS</h2>
-      <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 pt-0.5 text-tiny">
-        <p class="">{{ question.title }}</p>
+    <div class="mt-6 text-xs">
+      <h2 class="mb-0.5">BUSINESS</h2>
+      <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 pt-0.5">
+        <p>{{ question.title }}</p>
         <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
       </div>
 
-      <h2 class="mt-1 mb-0.5 text-xs">MANAGEMENT</h2>
-      <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 pt-0.5 text-tiny">
-        <p class="">{{ question.title }}</p>
-        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+      <h2 class="mt-1 mb-0.5">MANAGEMENT</h2>
+      <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 pt-0.5">
+        <p>{{ question.title }}</p>
+        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
       </div>
 
-      <h2 class="mt-1 mb-0.5 text-xs">FINANCIAL</h2>
-      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 pt-0.5 text-tiny">
-        <p class="">{{ question.title }}</p>
-        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-bright-yellow': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
+      <h2 class="mt-1 mb-0.5">FINANCIAL</h2>
+      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 pt-0.5">
+        <p>{{ question.title }}</p>
+        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-bright-yellow': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
       </div>
     </div>
 
