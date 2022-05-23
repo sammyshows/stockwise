@@ -7,7 +7,8 @@ const handler: Handler = async (event, context) => {
 
     const study = await client`
         UPDATE studies
-        SET question_one = ${eventBody.question_one},
+        SET notes = ${eventBody.notes || null},
+            question_one = ${eventBody.question_one},
             question_two = ${eventBody.question_two},
             question_three = ${eventBody.question_three},
             question_four = ${eventBody.question_four},

@@ -10,6 +10,7 @@ const handler: Handler = async (event, context) => {
                a.symbol,
                type,
                completed_qs,
+               notes,
                TO_CHAR(studies.updated_at, 'MM/DD/YYYY') AS updated_date,
                question_one,
                question_two,
