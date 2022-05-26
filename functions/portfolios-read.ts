@@ -1,8 +1,9 @@
 import { Handler } from "@netlify/functions";
+const { requireAuth } = require('../api/auth');
 const client = require("../database/client.ts")
 
 
-const handler: Handler = async () => {
+const handler: Handler = requireAuth(async () => {
     const portfolios = await client`
         SELECT portfolios.id,
                portfolios.name,
@@ -24,6 +25,6 @@ const handler: Handler = async () => {
             portfolios: portfolios
         })
     }
-}
+})
 
 export { handler }

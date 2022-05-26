@@ -17,6 +17,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
+import createAuth0Client from '@auth0/auth0-spa-js';
+
+
 
 export default defineComponent({
   name: "Portfolio Overview",
@@ -25,9 +28,19 @@ export default defineComponent({
     PlusIcon
   },
 
-  mounted() {
+  async mounted() {
     this.getPortfolios()
     this.updateAssets()
+
+    const auth = await createAuth0Client({
+      domain: "stockwise.us.auth0.com",
+      client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
+      redirect_uri: "http://localhost:8888/portfolios",
+      audience: "https://stockwise.app/api"
+    });
+
+    const token = await auth.getTokenSilently()
+    setTimeout(() => console.log(token), 3000)
   },
 
   data() {
@@ -49,6 +62,9 @@ export default defineComponent({
   methods: {
     async getPortfolios(): Promise<void> {
       const response = await fetch('/api/portfolios-read', {
+        headers: {
+          authorization: 'Bearer ' + "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkRKZkJSRUNqNG9TUEZsYXlpWGFldSJ9.eyJpc3MiOiJodHRwczovL3N0b2Nrd2lzZS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDcyMTU3MjQ5Nzg5MDM1ODcyMDYiLCJhdWQiOlsiaHR0cHM6Ly9zdG9ja3dpc2UuYXBwL2FwaSIsImh0dHBzOi8vc3RvY2t3aXNlLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NTM1ODkwODMsImV4cCI6MTY1MzY3NTQ4MywiYXpwIjoiZmtPckRqaHJlcHVzblhtcTllV2JHRnhHbDVXNFJtOHUiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.cxMugkb6We0I7NVNo73S8r7jdqVpQJ_TlBE3tN-TZ02f4uomr51GHDU_q_yR-fQdVrceSoJ_uQqzCNYG7EYLjCY22E-keaY_HJFDgN8ct5P98iJahzLkQdicvw_LoL7eIy971WwQjK_Eg3ODJcJE6ghU7nar4qXkpCtx9Tp027nj1IDcYCoGFFGBEeu_hW0LxLQdq2dfR7NUjs-xMpxntE6SbYx3KnBC2Bxxcmq-IWqNVtzW7s8FXwvSPljzGs47N_Q6ZBqh197Q-MIC4ib1nK91_2b1dLcA6tDfReYwk_TWsKJCxupzPCqf8BM9Ia8xXYwVfjzux1c8X9G1uUm6sg"
+        },
         method: 'GET'
       })
         .then(response => response.json())
