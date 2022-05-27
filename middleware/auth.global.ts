@@ -1,5 +1,4 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
-import { useState } from '#app'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
     console.log('Starting...')
