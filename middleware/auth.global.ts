@@ -1,7 +1,7 @@
-import createAuth0Client from '@auth0/auth0-spa-js';
+import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    const auth0 = await useState('auth0', async () => {
+    const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
         return await createAuth0Client({
             domain: "stockwise.us.auth0.com",
             client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
@@ -10,7 +10,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         })
     }).value;
 
-    const token = useState('authToken', async () => await auth0.getTokenSilently())
+    const client = await useState<Auth0Client>('auth0').value
+    console.log(await client.getTokenSilently())
 
     let isAuthenticated = await auth0.isAuthenticated();
 

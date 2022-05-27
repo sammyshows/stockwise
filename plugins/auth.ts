@@ -10,6 +10,7 @@ const auth0options = {
 export default defineNuxtPlugin(() => {
     return {
         provide: {
+            // currently login ain't even used because the middleware handles auth checks between re-routes... consider removing
             login: async () => {
                 console.log('hola')
                 const auth0 = await createAuth0Client(auth0options);
@@ -36,8 +37,11 @@ export default defineNuxtPlugin(() => {
             },
 
             logout: async () => {
-                const auth0 = await createAuth0Client(auth0options);
-                auth0.logout()
+                const auth0 = await useState<Auth0Client>('auth0').value
+                auth0.logout({
+                    returnTo: window.location.origin,
+                    client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u"
+                });
             }
         }
     }
