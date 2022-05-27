@@ -1,8 +1,8 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
+import { useState } from '#app'
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
     console.log('Starting...')
-    console.log(window.location.href)
 
     const auth0 = await createAuth0Client({
         domain: "stockwise.us.auth0.com",
@@ -27,11 +27,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             console.log(await auth0.getTokenSilently())
             useState('authToken', async () => await auth0.getTokenSilently())
         }
-    } else {
-        console.log("logged in ", to.path);
     }
 
-    // useState('authToken', async () => await auth0.getTokenSilently())
+    useState('authToken', async () => await auth0.getTokenSilently())
     navigateTo(to.path);
     console.log('done...')
 });
