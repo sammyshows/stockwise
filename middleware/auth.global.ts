@@ -10,14 +10,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         })
     }).value;
 
-    const client = await useState<Auth0Client>('auth0').value
-    console.log(await client.getTokenSilently())
-
     let isAuthenticated = await auth0.isAuthenticated();
 
     console.log('Authenticated: ' + isAuthenticated)
 
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
+        useState('authToken', async () => await auth0.getTokenSilently())
+    } else {
         const query = to?.query;
         if (query && query.code && query.state) {
             await auth0.handleRedirectCallback();
