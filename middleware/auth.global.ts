@@ -10,14 +10,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         audience: "https://stockwise.app/api"
     });
 
-    console.log('gday')
-
-
-    if (to.path === "/" && !to?.query?.code) {
-        useState('authToken', async () => await auth0.getTokenSilently())
-        return;
-    }
-
     let isAuthenticated = await auth0.isAuthenticated();
     console.log('Authenticated: ' + isAuthenticated)
 
