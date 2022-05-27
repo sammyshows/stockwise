@@ -6,7 +6,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const auth0 = await createAuth0Client({
         domain: "stockwise.us.auth0.com",
         client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://stockwise.app/portfolios",
+        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios",
         audience: "https://stockwise.app/api"
     });
 
