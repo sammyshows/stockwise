@@ -2,7 +2,14 @@ import { NetlifyJwtVerifier, removeNamespaces, claimToArray } from '@serverless-
 
 const verifyJwt = NetlifyJwtVerifier({
     issuer: process.env.JWT_ISSUER,
-    audience: process.env.JWT_AUDIENCE
+    audience: process.env.JWT_AUDIENCE,
+    // USE THE BELOW TO CHECK USER ROLES
+
+    // mapClaims: (claims) => {
+    //     const user = claims;
+    //     user.scope = claimToArray(user.scope);
+    //     return user;
+    // }
 });
 
 /**

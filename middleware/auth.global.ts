@@ -1,6 +1,6 @@
 import createAuth0Client from '@auth0/auth0-spa-js';
 
-const auth = await createAuth0Client({
+const auth0 = await createAuth0Client({
     domain: "stockwise.us.auth0.com",
     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
     redirect_uri: "http://localhost:8888/portfolios",
@@ -10,7 +10,8 @@ const auth = await createAuth0Client({
 export default defineNuxtRouteMiddleware(async (to, from) => {
     console.log('Starting...')
 
-    let isAuthenticated = await auth.isAuthenticated();
+    let isAuthenticated = await auth0.isAuthenticated();
+    useState('authToken', async () => await auth0.getTokenSilently())
     if (to.path === "/" && !to?.query?.code) {
         return;
     }
@@ -19,9 +20,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (!isAuthenticated) {
         const query = to?.query;
         if (query && query.code && query.state) {
-            await auth.handleRedirectCallback();
+            await auth0.handleRedirectCallback();
         } else {
-            await auth.loginWithRedirect();
+            await auth0.loginWithRedirect();
         }
     } else {
         console.log("logged in ", to.path);
