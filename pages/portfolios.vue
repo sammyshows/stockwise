@@ -9,8 +9,6 @@
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <NuxtChild :portfolios="portfolios" />
-
-      <button @click="$logout()">logout</button>
     </div>
     <NuxtChild v-else/>
   </NuxtLayout>
@@ -28,7 +26,6 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value;
-    console.log(token)
     return { token }
   },
 
