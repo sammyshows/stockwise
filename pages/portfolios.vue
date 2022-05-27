@@ -24,10 +24,10 @@ import createAuth0Client from '@auth0/auth0-spa-js';
 export default defineComponent({
   name: "Portfolio Overview",
 
-  // async setup() {
-  //   const token = await useState('authToken').value;
-  //   return { token }
-  // },
+  async setup() {
+    const token = await useState('authToken').value;
+    return { token }
+  },
 
   components: {
     PlusIcon
@@ -58,7 +58,7 @@ export default defineComponent({
     async getPortfolios(): Promise<void> {
       const response = await fetch('/api/portfolios-read', {
         headers: {
-          authorization: 'Bearer ' + '1'
+          authorization: 'Bearer ' + this.token
         },
         method: 'GET'
       })

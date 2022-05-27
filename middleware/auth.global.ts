@@ -20,15 +20,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         if (query && query.code && query.state) {
             await auth0.handleRedirectCallback();
             console.log(await auth0.getTokenSilently())
-            // useState('authToken', async () => await auth0.getTokenSilently())
+            useState('authToken', async () => await auth0.getTokenSilently())
         } else {
             await auth0.loginWithRedirect();
             console.log(await auth0.getTokenSilently())
-            // useState('authToken', async () => await auth0.getTokenSilently())
+            useState('authToken', async () => await auth0.getTokenSilently())
         }
     }
 
-    // useState('authToken', async () => await auth0.getTokenSilently())
+    useState('authToken', async () => await auth0.getTokenSilently())
     navigateTo(to.path);
     console.log('done...')
 });
