@@ -28,7 +28,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         }
     }
 
-    console.log(await auth0.getTokenSilently())
     useState('authToken', async () => await auth0.getTokenSilently())
     navigateTo(to.path);
     console.log('done...')

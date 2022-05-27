@@ -4,7 +4,7 @@ const auth0options = {
     domain: "stockwise.us.auth0.com",
     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
     audience: "https://stockwise.app/api",
-    redirect_uri: "http://localhost:8888/portfolios"
+    redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
 }
 
 export default defineNuxtPlugin(() => {
@@ -33,6 +33,11 @@ export default defineNuxtPlugin(() => {
 
                 await auth0.loginWithRedirect()
                 return auth0;
+            },
+
+            logout: async () => {
+                const auth0 = await createAuth0Client(auth0options);
+                auth0.logout()
             }
         }
     }

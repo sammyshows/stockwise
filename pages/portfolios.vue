@@ -9,6 +9,8 @@
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <NuxtChild :portfolios="portfolios" />
+
+      <button @click="$logout()">logout</button>
     </div>
     <NuxtChild v-else/>
   </NuxtLayout>
