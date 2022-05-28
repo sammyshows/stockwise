@@ -59,7 +59,7 @@ export default defineComponent({
     async getPortfolios(): Promise<void> {
       const response = await fetch('/api/portfolios-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: 'Bearer ' + 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkRKZkJSRUNqNG9TUEZsYXlpWGFldSJ9.eyJpc3MiOiJodHRwczovL3N0b2Nrd2lzZS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDcyMTU3MjQ5Nzg5MDM1ODcyMDYiLCJhdWQiOlsiaHR0cHM6Ly9zdG9ja3dpc2UuYXBwL2FwaSIsImh0dHBzOi8vc3RvY2t3aXNlLnVzLmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE2NTM3MTk3NTAsImV4cCI6MTY1MzgwNjE1MCwiYXpwIjoiZmtPckRqaHJlcHVzblhtcTllV2JHRnhHbDVXNFJtOHUiLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIn0.AJhAGvezo6i-LBhNrmp2d20S0lmoYgqKDkRPkVG8pNH1bxkylKCgH2CdpxmSMrFTfdUA1zuCoFchrkwFbBD6zDEuwCRULU479bpSoRgg6mgF-VwTN61Bhxu9S0KwJcNcTYc6RFcmYqRoh_xPEOjkdw_pQEAxTaO3iANGhuYoAHNLAN2r1zR_17AUZ90srbt4okNlX8832JW7hMzXcaKbXgqwDjC2UDeEkj3uJy4xuKfsi3nxlNmiFfsPWml2CoizlkG78uxxA6oWn3iMuZYCL0vUq5gCNkwqa7a3Oo0Hlnte75DzxlUeJR35vj-xGyR2oxaJkdIeTBLS6aiVoAiPvQ'
         },
         method: 'GET'
       })
