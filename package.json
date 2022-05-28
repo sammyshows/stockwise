@@ -6,7 +6,9 @@
     "dev": "nuxi dev ",
     "build": "nuxi build",
     "start": "node .output/server/index.mjs",
-    "createdb": "psql -U postgres < schema.sql"
+    "createdb_dev": "cat schema.sql | psql stockwise -U postgres",
+    "createdb_prod": "cat schema.sql | heroku pg:psql"
+
   },
   "devDependencies": {
     "@nuxtjs/pwa": "^3.3.5",

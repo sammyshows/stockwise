@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="text-right mb-7">
-          <button @click="updateHolding" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+          <ButtonsCyan text="SAVE" @clicked="updateHolding()" />
         </div>
       </div>
     </div>

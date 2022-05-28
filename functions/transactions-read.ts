@@ -7,6 +7,7 @@ const handler: Handler = async (event, context) => {
 
     const holdings = await client`SELECT * FROM uspReadTransactions(${eventBody.holdingId})`
 
+    console.log(holdings)
     return {
         statusCode: 200,
         body: JSON.stringify({

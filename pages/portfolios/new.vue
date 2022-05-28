@@ -12,11 +12,11 @@
         </div>
         <div class="flex justify-between">
           <label for="included" class="flex items-center">Included in totals</label>
-          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-green bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
         </div>
       </div>
       <div class="text-right mb-7">
-        <button @click="createPortfolio()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+        <ButtonsCyan text="SAVE" @clicked="createPortfolio()" />
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "New",
+  name: "New Portfolio",
 
   data() {
     return {
@@ -57,7 +57,7 @@ export default defineComponent({
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)
         })
-          .then(this.$router.push("/overview"))
+          .then(this.$router.push("/portfolios"))
       }
     }
   }

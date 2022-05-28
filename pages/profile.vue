@@ -1,6 +1,8 @@
 <template>
   <NuxtLayout name="page-container" activeButton="profile">
-    <button @click="$logout()">logout</button>
+    <div class="flex items-center justify-center grow">
+      <ButtonsCyan text="Logout" @clicked="$logout()" />
+    </div>
   </NuxtLayout>
 </template>
 

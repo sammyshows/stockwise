@@ -38,8 +38,10 @@
             </div>
           </div>
         </div>
+        <!-- This button should only be visible if fields are different. When validation is added, it should set a
+        property in data that this buttons display property is bound to -->
         <div class="text-right mb-7">
-          <button @click="updateTransaction()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+          <ButtonsCyan text="SAVE" @clicked="updateTransaction()" />
         </div>
       </div>
     </div>

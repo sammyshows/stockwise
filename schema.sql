@@ -1,13 +1,11 @@
-\c stockwise
-
 DROP TABLE IF EXISTS studies;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS portfolios;
 DROP TABLE IF EXISTS users;
-DROP FUNCTION uspReadTransactions(holding_id uuid);
-DROP FUNCTION uspUpdateHolding();
+DROP FUNCTION uspReadTransactions;
+DROP FUNCTION uspUpdateHolding;
 
 
 CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());

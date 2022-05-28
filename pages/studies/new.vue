@@ -72,7 +72,7 @@
         </TransitionGroup>
       </div>
       <div class="text-right mb-7">
-        <button @click="addStudy()" class="w-32 h-8 rounded-lg bg-bright-cyan text-black text-xl">CREATE</button>
+        <ButtonsCyan text="CREATE" @clicked="addStudy()" />
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->

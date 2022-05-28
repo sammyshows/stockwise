@@ -39,7 +39,7 @@
         </div>
 
         <div class="text-right mb-7">
-          <button @click="createTransaction()" class="w-28 h-10 rounded-lg bg-bright-green text-black text-xl">SAVE</button>
+          <ButtonsCyan text="SAVE" @clicked="createTransaction()" />
         </div>
       </div>
     </div>
