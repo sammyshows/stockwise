@@ -5,11 +5,11 @@ const verifyJwt = NetlifyJwtVerifier({
     audience: process.env.JWT_AUDIENCE,
     // USE THE BELOW TO CHECK USER ROLES
 
-    // mapClaims: (claims) => {
-    //     const user = claims;
-    //     user.scope = claimToArray(user.scope);
-    //     return user;
-    // }
+    mapClaims: (claims) => {
+        const user = claims;
+        user.scope = claimToArray(user.scope);
+        return user;
+    }
 });
 
 /**
