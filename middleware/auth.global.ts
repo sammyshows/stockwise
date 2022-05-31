@@ -1,6 +1,7 @@
 import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
+    console.log('here')
     const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
         return await createAuth0Client({
             domain: "stockwise.us.auth0.com",
@@ -11,7 +12,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }).value;
 
     let isAuthenticated = await auth0.isAuthenticated();
-
     console.log('Authenticated: ' + isAuthenticated)
 
     if (isAuthenticated) {
@@ -28,6 +28,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             useState('authToken', async () => await auth0.getTokenSilently())
         }
     }
+
+    console.log(await auth0.getTokenSilently())
 
     navigateTo(to.path);
 });
