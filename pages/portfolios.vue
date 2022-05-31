@@ -18,6 +18,7 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import createAuth0Client from '@auth0/auth0-spa-js';
+import {useState} from "#app";
 
 
 
@@ -26,7 +27,8 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value;
-    return { token }
+    const uuid = useState('uuid').value
+    return { token, uuid }
   },
 
   components: {
@@ -60,19 +62,22 @@ export default defineComponent({
         headers: {
           authorization: 'Bearer ' + this.token
         },
-        method: 'GET'
+        method: 'POST',
+        body: JSON.stringify({
+          uuid: this.uuid
+        })
       })
         .then(response => response.json())
       this.portfolios = response.portfolios
     },
 
     // This is NOT a permanent solution, but at the time it was either update every asset price like this
-    // or pay for a CRON job with heroku, and although this is repeated every 30 seconds, it will certainly
+    // or pay for a CRON job with heroku, and although this is repeated every 10 seconds, it will certainly
     // be a while before the app goes live and this overloads the system.
     async updateAssets(): Promise<void> {
       await fetch('/api/assets-update')
         .then(this.getPortfolios())
-      setTimeout(this.updateAssets, 5000)
+      setTimeout(this.updateAssets, 10000)
     },
 
     setActiveTab(newTab) {

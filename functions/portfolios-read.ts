@@ -3,7 +3,9 @@ const { requireAuth } = require('../api/auth');
 const client = require("../database/client.ts")
 
 
-const handler: Handler = requireAuth(async () => {
+const handler: Handler = requireAuth(async (event, context) => {
+    const eventBody = JSON.parse(event.body)
+
     const portfolios = await client`
         SELECT portfolios.id,
                portfolios.name,
@@ -15,6 +17,7 @@ const handler: Handler = requireAuth(async () => {
         FROM portfolios
              LEFT JOIN holdings ON portfolios.id = holdings.portfolio_id
              LEFT JOIN assets ON holdings.asset_id = assets.id
+        WHERE portfolios.user_id = ${eventBody.uuid}
         GROUP BY portfolios.id
         ORDER BY portfolios.created_at;
     `

@@ -1,7 +1,9 @@
 import createAuth0Client, { Auth0Client } from '@auth0/auth0-spa-js';
+import jwt_decode from 'jwt-decode';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    console.log('here')
+    // this is added to state so that when this script runs, it will return immediately if state 'auth0'
+    // already exists i.e. there hasn't been a page refresh
     const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
         return await createAuth0Client({
             domain: "stockwise.us.auth0.com",
@@ -12,7 +14,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }).value;
 
     let isAuthenticated = await auth0.isAuthenticated();
-    console.log('Authenticated: ' + isAuthenticated)
 
     if (isAuthenticated) {
         useState('authToken', async () => await auth0.getTokenSilently())
@@ -21,15 +22,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         if (query && query.code && query.state) {
             await auth0.handleRedirectCallback();
             console.log('Handling redirect callback...')
-            useState('authToken', async () => await auth0.getTokenSilently())
         } else {
             await auth0.loginWithRedirect();
             console.log('Login with redirect...')
-            useState('authToken', async () => await auth0.getTokenSilently())
         }
+        useState('authToken', async () => await auth0.getTokenSilently())
     }
 
-    console.log(await auth0.getTokenSilently())
+    const token = await auth0.getTokenSilently()
+    useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
 
     navigateTo(to.path);
 });
