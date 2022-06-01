@@ -35,7 +35,12 @@ import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 
 export default defineComponent({
-  name: "Holdings",
+  name: "Edit Portfolio",
+
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
 
   components: {
     ChevronLeftIcon, TrashIcon
@@ -70,6 +75,9 @@ export default defineComponent({
 
     async getPortfolioDetails(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           portfolioId: this.portfolioId
@@ -81,6 +89,9 @@ export default defineComponent({
 
     async updatePortfolio(): Promise<void> {
       await fetch('/api/portfolio-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify(this.portfolioDetails)
       })
@@ -93,6 +104,9 @@ export default defineComponent({
 
     async deletePortfolio(): Promise<void> {
       await fetch('/api/portfolio-delete', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           portfolioId: this.portfolioId

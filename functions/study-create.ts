@@ -1,9 +1,10 @@
 import { Handler } from "@netlify/functions";
+const { requireAuth } = require('../api/auth');
 import fetch from "node-fetch";
 const client = require("../database/client.ts")
 
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
     let studyId
     console.log(eventBody)
@@ -29,6 +30,9 @@ const handler: Handler = async (event, context) => {
         } catch (err) {
             // If error, it's likely the asset is available via IEX but doesn't yet exist in the database
             const asset = await fetch(`${process.env.DOMAIN}/api/asset-upsert`, {
+                headers: {
+                    authorization: 'Bearer ' + eventBody.token
+                },
                 method: 'POST',
                 body: JSON.stringify({
                     symbol: eventBody.symbol
@@ -49,6 +53,6 @@ const handler: Handler = async (event, context) => {
             studyId: studyId[0].id
         })
     }
-}
+})
 
 export { handler }

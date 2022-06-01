@@ -105,6 +105,9 @@ export default defineComponent({
 
     async createTransaction(): Promise<void> {
       await fetch('/api/transaction-create', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId,

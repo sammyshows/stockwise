@@ -87,8 +87,9 @@ export default defineComponent({
   name: "New Study",
 
   setup() {
+    const token = useState('authToken').value
     const uuid = useState('uuid').value
-    return { uuid }
+    return { token, uuid }
   },
 
   mounted() {
@@ -114,6 +115,9 @@ export default defineComponent({
   methods: {
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           searchTerm: searchTerm
@@ -128,6 +132,9 @@ export default defineComponent({
       this.searchResults = []
       this.quote = {}
       const quote = await fetch('/api/stock-quote', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           symbol: symbol
@@ -147,8 +154,12 @@ export default defineComponent({
 
     async addStudy(): Promise<void> {
       await fetch('/api/study-create', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
+          token: this.token,
           manualEntry: this.manualForm,
           uuid: this.uuid,
           name: this.manualForm ? this.name : null,

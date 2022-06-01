@@ -60,6 +60,11 @@ import { TrashIcon } from "@heroicons/vue/outline";
 export default defineComponent({
   name: "Portfolio Holdings",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   components: {
     TrashIcon
   },
@@ -104,6 +109,9 @@ export default defineComponent({
   methods: {
     async getTransaction(): Promise<void> {
       const response = await fetch('/api/transaction-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           transactionId: this.transaction.id
@@ -122,6 +130,9 @@ export default defineComponent({
 
     async updateTransaction() {
       await fetch('/api/transaction-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           transactionId: this.transaction.id,
@@ -170,6 +181,9 @@ export default defineComponent({
 
     async deleteTransaction(): Promise<void> {
       await fetch('/api/transaction-delete', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           transactionId: this.transaction.id,

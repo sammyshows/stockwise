@@ -1,7 +1,8 @@
 import { Handler } from "@netlify/functions";
+const { requireAuth } = require('../api/auth');
 import fetch from 'node-fetch'
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const data = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/advanced-stats?token=${process.env.IEXTOKEN}`)
@@ -14,6 +15,6 @@ const handler: Handler = async (event, context) => {
             data: data
         })
     }
-}
+})
 
 export { handler }

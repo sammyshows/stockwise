@@ -24,6 +24,11 @@ interface StringObject {
 export default defineComponent({
   name: "Asset Detail",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   mounted() {
     this.fetchQuote()
     this.fetchStats()
@@ -52,6 +57,9 @@ export default defineComponent({
   methods: {
     async fetchQuote(): Promise<void> {
       const response = await fetch('/api/stock-quote', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           symbol: this.symbol
@@ -66,6 +74,9 @@ export default defineComponent({
 
     async fetchStats(): Promise<void> {
       const response = await fetch('/api/stock-stats', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           symbol: this.symbol

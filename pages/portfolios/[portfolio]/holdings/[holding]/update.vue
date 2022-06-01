@@ -85,13 +85,20 @@ export default defineComponent({
     },
 
     async getPortfolios(): Promise<void> {
-      const response = await fetch('/api/portfolios-read')
+      const response = await fetch('/api/portfolios-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        }
+      })
         .then(response => response.json())
       this.portfolios = response.portfolios
     },
 
     async updateHolding(): Promise<void> {
       await fetch('/api/holding-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId,
@@ -107,6 +114,9 @@ export default defineComponent({
 
     async deleteHolding(): Promise<void> {
       await fetch('/api/holding-delete', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId

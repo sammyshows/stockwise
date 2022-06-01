@@ -17,10 +17,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
-import createAuth0Client from '@auth0/auth0-spa-js';
-import {useState} from "#app";
-
-
 
 export default defineComponent({
   name: "Portfolio Overview",
@@ -75,7 +71,11 @@ export default defineComponent({
     // or pay for a CRON job with heroku, and although this is repeated every 10 seconds, it will certainly
     // be a while before the app goes live and this overloads the system.
     async updateAssets(): Promise<void> {
-      await fetch('/api/assets-update')
+      await fetch('/api/assets-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        }
+      })
         .then(this.getPortfolios())
       setTimeout(this.updateAssets, 10000)
     },

@@ -28,6 +28,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Portfolio",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   data() {
     return {
       pageDetails: {
@@ -54,6 +59,9 @@ export default defineComponent({
     async createPortfolio(): Promise<void> {
       if (this.validateForm()) {
         await fetch('/api/portfolio-create', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)
         })

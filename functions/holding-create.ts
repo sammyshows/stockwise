@@ -26,6 +26,9 @@ const handler: Handler = async (event, context) => {
             throw 'Asset not found'
     } catch (err) {
         const asset = await fetch(`${process.env.DOMAIN}/api/asset-upsert`, {
+            headers: {
+                authorization: 'Bearer ' + eventBody.token
+            },
             method: 'POST',
             body: JSON.stringify({
                 symbol: eventBody.symbol

@@ -1,11 +1,15 @@
 import { Handler } from "@netlify/functions";
 const client = require("../database/client.ts")
+const { requireAuth } = require('../api/auth');
 import fetch from 'node-fetch'
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const asset = await fetch(`${process.env.DOMAIN}/api/stock-quote`, {
+        headers: {
+            authorization: 'Bearer ' + eventBody.token
+        },
         method: 'POST',
         body: JSON.stringify({
             symbol: eventBody.symbol
@@ -35,6 +39,6 @@ const handler: Handler = async (event, context) => {
             data: createdAsset[0]
         })
     }
-}
+})
 
 export { handler }

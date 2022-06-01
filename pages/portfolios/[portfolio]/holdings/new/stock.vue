@@ -80,6 +80,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Stock",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   mounted() {
     this.setDateTime()
   },
@@ -108,6 +113,9 @@ export default defineComponent({
   methods: {
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           searchTerm: searchTerm
@@ -122,6 +130,9 @@ export default defineComponent({
       this.searchResults = []
       this.quote = {}
       const quote = await fetch('/api/stock-quote', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           symbol: symbol
@@ -158,8 +169,12 @@ export default defineComponent({
 
     async addHolding(): Promise<void> {
       const holdingId = await fetch('/api/holding-create', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
+          token: this.token,
           portfolio: this.portfolioId,
           symbol: this.quote.symbol,
           quantity: this.transaction.quantity,
@@ -174,6 +189,9 @@ export default defineComponent({
 
     async addTransaction(holdingId): Promise<void> {
       await fetch('/api/transaction-create', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: holdingId,

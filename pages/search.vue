@@ -41,6 +41,11 @@ import { ArrowNarrowRightIcon } from '@heroicons/vue/outline'
 export default defineComponent({
   name: "Search",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   components: {
     SearchIcon, ArrowNarrowRightIcon
   },
@@ -62,6 +67,9 @@ export default defineComponent({
   methods: {
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           searchTerm: searchTerm

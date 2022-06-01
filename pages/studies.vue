@@ -22,6 +22,7 @@ export default defineComponent({
   name: "Portfolio Overview",
 
   setup() {
+    const token = useState('authToken').value
     const uuid = useState('uuid').value
     return { uuid }
   },
@@ -61,6 +62,9 @@ export default defineComponent({
   methods: {
     async getStudies(): Promise<void> {
       const response = await fetch('/api/studies-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           uuid: this.uuid

@@ -34,6 +34,11 @@ import { TrashIcon } from "@heroicons/vue/outline";
 export default defineComponent({
   name: "Portfolio Overview",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   components: {
     TrashIcon
   },
@@ -121,6 +126,9 @@ export default defineComponent({
   methods: {
     async getStudy(): Promise<void> {
       const response = await fetch('/api/study-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           studyId: this.studyId
@@ -157,6 +165,9 @@ export default defineComponent({
 
     async updateStudy(): Promise<void> {
       await fetch('/api/study-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           studyId: this.studyId,
@@ -178,6 +189,9 @@ export default defineComponent({
 
     async deleteStudy(): Promise<void> {
       await fetch('/api/study-delete', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           studyId: this.studyId

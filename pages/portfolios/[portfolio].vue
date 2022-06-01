@@ -26,6 +26,11 @@ import { PlusIcon } from "@heroicons/vue/solid";
 export default defineComponent({
   name: "Portfolio Holdings",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   components: {
     PencilIcon, PlusIcon
   },
@@ -71,6 +76,9 @@ export default defineComponent({
   methods: {
     async getPortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           portfolioId: this.portfolioId
@@ -82,6 +90,9 @@ export default defineComponent({
 
     async getHoldings(): Promise<void> {
       const response = await fetch('/api/holdings-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           portfolioId: this.portfolioId
@@ -95,7 +106,11 @@ export default defineComponent({
     // or pay for a CRON job with heroku, and although this is repeated every 30 seconds, it will certainly
     // be a while before the app goes live and this overloads the system.
     async updateAssets(): Promise<void> {
-      await fetch('/api/assets-update')
+      await fetch('/api/assets-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        }
+      })
         .then(this.getHoldings)
       setTimeout(this.updateAssets, 5000)
     },

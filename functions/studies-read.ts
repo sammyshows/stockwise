@@ -1,8 +1,9 @@
 import { Handler } from "@netlify/functions";
+const { requireAuth } = require('../api/auth');
 const client = require("../database/client.ts")
 
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const studies = await client`
@@ -23,6 +24,6 @@ const handler: Handler = async (event, context) => {
             data: studies
         })
     }
-}
+})
 
 export { handler }

@@ -1,8 +1,9 @@
 import { Handler } from "@netlify/functions";
-import fetch from 'node-fetch'
 const client = require("../database/client.ts")
+const { requireAuth } = require('../api/auth');
+import fetch from 'node-fetch'
 
-const handler: Handler = async () => {
+const handler: Handler = requireAuth(async () => {
     // Get all the asset symbols
     const assets = await client`
         SELECT symbol FROM assets;`
@@ -40,10 +41,9 @@ const handler: Handler = async () => {
         FROM asset
         WHERE assets.symbol = asset.symbol;`
 
-
     return {
         statusCode: 200
     }
-}
+})
 
 export { handler }
