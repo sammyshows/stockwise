@@ -52,6 +52,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Transaction",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   mounted() {
     this.getTransaction()
     this.setDateTime()
@@ -84,6 +89,9 @@ export default defineComponent({
   methods: {
     async getTransaction(): Promise<void> {
       const response = await fetch('/api/asset-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId

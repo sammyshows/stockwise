@@ -35,6 +35,11 @@ import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 export default defineComponent({
   name: "Holdings",
 
+  setup() {
+    const token = useState('authToken').value
+    return { token }
+  },
+
   components: {
     ChevronLeftIcon, TrashIcon
   },
@@ -65,6 +70,9 @@ export default defineComponent({
   methods: {
     async getHoldingDetails(): Promise<void> {
       const response = await fetch('/api/asset-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
         method: 'POST',
         body: JSON.stringify({
           holdingId: this.holdingId

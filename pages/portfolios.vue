@@ -26,7 +26,7 @@ export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
-    const token = await useState('authToken').value;
+    const token = await useState('authToken').value
     const uuid = useState('uuid').value
     return { token, uuid }
   },
