@@ -28,8 +28,8 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Portfolio",
 
-  setup() {
-    const token = useState('authToken').value
+  async setup() {
+    const token = await useState('authToken').value
     return { token }
   },
 

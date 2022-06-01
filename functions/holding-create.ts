@@ -1,9 +1,10 @@
 import { Handler } from "@netlify/functions";
+const { requireAuth } = require('../api/auth');
 import fetch from "node-fetch";
 const client = require("../database/client.ts")
 
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
     let holdingId
 
@@ -48,6 +49,6 @@ const handler: Handler = async (event, context) => {
             holdingId: holdingId[0].id
         })
     }
-}
+})
 
 export { handler }

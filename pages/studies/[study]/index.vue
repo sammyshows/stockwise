@@ -34,8 +34,8 @@ import { TrashIcon } from "@heroicons/vue/outline";
 export default defineComponent({
   name: "Portfolio Overview",
 
-  setup() {
-    const token = useState('authToken').value
+  async setup() {
+    const token = await useState('authToken').value
     return { token }
   },
 

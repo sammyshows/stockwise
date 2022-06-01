@@ -24,8 +24,8 @@ interface StringObject {
 export default defineComponent({
   name: "Asset Detail",
 
-  setup() {
-    const token = useState('authToken').value
+  async setup() {
+    const token = await useState('authToken').value
     return { token }
   },
 

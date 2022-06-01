@@ -26,8 +26,8 @@ import { PlusIcon } from "@heroicons/vue/solid";
 export default defineComponent({
   name: "Portfolio Holdings",
 
-  setup() {
-    const token = useState('authToken').value
+  async setup() {
+    const token = await useState('authToken').value
     return { token }
   },
 

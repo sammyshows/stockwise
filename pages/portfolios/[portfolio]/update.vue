@@ -37,8 +37,8 @@ import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 export default defineComponent({
   name: "Edit Portfolio",
 
-  setup() {
-    const token = useState('authToken').value
+  async setup() {
+    const token = await useState('authToken').value
     return { token }
   },
 
