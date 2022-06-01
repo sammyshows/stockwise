@@ -14,7 +14,7 @@ const handler: Handler = async (event, context) => {
         .then(response => response.json())
         .then(asset => asset["data"])
 
-    const assetId = await client`
+    const createdAsset = await client`
         INSERT INTO assets (symbol, current_price, prev_close, name, exchange)
         VALUES (
                 ${asset.symbol}, 
@@ -26,13 +26,13 @@ const handler: Handler = async (event, context) => {
             DO UPDATE SET current_price = ${asset.latestPrice},
                           name = ${asset.companyName || eventBody.name },
                           exchange = ${asset.primaryExchange || eventBody.exchange}
-        RETURNING id;
+        RETURNING id, symbol, name;
     `
 
     return {
         statusCode: 200,
         body: JSON.stringify({
-            data: assetId[0]
+            data: createdAsset[0]
         })
     }
 }

@@ -21,6 +21,11 @@ import { PlusIcon } from "@heroicons/vue/solid";
 export default defineComponent({
   name: "Portfolio Overview",
 
+  setup() {
+    const uuid = useState('uuid').value
+    return { uuid }
+  },
+
   components: {
     PlusIcon
   },
@@ -56,9 +61,12 @@ export default defineComponent({
   methods: {
     async getStudies(): Promise<void> {
       const response = await fetch('/api/studies-read', {
-        method: 'GET'
+        method: 'POST',
+        body: JSON.stringify({
+          uuid: this.uuid
+        })
       })
-          .then(response => response.json())
+        .then(response => response.json())
       this.uncompletedStudies = response.data.filter(study => study.completed_qs < 8)
       this.completedStudies = response.data.filter(study => study.completed_qs === 8)
     },

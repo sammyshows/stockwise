@@ -59,8 +59,6 @@
       <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}({{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%)</span></p>
       <p class="text-tiny my-0.5 text-gray-300">Realised: <span class="font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">+376.82(+8.37%)</span></p>
     </div>
-
-    <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-1 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
   </div>
 </template>
 

@@ -36,7 +36,7 @@ export default defineComponent({
       },
       invalidName: false,
       portfolioDetails: {
-        userId: 1,    // This will use the userId that will be known throughout the app somehow...
+        userId: useState('uuid').value,
         name: '',
         included: true
       }

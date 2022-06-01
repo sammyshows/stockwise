@@ -1,5 +1,5 @@
 <template>
-  <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
+  <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
     <div class="flex justify-between min-h-min px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <div class="flex mr-1 gap-x-3">
@@ -12,9 +12,10 @@
       </div>
     </div>
     <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-    <NuxtChild :holdings="holdings" />
+    <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+    <NuxtChild v-else-if="holdings" :holdings="holdings" />
   </div>
-  <NuxtChild v-else/>
+  <NuxtChild v-if="!viewHoldings" />
 </template>
 
 <script lang="ts">
@@ -30,6 +31,7 @@ export default defineComponent({
   },
 
   mounted() {
+    this.getPortfolio()
     this.getHoldings()
     this.updateAssets()
   },
@@ -46,6 +48,7 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
         title: this.$route.params.portfolioName,
+        subtitle: 'PORTFOLIOS',
         returnPath: '/portfolios'
       },
       tabConfig: {
@@ -59,7 +62,24 @@ export default defineComponent({
     }
   },
 
+  computed: {
+    viewHoldings() {
+      return [this.tabConfig.tabs[0].path, this.tabConfig.tabs[1].path].includes(this.$route.path)
+    }
+  },
+
   methods: {
+    async getPortfolio(): Promise<void> {
+      const response = await fetch('/api/portfolio-read', {
+        method: 'POST',
+        body: JSON.stringify({
+          portfolioId: this.portfolioId
+        })
+      })
+        .then(response => response.json())
+      this.pageDetails.title = response.data[0].name
+    },
+
     async getHoldings(): Promise<void> {
       const response = await fetch('/api/holdings-read', {
         method: 'POST',
@@ -69,8 +89,6 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.holdings = response.data
-      if (response.data.length > 0)
-        this.pageDetails.title = response.data[0].portfolio
     },
 
     // This is NOT a permanent solution, but at the time it was either update every asset price like this

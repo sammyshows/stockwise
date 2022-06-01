@@ -86,6 +86,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Study",
 
+  setup() {
+    const uuid = useState('uuid').value
+    return { uuid }
+  },
+
   mounted() {
     if (this.$route.params.assetSymbol)
       this.fetchQuote(this.$route.params.assetSymbol)
@@ -144,7 +149,8 @@ export default defineComponent({
       await fetch('/api/study-create', {
         method: 'POST',
         body: JSON.stringify({
-          userId: 1,
+          manualEntry: this.manualForm,
+          uuid: this.uuid,
           name: this.manualForm ? this.name : null,
           symbol: this.manualForm ? this.symbol : this.quote.symbol,
           type: this.studyType

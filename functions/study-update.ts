@@ -5,7 +5,7 @@ const client = require("../database/client.ts")
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    const study = await client`
+    await client`
         UPDATE studies
         SET notes = ${eventBody.notes || null},
             question_one = ${eventBody.question_one},
