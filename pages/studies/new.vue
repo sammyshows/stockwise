@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex justify-between mb-10">
+    <div class="flex justify-between mb-10 px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 

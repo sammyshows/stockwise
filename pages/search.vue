@@ -8,7 +8,7 @@
           <SearchIcon class="h-7 w-7" aria-hidden="true" />
         </div>
         <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/30 w-full pl-12 border-gray-600 rounded-md" />
-        <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-bright-cyan bg-gray-800 border border-t-0 border-gray-600 rounded-b-lg z-10">
+        <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
           <NuxtLink v-for="result in searchResults" @click="setSearches(result)" :to="{ name: 'assets-symbol-summary', params: { symbol: result.symbol, assetSymbol: result.symbol + ' : ' + result.exchange, assetName: result.securityName } }" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
             <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
             <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
@@ -29,6 +29,8 @@
           </NuxtLink>
         </div>
       </div>
+      <!--  this div below is used to "close" the search results box when a user clicks away  -->
+      <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0"></div>
     </div>
   </NuxtLayout>
 </template>
@@ -66,18 +68,24 @@ export default defineComponent({
 
   methods: {
     async fetchSearch(searchTerm: string): Promise<void> {
-      const data = await fetch('/api/stock-search', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          searchTerm: searchTerm
+      if (searchTerm !== '') {
+        const data = await fetch('/api/stock-search', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            searchTerm: searchTerm
+          })
         })
-      })
-        .then(response => response.json())
+          .then(response => response.json())
 
-      this.searchResults = data.data.slice(0,10)
+        this.searchResults = data.data.slice(0,10)
+      }
+    },
+
+    clearSearchResults() {
+      this.searchResults = []
     },
 
     getSearches() {
