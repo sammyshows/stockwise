@@ -37,7 +37,8 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
-    return { token }
+    const uuid = useState('uuid').value
+    return { token, uuid }
   },
 
   components: {
@@ -88,7 +89,11 @@ export default defineComponent({
       const response = await fetch('/api/portfolios-read', {
         headers: {
           authorization: 'Bearer ' + this.token
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          uuid: this.uuid
+        })
       })
         .then(response => response.json())
       this.portfolios = response.portfolios

@@ -32,6 +32,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             },
             method: 'POST',
             body: JSON.stringify({
+                token: eventBody.token,
                 symbol: eventBody.symbol
             })
         })

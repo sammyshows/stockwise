@@ -6,6 +6,8 @@ const client = require("../database/client.ts")
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
+    console.log(eventBody)
+
     await client`
         UPDATE transactions
         SET type = ${eventBody.type},
@@ -14,9 +16,6 @@ const handler: Handler = requireAuth(async (event, context) => {
             exchange_rate = ${eventBody.exchangeRate},
             timestamp = ${eventBody.timestamp}
         WHERE id = ${eventBody.transactionId};`
-
-    await client`
-        CALL uspUpdateHolding(${eventBody.holdingId});`
 
     return {
         statusCode: 200

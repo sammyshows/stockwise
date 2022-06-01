@@ -7,11 +7,9 @@ const client = require("../database/client.ts")
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
     let studyId
-    console.log(eventBody)
 
     if (eventBody.manualEntry) {
         // If it's a manual entry
-        console.log('here')
         studyId = await client`
             INSERT INTO studies (user_id, name, symbol, type)
             VALUES (${eventBody.uuid}, ${eventBody.name}, ${eventBody.symbol}, ${eventBody.type})
@@ -35,6 +33,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                 },
                 method: 'POST',
                 body: JSON.stringify({
+                    token: eventBody.token,
                     symbol: eventBody.symbol
                 })
             })

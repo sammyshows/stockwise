@@ -20,8 +20,7 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     const createdAsset = await client`
         INSERT INTO assets (symbol, current_price, prev_close, name, exchange)
-        VALUES (
-                ${asset.symbol}, 
+        VALUES (${asset.symbol}, 
                 ${asset.latestPrice}, 
                 ${asset.previousClose}, 
                 ${asset.companyName || eventBody.name }, 

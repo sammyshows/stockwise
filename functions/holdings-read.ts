@@ -22,8 +22,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             INNER JOIN assets ON holdings.asset_id = assets.id 
             INNER JOIN portfolios ON holdings.portfolio_id = portfolios.id 
         WHERE portfolios.id = ${eventBody.portfolioId}
-        ORDER BY holdings.created_at;
-    `
+        ORDER BY holdings.created_at;`
 
     return {
         statusCode: 200,
