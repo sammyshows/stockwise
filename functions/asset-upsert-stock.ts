@@ -19,18 +19,18 @@ const handler: Handler = requireAuth(async (event, context) => {
         .then(asset => asset["data"])
 
     const createdAsset = await client`
-        INSERT INTO assets (symbol, current_price, prev_close, name, exchange)
+        INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type)
         VALUES (${asset.symbol}, 
                 ${asset.latestPrice}, 
                 ${asset.previousClose}, 
-                ${asset.companyName || eventBody.name }, 
-                ${asset.primaryExchange || eventBody.exchange})
+                ${asset.companyName}, 
+                ${asset.primaryExchange},
+                0)
         ON CONFLICT (symbol) 
             DO UPDATE SET current_price = ${asset.latestPrice},
                           name = ${asset.companyName || eventBody.name },
                           exchange = ${asset.primaryExchange || eventBody.exchange}
-        RETURNING id, symbol, name;
-    `
+        RETURNING id;`
 
     return {
         statusCode: 200,

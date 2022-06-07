@@ -3,10 +3,10 @@
     <div class="flex justify-between min-h-min px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <div class="flex mr-1 gap-x-3">
-        <NuxtLink :to="{ path: `/portfolios/${portfolioId}/holdings/new` }">
+        <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
           <PlusIcon class="h-8 w-8" />
         </NuxtLink>
-        <NuxtLink :to="{ path: `/portfolios/${portfolioId}/update` }">
+        <NuxtLink :to="{ name: `portfolios-portfolio-update`, params: { portfolioId: portfolioId } }">
           <PencilIcon class="h-7 w-7 mt-0.5" />
         </NuxtLink>
       </div>

@@ -6,7 +6,7 @@ import fetch from 'node-fetch'
 const handler: Handler = requireAuth(async () => {
     // Get all the asset symbols
     const assets = await client`
-        SELECT symbol FROM assets;`
+        SELECT symbol FROM assets WHERE type = 0;`
             .then(response => response.map(obj => obj.symbol))
 
     // Use the symbols from above to do a batch call to the IEX Cloud API for quotes on all of them.

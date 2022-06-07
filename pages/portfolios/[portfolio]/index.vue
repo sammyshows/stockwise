@@ -7,7 +7,7 @@
       <p class="w-16 text-right ml-2">TOTAL</p>
     </div>
     <div v-if="holdings != null && holdings.length > 0" class="grow overflow-scroll px-3">
-      <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, assetSymbol: holding.symbol + ' : ' + holding.exchange, assetName: holding.name } }">
+      <NuxtLink v-for="holding in holdings" :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.id, assetSymbol: holding.symbol, assetName: holding.name } }">
         <div class="mb-3">
           <div class="flex justify-end">
             <div class="grow">

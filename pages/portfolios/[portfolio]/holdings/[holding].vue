@@ -81,7 +81,7 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.transactions = response.data
-      this.pageDetails.title = response.data[0].symbol + " : " + response.data[0].exchange
+      this.pageDetails.title = response.data[0].symbol
       this.pageDetails.subtitle = response.data[0].name
     },
 

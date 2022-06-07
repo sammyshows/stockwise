@@ -8,7 +8,7 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     await client`
         INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) 
-        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate}, ${eventBody.timestamp});`
+        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate || null}, ${eventBody.timestamp});`
 
     return {
         statusCode: 200

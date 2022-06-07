@@ -1,13 +1,13 @@
 <template>
   <div class="h-full flex flex-col px-3">
-    <div class="flex justify-between mb-10">
-      <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-    </div>
-
     <div v-if="$route.path === `/portfolios/${$route.params.portfolio}/holdings/new`">
+      <div class="flex justify-between h-14 mb-10">
+        <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
+      </div>
+
       <div class="flex flex-col grow gap-y-10 px-12">
         <p class="text-sm text-center">What type of holding would you like to add?</p>
-        <NuxtLink v-for="holdingType in holdingTypes" :to="{ path: `new/${holdingType}` }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+        <NuxtLink v-for="holdingType in holdingTypes" :to="{ name: `portfolios-portfolio-holdings-new-${holdingType}`, params: { portfolioName: pageDetails.subtitle } }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-xl uppercase">{{ holdingType }}</h2>
         </NuxtLink>
       </div>
@@ -22,18 +22,41 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "New Holding",
 
+  async setup() {
+    const token = await useState('authToken').value
+    return { token }
+  },
+
+  mounted() {
+    this.getPortfolio()
+  },
+
   data() {
     return {
       pageDetails: {
         title: 'Add Holding',
+        subtitle: this.$route.params.portfolioName,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
+      portfolioId: this.$route.params.portfolio,
       holdingTypes: ['stock', 'forex', 'cash']
+    }
+  },
+
+  methods: {
+    async getPortfolio(): Promise<void> {
+      const response = await fetch('/api/portfolio-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          portfolioId: this.portfolioId
+        })
+      })
+          .then(response => response.json())
+      this.pageDetails.subtitle = response.data[0].name
     }
   }
 })
 </script>
-
-<style scoped>
-
-</style>

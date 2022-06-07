@@ -1,5 +1,9 @@
 <template>
   <div class="h-full flex flex-col">
+    <div class="flex justify-between h-14 mb-10">
+      <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
+    </div>
+
     <div class="flex flex-col grow px-5">
       <div class="relative mb-3">
         <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
@@ -86,11 +90,17 @@ export default defineComponent({
   },
 
   mounted() {
+    this.getPortfolio()
     this.setDateTime()
   },
 
   data() {
     return {
+      pageDetails: {
+        title: 'Add Stock',
+        subtitle: this.$route.params.portfolioName,
+        returnPath: `/portfolios/${this.$route.params.portfolio}`
+      },
       portfolioId: this.$route.params.portfolio,
       searchResults: [],
       quote: null as ({} | null),
@@ -111,6 +121,20 @@ export default defineComponent({
   },
 
   methods: {
+    async getPortfolio(): Promise<void> {
+      const response = await fetch('/api/portfolio-read', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          portfolioId: this.portfolioId
+        })
+      })
+          .then(response => response.json())
+      this.pageDetails.subtitle = response.data[0].name
+    },
+
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
         headers: {
@@ -168,7 +192,7 @@ export default defineComponent({
     },
 
     async addHolding(): Promise<void> {
-      const holdingId = await fetch('/api/holding-create', {
+      const holdingId = await fetch('/api/holding-create-stock', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -176,9 +200,7 @@ export default defineComponent({
         body: JSON.stringify({
           token: this.token,
           portfolio: this.portfolioId,
-          symbol: this.quote.symbol,
-          quantity: this.transaction.quantity,
-          initialValue: this.transaction.initialPrice * this.transaction.quantity
+          symbol: this.quote.symbol
         })
       })
         .then(response => response.json())

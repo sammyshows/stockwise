@@ -21,19 +21,21 @@ const handler: Handler = requireAuth(async (event, context) => {
         INSERT INTO holdings (portfolio_id, asset_id) 
         SELECT ${eventBody.portfolio}, id
         FROM assets
-        WHERE assets.symbol = ${eventBody.symbol}
+        WHERE assets.symbol = ${eventBody.from + eventBody.to}
         RETURNING id;`
         if (!holdingId[0])
             throw 'Asset not found'
     } catch (err) {
-        const asset = await fetch(`${process.env.DOMAIN}/api/asset-upsert`, {
+        // This logic is reusable for both forex and stocks, so just do a simple check to see which function to call:
+        const asset = await fetch(process.env.DOMAIN + '/api/asset-upsert-forex', {
             headers: {
                 authorization: 'Bearer ' + eventBody.token
             },
             method: 'POST',
             body: JSON.stringify({
                 token: eventBody.token,
-                symbol: eventBody.symbol
+                from: eventBody.from,
+                to: eventBody.to
             })
         })
             .then(response => response.json())
