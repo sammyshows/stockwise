@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex justify-between h-14 mb-10">
+    <div class="flex justify-between h-14 mb-5">
       <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 
@@ -8,7 +8,7 @@
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-sm">
           <TransitionGroup name="form">
-            <div class="flex w-full gap-x-3">
+            <div key="1" class="flex w-full gap-x-3">
               <div class="grow">
                 <label for="from" class="flex items-end">From</label>
                 <select v-model="transaction.from" @change="getQuote()" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
@@ -25,7 +25,7 @@
               </div>
             </div>
 
-            <div v-if="quote" class="h-16 px-3 flex items-center justify-center">
+            <div key="2" v-if="quote" class="h-16 px-3 flex items-center justify-center">
               <div v-if="Object.keys(quote).length !== 0" class="flex flex-col">
                 <div class="w-full flex text-base">
                   <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
@@ -40,7 +40,7 @@
               <Spinner v-else />
             </div>
 
-            <div>
+            <div key="3">
               <label for="type" class="flex items-end">Transaction type</label>
               <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
                 <option value="" disabled selected hidden></option>
@@ -49,16 +49,17 @@
               </select>
             </div>
 
-            <div>
+            <div key="4">
               <label for="amount" class="flex items-end">Amount</label>
               <input v-model="transaction.amount" id="amount" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
-            <div>
+
+            <div key="5">
               <label for="initial_rate" class="flex items-end">Initial rate</label>
               <input v-model="transaction.initialRate" id="initial_rate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
 
-            <div class="w-full flex justify-around gap-x-4">
+            <div key="6" class="w-full flex justify-around gap-x-4">
               <div>
                 <label for="date">Date</label>
                 <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />

@@ -1,21 +1,23 @@
 <template>
-  <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
-    <div class="flex justify-between min-h-min px-3">
-      <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-      <div class="flex mr-1 gap-x-3">
-        <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
-          <PlusIcon class="h-8 w-8" />
-        </NuxtLink>
-        <NuxtLink :to="{ name: `portfolios-portfolio-update`, params: { portfolioId: portfolioId } }">
-          <PencilIcon class="h-7 w-7 mt-0.5" />
-        </NuxtLink>
+  <div class="flex grow">
+    <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
+      <div class="flex justify-between min-h-min px-3">
+        <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
+        <div class="flex mr-1 gap-x-3">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
+            <PlusIcon class="h-8 w-8" />
+          </NuxtLink>
+          <NuxtLink :to="{ name: `portfolios-portfolio-update`, params: { portfolioId: portfolioId } }">
+            <PencilIcon class="h-7 w-7 mt-0.5" />
+          </NuxtLink>
+        </div>
       </div>
+      <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
+      <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+      <NuxtChild v-else-if="holdings" :holdings="holdings" />
     </div>
-    <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-    <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
-    <NuxtChild v-else-if="holdings" :holdings="holdings" />
+    <NuxtChild v-if="!viewHoldings" />
   </div>
-  <NuxtChild v-if="!viewHoldings" />
 </template>
 
 <script lang="ts">
