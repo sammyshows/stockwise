@@ -39,7 +39,7 @@ const handler: Handler = requireAuth(async () => {
         SET current_price = asset.current_price,
             prev_close = asset.prev_close
         FROM asset
-        WHERE assets.symbol = asset.symbol;`
+        WHERE assets.symbol = asset.symbol AND type = 0;`
 
     return {
         statusCode: 200

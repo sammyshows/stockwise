@@ -20,7 +20,7 @@
                   </div>
                 </div>
 
-                <button @click="toggleManual" key="5" :class="{ 'mb-3': !quote }" class="w-max mt-4 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
+                <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
 
                 <div v-if="quote" class="h-16 px-3 mb-3">
                   <p class="text-center truncate">{{ quote.companyName }}</p>
@@ -49,12 +49,17 @@
                 <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
                 <div>
                   <label for="name" class="flex items-end">Name</label>
-                  <input v-model="name" id="name" type="text" autocomplete="off" placeholder="e.g. Microsoft Inc" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+                  <input v-model="transaction.name" id="name" type="text" autocomplete="off" placeholder="e.g. Microsoft Inc" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
                 </div>
 
                 <div class="mt-5">
                   <label for="symbol" class="flex items-end">Symbol</label>
-                  <input v-model="symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. MSFT" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+                  <input v-model="transaction.symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. MSFT" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+                </div>
+
+                <div class="mt-5">
+                  <label for="currentPrice" class="flex items-end">Current price</label>
+                  <input v-model="transaction.currentPrice" id="currentPrice" type="text" autocomplete="off" placeholder="e.g. 271.29" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
                 </div>
 
                 <button @click="toggleManual" key="5" class="w-max mt-4 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
@@ -137,6 +142,9 @@ export default defineComponent({
       invalidPrice: false,
       invalidExchange: false,
       transaction: {
+        name: null as (string | null),
+        symbol: null as (string | null),
+        currentPrice: null as (number | null),
         type: '',
         quantity: null as (number | null),
         initialPrice: null as (number | null),
@@ -231,7 +239,10 @@ export default defineComponent({
         body: JSON.stringify({
           token: this.token,
           portfolio: this.portfolioId,
-          symbol: this.quote.symbol
+          manualEntry: this.manualForm,
+          name: this.transaction.name,
+          symbol: this.manualForm ? this.transaction.symbol : this.quote.symbol,
+          currentPrice: this.transaction.currentPrice
         })
       })
         .then(response => response.json())
@@ -259,8 +270,8 @@ export default defineComponent({
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,
-            assetSymbol: this.quote.symbol + ' : ' + this.quote.primaryExchange,
-            assetName: this.quote.companyName
+            assetSymbol: this.manualForm ? this.transaction.symbol : this.quote.symbol,
+            assetName: this.manualForm ? this.transaction.name : this.quote.companyName
           }
         }))
     }

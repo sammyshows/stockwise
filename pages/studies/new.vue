@@ -173,7 +173,6 @@ export default defineComponent({
             study: data.studyId
           }
         }))
-
     }
   }
 })

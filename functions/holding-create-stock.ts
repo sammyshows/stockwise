@@ -16,39 +16,55 @@ const handler: Handler = requireAuth(async (event, context) => {
     // This is because of a stored function that updates the share_count, initial_value and transaction_count automatically
     // on insert or update.
 
-    try {
-        holdingId = await client`
-        INSERT INTO holdings (portfolio_id, asset_id) 
-        SELECT ${eventBody.portfolio}, id
-        FROM assets
-        WHERE assets.symbol = ${eventBody.symbol}
-        RETURNING id;`
-        if (!holdingId[0])
-            throw 'Asset not found'
-    } catch (err) {
-        // This logic is reusable for both forex and stocks, so just do a simple check to see which function to call:
-        const asset = await fetch(process.env.DOMAIN + '/api/asset-upsert-stock', {
-            headers: {
-                authorization: 'Bearer ' + eventBody.token
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                token: eventBody.token,
-                symbol: eventBody.symbol
-            })
-        })
-            .then(response => response.json())
+    if (eventBody.manualEntry) {
+        // If it's a manual entry
+        const assetId = await client`
+            INSERT INTO assets (symbol, current_price, prev_close, name, type) 
+            VALUES (${eventBody.symbol}, ${eventBody.currentPrice}, ${eventBody.currentPrice}, ${eventBody.name}, 3) 
+            RETURNING id;`
+                .then(response => response[0].id)
 
         holdingId = await client`
-            INSERT INTO holdings (portfolio_id, asset_id) 
-            VALUES (${eventBody.portfolio}, ${asset['data'].id})
+            INSERT INTO holdings (portfolio_id, asset_id)
+            VALUES (${eventBody.portfolio}, ${assetId})
             RETURNING id;`
+            .then(response => response[0].id)
+    } else {
+        try {
+            holdingId = await client`
+                INSERT INTO holdings (portfolio_id, asset_id)
+                SELECT ${eventBody.portfolio}, id
+                FROM assets
+                WHERE assets.symbol = ${eventBody.symbol} 
+                RETURNING id;`
+                    .then(response => response[0].id)
+            if (!holdingId)
+                throw 'Asset not found'
+        } catch (err) {
+            const asset = await fetch(process.env.DOMAIN + '/api/asset-upsert-stock', {
+                headers: {
+                    authorization: 'Bearer ' + eventBody.token
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    token: eventBody.token,
+                    symbol: eventBody.symbol
+                })
+            })
+                .then(response => response.json())
+
+            holdingId = await client`
+                INSERT INTO holdings (portfolio_id, asset_id)
+                VALUES (${eventBody.portfolio}, ${asset['data'].id}) 
+                RETURNING id;`
+                .then(response => response[0].id)
+        }
     }
 
     return {
         statusCode: 200,
         body: JSON.stringify({
-            holdingId: holdingId[0].id
+            holdingId: holdingId
         })
     }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex grow">
+  <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
