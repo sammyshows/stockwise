@@ -8,7 +8,21 @@
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-sm">
           <TransitionGroup name="form">
-            <div key="1" class="flex w-full gap-x-3">
+            <div key="1" v-if="quote" class="h-16">
+              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col justify-center w-full h-full px-3 rounded border border-gray-600">
+                <div class="w-full flex text-base">
+                  <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
+                  <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
+                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $addSign($formatNumber(quote.currentPrice - quote.prevClose, 5)) }}</p>
+                </div>
+                <div class="w-full flex text-tiny">
+                  <p class="grow truncate mr-3">{{ quote.name }}</p>
+                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $addSign($formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2)) }}%</p>
+                </div>
+              </div>
+              <Spinner v-else />
+            </div>
+            <div key="2" class="flex w-full gap-x-3">
               <div class="grow">
                 <label for="from" class="flex items-end">From</label>
                 <select v-model="transaction.from" @change="getQuote()" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
@@ -23,21 +37,7 @@
                   <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
                 </select>
               </div>
-            </div>
 
-            <div key="2" v-if="quote" class="h-16 px-3 flex items-center justify-center">
-              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col w-full">
-                <div class="w-full flex text-base">
-                  <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
-                  <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
-                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $addSign($formatNumber(quote.currentPrice - quote.prevClose, 5)) }}</p>
-                </div>
-                <div class="w-full flex text-tiny">
-                  <p class="grow truncate mr-3">{{ quote.name }}</p>
-                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $addSign($formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2)) }}%</p>
-                </div>
-              </div>
-              <Spinner v-else />
             </div>
 
             <div key="3">
