@@ -69,10 +69,11 @@
                 <input v-model="transaction.time" id="time" type="time" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
               </div>
             </div>
+
+            <div key="7" class="grow flex items-end justify-end text-right mb-7">
+              <ButtonsCyan text="SAVE" @clicked="addHolding()" />
+            </div>
           </TransitionGroup>
-        </div>
-        <div class="text-right mb-7">
-          <ButtonsCyan text="SAVE" @clicked="addHolding()" />
         </div>
       </div>
     </div>
@@ -108,7 +109,7 @@ export default defineComponent({
       ],
       quote: null as ({} | null),
       transaction: {
-        type: null as (string | null),
+        type: null as (number | null),
         from: null as (string | null),
         to: null as (string | null),
         amount: null as (number | null),

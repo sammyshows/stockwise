@@ -96,7 +96,7 @@
                 </div>
               </div>
 
-              <div class="text-right mb-7">
+              <div class="grow flex items-end justify-end text-right mb-7">
                 <ButtonsCyan text="SAVE" @clicked="addHolding()" />
               </div>
             </TransitionGroup>
@@ -145,7 +145,7 @@ export default defineComponent({
         name: null as (string | null),
         symbol: null as (string | null),
         currentPrice: null as (number | null),
-        type: '',
+        type: null as (number | null),
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),

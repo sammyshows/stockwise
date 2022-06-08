@@ -35,7 +35,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                 INSERT INTO holdings (portfolio_id, asset_id)
                 SELECT ${eventBody.portfolio}, id
                 FROM assets
-                WHERE assets.symbol = ${eventBody.symbol} 
+                WHERE assets.symbol = ${eventBody.symbol} AND assets.type = 0
                 RETURNING id;`
                     .then(response => response[0].id)
             if (!holdingId)
