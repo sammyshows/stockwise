@@ -26,7 +26,7 @@
             </div>
 
             <div key="2" v-if="quote" class="h-16 px-3 flex items-center justify-center">
-              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col">
+              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col w-full">
                 <div class="w-full flex text-base">
                   <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
                   <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
