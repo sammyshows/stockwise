@@ -4,44 +4,62 @@
       <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 
-    <div class="flex flex-col grow px-5">
+    <div class="flex flex-col grow px-3">
       <div class="flex flex-col grow pb-3">
         <div class="flex flex-col grow justify-between gap-y-4 mt-3">
-          <div class="h-0 px-2 flex flex-col grow overflow-scroll gap-y-4 text-sm">
+          <div class="h-0 px-4 flex flex-col grow overflow-scroll gap-y-4 text-sm">
             <TransitionGroup name="form">
-              <div class="relative" >
-                <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
-                <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
-                  <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
-                    <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
-                    <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+              <div v-if="!manualForm">
+                <div class="relative" >
+                  <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
+                  <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
+                    <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                      <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
+                      <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+                    </div>
                   </div>
+                </div>
+
+                <button @click="toggleManual" key="5" :class="{ 'mb-3': !quote }" class="w-max mt-4 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
+
+                <div v-if="quote" class="h-16 px-3 mb-3">
+                  <p class="text-center truncate">{{ quote.companyName }}</p>
+                  <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
+                    <div class="w-1 grow text-right">
+                      <p class="truncate">{{ quote.symbol }}</p>
+                      <p class="truncate">Current price</p>
+                      <p class="truncate">Daily movement</p>
+                    </div>
+                    <div class="w-3 text-center">
+                      <p>:</p>
+                      <p>:</p>
+                      <p>:</p>
+                    </div>
+                    <div class="w-1 grow">
+                      <p class="truncate">{{ quote.primaryExchange }}</p>
+                      <p class="truncate">{{ quote.latestPrice }}</p>
+                      <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+                    </div>
+                  </div>
+                  <Spinner class="h-16" v-else />
                 </div>
               </div>
 
-              <button @click="toggleManual" key="5" :class="{ 'mb-3': !quote }" class="w-max px-4 py-1 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
-
-              <div v-if="quote" class="h-16 px-3 mb-3">
-                <p class="text-center truncate">{{ quote.companyName }}</p>
-                <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
-                  <div class="w-1 grow text-right">
-                    <p class="truncate">{{ quote.symbol }}</p>
-                    <p class="truncate">Current price</p>
-                    <p class="truncate">Daily movement</p>
-                  </div>
-                  <div class="w-3 text-center">
-                    <p>:</p>
-                    <p>:</p>
-                    <p>:</p>
-                  </div>
-                  <div class="w-1 grow">
-                    <p class="truncate">{{ quote.primaryExchange }}</p>
-                    <p class="truncate">{{ quote.latestPrice }}</p>
-                    <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
-                  </div>
+              <div v-else key="3" class="w-full">
+                <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
+                <div>
+                  <label for="name" class="flex items-end">Name</label>
+                  <input v-model="name" id="name" type="text" autocomplete="off" placeholder="e.g. Microsoft Inc" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
                 </div>
-                <Spinner class="h-16" v-else />
+
+                <div class="mt-5">
+                  <label for="symbol" class="flex items-end">Symbol</label>
+                  <input v-model="symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. MSFT" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+                </div>
+
+                <button @click="toggleManual" key="5" class="w-max mt-4 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
               </div>
+
               <div>
                 <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
@@ -104,6 +122,7 @@ export default defineComponent({
 
   data() {
     return {
+      manualForm: false,
       pageDetails: {
         title: 'Add Stock',
         subtitle: this.$route.params.portfolioName,
@@ -192,6 +211,10 @@ export default defineComponent({
 
       this.transaction.date = yyyy + '-' + MM + '-' + dd
       this.transaction.time = hh + ':' + mm
+    },
+
+    toggleManual() {
+      this.manualForm = !this.manualForm
     },
 
     parseDate() {
