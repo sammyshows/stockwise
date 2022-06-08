@@ -6,71 +6,69 @@
 
     <div class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
-        <div class="h-0 px-2 flex flex-col grow overflow-scroll gap-y-4 text-sm">
-          <div>
-            <label for="type" class="flex items-end">Transaction type</label>
-            <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option value="" disabled selected hidden></option>
-              <option :value="0">BUY</option>
-              <option :value="1">SELL</option>
-            </select>
-          </div>
-          <div>
-            <label for="from" class="flex items-end">From</label>
-            <select v-model="transaction.from" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option value="" disabled selected hidden></option>
-              <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
-            </select>
-          </div>
-          <div>
-            <label for="to" class="flex items-end">To</label>
-            <select v-model="transaction.to" id="to" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option value="" disabled selected hidden></option>
-              <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
-            </select>
-          </div>
+        <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-sm">
+          <TransitionGroup name="form">
+            <div class="flex w-full gap-x-3">
+              <div class="grow">
+                <label for="from" class="flex items-end">From</label>
+                <select v-model="transaction.from" @change="getQuote()" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                  <option value="" disabled selected hidden></option>
+                  <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+                </select>
+              </div>
+              <div class="grow">
+                <label for="to" class="flex items-end">To</label>
+                <select v-model="transaction.to" @change="getQuote()" id="to" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                  <option value="" disabled selected hidden></option>
+                  <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+                </select>
+              </div>
+            </div>
 
-<!--          <div v-if="quote" class="h-20 px-3">-->
-<!--            <p class="text-center truncate">{{ quote.companyName }}</p>-->
-<!--            <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">-->
-<!--              <div class="w-1 grow text-right">-->
-<!--                <p class="truncate">{{ quote.symbol }}</p>-->
-<!--                <p class="truncate">Current price</p>-->
-<!--                <p class="truncate">Daily movement</p>-->
-<!--              </div>-->
-<!--              <div class="w-3 text-center">-->
-<!--                <p>:</p>-->
-<!--                <p>:</p>-->
-<!--                <p>:</p>-->
-<!--              </div>-->
-<!--              <div class="w-1 grow">-->
-<!--                <p class="truncate">{{ quote.primaryExchange }}</p>-->
-<!--                <p class="truncate">{{ quote.latestPrice }}</p>-->
-<!--                <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <Spinner v-else />-->
-<!--          </div>-->
+            <div v-if="quote" class="h-16 px-3 flex items-center justify-center">
+              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col">
+                <div class="w-full flex text-base">
+                  <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
+                  <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
+                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $addSign($formatNumber(quote.currentPrice - quote.prevClose, 5)) }}</p>
+                </div>
+                <div class="w-full flex text-tiny">
+                  <p class="grow truncate mr-3">{{ quote.name }}</p>
+                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $addSign($formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2)) }}%</p>
+                </div>
+              </div>
+              <Spinner v-else />
+            </div>
 
-          <div>
-            <label for="amount" class="flex items-end">Amount</label>
-            <input v-model="transaction.amount" id="amount" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div>
-            <label for="initial_rate" class="flex items-end">Initial rate</label>
-            <input v-model="transaction.initialRate" id="initial_rate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-
-          <div class="w-full flex justify-around gap-x-4">
             <div>
-              <label for="date">Date</label>
-              <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              <label for="type" class="flex items-end">Transaction type</label>
+              <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <option value="" disabled selected hidden></option>
+                <option :value="0">BUY</option>
+                <option :value="1">SELL</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="amount" class="flex items-end">Amount</label>
+              <input v-model="transaction.amount" id="amount" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
             <div>
-              <label for="time">Time</label>
-              <input v-model="transaction.time" id="time" type="time" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              <label for="initial_rate" class="flex items-end">Initial rate</label>
+              <input v-model="transaction.initialRate" id="initial_rate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
-          </div>
+
+            <div class="w-full flex justify-around gap-x-4">
+              <div>
+                <label for="date">Date</label>
+                <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              </div>
+              <div>
+                <label for="time">Time</label>
+                <input v-model="transaction.time" id="time" type="time" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              </div>
+            </div>
+          </TransitionGroup>
         </div>
         <div class="text-right mb-7">
           <ButtonsCyan text="SAVE" @clicked="addHolding()" />
@@ -156,6 +154,24 @@ export default defineComponent({
       return date.toISOString()
     },
 
+    async getQuote(): Promise<void> {
+      if (this.transaction.from && this.transaction.to) {
+        this.quote = {}
+        const data = await fetch('/api/iex-quote-forex', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            from: this.transaction.from,
+            to: this.transaction.to
+          })
+        })
+            .then(response => response.json())
+        this.quote = data
+      }
+    },
+
     async addHolding(): Promise<void> {
       const holdingId = await fetch('/api/holding-create-forex', {
         headers: {
@@ -201,3 +217,5 @@ export default defineComponent({
   }
 })
 </script>
+
+

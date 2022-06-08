@@ -179,7 +179,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style>
 .form-move, /* apply transition to moving elements */
 .form-enter-active {
   transition: all 0.5s ease;

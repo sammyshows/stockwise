@@ -4,7 +4,7 @@
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" />
     </div>
-    <div class="flex flex-col grow px-5">
+    <div v-if="loaded" class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
@@ -16,14 +16,14 @@
             </select>
           </div>
           <div>
-            <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="quantity">Quantity<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+            <label for="initialPrice">Price<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
-          <div>
+          <div v-if="transaction.assetType === 0">
             <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
             <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
@@ -82,6 +82,7 @@ export default defineComponent({
 
   data() {
     return {
+      loaded: false,
       holdingId: this.$route.params.holding,
       portfolioId: this.$route.params.portfolio,
       openModal: false,
@@ -96,6 +97,7 @@ export default defineComponent({
       invalidExchange: false,
       transaction: {
         id: this.$route.params.transaction,
+        assetType: null as (number | null),
         type: null as (number | null),
         quantity: null as (number | null),
         initialPrice: null as (number | null),
@@ -119,9 +121,11 @@ export default defineComponent({
       })
         .then(response => response.json())
         .then(data => data.transaction[0])
-      this.pageDetails.title = response.symbol + " : " + response.exchange
+      this.loaded = true
+      this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
       this.setDateTime(response.timestamp)
+      this.transaction.assetType = response.asset_type
       this.transaction.type = response.type
       this.transaction.quantity = Math.abs(response.quantity)
       this.transaction.initialPrice = response.initial_price
