@@ -11,7 +11,7 @@
             <label for="from" class="flex items-end">Currency</label>
             <select v-model="transaction.currency" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="" disabled selected hidden></option>
-              <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+              <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
             </select>
           </div>
 
@@ -72,9 +72,33 @@ export default defineComponent({
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,
-      currencies: [
-        'AUD', 'CAD', 'CHF', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'JPY', 'MXN', 'NOK', 'NZD', 'SEK', 'SGD', 'THB', 'TRY', 'USD',
-      ],
+      currencies: {
+        AUD: "Australian Dollar",
+        CAD: "Canadian Dollar",
+        CHF: "Swiss Franc",
+        CNH: "Chinese Yuan Renminbi (HK)",
+        CZK: "Czech Koruna",
+        DKK: "Danish Krone",
+        EUR: "Euro",
+        GBP: "British Pound",
+        HKD: "Hong Kong Dollar",
+        HUF: "Hungarian Forint",
+        ILS: "Israeli New Shekel",
+        INR: "Indian Rupee",
+        JPY: "Japanese Yen",
+        MXN: "Mexican Peso",
+        NOK: "Norwegian Krone",
+        NZD: "New Zealand Dollar",
+        PLN: "Polish Zloty",
+        RON: "Romanian Leu",
+        RUB: "Russian Ruble",
+        SEK: "Swedish Krona",
+        SGD: "Singapore Dollar",
+        THB: "Thai Baht",
+        TRY: "Turkish Lira",
+        USD: "U.S. Dollar",
+        ZAR: "South African Rand"
+      },
       transaction: {
         type: null as (number | null),
         currency: null as (string | null),
@@ -154,14 +178,14 @@ export default defineComponent({
           timestamp: this.parseDate()
         })
       })
-          .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',
-            params: {
-              portfolio: this.portfolioId,
-              holding: holdingId,
-              // assetSymbol: this.transaction.from + this.transaction.to,
-              // assetName: this.quote.companyName
-            }
-          }))
+        .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+          params: {
+            portfolio: this.portfolioId,
+            holding: holdingId,
+            assetSymbol: this.transaction.currency,
+            assetName: this.currencies[this.transaction.currency]
+          }
+        }))
     }
   }
 })

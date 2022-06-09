@@ -25,7 +25,8 @@ const handler: Handler = requireAuth(async (event, context) => {
                 ${quote["prevClose"]},
                 ${quote["name"]},
                 1)
-        ON CONFLICT (symbol) 
+        ON CONFLICT (symbol)
+        WHERE NOT (type = 3)
             DO UPDATE SET current_price = ${quote["currentPrice"]}
         RETURNING id;`
 
