@@ -236,7 +236,7 @@ export default defineComponent({
             portfolio: this.portfolioId,
             holding: holdingId,
             assetSymbol: this.transaction.from + this.transaction.to,
-            assetName: this.currencies[this.transaction.from] + " to " + this.currencies[this.transaction.to]
+            assetName: this.currencies[this.transaction.from] + " to " + this.currencies[this.transaction.from]
           }
         }))
     }

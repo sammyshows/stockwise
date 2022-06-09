@@ -21,7 +21,18 @@ INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VAL
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 0);
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 0);
 INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, type) VALUES ('AUD', 1, 1, 'Australian Dollars', 2);
+
+WITH currency (code, name) AS (
+    SELECT *
+    FROM
+        UNNEST(
+            ARRAY['AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR']::TEXT[],
+            ARRAY['Australian Dollar', 'Canadian Dollar', 'Swiss Franc', 'Chinese Yuan Renminbi (HK)', 'Czech Koruna', 'Danish Krone', 'Euro', 'British Pound', 'Hong Kong Dollar', 'Hungarian Forint', 'Israeli New Shekel','Indian Rupee', 'Japanese Yen', 'Mexican Peso', 'Norwegian Krone', 'New Zealand Dollar', 'Polish Zloty', 'Romanian Leu', 'Russian Ruble', 'Swedish Krona', 'Singapore Dollar', 'Thai Baht', 'Turkish Lira', 'U.S. Dollar', 'South African Rand']::TEXT[]
+        )
+)
+INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 1, 1, name, 2 FROM currency;
+
+
 CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
 
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, transaction_count INT, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
