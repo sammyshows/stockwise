@@ -26,7 +26,8 @@ const handler: Handler = requireAuth(async (event, context) => {
                 ${asset.companyName}, 
                 ${asset.primaryExchange},
                 0)
-        ON CONFLICT (symbol) 
+        ON CONFLICT (symbol)
+        WHERE NOT (type = 3)
             DO UPDATE SET current_price = ${asset.latestPrice},
                           name = ${asset.companyName || eventBody.name },
                           exchange = ${asset.primaryExchange || eventBody.exchange}
