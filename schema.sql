@@ -36,29 +36,29 @@ INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 
 
 CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
 
-CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, transaction_count INT, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 51.3289, 7331.7957588, 3);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='TSLA'), 7.5713, 6860.10163446, 2);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 13.7562, 2580.73359, 2);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='MSFT'), 6.3069, 1483.60722, 2);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='TSLA'), 2.78, 2510.062, 1);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='MSFT'), 12, 2284.32, 1);
-INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value, transaction_count) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='NNOX'), 100.000009, 1049.7800944802, 1);
+CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 51.3289, 7331.7957588);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='TSLA'), 7.5713, 6860.10163446);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 13.7562, 2580.73359);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='MSFT'), 6.3069, 1483.60722);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='TSLA'), 2.78, 2510.062);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='MSFT'), 12, 2284.32);
+INSERT INTO holdings (portfolio_id, asset_id, share_count, initial_value) VALUES ((SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='NNOX'), 100.000009, 1049.7800944802);
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588), 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588), 0, 1.2, 149.0023, 1.293, '2022-04-29T10:02:01.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 13.68875, 153.27, 1.29, '2022-04-29T10:02:32.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 33.20675, 153.27, 1.29, '2022-04-29T10:02:33.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2580.73359), 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2580.73359), 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1483.60722), 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1483.60722), 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2510.0620), 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2284.32), 0, 12, 190.36, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1049.7800944802), 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588), 0, 1.2, 149.0023, 1.293, '2022-04-29T10:06:01.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 13.68875, 153.27, 1.29, '2022-04-29T10:07:32.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 33.20675, 153.27, 1.29, '2022-04-29T10:08:33.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:01.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:02.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2580.73359), 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:03.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2580.73359), 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:04.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1483.60722), 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:05.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1483.60722), 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:06.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2510.0620), 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:07.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2284.32), 0, 12, 190.36, 1.344, '2022-04-29T10:02:08.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1049.7800944802), 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:09.000Z');
 
 CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=50.1289), (SELECT id FROM transactions WHERE quantity=13.68875), 13.68875, 164.76, 1.344, '2022-04-29T10:02:00.000Z');
@@ -123,18 +123,21 @@ CREATE OR REPLACE FUNCTION uspUpdateHolding()
     RETURNS TRIGGER AS $$
     BEGIN
         WITH txs AS (
-            SELECT SUM(t.quantity) - SUM(s.quantity) as share_count,
-                   COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value) as initial_value,
-                   COUNT(*) as transaction_count
+            SELECT SUM(COALESCE(t.quantity - s.quantity, t.quantity)) as share_count,
+                   SUM(t.initial_price * COALESCE(t.quantity - s.quantity, t.quantity)) as initial_value
             FROM transactions AS t
-            LEFT JOIN sells AS s ON s.transaction_id = t.id
-            WHERE t.holding_id = NEW.holding_id
-            GROUP BY t.id
+            LEFT JOIN (
+                SELECT SUM(quantity) as quantity,
+                       transaction_id,
+                       COUNT(sell_id) as sell_count
+                FROM sells
+                GROUP BY transaction_id
+            ) AS s ON t.id = s.transaction_id
+            WHERE t.holding_id = NEW.holding_id AND t.type = 0
         )
         UPDATE holdings
         SET share_count = txs.share_count,
-            initial_value = txs.initial_value,
-            transaction_count = txs.transaction_count
+            initial_value = txs.initial_value
         FROM txs
         WHERE id = NEW.holding_id;
         RETURN NEW;

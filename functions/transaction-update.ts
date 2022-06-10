@@ -6,8 +6,6 @@ const client = require("../database/client.ts")
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    console.log(eventBody)
-
     await client`
         UPDATE transactions
         SET type = ${eventBody.type},

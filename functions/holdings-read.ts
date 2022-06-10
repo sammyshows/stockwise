@@ -8,11 +8,12 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     const holdings = await client`
         SELECT holdings.id,
+               current_price,
+               share_count,
                portfolios.name AS portfolio,
                assets.symbol,
                assets.exchange,
                assets.name,
-               transaction_count, 
                initial_value as initial_value,
                current_price*share_count AS current_value, 
                (current_price - prev_close) * share_count AS daily_change,
