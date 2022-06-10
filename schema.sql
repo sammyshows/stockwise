@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS studies;
+DROP TABLE IF EXISTS sells;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS assets;
@@ -48,6 +49,7 @@ CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holdin
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588), 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588), 0, 1.2, 149.0023, 1.293, '2022-04-29T10:02:01.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 13.68875, 153.27, 1.29, '2022-04-29T10:02:32.000Z');
+INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=7331.7957588 ), 1, 33.20675, 153.27, 1.29, '2022-04-29T10:02:33.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=6860.10163446), 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2580.73359), 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:00.000Z');
@@ -57,6 +59,10 @@ INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_ra
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2510.0620), 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=2284.32), 0, 12, 190.36, 1.344, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ((SELECT id FROM holdings WHERE initial_value=1049.7800944802), 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:00.000Z');
+
+CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=50.1289), (SELECT id FROM transactions WHERE quantity=13.68875), 13.68875, 164.76, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=50.1289), (SELECT id FROM transactions WHERE quantity=13.68875), 33.20675, 164.76, 1.344, '2022-04-29T10:02:20.000Z');
 
 CREATE TABLE studies (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, asset_id uuid, type INT, name TEXT, symbol TEXT, notes TEXT, question_one INT, question_two INT, question_three INT, question_four INT, question_five INT, question_six NUMERIC, question_seven NUMERIC, question_eight INT,
 completed_qs INT GENERATED ALWAYS AS (CASE WHEN question_one IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_two IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_three IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_four IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_five IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_six IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_seven IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_eight IS NOT NULL THEN 1 ELSE 0 END) STORED,
@@ -85,26 +91,30 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
-        SELECT transactions.id,
-               transactions.type,
-               assets.symbol,
-               assets.exchange,
-               assets.name,
-               ROUND(quantity, 3),
-               ROUND(initial_price, 3),
-               transactions.initial_value,
-               ROUND(current_price*quantity, 2),
-               (current_price - initial_price) * quantity,
-               ROUND(current_price*quantity-prev_close*quantity, 2),
-               ROUND((current_price*quantity-prev_close*quantity)*100.0 / (prev_close*quantity), 2)
-        FROM transactions
-                 INNER JOIN holdings ON holdings.id = transactions.holding_id
-                 INNER JOIN assets ON holdings.asset_id = assets.id
+        SELECT t.id,
+               t.type,
+               a.symbol,
+               a.exchange,
+               a.name,
+               ROUND(COALESCE(t.quantity - SUM(s.quantity), t.quantity), 3),
+               ROUND(t.initial_price, 3),
+               COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value),
+               ROUND(COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity), 2),
+               COALESCE((a.current_price - t.initial_price) * (t.quantity - SUM(s.quantity)), (a.current_price - t.initial_price) * t.quantity),
+               ROUND(COALESCE((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity))), (a.current_price * t.quantity) - (a.prev_close * t.quantity)), 2),
+               ROUND(COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / (a.prev_close * (t.quantity - SUM(s.quantity))), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)), 2),
+               SUM(s.quantity * (s.sell_price - t.initial_price)),
+               t.initial_value
+        FROM transactions as t
+                 INNER JOIN holdings ON holdings.id = t.holding_id
+                 INNER JOIN assets AS a ON holdings.asset_id = a.id
+                 LEFT JOIN sells AS s ON t.id = s.transaction_id
         WHERE holdings.id = $1
-        ORDER BY transactions.timestamp DESC;
+        GROUP BY t.id, a.id, s.transaction_id
+        ORDER BY MIN(t.timestamp) DESC;
 END;
 $$;
 
@@ -113,11 +123,13 @@ CREATE OR REPLACE FUNCTION uspUpdateHolding()
     RETURNS TRIGGER AS $$
     BEGIN
         WITH txs AS (
-            SELECT SUM(quantity) as share_count,
-                   SUM(initial_value) as initial_value,
+            SELECT SUM(t.quantity) - SUM(s.quantity) as share_count,
+                   COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value) as initial_value,
                    COUNT(*) as transaction_count
-            FROM transactions
-            WHERE transactions.holding_id = NEW.holding_id
+            FROM transactions AS t
+            LEFT JOIN sells AS s ON s.transaction_id = t.id
+            WHERE t.holding_id = NEW.holding_id
+            GROUP BY t.id
         )
         UPDATE holdings
         SET share_count = txs.share_count,
@@ -130,6 +142,3 @@ CREATE OR REPLACE FUNCTION uspUpdateHolding()
 $$ language 'plpgsql';
 
 CREATE TRIGGER update_holding_calculations AFTER INSERT OR UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE uspUpdateHolding();
-
-
-
