@@ -9,38 +9,41 @@
 
     <div class="overflow-scroll grow px-3">
       <NuxtLink v-for="transaction in transactions" :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.id, assetName: transaction.name, assetSymbol: transaction.symbol, assetName: transaction.name } }">
-        <div v-if="transaction.type === 0" class="grid grid-cols-12 mb-3">
-          <div class="col-span-4">
-            <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
-            <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
+        <div class="mb-3">
+          <div v-if="transaction.type === 0" class="flex">
+            <div class="grow">
+              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+              <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
+            </div>
+            <div class="w-20 text-right mt-0.5 ml-2 font-normal">
+              <p class="h-5 text-xs">A${{ $formatNumber(transaction.current_value, 2) }}</p>
+              <p class="text-tiny text-gray-300">A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+            </div>
+            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.daily_change < 0, 'text-bright-green': transaction.daily_change > 0 }">
+              <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.daily_change, 2)) }}</p>
+              <p class="text-tiny">{{ $addSign($formatNumber(transaction.daily_percent, 2)) }}%</p>
+            </div>
+            <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
+              <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.total_change, 2)) }}</p>
+              <p class="text-tiny">{{ $addSign($formatNumber(transaction.total_change / transaction.initial_value * 100, 2)) }}%</p>
+            </div>
           </div>
-          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-            <p class="h-5 text-xs">A${{ $formatNumber(transaction.current_value, 2) }}</p>
-            <p class="text-tiny text-gray-300">A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+
+          <div v-else class="grid grid-cols-12">
+            <div class="col-span-4">
+              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+              <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
+            </div>
+            <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
+              <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+            </div>
+            <div class="col-span-5"></div>
           </div>
-          <div class="col-span-2 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.daily_change < 0, 'text-bright-green': transaction.daily_change > 0 }">
-            <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.daily_change, 2)) }}</p>
-            <p class="text-tiny">{{ $addSign($formatNumber(transaction.daily_percent, 2)) }}%</p>
-          </div>
-          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
-            <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.total_change, 2)) }}</p>
-            <p class="text-tiny">{{ $addSign($formatNumber(transaction.total_change / transaction.initial_value * 100, 2)) }}%</p>
-          </div>
-          <div v-if="transaction.realized" class="col-span-12">
+
+          <div v-if="transaction.realized">
             <p class="font-light text-tiny">Realized: <span :class="{ 'text-bright-red': transaction.realized < 0, 'text-bright-green': transaction.realized > 0 }">{{ $addSign($formatNumber(transaction.realized, 2)) }} ({{ $addSign($formatNumber(transaction.realized / transaction.realized_initial * 100, 2)) }}%)</span></p>
             <p class="font-light text-tiny">All-time: <span :class="{ 'text-bright-red': parseFloat(transaction.realized) + parseFloat(transaction.total_change) < 0, 'text-bright-green': parseFloat(transaction.realized) + parseFloat(transaction.total_change) > 0 }">{{ $addSign($formatNumber(parseFloat(transaction.realized) + parseFloat(transaction.total_change), 2)) }} ({{ $addSign($formatNumber((parseFloat(transaction.realized) + parseFloat(transaction.total_change)) / transaction.all_time_initial * 100, 2)) }}%)</span></p>
           </div>
-        </div>
-
-        <div v-else class="grid grid-cols-12 mb-3">
-          <div class="col-span-4">
-            <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
-            <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
-          </div>
-          <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-            <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(transaction.initial_value, 2) }}</p>
-          </div>
-          <div class="col-span-5"></div>
         </div>
       </NuxtLink>
     </div>
@@ -65,7 +68,7 @@
         </div>
       </div>
       <div v-if="total.realized">
-        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized / total.realized_initial * 100, 2)) }})</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized / total.realized_initial * 100, 2)) }}%)</span></p>
         <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized + (total.current_value - total.initial_value) < 0, 'text-bright-green': total.realized + (total.current_value - total.initial_value) > 0 }">{{ $addSign($formatNumber(total.realized + (total.current_value - total.initial_value), 2)) }} ({{ $addSign($formatNumber((total.realized + (total.current_value - total.initial_value)) / total.all_time_initial * 100, 2)) }}%)</span></p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col">
+  <div class="w-full h-full flex flex-col">
     <div v-if="$route.path === `/portfolios/${$route.params.portfolio}/holdings/new`">
       <div class="flex justify-between h-14 mb-10">
         <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
