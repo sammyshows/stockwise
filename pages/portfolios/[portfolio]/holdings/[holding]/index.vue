@@ -22,15 +22,13 @@
             <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.daily_change, 2)) }}</p>
             <p class="text-tiny">{{ $addSign($formatNumber(transaction.daily_percent, 2)) }}%</p>
           </div>
-          <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-          should show active transactions but this requires the addition of an 'active' column in the database table    -->
           <div class="col-span-3 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
             <p class="h-5 text-xs">{{ $addSign($formatNumber(transaction.total_change, 2)) }}</p>
             <p class="text-tiny">{{ $addSign($formatNumber(transaction.total_change / transaction.initial_value * 100, 2)) }}%</p>
           </div>
           <div v-if="transaction.realized" class="col-span-12">
-            <p class="font-light text-tiny">Realized: <span :class="{ 'text-bright-red': transaction.realized < 0, 'text-bright-green': transaction.realized > 0 }">{{ $addSign($formatNumber(transaction.realized, 2)) }}</span></p>
-            <p class="font-light text-tiny">All-time: <span :class="{ 'text-bright-red': parseFloat(transaction.realized) + parseFloat(transaction.total_change) < 0, 'text-bright-green': parseFloat(transaction.realized) + parseFloat(transaction.total_change) > 0 }">{{ $addSign($formatNumber(parseFloat(transaction.realized) + parseFloat(transaction.total_change), 2)) }}</span></p>
+            <p class="font-light text-tiny">Realized: <span :class="{ 'text-bright-red': transaction.realized < 0, 'text-bright-green': transaction.realized > 0 }">{{ $addSign($formatNumber(transaction.realized, 2)) }} ({{ $addSign($formatNumber(transaction.realized / transaction.realized_initial * 100, 2)) }}%)</span></p>
+            <p class="font-light text-tiny">All-time: <span :class="{ 'text-bright-red': parseFloat(transaction.realized) + parseFloat(transaction.total_change) < 0, 'text-bright-green': parseFloat(transaction.realized) + parseFloat(transaction.total_change) > 0 }">{{ $addSign($formatNumber(parseFloat(transaction.realized) + parseFloat(transaction.total_change), 2)) }} ({{ $addSign($formatNumber((parseFloat(transaction.realized) + parseFloat(transaction.total_change)) / transaction.all_time_initial * 100, 2)) }}%)</span></p>
           </div>
         </div>
 
@@ -67,8 +65,8 @@
         </div>
       </div>
       <div v-if="total.realized">
-        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }}</span></p>
-        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realised + (total.current_value - total.initial_value) < 0, 'text-bright-green': total.realized + (total.current_value - total.initial_value) > 0 }">{{ $addSign($formatNumber(total.realized + (total.current_value - total.initial_value), 2)) }}({{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%)</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized / total.realized_initial * 100, 2)) }})</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized + (total.current_value - total.initial_value) < 0, 'text-bright-green': total.realized + (total.current_value - total.initial_value) > 0 }">{{ $addSign($formatNumber(total.realized + (total.current_value - total.initial_value), 2)) }} ({{ $addSign($formatNumber((total.realized + (total.current_value - total.initial_value)) / total.all_time_initial * 100, 2)) }}%)</span></p>
       </div>
     </div>
   </div>
@@ -86,15 +84,18 @@ export default defineComponent({
 
   computed: {
     total: function() {
-      return this.transactions.reduce((total, { current_value, initial_value, daily_change, realized, all_time_initial, type }) => {
+      return this.transactions.reduce((total, { type, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
           if (type === 0) {
             total.current_value += parseFloat(current_value)
             total.initial_value += parseFloat(initial_value)
             total.daily_change += parseFloat(daily_change)
+            total.all_time_initial += parseFloat(all_time_initial)
           }
 
-          if (realized)
+          if (realized) {
             total.realized += parseFloat(realized)
+            total.realized_initial += parseFloat(realized_initial)
+          }
 
           return total
         },
@@ -103,7 +104,9 @@ export default defineComponent({
           current_value: 0,
           initial_value: 0,
           daily_change: 0,
-          realized: 0
+          all_time_initial: 0,
+          realized: 0,
+          realized_initial: 0
         })
     }
   }

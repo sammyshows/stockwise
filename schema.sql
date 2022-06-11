@@ -33,11 +33,11 @@ WITH currency (code, name) AS (
 INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 1, 1, name, 2 FROM currency;
 CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
 
-CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 4.43340, 640.18307280);
+CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='TSLA'), 7.5713, 6860.10163446);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 6.7562, 1251.433590);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='MSFT'), 4.8069, 1115.74722);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 6.7562, 1251.433590, -329.20, 1329.30, 2580.73359);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='MSFT'), 4.8069, 1115.74722, 67.49, 367.860, 1483.60722);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='TSLA'), 2.78, 2510.062);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='MSFT'), 12, 2284.32);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='NNOX'), 100.000009, 1049.7800944802);
@@ -93,7 +93,7 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
@@ -109,6 +109,7 @@ BEGIN
                ROUND(COALESCE((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity))), (a.current_price * t.quantity) - (a.prev_close * t.quantity)), 2),
                ROUND(COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / (a.prev_close * (t.quantity - SUM(s.quantity))), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)), 2),
                SUM(s.quantity * (s.sell_price - t.initial_price)),
+               SUM(s.quantity * t.initial_price),
                t.initial_value
         FROM transactions as t
                  INNER JOIN holdings ON holdings.id = t.holding_id

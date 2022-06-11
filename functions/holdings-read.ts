@@ -18,7 +18,10 @@ const handler: Handler = requireAuth(async (event, context) => {
                current_price*share_count AS current_value, 
                (current_price - prev_close) * share_count AS daily_change,
                (current_price - prev_close)*100 / prev_close AS daily_percent,
-               current_price*share_count - initial_value AS total_change
+               current_price*share_count - initial_value AS total_change,
+               realized,
+               realized_initial,
+               all_time_initial
         FROM holdings 
             INNER JOIN assets ON holdings.asset_id = assets.id 
             INNER JOIN portfolios ON holdings.portfolio_id = portfolios.id 

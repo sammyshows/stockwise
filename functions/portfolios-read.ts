@@ -13,7 +13,10 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(initial_value) as initial_value,
                SUM(current_price*share_count) as current_value,
                SUM((current_price - prev_close) * share_count) as daily_change,
-               SUM(current_price*share_count - initial_value) as total_change
+               SUM(current_price*share_count - initial_value) as total_change,
+               SUM(realized) as realized,
+               SUM(realized_initial) as realized_initial,
+               SUM(COALESCE(all_time_initial, initial_value)) as all_time_initial
         FROM portfolios
              LEFT JOIN holdings ON portfolios.id = holdings.portfolio_id
              LEFT JOIN assets ON holdings.asset_id = assets.id
