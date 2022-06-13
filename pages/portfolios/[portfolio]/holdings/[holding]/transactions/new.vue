@@ -6,36 +6,46 @@
     <div class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
-          <div>
-            <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option value="" disabled selected hidden></option>
-              <option :value="0">BUY</option>
-              <option :value="1">SELL</option>
-            </select>
-          </div>
-          <div>
-            <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div>
-            <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div>
-            <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div class="w-full flex justify-between gap-x-4">
-            <div>
-              <label for="date">Date</label>
-              <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+          <TransitionGroup tag="div" name="form">
+            <div :key="1" class="mb-4">
+              <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <option value="" disabled selected hidden></option>
+                <option :value="0">BUY</option>
+                <option :value="1">SELL</option>
+              </select>
             </div>
-            <div>
-              <label for="time">Time</label>
-              <input v-model="transaction.time" id="time" type="time" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            <div :key="2" class="mb-4">
+              <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
-          </div>
+            <div :key="3" class="mb-4">
+              <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            </div>
+            <div :key="4" class="mb-4">
+              <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            </div>
+            <div v-if="transaction.type === 1" :key="5" class="mb-4">
+              <label for="method" class="flex items-end">Method<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <select v-model="transaction.method" id="method" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <option value="" disabled selected hidden></option>
+                <option :value="0">FIFO</option>
+                <option :value="1">Custom Selection</option>
+              </select>
+            </div>
+            <div :key="6" class="w-full flex justify-between gap-x-4">
+              <div>
+                <label for="date">Date</label>
+                <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              </div>
+              <div>
+                <label for="time">Time</label>
+                <input v-model="transaction.time" id="time" type="time" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+              </div>
+            </div>
+          </TransitionGroup>
         </div>
 
         <div class="text-right mb-7">
@@ -76,10 +86,11 @@ export default defineComponent({
       invalidPrice: false,
       invalidExchange: false,
       transaction: {
-        type: '',
+        type: null as (number | null),
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),
+        method: 0, // 0 == FIFO, 1 == Custom Selection
         date: null as (string | null),
         time: null as (string | null)
       }
@@ -99,7 +110,7 @@ export default defineComponent({
       })
         .then(response => response.json())
         .then(data => data.asset[0])
-      this.pageDetails.title = response.symbol + " : " + response.exchange
+      this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
     },
 
@@ -112,7 +123,8 @@ export default defineComponent({
         body: JSON.stringify({
           holdingId: this.holdingId,
           type: this.transaction.type,
-          quantity: this.getQuantity(),
+          sellMethod: this.transaction.method,
+          quantity: this.transaction.quantity,
           initialPrice: this.transaction.initialPrice,
           exchangeRate: this.transaction.exchangeRate,
           timestamp: this.parseDate()
@@ -126,13 +138,6 @@ export default defineComponent({
             assetName: this.pageDetails.subtitle
           }
         }))
-    },
-
-    getQuantity(): number {
-      if (this.transaction.type === 0)
-        return this.transaction.quantity
-      else if (this.transaction.type === 1)
-        return this.transaction.quantity * -1
     },
 
     setDateTime(): void {

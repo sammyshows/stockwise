@@ -12,7 +12,7 @@
         <div class="mb-3">
           <div v-if="transaction.type === 0" class="flex">
             <div class="grow">
-              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
               <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
             </div>
             <div class="w-20 text-right mt-0.5 ml-2 font-normal">
@@ -31,11 +31,11 @@
 
           <div v-else class="grid grid-cols-12">
             <div class="col-span-4">
-              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.shares, 3) }}</h2>
+              <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
               <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
             </div>
             <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-              <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(transaction.initial_value, 2) }}</p>
+              <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(transaction.initial_value * -1, 2) }}</p>
             </div>
             <div class="col-span-5"></div>
           </div>
@@ -67,6 +67,7 @@
           <p class="text-tiny">{{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%</p>
         </div>
       </div>
+      <p class="font-light text-tiny my-0.5 text-gray-300">UNREALIZED: {{ $formatNumber(total.current_quantity, 3) }} SHARES @ {{ $formatNumber(total.initial_value / total.current_quantity, 3) }}</p>
       <div v-if="total.realized">
         <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized / total.realized_initial * 100, 2)) }}%)</span></p>
         <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized + (total.current_value - total.initial_value) < 0, 'text-bright-green': total.realized + (total.current_value - total.initial_value) > 0 }">{{ $addSign($formatNumber(total.realized + (total.current_value - total.initial_value), 2)) }} ({{ $addSign($formatNumber((total.realized + (total.current_value - total.initial_value)) / total.all_time_initial * 100, 2)) }}%)</span></p>
@@ -87,8 +88,9 @@ export default defineComponent({
 
   computed: {
     total: function() {
-      return this.transactions.reduce((total, { type, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+      return this.transactions.reduce((total, { type, initial_quantity, current_quantity, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
           if (type === 0) {
+            total.current_quantity += parseFloat(current_quantity || initial_quantity)
             total.current_value += parseFloat(current_value)
             total.initial_value += parseFloat(initial_value)
             total.daily_change += parseFloat(daily_change)
@@ -104,6 +106,7 @@ export default defineComponent({
         },
         // This is the initial value, `total`, passed to reduce:
         {
+          current_quantity: 0,
           current_value: 0,
           initial_value: 0,
           daily_change: 0,

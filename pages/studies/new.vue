@@ -189,15 +189,13 @@ export default defineComponent({
 
 .form-enter-from {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translate(30px, 0);
 }
 .form-leave-to {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translate(30px, 0px);
 }
 
-/* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
 .form-leave-active {
   position: absolute;
 }

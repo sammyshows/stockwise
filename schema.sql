@@ -43,27 +43,27 @@ INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VA
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='NNOX'), 100.000009, 1049.7800944802);
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.2, 149.0023, 1.293, '2022-04-29T10:06:01.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 13.68875, 153.27, 1.29, '2022-04-29T10:07:32.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 33.20675, 153.27, 1.29, '2022-04-29T10:08:33.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:01.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:02.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:03.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:04.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', 1, 7, 142.8709, 1.344, '2022-04-29T10:02:05.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:05.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:06.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', 1, 1.5, 290.23, 1.344, '2022-04-29T10:02:07.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:07.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12, 190.36, 1.344, '2022-04-29T10:02:08.000Z');
-INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:09.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('12ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.2, 149.0023, 1.293, '2022-04-29T10:06:01.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('13ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, -13.68875, 153.27, 1.29, '2022-04-29T10:07:32.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('14ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, -33.20675, 153.27, 1.29, '2022-04-29T10:08:33.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('15ffde40-5715-4176-8b14-37fbcd39e85a', '20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:01.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('16ffde40-5715-4176-8b14-37fbcd39e85a', '20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:02.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('17ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:03.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('18ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:04.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('19ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 1, -7, 142.8709, 1.344, '2022-04-29T10:02:05.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:05.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('21ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:06.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('22ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 1, -1.5, 290.23, 1.344, '2022-04-29T10:02:07.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('23ffde40-5715-4176-8b14-37fbcd39e85a', '50ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:07.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('24ffde40-5715-4176-8b14-37fbcd39e85a', '60ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12, 190.36, 1.344, '2022-04-29T10:02:08.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('25ffde40-5715-4176-8b14-37fbcd39e85a', '70ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:09.000Z');
 
-CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=50.1289), (SELECT id FROM transactions WHERE quantity=13.68875), 13.68875, 164.76, 1.344, '2022-05-29T10:02:00.000Z');
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=50.1289), (SELECT id FROM transactions WHERE quantity=13.68875), 33.20675, 164.76, 1.344, '2022-05-29T10:02:20.000Z');
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=12.6562), (SELECT id FROM transactions WHERE quantity=7), 7, 142.8709, 1.344, '2022-05-29T10:02:20.000Z');
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate, timestamp) VALUES ((SELECT id FROM transactions WHERE quantity=4.3), (SELECT id FROM transactions WHERE quantity=1.5), 1.5, 290.23, 1.344, '2022-05-29T10:02:20.000Z');
+CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_transaction FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, CONSTRAINT fk_sell FOREIGN KEY(sell_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '13ffde40-5715-4176-8b14-37fbcd39e85a', 13.68875, 164.76, 1.344);
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '14ffde40-5715-4176-8b14-37fbcd39e85a', 33.20675, 164.76, 1.344);
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('17ffde40-5715-4176-8b14-37fbcd39e85a', '19ffde40-5715-4176-8b14-37fbcd39e85a', 7, 142.8709, 1.344);
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('21ffde40-5715-4176-8b14-37fbcd39e85a', '22ffde40-5715-4176-8b14-37fbcd39e85a', 1.5, 290.23, 1.344);
 
 CREATE TABLE studies (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, asset_id uuid, type INT, name TEXT, symbol TEXT, notes TEXT, question_one INT, question_two INT, question_three INT, question_four INT, question_five INT, question_six NUMERIC, question_seven NUMERIC, question_eight INT,
                       completed_qs INT GENERATED ALWAYS AS (CASE WHEN question_one IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_two IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_three IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_four IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_five IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_six IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_seven IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_eight IS NOT NULL THEN 1 ELSE 0 END) STORED,
@@ -93,7 +93,7 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, shares NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
@@ -101,13 +101,14 @@ BEGIN
                a.symbol,
                a.exchange,
                a.name,
-               ROUND(COALESCE(t.quantity - SUM(s.quantity), t.quantity), 3),
-               ROUND(t.initial_price, 3),
+               t.quantity,
+               t.quantity - SUM(s.quantity),
+               t.initial_price,
                COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value),
-               ROUND(COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity), 2),
+               COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity),
                COALESCE((a.current_price - t.initial_price) * (t.quantity - SUM(s.quantity)), (a.current_price - t.initial_price) * t.quantity),
-               ROUND(COALESCE((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity))), (a.current_price * t.quantity) - (a.prev_close * t.quantity)), 2),
-               ROUND(COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / (a.prev_close * (t.quantity - SUM(s.quantity))), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)), 2),
+               COALESCE((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity))), (a.current_price * t.quantity) - (a.prev_close * t.quantity)),
+               COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity - SUM(s.quantity)), 0), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)),
                SUM(s.quantity * (s.sell_price - t.initial_price)),
                SUM(s.quantity * t.initial_price),
                t.initial_value
