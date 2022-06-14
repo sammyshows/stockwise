@@ -102,7 +102,7 @@ BEGIN
                a.exchange,
                a.name,
                t.quantity,
-               t.quantity - SUM(s.quantity),
+               COALESCE(t.quantity - SUM(s.quantity), t.quantity),
                t.initial_price,
                COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value),
                COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity),

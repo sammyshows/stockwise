@@ -1,6 +1,8 @@
 import { Handler } from "@netlify/functions";
 const { requireAuth } = require('../api/auth');
-const client = require("../database/client.ts")
+const client = require("../database/client.ts");
+const { BigNumber } = require('bignumber.js');
+
 
 
 const handler: Handler = requireAuth(async (event, context) => {
@@ -25,20 +27,19 @@ const handler: Handler = requireAuth(async (event, context) => {
 
         // Go through the txs and sell the as many shares as necessary until the total sell quantity has been met.
         let index = 0
-        let unallocatedQuantity = eventBody.quantity
+        let unallocatedQuantity = new BigNumber(eventBody.quantity)
         while (unallocatedQuantity > 0) {
-            let sellQuantity = unallocatedQuantity
+            let sellQuantity = unallocatedQuantity.toNumber()
 
             // If this tx has less shares than are required to sell, be sure to sell all you can of this tx anyway.
-            if (txs[index].quantity < unallocatedQuantity)
+            if (unallocatedQuantity.isGreaterThanOrEqualTo(txs[index].quantity))
                 sellQuantity = txs[index].quantity
-            console.log('here')
 
             await client`
                 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate)
                 VALUES (${txs[index].id}, ${newTx[0].id}, ${sellQuantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate || null});`
 
-            unallocatedQuantity -= sellQuantity
+            unallocatedQuantity = unallocatedQuantity.minus(sellQuantity)
             index += 1
         }
     }

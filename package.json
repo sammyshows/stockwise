@@ -8,7 +8,6 @@
     "start": "node .output/server/index.mjs",
     "createdb_dev": "cat schema.sql | psql stockwise -U postgres",
     "createdb_prod": "cat schema.sql | heroku pg:psql"
-
   },
   "devDependencies": {
     "@nuxtjs/pwa": "^3.3.5",
@@ -27,9 +26,10 @@
     "@heroicons/vue": "^1.0.6",
     "@serverless-jwt/netlify": "^0.2.1",
     "@tailwindcss/forms": "^0.5.0",
-    "netlify-cli": "^10.1.0",
+    "bignumber.js": "^9.0.2",
+    "netlify-cli": "^10.5.1",
     "node-fetch": "^3.2.3",
-    "nuxt3": "^3.0.0-27479058.e4956c5",
+    "nuxt": "npm:nuxt3@latest",
     "postgres": "^3.0.2",
     "vue": "^3.2.31",
     "vue-session": "^1.0.0",
