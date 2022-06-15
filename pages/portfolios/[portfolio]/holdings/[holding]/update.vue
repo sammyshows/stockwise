@@ -50,7 +50,6 @@ export default defineComponent({
   mounted() {
     this.getHoldingDetails()
     this.getPortfolios()
-    console.log(this.$route.params)
   },
 
   data() {

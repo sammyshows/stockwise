@@ -139,6 +139,7 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
+          token: this.token,
           transactionId: this.transaction.id,
           holdingId: this.holdingId,
           type: this.transaction.type,
@@ -146,6 +147,21 @@ export default defineComponent({
           initialPrice: this.transaction.initialPrice,
           exchangeRate: this.transaction.exchangeRate,
           timestamp: this.parseDate()
+        })
+      })
+        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+    },
+
+    async deleteTransaction(): Promise<void> {
+      await fetch('/api/transaction-delete', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          token: this.token,
+          transactionId: this.transaction.id,
+          holdingId: this.holdingId
         })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
@@ -181,20 +197,6 @@ export default defineComponent({
 
     closeModal(): void {
       this.openModal = false
-    },
-
-    async deleteTransaction(): Promise<void> {
-      await fetch('/api/transaction-delete', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          transactionId: this.transaction.id,
-          holdingId: this.holdingId
-        })
-      })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
     }
   }
 })
