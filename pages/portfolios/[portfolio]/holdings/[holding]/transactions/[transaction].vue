@@ -8,24 +8,27 @@
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <div>
-            <label for="type">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            <label for="type">Transaction type</label>
+            <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="" :selected="!transaction.type" disabled hidden></option>
               <option :value="0">BUY</option>
               <option :value="1">SELL</option>
             </select>
           </div>
           <div>
-            <label for="quantity">Quantity<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="quantity">Quantity</label>
+            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber() }}</p>
+            <input @click="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div>
-            <label for="initialPrice">Price<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="initialPrice">Price</label>
+            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
+            <input @click="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div v-if="transaction.assetType === 0">
-            <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-            <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+            <label for="exchangeRate">Exchange rate (optional)</label>
+            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
+            <input @click="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
           </div>
           <div class="w-full flex justify-between gap-x-4">
             <div>
@@ -56,6 +59,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
+import { BigNumber } from "bignumber.js";
 
 export default defineComponent({
   name: "Portfolio Holdings",
@@ -71,6 +75,7 @@ export default defineComponent({
 
   mounted() {
     this.getTransaction()
+    this.getHolding()
   },
 
   watch: {
@@ -91,10 +96,15 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
-      invalidType: false,
-      invalidShares: false,
-      invalidPrice: false,
-      invalidExchange: false,
+      holdingQuantity: null as (null | number),
+      storedTxQuantity: null as (null | number), // This is used when checking if the quantity entered by user is valid
+      invalid: {
+        type: false,
+        quantity: false,
+        initialPrice: false,
+        exchangeRate: false,
+        date: false
+      },
       transaction: {
         id: this.$route.params.transaction,
         assetType: null as (number | null),
@@ -109,6 +119,18 @@ export default defineComponent({
   },
 
   methods: {
+    validateForm(): Boolean {
+      console.log(new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1)
+      if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
+        this.invalid.quantity = true
+      if (this.transaction.initialPrice < 0)
+        this.invalid.initialPrice = true
+      if (this.transaction.exchangeRate <= 0)
+        this.invalid.exchangeRate = true
+
+      return this.invalid.quantity === true && this.invalid.initialPrice === true && this.invalid.exchangeRate === true
+    },
+
     async getTransaction(): Promise<void> {
       const response = await fetch('/api/transaction-read', {
         headers: {
@@ -127,29 +149,47 @@ export default defineComponent({
       this.setDateTime(response.timestamp)
       this.transaction.assetType = response.asset_type
       this.transaction.type = response.type
+      this.storedTxQuantity = Math.abs(response.quantity)
       this.transaction.quantity = Math.abs(response.quantity)
       this.transaction.initialPrice = response.initial_price
       this.transaction.exchangeRate = response.exchange_rate
     },
 
-    async updateTransaction() {
-      await fetch('/api/transaction-update', {
+    async getHolding(): Promise<void> {
+      const response = await fetch('/api/holding-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
         method: 'POST',
         body: JSON.stringify({
-          token: this.token,
-          transactionId: this.transaction.id,
-          holdingId: this.holdingId,
-          type: this.transaction.type,
-          quantity: this.getQuantity(),
-          initialPrice: this.transaction.initialPrice,
-          exchangeRate: this.transaction.exchangeRate,
-          timestamp: this.parseDate()
+          holdingId: this.holdingId
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+        .then(response => response.json())
+        .then(response => response.data)
+      this.holdingQuantity = response.current_quantity
+    },
+
+    async updateTransaction() {
+      if (this.validateForm()) {
+        await fetch('/api/transaction-update', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            token: this.token,
+            transactionId: this.transaction.id,
+            holdingId: this.holdingId,
+            type: this.transaction.type,
+            quantity: this.getQuantity(),
+            initialPrice: this.transaction.initialPrice,
+            exchangeRate: this.transaction.exchangeRate,
+            timestamp: this.parseDate()
+          })
+        })
+          .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+      }
     },
 
     async deleteTransaction(): Promise<void> {
@@ -197,7 +237,9 @@ export default defineComponent({
 
     closeModal(): void {
       this.openModal = false
-    }
+    },
+
+    BigNumber
   }
 })
 </script>

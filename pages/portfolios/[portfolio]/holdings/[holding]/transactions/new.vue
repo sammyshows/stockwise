@@ -81,10 +81,13 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
-      invalidType: false,
-      invalidShares: false,
-      invalidPrice: false,
-      invalidExchange: false,
+      invalid: {
+        type: false,
+        quantity: false,
+        initialPrice: false,
+        exchangeRate: false,
+        date: false
+      },
       transaction: {
         type: null as (number | null),
         quantity: null as (number | null),
@@ -98,6 +101,19 @@ export default defineComponent({
   },
 
   methods: {
+    validateForm(): Boolean {
+      if (!this.transaction.type)
+        this.invalid.type = true
+      if (this.transaction.quantity <= 0)
+        this.invalid.quantity = true
+      if (this.transaction.initialPrice < 0)
+        this.invalid.initialPrice = true
+      if (this.transaction.exchangeRate <= 0)
+        this.invalid.exchangeRate = true
+
+      return this.invalid.type === true && this.invalid.quantity === true && this.invalid.initialPrice === true && this.invalid.exchangeRate === true
+    },
+
     async getTransaction(): Promise<void> {
       const response = await fetch('/api/asset-read', {
         headers: {

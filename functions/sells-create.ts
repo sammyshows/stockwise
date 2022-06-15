@@ -47,7 +47,6 @@ const handler: Handler = requireAuth(async (event, context) => {
                 VALUES (${buyTx.id}, ${sellTx.id}, ${sellQuantity}, ${sellTx.initial_price}, ${sellTx.exchange_rate});`
 
             unallocatedQuantity = unallocatedQuantity.minus(sellQuantity)
-
         }
     }
 
