@@ -24,13 +24,13 @@
             </div>
             <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': holding.total_change < 0, 'text-bright-green': holding.total_change > 0 }">
               <p class="h-5 text-xs">{{ $addSign($formatNumber(holding.total_change, 2)) }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(holding.total_change / holding.initial_value * 100, 2)) }}%</p>
+              <p class="text-tiny">{{ $addSign($formatNumber(BigNumber(holding.total_change).div(holding.initial_value).times(100), 2)) }}%</p>
             </div>
           </div>
 
           <div v-if="holding.realized">
-            <p class="font-light text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': holding.realized < 0, 'text-bright-green': holding.realized > 0 }">{{ $addSign($formatNumber(holding.realized, 2)) }} ({{ $addSign($formatNumber(holding.realized / holding.realized_initial * 100, 2)) }}%)</span></p>
-            <p class="font-light text-tiny h-4">All-time: <span class="font-normal" :class="{ 'text-bright-red': parseFloat(holding.realized) + parseFloat(holding.total_change) < 0, 'text-bright-green': parseFloat(holding.realized) + parseFloat(holding.total_change) > 0 }">{{ $addSign($formatNumber(parseFloat(holding.realized) + parseFloat(holding.total_change), 2)) }} ({{ $addSign($formatNumber((parseFloat(holding.realized) + parseFloat(holding.total_change)) / holding.all_time_initial * 100, 2)) }}%)</span></p>
+            <p class="font-light text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': holding.realized < 0, 'text-bright-green': holding.realized > 0 }">{{ $addSign($formatNumber(holding.realized, 2)) }} ({{ $addSign($formatNumber(BigNumber(holding.realized).div(holding.realized_initial).times(100), 2)) }}%)</span></p>
+            <p class="font-light text-tiny h-4">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(holding.realized).plus(holding.total_change).isLessThan(0), 'text-bright-green': BigNumber(holding.realized).plus(holding.total_change).isGreaterThan(0) }">{{ $addSign($formatNumber(BigNumber(holding.realized).plus(holding.total_change), 2)) }} ({{ $addSign($formatNumber(BigNumber(holding.realized).plus(holding.total_change).div(holding.all_time_initial).times(100), 2)) }}%)</span></p>
           </div>
         </div>
       </NuxtLink>
@@ -48,18 +48,18 @@
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
           <p class="h-5 text-xs">{{ $addSign($formatNumber(total.daily_change, 2)) }}</p>
-          <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change / (total.current_value - total.daily_change) * 100, 2)) }}%</p>
+          <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2)) }}%</p>
         </div>
         <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
         should show active transactions but this requires the addition of an 'active' column in the database table    -->
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
-          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value - total.initial_value, 2)) }}</p>
-          <p class="text-tiny">{{ $addSign($formatNumber((total.current_value - total.initial_value) / total.initial_value * 100, 2)) }}%</p>
+          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value), 2)) }}</p>
+          <p class="text-tiny">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2)) }}%</p>
         </div>
       </div>
       <div v-if="total.realized">
-        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized / total.realized_initial * 100, 2)) }}%)</span></p>
-        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized + (total.current_value - total.initial_value) < 0, 'text-bright-green': total.realized + (total.current_value - total.initial_value) > 0 }">{{ $addSign($formatNumber(total.realized + (total.current_value - total.initial_value), 2)) }} ({{ $addSign($formatNumber((total.realized + (total.current_value - total.initial_value)) / total.all_time_initial * 100, 2)) }}%)</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized.div(total.realized_initial).times(100), 2)) }}%)</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value).isLessThan(0), 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value).isGreaterThan(0) }">{{ $addSign($formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2)) }} ({{ $addSign($formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2)) }}%)</span></p>
       </div>
     </div>
   </div>
@@ -67,6 +67,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import BigNumber from "bignumber.js";
 
 export default defineComponent({
   name: "Holdings",
@@ -76,28 +77,32 @@ export default defineComponent({
   computed: {
     total: function() {
       return this.holdings.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            total.current_value += parseFloat(current_value)
-            total.initial_value += parseFloat(initial_value)
-            total.daily_change += parseFloat(daily_change)
-            total.all_time_initial += parseFloat(all_time_initial || initial_value)
+            total.current_value = total.current_value.plus(current_value)
+            total.initial_value = total.initial_value.plus(initial_value)
+            total.daily_change = total.daily_change.plus(daily_change)
+            total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
 
             if (realized) {
-              total.realized += parseFloat(realized)
-              total.realized_initial += parseFloat(realized_initial)
+              total.realized = total.realized.plus(realized)
+              total.realized_initial = total.realized_initial.plus(realized_initial)
             }
 
             return total
           },
           // This is the initial value, `total`, passed to reduce:
           {
-            current_value: 0,
-            initial_value: 0,
-            daily_change: 0,
-            all_time_initial: 0,
-            realized: 0,
-            realized_initial: 0
+            current_value: new BigNumber(0),
+            initial_value: new BigNumber(0),
+            daily_change: new BigNumber(0),
+            all_time_initial: new BigNumber(0),
+            realized: new BigNumber(0),
+            realized_initial: new BigNumber(0)
           })
     }
+  },
+
+  methods: {
+    BigNumber
   }
 })
 </script>
