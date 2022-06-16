@@ -8,29 +8,28 @@
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
           <TransitionGroup tag="div" name="form">
             <div :key="1" class="mb-4">
-              <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-              <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <label for="type" class="flex items-end">Transaction type<span :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <select v-model="transaction.type" id="type" :class="[ invalid.type ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
                 <option value="" disabled selected hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
               </select>
             </div>
             <div :key="2" class="mb-4">
-              <label for="quantity">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-              <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+              <label for="quantity">Shares<span :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalid.quantity ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
             <div :key="3" class="mb-4">
-              <label for="initialPrice">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-              <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+              <label for="initialPrice">Price per share<span :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalid.initialPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
             <div :key="4" class="mb-4">
-              <label for="exchangeRate">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-              <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+              <label for="exchangeRate">Exchange rate<span :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+              <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalid.exchangeRate ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
             </div>
             <div v-if="transaction.type === 1" :key="5" class="mb-4">
-              <label for="method" class="flex items-end">Method<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-              <select v-model="transaction.method" id="method" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-                <option value="" disabled selected hidden></option>
+              <label for="method" class="flex items-end">Method</label>
+              <select v-model="transaction.method" id="method" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
                 <option :value="0">FIFO</option>
                 <option :value="1">Custom Selection</option>
               </select>

@@ -170,7 +170,6 @@ export default defineComponent({
     },
 
     async updateTransaction() {
-      console.log(this.validateForm())
       if (this.validateForm()) {
         await fetch('/api/transaction-update', {
           headers: {
