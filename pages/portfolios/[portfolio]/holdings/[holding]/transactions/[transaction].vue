@@ -120,15 +120,14 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
-      console.log(new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1)
       if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
         this.invalid.quantity = true
       if (this.transaction.initialPrice < 0)
         this.invalid.initialPrice = true
-      if (this.transaction.exchangeRate <= 0)
+      if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
 
-      return this.invalid.quantity === true && this.invalid.initialPrice === true && this.invalid.exchangeRate === true
+      return this.invalid.quantity === false && this.invalid.initialPrice === false && this.invalid.exchangeRate === false
     },
 
     async getTransaction(): Promise<void> {
@@ -171,6 +170,7 @@ export default defineComponent({
     },
 
     async updateTransaction() {
+      console.log(this.validateForm())
       if (this.validateForm()) {
         await fetch('/api/transaction-update', {
           headers: {
