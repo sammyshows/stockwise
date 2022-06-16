@@ -7,16 +7,25 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const transaction = await client`
-        SELECT assets.type AS asset_type, transactions.type as type, quantity, initial_price, exchange_rate, symbol, exchange, name, timestamp
-        FROM transactions
-            INNER JOIN holdings ON transactions.holding_id = holdings.id
-            INNER JOIN assets ON holdings.asset_id = assets.id
-        WHERE transactions.id = ${eventBody.transactionId};`
-
+        SELECT a.type AS asset_type,
+               t.type AS type,
+               COALESCE(t.sell_method, null) AS sell_method,
+               t.quantity,
+               t.initial_price,
+               t.exchange_rate,
+               a.symbol,
+               a.exchange,
+               a.name, 
+               t.timestamp
+        FROM transactions AS t
+            INNER JOIN holdings AS h ON t.holding_id = h.id
+            INNER JOIN assets AS a ON h.asset_id = a.id
+        WHERE t.id = ${eventBody.transactionId};`
+    console.log(transaction)
     return {
         statusCode: 200,
         body: JSON.stringify({
-            transaction: transaction
+            data: transaction
         })
     }
 })

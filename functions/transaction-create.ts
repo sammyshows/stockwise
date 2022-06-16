@@ -10,8 +10,8 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        INSERT INTO transactions (holding_id, type, quantity, initial_price, exchange_rate, timestamp) 
-        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.type === 1 ? eventBody.quantity * -1 : eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate || null}, ${eventBody.timestamp})`
+        INSERT INTO transactions (holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) 
+        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.sellMethod}, ${eventBody.type === 1 ? eventBody.quantity * -1 : eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate || null}, ${eventBody.timestamp})`
 
     await fetch(process.env.DOMAIN + '/api/sells-create', {
         headers: {

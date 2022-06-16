@@ -7,39 +7,48 @@
     <div v-if="loaded" class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-sm">
-          <div>
-            <label for="type">Transaction type</label>
-            <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option value="" :selected="!transaction.type" disabled hidden></option>
-              <option :value="0">BUY</option>
-              <option :value="1">SELL</option>
-            </select>
-          </div>
-          <div>
-            <label for="quantity">Quantity</label>
-            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber() }}</p>
-            <input @click="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div>
-            <label for="initialPrice">Price</label>
-            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
-            <input @click="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div v-if="transaction.assetType === 0">
-            <label for="exchangeRate">Exchange rate (optional)</label>
-            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-            <input @click="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
-          </div>
-          <div class="w-full flex justify-between gap-x-4">
-            <div>
-              <label for="date">Date</label>
-              <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+          <TransitionGroup tag="div" name="form">
+            <div :key="1" class="mb-4">
+              <label for="type">Transaction type</label>
+              <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <option value="" :selected="!transaction.type" disabled hidden></option>
+                <option :value="0">BUY</option>
+                <option :value="1">SELL</option>
+              </select>
             </div>
-            <div>
-              <label for="time">Time</label>
-              <input v-model="transaction.time" id="time" type="time" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+            <div :key="2" class="mb-4">
+              <label for="quantity">Quantity</label>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber() }}</p>
+              <input @click="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
             </div>
-          </div>
+            <div :key="3" class="mb-4">
+              <label for="initialPrice">Price</label>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
+              <input @click="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            </div>
+            <div :key="4" v-if="assetType === 0" class="mb-4">
+              <label for="exchangeRate">Exchange rate (optional)</label>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
+              <input @click="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            </div>
+            <div v-if="transaction.type === 1" :key="5" class="mb-4">
+              <label for="method" class="flex items-end">Method</label>
+              <select v-model="transaction.sellMethod" id="method" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <option :value="0">FIFO</option>
+                <option :value="1">Custom Selection</option>
+              </select>
+            </div>
+            <div :key="6" class="w-full flex justify-between gap-x-4">
+              <div>
+                <label for="date">Date</label>
+                <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-gray-300" />
+              </div>
+              <div>
+                <label for="time">Time</label>
+                <input v-model="transaction.time" id="time" type="time" class="w-full bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-gray-300" />
+              </div>
+            </div>
+          </TransitionGroup>
         </div>
         <!-- This button should only be visible if fields are different. When validation is added, it should set a
         property in data that this buttons display property is bound to -->
@@ -96,10 +105,10 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
+      assetType: null as (number | null),
       holdingQuantity: null as (null | number),
       storedTxQuantity: null as (null | number), // This is used when checking if the quantity entered by user is valid
       invalid: {
-        type: false,
         quantity: false,
         initialPrice: false,
         exchangeRate: false,
@@ -107,8 +116,8 @@ export default defineComponent({
       },
       transaction: {
         id: this.$route.params.transaction,
-        assetType: null as (number | null),
         type: null as (number | null),
+        sellMethod: null as (number | null),
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),
@@ -141,13 +150,14 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-        .then(data => data.transaction[0])
+        .then(response => response.data[0])
       this.loaded = true
       this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
       this.setDateTime(response.timestamp)
-      this.transaction.assetType = response.asset_type
+      this.assetType = response.asset_type
       this.transaction.type = response.type
+      this.transaction.sellMethod = response.sell_method
       this.storedTxQuantity = Math.abs(response.quantity)
       this.transaction.quantity = Math.abs(response.quantity)
       this.transaction.initialPrice = response.initial_price
