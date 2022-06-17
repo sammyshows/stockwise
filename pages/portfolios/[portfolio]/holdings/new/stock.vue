@@ -23,7 +23,7 @@
                 <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
 
                 <div v-if="quote" class="w-full h-16 px-3 mb-3">
-                  <p class="w-full text-center truncate">{{ quote.companyName }}blahhhhahdfhdhfhhhhhahdfhdhfhfhfh</p>
+                  <p class="w-full text-center truncate">{{ quote.companyName }}</p>
                   <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
                     <div class="w-1 grow text-right">
                       <p class="truncate">{{ quote.symbol }}</p>
