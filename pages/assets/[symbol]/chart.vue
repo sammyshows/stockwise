@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>Chart</h1>
-    <canvas ref="chart" id="myChart" width="400" height="400"></canvas>
+    <canvas ref="chart" id="myChart" width="400" height="300"></canvas>
   </div>
 </template>
 
@@ -40,7 +39,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-        .then(response => response.data)
+        .then(response => response.data.slice(-1000))
 
       this.createChart(chartData)
     },
@@ -56,14 +55,28 @@ export default defineComponent({
           datasets: [{
             label: 'Stock price',
             data: prices,
-            borderColor: 'rgb(75, 192, 192)'
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(0, 255, 187, 0.10)',
+            fill: true
           }]
         },
         options: {
           scales: {
             x: {
               ticks: {
-                maxTicksLimit: 4
+                  maxTicksLimit: 10,
+                color: 'rgb(175, 175, 175)'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)'
+              }
+            },
+            y: {
+              ticks: {
+                color: 'rgb(175, 175, 175)'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)'
               }
             }
           },
@@ -72,10 +85,20 @@ export default defineComponent({
             axis: 'x'
           },
           elements: {
+            line: {
+              borderWidth: 1
+            },
             point: {
-              backgroundColor: 'rgba(0,0,0,0)',
-              borderColor: 'rgba(0,0,0,0)',
-              borderWidth: 0
+              radius: 0,
+              backgroundColor: 'rgba(255, 255, 255, 1)',
+              borderColor: 'rgba(0,0,0,1)',
+              hoverRadius: 4,
+              hitRadius: 0
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
             }
           }
         }
