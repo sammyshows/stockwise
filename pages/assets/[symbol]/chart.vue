@@ -12,36 +12,75 @@ import Chart from 'chart.js/auto';
 export default defineComponent({
   name: "Asset Chart",
 
-  setup() {
+  async setup() {
+    const token = await useState('authToken').value
     const chart = ref(null)
-    return { chart }
+    return { token, chart }
+  },
+
+  data() {
+    return {
+      symbol: this.$route.params.symbol
+    }
   },
 
   mounted() {
-    new Chart(this.chart, {
-      type: 'line',
-      data: {
-        labels: ['Feb', 'Apr', 'Jun', 'Aug', 'Oct', 'Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct', 'Dec', 'Feb'],
-        datasets: [{
-          label: 'My First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40, 65, 59, 80, 81, 56, 55, 40],
-          borderColor: 'rgb(75, 192, 192)'
-        }]
-      },
-      options: {
-        scales: {
-          x: {
-            ticks: {
-              maxTicksLimit: 4
+    this.getChartData()
+  },
+
+  methods: {
+    async getChartData() {
+      const chartData = await fetch('/api/iex-chart', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.symbol
+        })
+      })
+        .then(response => response.json())
+        .then(response => response.data)
+
+      this.createChart(chartData)
+    },
+
+    createChart(chartData) {
+      const prices = chartData.map(dailyData => dailyData.close)
+      const labels = chartData.map(dailyData => dailyData.label)
+
+      new Chart(this.chart, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Stock price',
+            data: prices,
+            borderColor: 'rgb(75, 192, 192)'
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                maxTicksLimit: 4
+              }
+            }
+          },
+          interaction: {
+            intersect: false,
+            axis: 'x'
+          },
+          elements: {
+            point: {
+              backgroundColor: 'rgba(0,0,0,0)',
+              borderColor: 'rgba(0,0,0,0)',
+              borderWidth: 0
             }
           }
-        },
-        interaction: {
-          intersect: false,
-          axis: 'x'
         }
-      }
-    });
+      });
+    }
   }
 })
 </script>
