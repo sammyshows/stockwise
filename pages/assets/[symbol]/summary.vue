@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <div class="grid grid-cols-2 gap-x-4 mb-10">
+  <div class="overflow-scroll">
+    <canvas ref="chart" id="myChart" width="400" height="300" class="mb-4"></canvas>
+
+    <div class="grid grid-cols-2 gap-x-4 mb-6">
       <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
         <p class="text-tiny mb-0.5">High</p>
         <p class="text-tiny mb-0.5">{{ quote["high"] || '-' }}</p>
@@ -83,6 +85,11 @@
       </div>
     </div>
 
+    <div class="flex px-4 mb-6 gap-x-6">
+      <NuxtLink :to="{ name: 'studies-new', params: { assetSymbol: this?.quote.symbol } }" class="block grow mx-auto px-4 py-2 font-normal text-center border border-gray-400 bg-gray-900/50 rounded-lg">Add Holding</NuxtLink>
+      <NuxtLink :to="{ name: 'studies-new', params: { assetSymbol: this?.quote.symbol } }" class="block grow mx-auto px-4 py-2 font-normal text-center border border-gray-400 bg-gray-900/50 rounded-lg">Start a Study</NuxtLink>
+    </div>
+
     <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
     <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
       <p class="text-xs">Income Statement</p>
@@ -96,17 +103,22 @@
       <p class="text-xs">Cash Flow</p>
       <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
     </div>
-
-    <NuxtLink :to="{ name: 'studies-new', params: { assetSymbol: this?.quote.symbol } }" class="block w-max mx-auto px-8 py-2 text-xl font-normal text-black bg-bright-cyan rounded-lg">Start a Study</NuxtLink>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {defineComponent, ref} from "vue";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
+import Chart from "chart.js/auto";
 
 export default defineComponent({
   name: "Asset Summary",
+
+  async setup() {
+    const token = await useState('authToken').value
+    const chart = ref(null)
+    return { token, chart }
+  },
 
   components: {
     SpeakerphoneIcon
@@ -116,14 +128,98 @@ export default defineComponent({
     "stats", "quote"
   ],
 
+  mounted() {
+    this.getChartData()
+  },
+
   methods: {
-    roundToTwo(num: number): number {
-      return Math.round((num + Number.EPSILON) * 100) / 100
+    async getChartData() {
+      const chartData = await fetch('/api/iex-chart', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.$route.params.symbol
+        })
+      })
+          .then(response => response.json())
+          .then(response => response.data.slice(-1000))
+
+      this.createChart(chartData)
     },
 
-    roundToThree(num: number): number {
-      return Math.round((num + Number.EPSILON) * 1000) / 1000
-    },
+    createChart(chartData) {
+      const prices = chartData.map(dailyData => dailyData.close)
+      const labels = chartData.map(dailyData => dailyData.label)
+
+      Chart.defaults.font.family = "Poppins"
+      new Chart(this.chart, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Price',
+            data: prices,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(0, 255, 187, 0.10)',
+            fill: true
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                maxTicksLimit: 10,
+                color: 'rgb(175, 175, 175)',
+                font: {
+                  size: 8
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)'
+              }
+            },
+            y: {
+              ticks: {
+                color: 'rgb(175, 175, 175)',
+                font: {
+                  size: 10
+                }
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)'
+              }
+            }
+          },
+          interaction: {
+            intersect: false,
+            axis: 'x'
+          },
+          elements: {
+            line: {
+              borderWidth: 1
+            },
+            point: {
+              radius: 0,
+              hoverRadius: 6,
+              hoverBackgroundColor: 'rgba(255,255,255, 0.5)',
+              hoverBorderColor: 'rgba(255,255,255, 1)',
+              hitRadius: 0
+            }
+          },
+          plugins: {
+            tooltip: {
+              caretPadding: 20,
+              displayColors: false
+            },
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
   }
 })
 </script>

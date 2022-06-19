@@ -48,12 +48,13 @@ export default defineComponent({
       const prices = chartData.map(dailyData => dailyData.close)
       const labels = chartData.map(dailyData => dailyData.label)
 
+      Chart.defaults.font.family = "Poppins"
       new Chart(this.chart, {
         type: 'line',
         data: {
           labels: labels,
           datasets: [{
-            label: 'Stock price',
+            label: 'Price',
             data: prices,
             borderColor: 'rgb(75, 192, 192)',
             backgroundColor: 'rgba(0, 255, 187, 0.10)',
@@ -90,13 +91,17 @@ export default defineComponent({
             },
             point: {
               radius: 0,
-              backgroundColor: 'rgba(255, 255, 255, 1)',
-              borderColor: 'rgba(0,0,0,1)',
-              hoverRadius: 4,
+              hoverRadius: 6,
+              hoverBackgroundColor: 'rgba(255,255,255, 0.5)',
+              hoverBorderColor: 'rgba(255,255,255, 1)',
               hitRadius: 0
             }
           },
           plugins: {
+            tooltip: {
+              caretPadding: 20,
+              displayColors: false
+            },
             legend: {
               display: false
             }

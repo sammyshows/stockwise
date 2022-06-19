@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="search">
-    <div class="px-3">
+    <div class="px-3 overflow-scroll">
       <div class="flex justify-between min-h-min">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div>
