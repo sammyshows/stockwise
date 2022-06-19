@@ -9,7 +9,7 @@
         </div>
         <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/30 w-full pl-12 border-gray-600 rounded-md" />
         <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
-          <NuxtLink v-for="result in searchResults" @click="setSearches(result)" :to="{ name: 'assets-symbol-summary', params: { symbol: result.symbol, assetSymbol: result.symbol, assetName: result.securityName } }" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+          <NuxtLink v-for="result in searchResults" @click="setSearches(result)" :to="{ name: 'assets-symbol', params: { symbol: result.symbol, assetSymbol: result.symbol, assetName: result.securityName } }" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
             <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
             <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
           </NuxtLink>
@@ -20,7 +20,7 @@
         <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
 
         <div class="mt-2 divide-y divide-gray-300/20">
-          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'assets-symbol-summary', params: { symbol: asset.symbol, assetSymbol: asset.symbol + ' : ' + asset.exchange, assetName: asset.name } }" class="w-full flex justify-between p-2">
+          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'assets-symbol', params: { symbol: asset.symbol, assetSymbol: asset.symbol + ' : ' + asset.exchange, assetName: asset.name } }" class="w-full flex justify-between p-2">
             <div class="flex">
               <p class="w-20 my-auto text-xs truncate">{{ asset.symbol + " : " + asset.exchange }}</p>
               <p class="w-44 my-auto ml-3 text-xs truncate">{{ asset.name }}</p>

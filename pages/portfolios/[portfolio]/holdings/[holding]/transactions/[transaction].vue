@@ -101,6 +101,7 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       openModal: false,
       pageDetails: {
+        symbol: this.$route.params.assetSymbol,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
@@ -152,6 +153,7 @@ export default defineComponent({
         .then(response => response.json())
         .then(response => response.data[0])
       this.loaded = true
+      this.pageDetails.symbol = response.symbol
       this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
       this.setDateTime(response.timestamp)

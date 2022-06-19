@@ -3,7 +3,7 @@
     <div class="px-3 overflow-scroll">
       <div class="flex justify-between min-h-min">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <img class="h-11 bg-transparent" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`" alt="">
+        <img class="h-11" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`" alt="">
       </div>
 
       <div class="h-14 my-4 py-2 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
@@ -14,7 +14,10 @@
         <Spinner class="h-14" v-else />
       </div>
 
-      <canvas ref="chart" id="myChart" width="400" height="300"></canvas>
+      <canvas ref="chart" height="224" class="w-full" :class="{ 'hidden': !chartLoaded }"></canvas>
+      <div v-if="!chartLoaded" class="h-56">
+        <Spinner></Spinner>
+      </div>
 
       <div class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
         <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
@@ -160,6 +163,7 @@ export default defineComponent({
         returnPath: "/search",
       },
       symbol: this.$route.params.symbol,
+      chartLoaded: false,
       tabConfig: {
         activeTab: this.$route.name === 'assets-symbol-chart' ? 'CHART' : 'SUMMARY',
         tabs: [
@@ -215,9 +219,10 @@ export default defineComponent({
           symbol: this.symbol
         })
       })
-          .then(response => response.json())
-          .then(response => response.data.slice(-1000))
+        .then(response => response.json())
+        .then(response => response.data.slice(-1000))
 
+      this.chartLoaded = true
       this.createChart(chartData)
     },
 
@@ -236,7 +241,7 @@ export default defineComponent({
             ctx.beginPath();
             ctx.moveTo(x, yAxis.top);
             ctx.lineTo(x, yAxis.bottom);
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 0.5;
             ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
             ctx.stroke();
             ctx.restore();
@@ -287,6 +292,7 @@ export default defineComponent({
               }
             }
           },
+          responsive: true,
           interaction: {
             intersect: false,
             axis: 'x'

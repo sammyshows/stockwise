@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col grow overflow-hidden">
-    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
+    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path, tabConfig.tabs[2].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
@@ -13,7 +13,7 @@
         </div>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtPage :transactions="transactions" />
+      <NuxtPage :transactions="transactions" :chartData="chartData" :quote="quote" :stats="stats" />
     </div>
     <NuxtPage v-else class="flex flex-col grow"/>
   </div>
@@ -36,9 +36,12 @@ export default defineComponent({
     PencilIcon, PlusIcon
   },
 
-  mounted() {
-    this.getTransactions()
+  async mounted() {
     this.updateAssets()
+    await this.getTransactions()
+    this.getChartData()
+    this.fetchQuote()
+    this.fetchStats()
   },
 
   watch: {
@@ -52,19 +55,25 @@ export default defineComponent({
     return {
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
+      symbol: '',
       pageDetails: {
+        symbol: this.$route.params.assetSymbol,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       tabConfig: {
-        activeTab: this.$route.name === `portfolios-portfolio-holdings-holding-chart` ? 'CHART' : 'TRANSACTIONS',
+        activeTab: this.getActiveTab(),
         tabs: [
           { name: 'TRANSACTIONS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}` },
-          { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/chart` }
+          { name: 'SUMMARY', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/summary` },
+          { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/overview` }
         ]
       },
-      transactions: null as ([] | null)
+      transactions: null as ([] | null),
+      chartData: null as ([] | null),
+      quote: null as ({} | null),
+      stats: null as ({} | null)
     }
   },
 
@@ -81,6 +90,8 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.transactions = response.data
+      this.symbol = response.data[0].symbol
+      this.pageDetails.symbol = response.data[0].symbol
       this.pageDetails.title = response.data[0].symbol
       this.pageDetails.subtitle = response.data[0].name
     },
@@ -96,6 +107,57 @@ export default defineComponent({
       })
         .then(this.getTransactions)
       setTimeout(this.updateAssets, 5000)
+    },
+
+    async getChartData() {
+      this.chartData = await fetch('/api/iex-chart', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.symbol
+        })
+      })
+        .then(response => response.json())
+        .then(response => response.data.slice(-1000))
+    },
+
+    async fetchQuote(): Promise<void> {
+      this.quote = await fetch('/api/stock-quote', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.symbol
+        })
+      })
+        .then(response => response.json())
+        .then(response => response.data)
+    },
+
+    async fetchStats(): Promise<void> {
+      this.stats = await fetch('/api/stock-stats', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          symbol: this.symbol
+        })
+      })
+        .then(response => response.json())
+        .then(response => response.data)
+    },
+
+    getActiveTab(): string {
+      if (this.$route.name === 'portfolios-portfolio-holdings-holding-summary')
+        return 'SUMMARY'
+      else if (this.$route.name === 'portfolios-portfolio-holdings-holding-overview')
+        return 'OVERVIEW'
+      else
+        return 'TRANSACTIONS'
     },
 
     setActiveTab(newTab) {
