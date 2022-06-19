@@ -225,8 +225,27 @@ export default defineComponent({
       const prices = chartData.map(dailyData => dailyData.close)
       const labels = chartData.map(dailyData => dailyData.label)
 
+      const verticalLine = {
+        id: 'verticalLine',
+        afterDraw: chart => {
+          if (chart.tooltip?._active?.length) {
+            let x = chart.tooltip._active[0].element.x;
+            let yAxis = chart.scales.y;
+            let ctx = chart.ctx;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, yAxis.top);
+            ctx.lineTo(x, yAxis.bottom);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }
       Chart.defaults.font.family = "Poppins"
       new Chart(this.chart, {
+        plugins: [verticalLine],
         type: 'line',
         data: {
           labels: labels,
@@ -246,18 +265,22 @@ export default defineComponent({
                 color: 'rgb(175, 175, 175)',
                 font: {
                   size: 8
-                }
+                },
+                padding: 8
               },
               grid: {
-                color: 'rgba(255, 255, 255, 0.07)'
+                color: 'rgba(255, 255, 255, 0.07)',
+                drawTicks: false
               }
             },
             y: {
+              position: 'left',
               ticks: {
                 color: 'rgb(175, 175, 175)',
                 font: {
                   size: 10
-                }
+                },
+                padding: 5
               },
               grid: {
                 color: 'rgba(255, 255, 255, 0.07)'
