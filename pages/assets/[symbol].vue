@@ -3,18 +3,15 @@
     <div class="px-3 overflow-scroll">
       <div class="flex justify-between min-h-min">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-<!--        <div>-->
-<!--          <h2 class="text-lg">${{ quote["latestPrice"] }}</h2> &lt;!&ndash; Will probably need to use regex to round to 2 or 3 decimals &ndash;&gt;-->
-<!--          <p class="text-xs text-bright-green font-medium whitespace-nowrap">{{ quote["change"] }} ({{ (quote["changePercent"] * 100).toFixed(2) }}%)</p>-->
-<!--        </div>-->
-        <img class="h-12 bg-transparent" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`" alt="">
+        <img class="h-11 bg-transparent" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`" alt="">
       </div>
 
-      <div class="h-14 my-3 py-2 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
-        <div class="flex justify-center items-center h-full">
+      <div class="h-14 my-4 py-2 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+        <div v-if="quote['latestPrice']" class="flex justify-center items-center h-full">
           <h2 class="mr-2 font-normal text-lg tracking-wider truncate">${{ quote["latestPrice"] }}</h2>
-          <p class="font-normal text-lg" :class="{ 'text-bright-red': 1 < 0, 'text-bright-green': 1 > 0 }">{{ $addSign($formatNumber(BigNumber(quote["change"]).toNumber()), 3) }} <span class="text-sm">({{ $addSign($formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber()), 2) }}%)</span></p>
+          <p class="font-normal text-sm" :class="{ 'text-bright-red': 1 < 0, 'text-bright-green': 1 > 0 }">{{ $addSign($formatNumber(BigNumber(quote["change"]).toNumber()), 3) }} <span class="text-sm">({{ $addSign($formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber()), 2) }}%)</span></p>
         </div>
+        <Spinner class="h-14" v-else />
       </div>
 
       <canvas ref="chart" id="myChart" width="400" height="300"></canvas>
@@ -145,6 +142,10 @@ export default defineComponent({
     return { token, chart }
   },
 
+  components: {
+    SpeakerphoneIcon
+  },
+
   mounted() {
     this.getChartData()
     this.fetchQuote()
@@ -211,7 +212,7 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
-          symbol: this.$route.params.symbol
+          symbol: this.symbol
         })
       })
           .then(response => response.json())
