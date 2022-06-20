@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-4">
+  <div class="pt-4 border-t border-gray-300">
     <div class="sm:block">
       <nav class="flex justify-around px-2.5" aria-label="Tabs">
         <NuxtLink to="/notifications">

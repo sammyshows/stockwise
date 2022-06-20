@@ -24,10 +24,10 @@
       </div>
 
       <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
-        <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+        <!-- Chart gets inserted here :D -->
       </div>
 
-      <div v-if="!chartDataDay" class="h-64">
+      <div v-if="!chartDataDay" style="height: 250px;">
         <Spinner></Spinner>
       </div>
 
@@ -286,7 +286,7 @@ export default defineComponent({
       this.activeText = periodText
 
       document.getElementById('chart').remove()
-      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px;"></canvas>`
+      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
       const chart = document.getElementById('chart') as HTMLCanvasElement
 
       let chartData;
@@ -361,7 +361,7 @@ export default defineComponent({
               ticks: {
                 color: 'rgb(175, 175, 175)',
                 font: {
-                  size: 10
+                  size: 8
                 },
                 padding: 5
               },
