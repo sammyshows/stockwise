@@ -3,19 +3,31 @@
     <div class="px-3 overflow-scroll">
       <div class="flex justify-between min-h-min">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <img class="h-11" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`" alt="">
+        <img v-if="['NASDAQ', 'NEW YORK STOCK EXCHANGE INC.', 'New York Stock Exchange'].includes(quote.primaryExchange)" class="h-11 text-tiny" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`">
       </div>
 
-      <div class="h-14 my-4 py-2 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
-        <div v-if="quote['latestPrice']" class="flex justify-center items-center h-full">
-          <h2 class="mr-2 font-normal text-lg tracking-wider truncate">${{ quote["latestPrice"] }}</h2>
-          <p class="font-normal text-sm" :class="{ 'text-bright-red': 1 < 0, 'text-bright-green': 1 > 0 }">{{ $addSign($formatNumber(BigNumber(quote["change"]).toNumber()), 3) }} <span class="text-sm">({{ $addSign($formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber()), 2) }}%)</span></p>
+      <div class="flex items-center h-20 mt-4 mb-1 py-3 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+        <div v-if="quote['latestPrice'] && chartDataDay">
+          <p class="mr-2 font-normal text-2xl tracking-wider truncate">${{ $formatNumber(quote["latestPrice"], 2) }}</p>
+          <p v-if="activeRange === '1D'" class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['change']).toNumber() < 0, 'text-bright-green': BigNumber(quote['change']).toNumber() > 0 }">
+            {{ $addSign($formatNumber(BigNumber(quote["change"]).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+          </p>
+          <p v-else class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() > 0 }">
+            {{ $addSign($formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+          </p>
         </div>
-        <Spinner class="h-14" v-else />
+        <Spinner class="h-20" v-else />
       </div>
 
-      <canvas ref="chart" height="224" class="w-full" :class="{ 'hidden': !chartLoaded }"></canvas>
-      <div v-if="!chartLoaded" class="h-56">
+      <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+      </div>
+
+      <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+        <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+      </div>
+
+      <div v-if="!chartDataDay" class="h-64">
         <Spinner></Spinner>
       </div>
 
@@ -140,9 +152,8 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
-    const chart = ref(null)
 
-    return { token, chart }
+    return { token }
   },
 
   components: {
@@ -163,7 +174,51 @@ export default defineComponent({
         returnPath: "/search",
       },
       symbol: this.$route.params.symbol,
-      chartLoaded: false,
+      canvas: null,
+      activeRange: '',
+      activeText: '',
+      chartInitialPrice: 0,
+      ranges: [
+        {
+          period: '1D',
+          periodText: 'today'
+        },
+        {
+          period: '5D',
+          slice: -5,
+          periodText: 'past week'
+        },
+        {
+          period: '1M',
+          slice: -22,
+          periodText: 'past month'
+        },
+        {
+          period: '6M',
+          slice: -130,
+          periodText: 'past 6 months'
+        },
+        {
+          period: 'YTD',
+          periodText: 'YTD'
+        },
+        {
+          period: '1Y',
+          slice: -260,
+          periodText: 'past year'
+        },
+        {
+          period: '5Y',
+          slice: -1300,
+          periodText: 'past 5 years'
+        },
+        {
+          period: '15Y',
+          periodText: 'past 15 years'
+        },
+      ],
+      chartDataDay: null as ([] | null),
+      chartDataMax: null as ([] | null),
       tabConfig: {
         activeTab: this.$route.name === 'assets-symbol-chart' ? 'CHART' : 'SUMMARY',
         tabs: [
@@ -220,14 +275,34 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-        .then(response => response.data.slice(-1000))
 
-      this.chartLoaded = true
-      this.createChart(chartData)
+      this.chartDataMax = chartData.max
+      this.chartDataDay = chartData.day
+      this.createChart('1D', 'today')
     },
 
-    createChart(chartData) {
-      const prices = chartData.map(dailyData => dailyData.close)
+    createChart(range, periodText, dataSlice?) {
+      this.activeRange = range
+      this.activeText = periodText
+
+      document.getElementById('chart').remove()
+      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px;"></canvas>`
+      const chart = document.getElementById('chart') as HTMLCanvasElement
+
+      let chartData;
+      let prices;
+      if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
+        chartData = this.chartDataDay
+        prices = chartData.map(dailyData => dailyData.marketClose)
+      } else if (dataSlice) {
+        chartData = this.chartDataMax.slice(dataSlice)
+        prices = chartData.map(dailyData => dailyData.close)
+      } else {
+        chartData = this.chartDataMax
+        prices = chartData.map(dailyData => dailyData.close)
+      }
+
+      this.chartInitialPrice = chartData[0].close
       const labels = chartData.map(dailyData => dailyData.label)
 
       const verticalLine = {
@@ -249,7 +324,8 @@ export default defineComponent({
         }
       }
       Chart.defaults.font.family = "Poppins"
-      new Chart(this.chart, {
+
+      this.canvas = new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
@@ -271,7 +347,9 @@ export default defineComponent({
                 font: {
                   size: 8
                 },
-                padding: 8
+                padding: 8,
+                maxRotation: 45,
+                minRotation: 45
               },
               grid: {
                 color: 'rgba(255, 255, 255, 0.07)',

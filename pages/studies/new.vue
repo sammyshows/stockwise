@@ -17,26 +17,29 @@
                 </div>
               </div>
             </div>
-            <div v-if="quote" class="w-full h-20 px-3" key="2">
-              <p class="text-center truncate">{{ quote.companyName }}</p>
-              <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
-                <div class="w-1 grow text-right">
-                  <p class="truncate">{{ quote.symbol }}</p>
-                  <p class="truncate">Current price</p>
-                  <p class="truncate">Daily movement</p>
-                </div>
-                <div class="w-3 text-center">
-                  <p>:</p>
-                  <p>:</p>
-                  <p>:</p>
-                </div>
-                <div class="w-1 grow">
-                  <p class="truncate">{{ quote.primaryExchange }}</p>
-                  <p class="truncate">{{ quote.latestPrice }}</p>
-                  <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+            <div key="2" v-if="quote" class="w-full px-3 min-h-min">
+              <div v-if="Object.keys(quote).length !== 0">
+                <img v-if="['NASDAQ', 'NEW YORK STOCK EXCHANGE INC.', 'New York Stock Exchange'].includes(quote.primaryExchange)" class="h-11 mx-auto mb-2" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${quote.symbol}.png`" alt="">
+                <p class="text-center truncate mb-1">{{ quote.companyName }}</p>
+                <div class="flex text-xs">
+                  <div class="w-1 grow text-right">
+                    <p class="truncate">{{ quote.symbol }}</p>
+                    <p class="truncate">Current price</p>
+                    <p class="truncate">Daily movement</p>
+                  </div>
+                  <div class="w-3 text-center">
+                    <p>:</p>
+                    <p>:</p>
+                    <p>:</p>
+                  </div>
+                  <div class="w-1 grow">
+                    <p class="truncate">{{ quote.primaryExchange }}</p>
+                    <p class="truncate">{{ quote.latestPrice }}</p>
+                    <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+                  </div>
                 </div>
               </div>
-              <Spinner v-else />
+              <Spinner class="h-32" v-else />
             </div>
           </div>
 
