@@ -24,7 +24,8 @@
       </div>
 
       <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
-        <!-- Chart gets inserted here :D -->
+        <!--    This chart gets replaced on creation    -->
+        <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
       </div>
 
       <div v-if="!chartDataDay" style="height: 250px;">
