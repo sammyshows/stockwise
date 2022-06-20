@@ -201,7 +201,9 @@ export default defineComponent({
                 font: {
                   size: 8
                 },
-                padding: 8
+                padding: 8,
+                maxRotation: 45,
+                minRotation: 45
               },
               grid: {
                 color: 'rgba(255, 255, 255, 0.07)',
@@ -213,7 +215,7 @@ export default defineComponent({
               ticks: {
                 color: 'rgb(175, 175, 175)',
                 font: {
-                  size: 10
+                  size: 8
                 },
                 padding: 5
               },
