@@ -8,9 +8,9 @@
       {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
-    <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+    <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataMax }"></canvas>
+      <canvas ref="chart" id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
     </div>
 
     <div v-if="!chartDataMax" style="height: 250px;">
@@ -128,9 +128,10 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
+    const chartContainer = ref(null)
     const chart = ref(null)
 
-    return { token, chart }
+    return { token, chartContainer, chart }
   },
 
   props: [
@@ -140,6 +141,12 @@ export default defineComponent({
   components: {
     Spinner,
     SpeakerphoneIcon
+  },
+
+  mounted() {
+    if (this.chartDataDay) {
+      this.createChart('1D', 'today')
+    }
   },
 
   watch: {
@@ -157,9 +164,11 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
       },
+      initialConfiguration: true,
       activeRange: '1D',
       activeText: '',
       chartInitialPrice: 0,
+      chartFinalPrice: 0,
       ranges: [
         {
           period: '1D',
@@ -207,9 +216,16 @@ export default defineComponent({
       this.activeRange = range
       this.activeText = periodText
 
-      document.getElementById('chart').remove()
-      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
-      const chart = document.getElementById('chart') as HTMLCanvasElement
+      // Here we need to know whether this is the first time loading the chart because if the page is mounted and the data
+      // has already been received and passed from the [holding] parent to this child, then the chart will not automatically
+      // be loaded on mount since it is only triggered by changes to the data (see the watch object above). Therefore, the
+      // page works as expected on refresh, however, a delayed navigation won't trigger it. So there is now call to create
+      // the chart when mounted (see mounted()) that requires grabbing the chart using $refs instead of document.getElementById().
+      let chart = this.$refs.chart
+      if (!this.initialConfiguration) {
+        this.$refs.chartContainer.innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
+        chart = document.getElementById('chart') as HTMLCanvasElement
+      }
 
       let chartData;
       let prices;
@@ -321,6 +337,8 @@ export default defineComponent({
           }
         }
       });
+
+      this.initialConfiguration = false
     },
 
     BigNumber
