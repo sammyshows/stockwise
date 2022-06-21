@@ -1,7 +1,19 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <canvas ref="chart" height="224" class="w-full" :class="{ 'hidden': !chartData }"></canvas>
-    <div v-if="!chartData" class="h-56">
+    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataLoaded }">
+      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+    </div>
+
+    <p v-if="activeRange !== '1D'" class="mt-2 font-normal text-center text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
+      {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+    </p>
+
+    <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+      <!--  This chart gets replaced on creation  -->
+      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataLoaded }"></canvas>
+    </div>
+
+    <div v-if="!chartDataLoaded" style="height: 250px;">
       <Spinner></Spinner>
     </div>
 
@@ -111,10 +123,6 @@ import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 import Spinner from "~/components/Spinner.vue";
 
-interface StringObject {
-  [index: string]: string;
-}
-
 export default defineComponent({
   name: "Asset Detail",
 
@@ -126,7 +134,7 @@ export default defineComponent({
   },
 
   props: [
-    'transactions', 'chartData', 'quote', 'stats'
+    'transactions', 'assetData', 'chartDataDay', 'chartDataMax', 'quote', 'stats'
   ],
 
   components: {
@@ -134,14 +142,12 @@ export default defineComponent({
     SpeakerphoneIcon
   },
 
-  mounted() {
-    if (this.chartData)
-      this.createChart(this.chartData)
-  },
-
   watch: {
-    chartData(chartData) {
-      this.createChart(chartData)
+    chartDataDay() {
+      if (this.chartDataDay) {
+        this.chartDataLoaded = true
+        this.createChart('1D', 'today')
+      }
     }
   },
 
@@ -151,13 +157,77 @@ export default defineComponent({
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
-      }
+      },
+      chartDataLoaded: false,
+      activeRange: '1D',
+      activeText: '',
+      chartInitialPrice: 0,
+      ranges: [
+        {
+          period: '1D',
+          periodText: 'today'
+        },
+        {
+          period: '5D',
+          slice: -5,
+          periodText: 'past week'
+        },
+        {
+          period: '1M',
+          slice: -22,
+          periodText: 'past month'
+        },
+        {
+          period: '6M',
+          slice: -130,
+          periodText: 'past 6 months'
+        },
+        {
+          period: 'YTD',
+          periodText: 'YTD'
+        },
+        {
+          period: '1Y',
+          slice: -260,
+          periodText: 'past year'
+        },
+        {
+          period: '5Y',
+          slice: -1300,
+          periodText: 'past 5 years'
+        },
+        {
+          period: '15Y',
+          periodText: 'past 15 years'
+        },
+      ],
     }
   },
 
   methods: {
-    createChart(chartData) {
-      const prices = chartData.map(dailyData => dailyData.close)
+    createChart(range, periodText, dataSlice?) {
+      this.activeRange = range
+      this.activeText = periodText
+
+      document.getElementById('chart').remove()
+      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
+      const chart = document.getElementById('chart') as HTMLCanvasElement
+
+      let chartData;
+      let prices;
+      if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
+        chartData = this.chartDataDay
+        this.chartInitialPrice = chartData[0].close
+        prices = chartData.map(dailyData => dailyData.marketClose)
+      } else if (dataSlice) {
+        chartData = this.chartDataMax.slice(dataSlice)
+        prices = chartData.map(dailyData => dailyData.close)
+      } else {
+        chartData = this.chartDataMax
+        prices = chartData.map(dailyData => dailyData.close)
+      }
+
+      this.chartInitialPrice = chartData[0].close
       const labels = chartData.map(dailyData => dailyData.label)
 
       const verticalLine = {
@@ -179,7 +249,8 @@ export default defineComponent({
         }
       }
       Chart.defaults.font.family = "Poppins"
-      new Chart(this.chart, {
+
+      this.canvas = new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {

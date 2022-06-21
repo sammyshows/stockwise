@@ -173,7 +173,6 @@ export default defineComponent({
         returnPath: "/search",
       },
       symbol: this.$route.params.symbol,
-      canvas: null,
       activeRange: '',
       activeText: '',
       chartInitialPrice: 0,
@@ -317,7 +316,7 @@ export default defineComponent({
       }
       Chart.defaults.font.family = "Poppins"
 
-      this.canvas = new Chart(chart.getContext('2d'), {
+      new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {

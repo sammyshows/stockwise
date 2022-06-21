@@ -17,11 +17,11 @@ INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b1
 INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
 INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
 
-CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('AAPL', 158.98, 157.71, 'Apple Inc', 'NASDAQ', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type) VALUES ('NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 0);
+CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('AAPL', 158.98, 157.71, 'Apple Inc', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 'USD', 0);
 WITH currency (code, name) AS (
     SELECT *
     FROM
@@ -30,7 +30,7 @@ WITH currency (code, name) AS (
                 ARRAY['Australian Dollar', 'Canadian Dollar', 'Swiss Franc', 'Chinese Yuan Renminbi (HK)', 'Czech Koruna', 'Danish Krone', 'Euro', 'British Pound', 'Hong Kong Dollar', 'Hungarian Forint', 'Israeli New Shekel','Indian Rupee', 'Japanese Yen', 'Mexican Peso', 'Norwegian Krone', 'New Zealand Dollar', 'Polish Zloty', 'Romanian Leu', 'Russian Ruble', 'Swedish Krona', 'Singapore Dollar', 'Thai Baht', 'Turkish Lira', 'U.S. Dollar', 'South African Rand']::TEXT[]
             )
 )
-INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 1, 1, name, 2 FROM currency;
+INSERT INTO assets (symbol, current_price, prev_close, name, currency, type) SELECT code, 1, 1, name, code, 2 FROM currency;
 CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
 
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
@@ -93,14 +93,11 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, symbol TEXT, exchange TEXT, name TEXT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
                t.type,
-               a.symbol,
-               a.exchange,
-               a.name,
                t.quantity,
                COALESCE(t.quantity - SUM(s.quantity), t.quantity),
                t.initial_price,

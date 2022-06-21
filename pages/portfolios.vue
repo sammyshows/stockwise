@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="overview">
-    <div v-if="['/portfolios', '/portfolios/chart'].includes($route.path)" class="flex flex-col grow overflow-hidden">
+    <div v-if="viewPortfolios" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
         <NuxtLink :to="{ path: '/portfolios/new' }">
@@ -8,7 +8,8 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtChild :portfolios="portfolios" />
+      <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+      <NuxtChild v-else-if="portfolios" :portfolios="portfolios" />
     </div>
     <NuxtChild v-else/>
   </NuxtLayout>
@@ -49,6 +50,12 @@ export default defineComponent({
         ]
       },
       portfolios: []
+    }
+  },
+
+  computed: {
+    viewPortfolios() {
+      return [this.tabConfig.tabs[0].path, this.tabConfig.tabs[1].path].includes(this.$route.path)
     }
   },
 

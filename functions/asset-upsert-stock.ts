@@ -19,12 +19,13 @@ const handler: Handler = requireAuth(async (event, context) => {
         .then(asset => asset["data"])
 
     const createdAsset = await client`
-        INSERT INTO assets (symbol, current_price, prev_close, name, exchange, type)
+        INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type)
         VALUES (${asset.symbol}, 
                 ${asset.latestPrice}, 
                 ${asset.previousClose}, 
                 ${asset.companyName}, 
                 ${asset.primaryExchange},
+                ${asset.currency},
                 0)
         ON CONFLICT (symbol)
         WHERE NOT (type = 3)

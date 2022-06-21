@@ -13,7 +13,16 @@
         </div>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtPage :transactions="transactions" :chartData="chartData" :quote="quote" :stats="stats" />
+      <div class="flex items-center h-20 mb-4 py-3 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+        <div v-if="assetData">
+          <p class="mr-2 font-normal text-2xl tracking-wider truncate">${{ $formatNumber(assetData.current_price, 2) }}</p>
+          <p class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
+            {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2)) }}%)
+          </p>
+        </div>
+        <Spinner class="h-20" v-else />
+      </div>
+      <NuxtPage :transactions="transactions" :assetData="assetData" :chartDataDay="chartDataDay" :chartDataMax="chartDataMax" :quote="quote" :stats="stats" />
     </div>
     <NuxtPage v-else class="flex flex-col grow"/>
   </div>
@@ -23,6 +32,11 @@
 import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
+import { BigNumber } from "bignumber.js"
+
+interface StringObject {
+  [index: string]: string;
+}
 
 export default defineComponent({
   name: "Portfolio Holdings",
@@ -71,8 +85,10 @@ export default defineComponent({
         ]
       },
       transactions: null as ([] | null),
-      chartData: null as ([] | null),
-      quote: null as ({} | null),
+      assetData: null as ({} | null),
+      chartDataDay: null as ([] | null),
+      chartDataMax: null as ([] | null),
+      quote: {} as StringObject,
       stats: null as ({} | null)
     }
   },
@@ -89,11 +105,12 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.transactions = response.data
-      this.symbol = response.data[0].symbol
-      this.pageDetails.symbol = response.data[0].symbol
-      this.pageDetails.title = response.data[0].symbol
-      this.pageDetails.subtitle = response.data[0].name
+      this.transactions = response.transactions
+      this.assetData = response.assetData
+      this.symbol = response.assetData.symbol
+      this.pageDetails.symbol = response.assetData.symbol
+      this.pageDetails.title = response.assetData.symbol
+      this.pageDetails.subtitle = response.assetData.name
     },
 
     // This is NOT a permanent solution, but at the time it was either update every asset price like this
@@ -106,11 +123,11 @@ export default defineComponent({
         }
       })
         .then(this.getTransactions)
-      setTimeout(this.updateAssets, 5000)
+      setTimeout(this.updateAssets, 10000)
     },
 
     async getChartData() {
-      this.chartData = await fetch('/api/iex-chart', {
+      const chartData = await fetch('/api/iex-chart', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -119,8 +136,10 @@ export default defineComponent({
           symbol: this.symbol
         })
       })
-        .then(response => response.json())
-        .then(response => response.data.slice(-1000))
+          .then(response => response.json())
+
+      this.chartDataMax = chartData.max
+      this.chartDataDay = chartData.day
     },
 
     async fetchQuote(): Promise<void> {
@@ -162,7 +181,9 @@ export default defineComponent({
 
     setActiveTab(newTab) {
       this.tabConfig.activeTab = newTab
-    }
+    },
+
+    BigNumber
   }
 })
 </script>
