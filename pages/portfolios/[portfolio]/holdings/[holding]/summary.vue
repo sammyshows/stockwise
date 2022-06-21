@@ -1,6 +1,6 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataLoaded }">
+    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataMax }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
     </div>
 
@@ -10,10 +10,10 @@
 
     <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataLoaded }"></canvas>
+      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataMax }"></canvas>
     </div>
 
-    <div v-if="!chartDataLoaded" style="height: 250px;">
+    <div v-if="!chartDataMax" style="height: 250px;">
       <Spinner></Spinner>
     </div>
 
@@ -145,7 +145,6 @@ export default defineComponent({
   watch: {
     chartDataDay() {
       if (this.chartDataDay) {
-        this.chartDataLoaded = true
         this.createChart('1D', 'today')
       }
     }
@@ -158,7 +157,6 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
       },
-      chartDataLoaded: false,
       activeRange: '1D',
       activeText: '',
       chartInitialPrice: 0,
