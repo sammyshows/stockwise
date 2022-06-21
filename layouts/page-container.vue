@@ -20,9 +20,6 @@ export default {
   },
 
   mounted() {
-    this.pageStyle = {
-      height: `${window.innerHeight}px`
-    }
     window.addEventListener("resize", this.setHeight);
   },
 
@@ -40,6 +37,7 @@ export default {
 
   methods: {
     setHeight() {
+      console.log('resizing')
       this.height = `${window.innerHeight}px`
     }
   }
