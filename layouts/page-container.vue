@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:style="pageStyle" class="flex flex-col justify-between pt-10 pb-4">
+  <div class="flex flex-col justify-between h-full pt-10 pb-4">
     <div class="h-full overflow-hidden flex flex-col flex-1">
       <slot></slot>
     </div>
@@ -20,26 +20,10 @@ export default {
   },
 
   mounted() {
-    window.addEventListener("resize", this.setHeight);
-  },
-
-  destroyed() {
-    window.removeEventListener("resize", this.setHeight);
-  },
-
-  data() {
-    return {
-      pageStyle: {
-        height: '100%'
-      }
-    }
-  },
-
-  methods: {
-    setHeight() {
-      console.log('resizing')
-      this.height = `${window.innerHeight}px`
-    }
+    let viewheight = window.innerHeight;
+    let viewwidth = window.innerWidth;
+    let viewport = document.querySelector("meta[name=viewport]");
+    viewport.setAttribute("content", "height=" + viewheight + ", width=" + viewwidth + ", initial-scale=1.0");
   }
 }
 </script>
