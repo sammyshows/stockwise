@@ -78,12 +78,13 @@ export default defineComponent({
     // or pay for a CRON job with heroku, and although this is repeated every 10 seconds, it will certainly
     // be a while before the app goes live and this overloads the system.
     async updateAssets(): Promise<void> {
-      await fetch('/api/assets-update', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        }
-      })
-        .then(this.getPortfolios())
+      // await fetch('/api/assets-update', {
+      //   headers: {
+      //     authorization: 'Bearer ' + this.token
+      //   }
+      // })
+      //   .then(this.getPortfolios())
+      this.getPortfolios()
       setTimeout(this.updateAssets, 10000)
     },
 
