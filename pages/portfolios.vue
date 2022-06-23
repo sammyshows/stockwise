@@ -8,7 +8,7 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+      <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
       <NuxtChild v-else-if="portfolios" :portfolios="portfolios" />
     </div>
     <NuxtChild v-else/>
@@ -34,7 +34,7 @@ export default defineComponent({
 
   mounted() {
     this.getPortfolios()
-    this.updateAssets()
+    setInterval(this.getPortfolios, 60000)
   },
 
   data() {
@@ -49,7 +49,7 @@ export default defineComponent({
           { name: 'CHART', path: `/portfolios/chart` }
         ]
       },
-      portfolios: []
+      portfolios: null as ([] | null)
     }
   },
 
@@ -72,20 +72,6 @@ export default defineComponent({
       })
         .then(response => response.json())
       this.portfolios = response.portfolios
-    },
-
-    // This is NOT a permanent solution, but at the time it was either update every asset price like this
-    // or pay for a CRON job with heroku, and although this is repeated every 10 seconds, it will certainly
-    // be a while before the app goes live and this overloads the system.
-    async updateAssets(): Promise<void> {
-      // await fetch('/api/assets-update', {
-      //   headers: {
-      //     authorization: 'Bearer ' + this.token
-      //   }
-      // })
-      //   .then(this.getPortfolios())
-      this.getPortfolios()
-      setTimeout(this.updateAssets, 10000)
     },
 
     setActiveTab(newTab) {
