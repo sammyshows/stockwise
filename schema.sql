@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS partman CASCADE;
 DROP TABLE IF EXISTS studies;
 DROP TABLE IF EXISTS sells;
 DROP TABLE IF EXISTS transactions;
@@ -8,20 +9,42 @@ DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS uspReadTransactions;
 DROP FUNCTION IF EXISTS uspUpdateHolding;
 
+CREATE SCHEMA partman;
+CREATE EXTENSION pg_partman WITH SCHEMA partman;
+
+
+UPDATE partman.part_config
+SET infinite_time_partitions = true,
+    retention_keep_table = true
+WHERE parent_table = 'partman';
 
 CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO users (id, email) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
 
 CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);
-INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
-INSERT INTO portfolios (user_id, name, included) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
+INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);
+INSERT INTO portfolios (id, user_id, name, included) VALUES ('26fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
+INSERT INTO portfolios (id, user_id, name, included) VALUES ('36fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
+
+CREATE TABLE partman.portfolio_data (id uuid DEFAULT gen_random_uuid(), portfolio_id uuid, daily_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE INDEX portfolio_data_time_brin_index
+    ON partman.portfolio_data
+        USING BRIN (date)
+    WITH (pages_per_range = 32);
+SELECT partman.create_parent('partman.portfolio_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
+INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5913.78, 5498.00, '2022-06-20');
+INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6119.13, 5498.00, '2022-06-21');
+INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6528.72, 5498.00, '2022-06-22');
+INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6299.48, 5498.00, '2022-06-23');
+INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6319.10, 5498.00, '2022-06-24');
+
 
 CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('AAPL', 158.98, 157.71, 'Apple Inc', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 'USD', 0);
+CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'AAPL', 158.98, 157.71, 'Apple Inc', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('d3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 'USD', 0);
 WITH currency (code, name) AS (
     SELECT *
     FROM
@@ -31,16 +54,15 @@ WITH currency (code, name) AS (
             )
 )
 INSERT INTO assets (symbol, current_price, prev_close, name, currency, type) SELECT code, 1, 1, name, code, 2 FROM currency;
-CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
 
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='AUS EQUITIES'), (SELECT id FROM assets WHERE symbol='TSLA'), 7.5713, 6860.10163446);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='AAPL'), 6.7562, 1251.433590, -329.20, 1329.30, 2580.73359);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='U.S. EQUITIES'), (SELECT id FROM assets WHERE symbol='MSFT'), 4.8069, 1115.74722, 67.49, 367.860, 1483.60722);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='TSLA'), 2.78, 2510.062);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='MSFT'), 12, 2284.32);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', (SELECT id FROM portfolios WHERE name='Commodities'), (SELECT id FROM assets WHERE symbol='NNOX'), 100.000009, 1049.7800944802);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 7.5713, 6860.10163446);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 6.7562, 1251.433590, -329.20, 1329.30, 2580.73359);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.8069, 1115.74722, 67.49, 367.860, 1483.60722);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 2.78, 2510.062);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 12, 2284.32);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100.000009, 1049.7800944802);
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
@@ -68,12 +90,12 @@ INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate)
 CREATE TABLE studies (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, asset_id uuid, type INT, name TEXT, symbol TEXT, notes TEXT, question_one INT, question_two INT, question_three INT, question_four INT, question_five INT, question_six NUMERIC, question_seven NUMERIC, question_eight INT,
                       completed_qs INT GENERATED ALWAYS AS (CASE WHEN question_one IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_two IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_three IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_four IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_five IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_six IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_seven IS NOT NULL THEN 1 ELSE 0 END + CASE WHEN question_eight IS NOT NULL THEN 1 ELSE 0 END) STORED,
                       created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='AAPL'), 'Apple Inc', 'AAPL', 0, 7, 8, 6, 8, 4, 1.345, 4.5661, NULL);
-INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='TSLA'), 'Tesla', 'TSLA', 0, 4, 5, 3, 8, 6, 4.49, NULL, NULL);
-INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='MSFT'), 'Microsoft Inc', 'MSFT', 0, 7, 8, 6, 8, 4, NULL, NULL, NULL);
-INSERT INTO studies (user_id, asset_id, name, symbol, type, notes, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='TSLA'), 'Tesla', 'TSLA', 0, 'This study of Tesla was done following the leak that their car motors are powered by Hamsters in a wheel. Given the severity of this issue, I took the chance to re-evaluate my position as a Tesla shareholder.', 4, 5, 3, 8, 6, 4.49, 2.34, 7);
-INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='MSFT'), 'Microsoft Inc', 'MSFT', 0, 4, 5, 3, 9, 3, 5.98, 2.43, 4);
-INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', (SELECT id FROM assets WHERE symbol='NNOX'), 'Nano X Technology', 'NNOX', 4, 5, 3, 4, 9, 3, 0.9, 3.3, 5);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Apple Inc', 'AAPL', 0, 7, 8, 6, 8, 4, 1.345, 4.5661, NULL);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Tesla', 'TSLA', 0, 4, 5, 3, 8, 6, 4.49, NULL, NULL);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Microsoft Inc', 'MSFT', 0, 7, 8, 6, 8, 4, NULL, NULL, NULL);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, notes, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Tesla', 'TSLA', 0, 'This study of Tesla was done following the leak that their car motors are powered by Hamsters in a wheel. Given the severity of this issue, I took the chance to re-evaluate my position as a Tesla shareholder.', 4, 5, 3, 8, 6, 4.49, 2.34, 7);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Microsoft Inc', 'MSFT', 0, 4, 5, 3, 9, 3, 5.98, 2.43, 4);
+INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Nano X Technology', 'NNOX', 4, 5, 3, 4, 9, 3, 0.9, 3.3, 5);
 
 
 
