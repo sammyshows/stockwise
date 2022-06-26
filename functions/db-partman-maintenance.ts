@@ -4,7 +4,7 @@ const { requireAuth } = require('../api/auth');
 
 
 const handler: Handler = requireAuth(async (event, context) => {
-    await client`CALL partman.run_maintenance_proc();`
+    await client`SELECT partman.run_maintenance(partman.portfolio_data);`
 
     return {
         statusCode: 200
