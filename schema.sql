@@ -26,17 +26,17 @@ INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('26fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('36fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
 
-CREATE TABLE partman.portfolio_data (id uuid DEFAULT gen_random_uuid(), portfolio_id uuid, daily_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE TABLE partman.portfolio_data (id uuid DEFAULT gen_random_uuid(), portfolio_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX portfolio_data_time_brin_index
     ON partman.portfolio_data
         USING BRIN (date)
     WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.portfolio_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5913.78, 5498.00, '2022-06-20');
-INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6119.13, 5498.00, '2022-06-21');
-INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6528.72, 5498.00, '2022-06-22');
-INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6299.48, 5498.00, '2022-06-23');
-INSERT INTO partman.portfolio_data (portfolio_id, daily_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6319.10, 5498.00, '2022-06-24');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5913.78, 5498.00, '2022-06-20');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6119.13, 5498.00, '2022-06-21');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6528.72, 5498.00, '2022-06-22');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6299.48, 5498.00, '2022-06-23');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6319.10, 5498.00, '2022-06-24');
 
 
 CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
