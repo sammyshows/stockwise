@@ -20,6 +20,21 @@ WHERE parent_table = 'partman';
 
 CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO users (id, email) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
+CREATE TABLE partman.user_portfolios_data (id uuid DEFAULT gen_random_uuid(), user_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE INDEX user_portfolios_data_time_brin_index
+    ON partman.user_portfolios_data
+        USING BRIN (date)
+    WITH (pages_per_range = 32);
+SELECT partman.create_parent('partman.user_portfolios_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13913.78, 15498.00, '2022-06-20');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13119.13, 15498.00, '2022-06-21');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13528.72, 15498.00, '2022-06-22');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13299.48, 15498.00, '2022-06-23');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13269.10, 15498.00, '2022-06-24');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13119.10, 15498.00, '2022-06-25');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13070.10, 15498.00, '2022-06-26');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13449.10, 15498.00, '2022-06-27');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13239.10, 15498.00, '2022-06-28');
 
 CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);

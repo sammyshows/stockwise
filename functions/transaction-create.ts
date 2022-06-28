@@ -2,8 +2,6 @@ import { Handler } from "@netlify/functions";
 import fetch from "node-fetch";
 const { requireAuth } = require('../api/auth');
 const client = require("../database/client.ts");
-const { BigNumber } = require('bignumber.js');
-
 
 
 const handler: Handler = requireAuth(async (event, context) => {
