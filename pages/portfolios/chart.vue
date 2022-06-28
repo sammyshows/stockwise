@@ -35,8 +35,8 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
-
-    return { token }
+    const uuid = useState('uuid').value
+    return { token, uuid }
   },
 
   props: ['portfolios'],
@@ -123,6 +123,7 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
+          userId: this.uuid,
           date: this.currentDate()
         })
       })
