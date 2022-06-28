@@ -123,7 +123,7 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
-          symbol: this.symbol
+          date: this.currentDate()
         })
       })
         .then(response => response.json())
