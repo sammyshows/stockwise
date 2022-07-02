@@ -1,6 +1,6 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <h2 class="w-max mx-auto mb-1.5 pb-0.5 text-xl text-center border-b border-gray-400">Holding Value</h2>
+    <h2 class="w-max mx-auto mb-1.5 pb-0.5 text-xl text-center border-b border-gray-400">Total Value</h2>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
@@ -12,7 +12,7 @@
 
     <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas ref="chart" id="initialChart" height="224" class="w-full"></canvas>
+      <canvas ref="chart" height="224" class="w-full"></canvas>
     </div>
 
     <div v-if="!overviewChart" style="height: 250px;">
@@ -33,7 +33,7 @@ interface StringObject {
 }
 
 export default defineComponent({
-  name: "Asset Detail",
+  name: "Total Portfolios Overview",
 
   async setup() {
     const token = await useState('authToken').value
@@ -43,7 +43,7 @@ export default defineComponent({
     return { token, chartContainer, chart }
   },
 
-  props: ['transactions', 'total', 'overviewChart'],
+  props: ['portfolios', 'total', 'overviewChart'],
 
   components: {
     SpeakerphoneIcon
@@ -63,7 +63,6 @@ export default defineComponent({
 
   data() {
     return {
-      initialLoad: true,
       holdingId: this.$route.params.holding,
       activeRange: '',
       activeText: '',
@@ -115,10 +114,10 @@ export default defineComponent({
       // has already been received and passed from the [holding] parent to this child, then the chart probably won't automatically
       // be loaded since the DOM hasn't loaded yet. However, I've placed a canvas element to begin so that it called with
       // $refs this first time.
-      if (!this.initialLoad) // this checks that the DOM has loaded, since Vue mounted() doesn't technically.
-        this.$refs.chartContainer.innerHTML = `<canvas id="overviewChart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
+      if (document.getElementById('chartContainer')) // this checks that the DOM has loaded, since Vue mounted() doesn't technically.
+        this.$refs.chartContainer.innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
 
-      const chart = document.getElementById('overviewChart') as HTMLCanvasElement || this.$refs.chart
+      const chart = document.getElementById('chart') as HTMLCanvasElement || this.$refs.chart
 
       const prices = this.filterChartData(range, 'current_value', dataSlice)
       this.chartInitialValue = prices[0]
@@ -218,8 +217,6 @@ export default defineComponent({
           }
         }
       });
-
-      this.initialLoad = false
     },
 
     filterChartData(range, dataType, dataSlice?) {

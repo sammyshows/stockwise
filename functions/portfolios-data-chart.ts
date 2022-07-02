@@ -9,7 +9,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const chartData = await client`
         SELECT current_value, initial_value, date 
         FROM partman.user_portfolios_data 
-        WHERE user_id = eventBody.userId AND date < ${eventBody.date}
+        WHERE user_id = ${eventBody.userId} AND date < ${eventBody.date}
         ORDER BY created_at ASC;`
 
     return {

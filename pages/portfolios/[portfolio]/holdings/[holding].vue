@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col grow overflow-hidden">
-    <div v-if="[tabConfig.tabs[0].path, tabConfig.tabs[1].path, tabConfig.tabs[2].path].includes($route.path)" class="flex flex-col grow overflow-hidden">
+    <div v-if="viewTransactions" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
@@ -22,9 +22,9 @@
         </div>
         <Spinner class="h-20" v-else />
       </div>
-      <NuxtPage :transactions="transactions" :assetData="assetData" :chartDataDay="chartDataDay" :chartDataMax="chartDataMax" :quote="quote" :stats="stats" />
+      <NuxtPage v-if="transactions" :transactions="transactions" :total="total" :assetData="assetData" :overviewChart="overviewChart" :assetChartDay="assetChartDay" :assetChartMax="assetChartMax" :quote="quote" :stats="stats" />
     </div>
-    <NuxtPage v-else class="flex flex-col grow"/>
+    <NuxtPage v-if="!viewTransactions" class="flex flex-col grow"/>
   </div>
 </template>
 
@@ -51,15 +51,19 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.updateAssets()
     await this.getTransactions()
-    this.getChartData()
+    this.getOverviewChart()
+    this.getAssetChart()
     this.fetchQuote()
     this.fetchStats()
+    setInterval(async() => {
+      await this.getTransactions
+      this.getOverviewChart()
+    }, 60000)
   },
 
   watch: {
-    $route (to, from){
+    $route (to, from) {
       if (from.name === 'portfolios-portfolio-holdings-holding-update')
         this.tabConfig.activeTab = 'TRANSACTIONS'
     }
@@ -80,16 +84,41 @@ export default defineComponent({
         activeTab: this.getActiveTab(),
         tabs: [
           { name: 'TRANSACTIONS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}` },
-          { name: 'SUMMARY', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/summary` },
+          { name: 'INSIGHTS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/insights` },
           { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/overview` }
         ]
       },
       transactions: null as ([] | null),
+      overviewChart: null as ([] | null),
       assetData: null as ({} | null),
-      chartDataDay: null as ([] | null),
-      chartDataMax: null as ([] | null),
+      assetChartDay: null as ([] | null),
+      assetChartMax: null as ([] | null),
       quote: {} as StringObject,
       stats: null as ({} | null)
+    }
+  },
+
+  computed: {
+    total() {
+      if (this.transactions) {
+        return this.transactions.reduce((total, { current_value, initial_value, type }) => {
+            if (type === 0) {
+              total.current_value = total.current_value.plus(current_value)
+              total.initial_value = total.initial_value.plus(initial_value)
+            }
+
+            return total
+          },
+          // This is the initial value, `total`, passed to reduce:
+          {
+            current_value: new BigNumber(0),
+            initial_value: new BigNumber(0)
+          })
+      }
+    },
+
+    viewTransactions() {
+      return [this.tabConfig.tabs[0].path, this.tabConfig.tabs[1].path, this.tabConfig.tabs[2].path].includes(this.$route.path)
     }
   },
 
@@ -113,20 +142,34 @@ export default defineComponent({
       this.pageDetails.subtitle = response.assetData.name
     },
 
-    // This is NOT a permanent solution, but at the time it was either update every asset price like this
-    // or pay for a CRON job with heroku, and although this is repeated every 30 seconds, it will certainly
-    // be a while before the app goes live and this overloads the system.
-    async updateAssets(): Promise<void> {
-      await fetch('/api/assets-update', {
+    async getOverviewChart() {
+      let chartData = await fetch('/api/holding-data-chart', {
         headers: {
           authorization: 'Bearer ' + this.token
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          holdingId: this.holdingId,
+          date: this.currentDate()
+        })
       })
-        .then(this.getTransactions)
-      setTimeout(this.updateAssets, 10000)
+          .then(response => response.json())
+          .then(response => response.chartData)
+
+      const lastDate = chartData[chartData.length - 1].date.slice(0, 10)
+      if (lastDate === this.currentDate()) {
+        this.chartData.pop()
+      }
+      chartData.push({
+        current_value: this.total.current_value.toNumber(),
+        initial_value: this.total.initial_value.toNumber(),
+        date: this.currentDate()
+      })
+
+      this.overviewChart = chartData
     },
 
-    async getChartData() {
+    async getAssetChart() {
       const chartData = await fetch('/api/iex-chart', {
         headers: {
           authorization: 'Bearer ' + this.token
@@ -136,10 +179,10 @@ export default defineComponent({
           symbol: this.symbol
         })
       })
-          .then(response => response.json())
+        .then(response => response.json())
 
-      this.chartDataMax = chartData.max
-      this.chartDataDay = chartData.day
+      this.assetChartMax = chartData.max
+      this.assetChartDay = chartData.day
     },
 
     async fetchQuote(): Promise<void> {
@@ -170,9 +213,17 @@ export default defineComponent({
         .then(response => response.data)
     },
 
+    currentDate() {
+      // Get today's date in the local timezone
+      let currentDate = new Date()
+      const offset = currentDate.getTimezoneOffset()
+      currentDate = new Date(currentDate.getTime() - (offset*60*1000))
+      return currentDate.toISOString().split('T')[0]
+    },
+
     getActiveTab(): string {
-      if (this.$route.name === 'portfolios-portfolio-holdings-holding-summary')
-        return 'SUMMARY'
+      if (this.$route.name === 'portfolios-portfolio-holdings-holding-insights')
+        return 'INSIGHTS'
       else if (this.$route.name === 'portfolios-portfolio-holdings-holding-overview')
         return 'OVERVIEW'
       else

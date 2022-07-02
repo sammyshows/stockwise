@@ -1,19 +1,25 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataMax }">
+    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !assetChartMax }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
     </div>
 
-    <p v-if="activeRange !== '1D'" class="mt-2 font-normal text-center text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
-      {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
-    </p>
+    <div :class="{ 'hidden': !assetChartMax }" class="mt-2 font-normal text-center text-sm">
+      <p v-if="activeRange !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
+        {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+      </p>
+      <p v-else-if="noDailyChart && activeRange === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
+      <p v-else :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
+        {{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+      </p>
+    </div>
 
     <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas ref="chart" id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+      <canvas ref="chart" id="initialChart" height="224" class="w-full" :class="{ 'hidden': !assetChartMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
     </div>
 
-    <div v-if="!chartDataMax" style="height: 250px;">
+    <div v-if="!assetChartMax" style="height: 278px;">
       <Spinner></Spinner>
     </div>
 
@@ -135,7 +141,7 @@ export default defineComponent({
   },
 
   props: [
-    'transactions', 'assetData', 'chartDataDay', 'chartDataMax', 'quote', 'stats'
+    'transactions', 'assetData', 'assetChartDay', 'assetChartMax', 'quote', 'stats'
   ],
 
   components: {
@@ -144,29 +150,28 @@ export default defineComponent({
   },
 
   mounted() {
-    if (this.chartDataDay) {
+    if (this.assetChartDay) {
       this.createChart('1D', 'today')
     }
   },
 
   watch: {
-    chartDataDay() {
-      if (this.chartDataDay) {
-        this.createChart('1D', 'today')
-      }
+    assetChartDay() {
+      this.createChart('1D', 'today')
     }
   },
 
   data() {
     return {
+      initialLoad: true,
       pageDetails: {
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
       },
-      initialConfiguration: true,
       activeRange: '1D',
       activeText: '',
+      noDailyChart: false,
       chartInitialPrice: 0,
       chartFinalPrice: 0,
       ranges: [
@@ -191,7 +196,7 @@ export default defineComponent({
         },
         {
           period: 'YTD',
-          periodText: 'YTD'
+          periodText: 'year to date'
         },
         {
           period: '1Y',
@@ -217,27 +222,39 @@ export default defineComponent({
       this.activeText = periodText
 
       // Here we need to know whether this is the first time loading the chart because if the page is mounted and the data
-      // has already been received and passed from the [holding] parent to this child, then the chart will not automatically
-      // be loaded on mount since it is only triggered by changes to the data (see the watch object above). Therefore, the
-      // page works as expected on refresh, however, a delayed navigation won't trigger it. So there is now call to create
-      // the chart when mounted (see mounted()) that requires grabbing the chart using $refs instead of document.getElementById().
-      let chart = this.$refs.chart
-      if (!this.initialConfiguration) {
-        this.$refs.chartContainer.innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
-        chart = document.getElementById('chart') as HTMLCanvasElement
-      }
+      // has already been received and passed from the [holding] parent to this child, then the chart probably won't automatically
+      // be loaded since the DOM hasn't loaded yet. However, I've placed a canvas element to begin so that it called with
+      // $refs this first time.
+      if (!this.initialLoad) // this checks that the DOM has loaded, since Vue mounted() doesn't technically.
+        document.getElementById('chartContainer').innerHTML = `<canvas id="assetChart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
+
+      const chart = document.getElementById('assetChart') as HTMLCanvasElement || this.$refs.chart
 
       let chartData;
       let prices;
-      if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
-        chartData = this.chartDataDay
-        this.chartInitialPrice = chartData[0].close
-        prices = chartData.map(dailyData => dailyData.marketClose)
+      if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (assetChartDay) to historic (assetChartMax).
+        chartData = this.assetChartDay
+
+        if (chartData.every(day => day.marketClose === undefined))
+          this.noDailyChart = true
+
+        const unfilteredPrices = chartData.map(dailyData => dailyData.marketClose)
+        prices = unfilteredPrices.map((price, index) => {
+          if (price === 0 && index !== 0)
+            return unfilteredPrices[index - 1]
+          else
+            return price
+        })
       } else if (dataSlice) {
-        chartData = this.chartDataMax.slice(dataSlice)
+        chartData = this.assetChartMax.slice(dataSlice)
+        prices = chartData.map(dailyData => dailyData.close)
+      } else if (range === 'YTD') {
+        const year = this.assetChartMax[this.assetChartMax.length - 1].date.slice(0,4)
+        const firstOfYear = this.assetChartMax.findIndex(day => day.date.slice(0,4) === year)
+        chartData = this.assetChartMax.slice(firstOfYear)
         prices = chartData.map(dailyData => dailyData.close)
       } else {
-        chartData = this.chartDataMax
+        chartData = this.assetChartMax
         prices = chartData.map(dailyData => dailyData.close)
       }
 
@@ -338,7 +355,7 @@ export default defineComponent({
         }
       });
 
-      this.initialConfiguration = false
+      this.initialLoad = false
     },
 
     BigNumber

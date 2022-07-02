@@ -22,9 +22,14 @@
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
     </div>
 
-    <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
-      <!--  This chart gets replaced on creation  -->
-      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+    <div class="relative">
+      <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+        <!--  This chart gets replaced on creation  -->
+        <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+      </div>
+      <div v-if="this.noDailyChart && this.activeRange === '1D'" class="absolute top-1/3 w-full">
+        <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
+      </div>
     </div>
 
     <div v-if="!chartDataDay" style="height: 250px;">
@@ -175,6 +180,7 @@ export default defineComponent({
       symbol: this.$route.params.symbol,
       activeRange: '',
       activeText: '',
+      noDailyChart: false,
       chartInitialPrice: 0,
       ranges: [
         {
@@ -198,7 +204,7 @@ export default defineComponent({
         },
         {
           period: 'YTD',
-          periodText: 'YTD'
+          periodText: 'year to date'
         },
         {
           period: '1Y',
@@ -284,9 +290,24 @@ export default defineComponent({
       let prices;
       if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
         chartData = this.chartDataDay
-        prices = chartData.map(dailyData => dailyData.marketClose)
+
+        if (chartData.every(day => day.marketClose === undefined))
+          this.noDailyChart = true
+
+        const unfilteredPrices = chartData.map(dailyData => dailyData.marketClose)
+        prices = unfilteredPrices.map((price, index) => {
+          if (price === 0 && index !== 0)
+            return unfilteredPrices[index - 1]
+          else
+            return price
+        })
       } else if (dataSlice) {
         chartData = this.chartDataMax.slice(dataSlice)
+        prices = chartData.map(dailyData => dailyData.close)
+      } else if (range === 'YTD') {
+        const year = this.chartDataMax[this.chartDataMax.length - 1].date.slice(0,4)
+        const firstOfYear = this.chartDataMax.findIndex(day => day.date.slice(0,4) === year)
+        chartData = this.chartDataMax.slice(firstOfYear)
         prices = chartData.map(dailyData => dailyData.close)
       } else {
         chartData = this.chartDataMax

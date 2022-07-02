@@ -26,15 +26,15 @@ CREATE INDEX user_portfolios_data_time_brin_index
         USING BRIN (date)
     WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.user_portfolios_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13913.78, 15498.00, '2022-06-20');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13119.13, 15498.00, '2022-06-21');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13528.72, 15498.00, '2022-06-22');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13299.48, 15498.00, '2022-06-23');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13269.10, 15498.00, '2022-06-24');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13119.10, 15498.00, '2022-06-25');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13070.10, 15498.00, '2022-06-26');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13449.10, 15498.00, '2022-06-27');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 13239.10, 15498.00, '2022-06-28');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19913.78, 15498.00, '2022-06-20');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19119.13, 15498.00, '2022-06-21');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19528.72, 15498.00, '2022-06-22');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19299.48, 15498.00, '2022-06-23');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19269.10, 15498.00, '2022-06-24');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19119.10, 15498.00, '2022-06-25');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19070.10, 15498.00, '2022-06-26');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19449.10, 15498.00, '2022-06-27');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19239.10, 15498.00, '2022-06-28');
 
 CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);
@@ -48,10 +48,15 @@ CREATE INDEX portfolio_data_time_brin_index
     WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.portfolio_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5913.78, 5498.00, '2022-06-20');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6119.13, 5498.00, '2022-06-21');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6528.72, 5498.00, '2022-06-22');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6299.48, 5498.00, '2022-06-23');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 6319.10, 5498.00, '2022-06-24');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3119.13, 5498.00, '2022-06-21');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3528.72, 5498.00, '2022-06-22');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3299.48, 5498.00, '2022-06-23');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3269.10, 5498.00, '2022-06-24');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3119.10, 5498.00, '2022-06-25');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3070.10, 5498.00, '2022-06-26');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3449.10, 5498.00, '2022-06-27');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3239.10, 5498.00, '2022-06-28');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4319.10, 5498.00, '2022-06-29');
 
 
 CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
@@ -60,6 +65,7 @@ INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, curre
 INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 'USD', 0);
 INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 'USD', 0);
 INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('d3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 'USD', 0);
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TDOC', 35.22, 35.76, 'Teladoc Inc', 'NYSE', 'USD', 0);
 WITH currency (code, name) AS (
     SELECT *
     FROM
@@ -78,6 +84,36 @@ INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, re
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 2.78, 2510.062);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 12, 2284.32);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100.000009, 1049.7800944802);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100, 5028.7800944802);
+
+CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE INDEX holding_data_time_brin_index
+    ON partman.holding_data
+        USING BRIN (date)
+    WITH (pages_per_range = 16);
+SELECT partman.create_parent('partman.holding_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1913.78, 1498.00, '2022-06-20');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 2119.13, 1498.00, '2022-06-21');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1528.72, 1498.00, '2022-06-22');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1399.48, 1498.00, '2022-06-23');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1469.10, 1498.00, '2022-06-24');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1119.10, 1498.00, '2022-06-25');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 2070.10, 1498.00, '2022-06-26');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2913.78, 1498.00, '2022-06-20');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2119.13, 1498.00, '2022-06-21');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2528.72, 1498.00, '2022-06-22');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2299.48, 1498.00, '2022-06-23');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1269.10, 1498.00, '2022-06-24');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1119.10, 1498.00, '2022-06-25');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1070.10, 1498.00, '2022-06-26');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -2913.78, 1498.00, '2022-06-20');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -1119.13, 1498.00, '2022-06-21');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -528.72, 1498.00, '2022-06-22');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -299.48, 1498.00, '2022-06-23');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -1269.10, 1498.00, '2022-06-24');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', 519.10, 1498.00, '2022-06-25');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', 1070.10, 1498.00, '2022-06-26');
+
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
@@ -95,6 +131,7 @@ INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_p
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('23ffde40-5715-4176-8b14-37fbcd39e85a', '50ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:07.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('24ffde40-5715-4176-8b14-37fbcd39e85a', '60ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12, 190.36, 1.344, '2022-04-29T10:02:08.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('25ffde40-5715-4176-8b14-37fbcd39e85a', '70ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:09.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('26ffde40-5715-4176-8b14-37fbcd39e85a', '80ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100, 50.287800944802, 1.344, '2022-04-29T10:02:09.000Z');
 
 CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_transaction FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, CONSTRAINT fk_sell FOREIGN KEY(sell_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '13ffde40-5715-4176-8b14-37fbcd39e85a', 13.68875, 164.76, 1.344);

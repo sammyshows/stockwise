@@ -5,7 +5,7 @@ import fetch from 'node-fetch'
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    const historicalData = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/chart/max?includeToday=true&token=${process.env.IEXTOKEN}`)
+    const historicalData = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/chart/1y?includeToday=true&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
 
     const dayData = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/intraday-prices?token=${process.env.IEXTOKEN}`)

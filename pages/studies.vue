@@ -8,9 +8,9 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtChild :uncompletedStudies="uncompletedStudies" :completedStudies="completedStudies" />
+      <NuxtPage :uncompletedStudies="uncompletedStudies" :completedStudies="completedStudies" />
     </div>
-    <NuxtChild v-else/>
+    <NuxtPage v-else/>
   </NuxtLayout>
 </template>
 

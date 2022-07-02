@@ -14,9 +14,9 @@
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
-      <NuxtChild v-else-if="holdings" :holdings="holdings" />
+      <NuxtPage v-else-if="holdings" :holdings="holdings" :overviewChart="overviewChart" :total="total" />
     </div>
-    <NuxtChild v-if="!viewHoldings" />
+    <NuxtPage v-if="!viewHoldings" />
   </div>
 </template>
 
@@ -24,6 +24,7 @@
 import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
+import {BigNumber} from "bignumber.js";
 
 export default defineComponent({
   name: "Portfolio Holdings",
@@ -37,10 +38,14 @@ export default defineComponent({
     PencilIcon, PlusIcon
   },
 
-  mounted() {
+  async mounted() {
     this.getPortfolio()
-    this.getHoldings()
-    this.updateAssets()
+    await this.getHoldings()
+    this.getOverviewChart()
+    setInterval(async() => {
+      await this.getHoldings()
+      this.getOverviewChart()
+    }, 60000)
   },
 
   watch: {
@@ -59,17 +64,34 @@ export default defineComponent({
         returnPath: '/portfolios'
       },
       tabConfig: {
-        activeTab: this.$route.path == `/portfolios/${this.$route.params.portfolio}/chart` ? 'CHART' : 'HOLDINGS',
+        activeTab: this.$route.path == `/portfolios/${this.$route.params.portfolio}/overview` ? 'OVERVIEW' : 'HOLDINGS',
         tabs: [
           { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}` },
-          { name: 'CHART', path: `/portfolios/${this.$route.params.portfolio}/chart` }
+          { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/overview` }
         ]
       },
+      overviewChart: null as ([] | null),
       holdings: null as ([] | null)
     }
   },
 
   computed: {
+    total() {
+      if (this.holdings) {
+        return this.holdings.reduce((total, { current_value, initial_value }) => {
+              total.current_value = total.current_value.plus(current_value)
+              total.initial_value = total.initial_value.plus(initial_value)
+
+              return total
+            },
+            // This is the initial value, `total`, passed to reduce:
+            {
+              current_value: new BigNumber(0),
+              initial_value: new BigNumber(0)
+            })
+      }
+    },
+
     viewHoldings() {
       return [this.tabConfig.tabs[0].path, this.tabConfig.tabs[1].path].includes(this.$route.path)
     }
@@ -104,17 +126,39 @@ export default defineComponent({
       this.holdings = response.data
     },
 
-    // This is NOT a permanent solution, but at the time it was either update every asset price like this
-    // or pay for a CRON job with heroku, and although this is repeated every 30 seconds, it will certainly
-    // be a while before the app goes live and this overloads the system.
-    async updateAssets(): Promise<void> {
-      await fetch('/api/assets-update', {
+    async getOverviewChart() {
+      let chartData = await fetch('/api/portfolio-data-chart', {
         headers: {
           authorization: 'Bearer ' + this.token
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          portfolioId: this.portfolioId,
+          date: this.currentDate()
+        })
       })
-        .then(this.getHoldings)
-      setTimeout(this.updateAssets, 5000)
+        .then(response => response.json())
+        .then(response => response.chartData)
+
+      const lastDate = chartData[chartData.length - 1].date.slice(0, 10)
+      if (lastDate === this.currentDate()) {
+        this.chartData.pop()
+      }
+      chartData.push({
+        current_value: this.total.current_value.toNumber(),
+        initial_value: this.total.initial_value.toNumber(),
+        date: this.currentDate()
+      })
+
+      this.overviewChart = chartData
+    },
+
+    currentDate() {
+      // Get today's date in the local timezone
+      let currentDate = new Date()
+      const offset = currentDate.getTimezoneOffset()
+      currentDate = new Date(currentDate.getTime() - (offset*60*1000))
+      return currentDate.toISOString().split('T')[0]
     },
 
     setActiveTab(newTab) {

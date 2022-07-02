@@ -1,6 +1,8 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartData }">
+    <h2 class="w-max mx-auto mb-1.5 pb-0.5 text-xl text-center border-b border-gray-400">Portfolio Value</h2>
+
+    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
     </div>
 
@@ -8,12 +10,12 @@
       {{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).toNumber(), 3)) }} ({{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2)) }}%)&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
-    <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+    <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartData }"></canvas>
+      <canvas ref="chart" height="224" class="w-full"></canvas>
     </div>
 
-    <div v-if="!chartData" style="height: 250px;">
+    <div v-if="!overviewChart" style="height: 250px;">
       <Spinner></Spinner>
     </div>
   </div>
@@ -35,28 +37,33 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
-    const uuid = useState('uuid').value
-    return { token, uuid }
+    const chartContainer = ref(null)
+    const chart = ref(null)
+
+    return { token, chartContainer, chart }
   },
 
-  props: ['portfolios'],
+  props: ['holdings', 'total', 'overviewChart'],
 
   components: {
     SpeakerphoneIcon
   },
 
   mounted() {
-    this.getChartData()
+    if (this.overviewChart) {
+      this.createChart('1W', 'past week', -7)
+    }
+  },
+
+  watch: {
+    overviewChart() {
+      this.createChart('1W', 'past week', -7)
+    }
   },
 
   data() {
     return {
-      pageDetails: {
-        title: this.$route.params.assetSymbol,
-        subtitle: this.$route.params.assetName,
-        returnPath: "/search",
-      },
-      symbol: this.$route.params.symbol,
+      holdingId: this.$route.params.holding,
       activeRange: '',
       activeText: '',
       chartInitialValue: 0,
@@ -78,7 +85,7 @@ export default defineComponent({
         },
         {
           period: 'YTD',
-          periodText: 'YTD'
+          periodText: 'year to date'
         },
         {
           period: '1Y',
@@ -94,69 +101,28 @@ export default defineComponent({
           period: 'MAX',
           periodText: 'all time'
         },
-      ],
-      chartData: null as ([] | null)
-    }
-  },
-
-  computed: {
-    total: function() {
-      return this.portfolios.reduce((total, { current_value, initial_value }) => {
-            total.current_value = total.current_value.plus(current_value)
-            total.initial_value = total.initial_value.plus(initial_value)
-
-            return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_value: new BigNumber(0),
-            initial_value: new BigNumber(0)
-          })
+      ]
     }
   },
 
   methods: {
-    async getChartData() {
-      let chartData = await fetch('/api/user-portfolios-chart', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          userId: this.uuid,
-          date: this.currentDate()
-        })
-      })
-        .then(response => response.json())
-        .then(response => response.chartData)
-
-      const lastDate = chartData[chartData.length - 1].date.slice(0, 10)
-      if (lastDate === this.currentDate()) {
-        this.chartData.pop()
-      }
-      chartData.push({
-        current_value: this.total.current_value.toNumber(),
-        initial_value: this.total.initial_value.toNumber(),
-        date: this.currentDate()
-      })
-
-      this.chartData = chartData
-      this.createChart('1W', 'past week', -7)
-    },
-
     createChart(range, periodText, dataSlice?) {
       this.activeRange = range
       this.activeText = periodText
 
-      document.getElementById('chart').remove()
-      document.getElementById('chartContainer').innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
-      const chart = document.getElementById('chart') as HTMLCanvasElement
+      // Here we need to know whether this is the first time loading the chart because if the page is mounted and the data
+      // has already been received and passed from the [holding] parent to this child, then the chart probably won't automatically
+      // be loaded since the DOM hasn't loaded yet. However, I've placed a canvas element to begin so that it called with
+      // $refs this first time.
+      if (document.getElementById('chartContainer')) // this checks that the DOM has loaded, since Vue mounted() doesn't technically.
+        this.$refs.chartContainer.innerHTML = `<canvas id="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>`
 
-      const prices = this.filterChartData('current_value', dataSlice)
+      const chart = document.getElementById('chart') as HTMLCanvasElement || this.$refs.chart
+
+      const prices = this.filterChartData(range, 'current_value', dataSlice)
       this.chartInitialValue = prices[0]
 
-
-      const labels = this.chartData.slice(dataSlice).map(dailyData => dailyData.date.slice(0, 10))
+      const labels = this.overviewChart.slice(dataSlice).map(dailyData => dailyData.date.slice(0, 10))
 
       const verticalLine = {
         id: 'verticalLine',
@@ -253,23 +219,20 @@ export default defineComponent({
       });
     },
 
-    filterChartData(dataType, dataSlice?) {
+    filterChartData(range, dataType, dataSlice?) {
       let chartValues;
       if (dataSlice) {
-        chartValues = this.chartData.slice(dataSlice)
+        chartValues = this.overviewChart.slice(dataSlice)
+        return chartValues.map(dailyData => dailyData[dataType])
+      } else if (range === 'YTD') {
+        const year = this.overviewChart[this.overviewChart.length - 1].date.slice(0,4)
+        const firstOfYear = this.overviewChart.findIndex(day => day.date.slice(0,4) === year)
+        chartValues = this.overviewChart.slice(firstOfYear)
         return chartValues.map(dailyData => dailyData[dataType])
       } else {
-        chartValues = this.chartData
+        chartValues = this.overviewChart
         return chartValues.map(dailyData => dailyData[dataType])
       }
-    },
-
-    currentDate() {
-      // Get today's date in the local timezone
-      let currentDate = new Date()
-      const offset = currentDate.getTimezoneOffset()
-      currentDate = new Date(currentDate.getTime() - (offset*60*1000))
-      return currentDate.toISOString().split('T')[0]
     },
 
     BigNumber

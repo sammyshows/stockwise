@@ -20,7 +20,7 @@
         <h2 class="py-2 border-b-4 border-white w-max font-medium">Recent</h2>
 
         <div class="mt-2 divide-y divide-gray-300/20">
-          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'search-symbol', params: { symbol: asset.symbol, assetSymbol: asset.symbol + ' : ' + asset.exchange, assetName: asset.name } }" class="w-full flex justify-between p-2">
+          <NuxtLink v-for="asset in recentSearches" :to="{ name: 'search-symbol', params: { symbol: asset.symbol, assetSymbol: asset.symbol, assetName: asset.name } }" class="w-full flex justify-between p-2">
             <div class="flex">
               <p class="w-20 my-auto text-xs truncate">{{ asset.symbol + " : " + asset.exchange }}</p>
               <p class="w-44 my-auto ml-3 text-xs truncate">{{ asset.name }}</p>
@@ -32,7 +32,7 @@
       <!--  this div below is used to "close" the search results box when a user clicks away  -->
       <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0"></div>
     </div>
-    <NuxtChild v-else />
+    <NuxtPage v-else />
   </NuxtLayout>
 </template>
 
