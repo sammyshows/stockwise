@@ -9,7 +9,7 @@
         <div class="flex flex-col grow justify-between gap-y-4 mt-3">
           <div class="h-0 px-4 flex flex-col grow overflow-scroll gap-y-4 text-sm">
             <TransitionGroup name="form">
-              <div v-if="!manualForm">
+              <div key="1" v-if="!manualForm">
                 <div class="relative" >
                   <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
                   <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
@@ -45,7 +45,7 @@
                 </div>
               </div>
 
-              <div v-else key="3" class="w-full">
+              <div v-else key="2" class="w-full">
                 <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
                 <div>
                   <label for="name" class="flex items-end">Name</label>
@@ -65,27 +65,27 @@
                 <button @click="toggleManual" key="5" class="w-max mt-4 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
               </div>
 
-              <div>
+              <div key="3">
                 <label for="type" class="flex items-end">Transaction type<span :class="[ invalidType ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <select v-model="transaction.type" id="type" :class="[ invalidType ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
                   <option value="" disabled selected hidden></option>
                   <option :value="0">BUY</option>
-                  <option :value="1">SELL</option>
+                  <option :value="1" disabled>SELL</option>
                 </select>
               </div>
-              <div>
+              <div key="4">
                 <label for="quantity" class="flex items-end">Shares<span :class="[ invalidShares ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <input v-model="transaction.quantity" id="quantity" type="number" :class="[ invalidShares ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
               </div>
-              <div>
+              <div key="5">
                 <label for="initialPrice" class="flex items-end">Price per share<span :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
               </div>
-              <div>
+              <div key="6">
                 <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
               </div>
-              <div class="w-full flex justify-around gap-x-4">
+              <div key="7" class="w-full flex justify-around gap-x-4">
                 <div>
                   <label for="date">Date</label>
                   <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
@@ -96,7 +96,7 @@
                 </div>
               </div>
 
-              <div class="grow flex items-end justify-end text-right mb-7">
+              <div key="8" class="grow flex items-end justify-end text-right mb-7">
                 <ButtonsCyan text="SAVE" @clicked="addHolding()" />
               </div>
             </TransitionGroup>
@@ -145,7 +145,7 @@ export default defineComponent({
         name: null as (string | null),
         symbol: null as (string | null),
         currentPrice: null as (number | null),
-        type: null as (number | null),
+        type: 0,
         quantity: null as (number | null),
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),

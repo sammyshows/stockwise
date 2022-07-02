@@ -29,8 +29,6 @@
               <p class="text-tiny">{{ $addSign($formatNumber(BigNumber(portfolio.total_change).div(portfolio.initial_value).times(100), 2)) }}%</p>
             </div>
           </div>
-          <!--   These two lines should show the all-time & realised values. This will again require the 'active'
-          column (same as abaove) to determine which transactions are complete   -->
           <div v-if="portfolio.realized">
             <p class="text-tiny h-4">Realized: <span class="font-normal" :class="{ 'text-bright-red': portfolio.realized < 0, 'text-bright-green': portfolio.realized > 0 }">{{ $addSign($formatNumber(portfolio.realized, 2)) }} ({{ $addSign($formatNumber(BigNumber(portfolio.realized).div(portfolio.realized_initial).times(100), 2)) }}%)</span></p>
             <p class="text-tiny">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.realized).plus(portfolio.total_change).isLessThan(0), 'text-bright-green': BigNumber(portfolio.realized).plus(portfolio.total_change).isGreaterThan(0) }">{{ $addSign($formatNumber(BigNumber(portfolio.realized).plus(portfolio.total_change), 2)) }} ({{ $addSign($formatNumber(BigNumber(portfolio.realized).plus(portfolio.total_change).div(portfolio.all_time_initial).times(100), 2)) }}%)</span></p>
@@ -52,8 +50,6 @@
           <p class="h-5 text-xs">{{ $addSign($formatNumber(total.daily_change, 2)) }}</p>
           <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2)) }}%</p>
         </div>
-        <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-        should show active transactions but this requires the addition of an 'active' column in the database table    -->
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
           <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value), 2)) }}</p>
           <p class="text-tiny">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2)) }}%</p>

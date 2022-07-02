@@ -56,10 +56,8 @@ export default defineComponent({
     this.getAssetChart()
     this.fetchQuote()
     this.fetchStats()
-    setInterval(async() => {
-      await this.getTransactions
-      this.getOverviewChart()
-    }, 60000)
+    setInterval(this.getTransactions(), 60000)
+
   },
 
   watch: {
@@ -153,8 +151,13 @@ export default defineComponent({
           date: this.currentDate()
         })
       })
-          .then(response => response.json())
-          .then(response => response.chartData)
+        .then(response => response.json())
+        .then(response => response.chartData)
+
+      if (chartData.length === 0) {
+        this.overviewChart = chartData
+        return
+      }
 
       const lastDate = chartData[chartData.length - 1].date.slice(0, 10)
       if (lastDate === this.currentDate()) {

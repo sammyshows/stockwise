@@ -36,10 +36,8 @@ export default defineComponent({
   async mounted() {
     await this.getPortfolios()
     this.getOverviewChart()
-    setInterval(async() => {
-      await this.getPortfolios()
-      this.getOverviewChart()
-    }, 60000)
+    setInterval(this.getPortfolios(), 60000)
+
   },
 
   data() {
@@ -109,6 +107,11 @@ export default defineComponent({
       })
           .then(response => response.json())
           .then(response => response.chartData)
+
+      if (chartData.length === 0) {
+        this.overviewChart = chartData
+        return
+      }
 
       const lastDate = chartData[chartData.length - 1].date.slice(0, 10)
       if (lastDate === this.currentDate()) {

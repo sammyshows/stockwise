@@ -2,15 +2,17 @@
   <div class="px-3 overflow-scroll">
     <h2 class="w-max mx-auto mb-1.5 pb-0.5 text-xl text-center border-b border-gray-400">Holding Value</h2>
 
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart }">
+    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart || overviewChart.length === 0  }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
     </div>
+
+    <p v-if="overviewChart && overviewChart.length === 0" class="grow flex items-center py-2 px-2 text-xs text-bright-cyan text-center">Your holding hasn't been saved long enough for any daily totals to be recorded yet</p>
 
     <p class="mt-2 font-normal text-center text-sm" :class="{ 'hidden': !chartInitialValue, 'text-bright-red': total.current_value.minus(chartInitialValue).toNumber() < 0, 'text-bright-green': total.current_value.minus(chartInitialValue).toNumber() > 0 }">
       {{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).toNumber(), 3)) }} ({{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2)) }}%)&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
-    <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+    <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
       <canvas ref="chart" id="initialChart" height="224" class="w-full"></canvas>
     </div>
