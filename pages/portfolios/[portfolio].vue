@@ -124,7 +124,7 @@ export default defineComponent({
     },
 
     async getOverviewChart() {
-      let chartData = await fetch('/api/portfolio-data-chart', {
+      let chartData = await fetch('/api/portfolio-data-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },

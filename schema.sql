@@ -76,6 +76,14 @@ WITH currency (code, name) AS (
 )
 INSERT INTO assets (symbol, current_price, prev_close, name, currency, type) SELECT code, 1, 1, name, code, 2 FROM currency;
 
+CREATE TABLE partman.asset_data (id uuid DEFAULT gen_random_uuid(), asset_id uuid, close NUMERIC, label TEXT, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(asset_id) REFERENCES assets(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE INDEX asset_data_time_brin_index
+    ON partman.asset_data
+        USING BRIN (date)
+    WITH (pages_per_range = 32);
+SELECT partman.create_parent('partman.asset_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
+
+
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 7.5713, 6860.10163446);
@@ -90,7 +98,7 @@ CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id
 CREATE INDEX holding_data_time_brin_index
     ON partman.holding_data
         USING BRIN (date)
-    WITH (pages_per_range = 16);
+    WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.holding_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1913.78, 1498.00, '2022-06-20');
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 2119.13, 1498.00, '2022-06-21');

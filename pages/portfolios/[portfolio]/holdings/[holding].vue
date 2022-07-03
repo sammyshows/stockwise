@@ -71,6 +71,7 @@ export default defineComponent({
     return {
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
+      assetId: null as (string | null),
       symbol: '',
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
@@ -134,6 +135,7 @@ export default defineComponent({
         .then(response => response.json())
       this.transactions = response.transactions
       this.assetData = response.assetData
+      this.assetId = response.assetData.id
       this.symbol = response.assetData.symbol
       this.pageDetails.symbol = response.assetData.symbol
       this.pageDetails.title = response.assetData.symbol
@@ -141,7 +143,7 @@ export default defineComponent({
     },
 
     async getOverviewChart() {
-      let chartData = await fetch('/api/holding-data-chart', {
+      let chartData = await fetch('/api/holding-data-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -173,12 +175,13 @@ export default defineComponent({
     },
 
     async getAssetChart() {
-      const chartData = await fetch('/api/iex-chart', {
+      const chartData = await fetch('/api/asset-data-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
         method: 'POST',
         body: JSON.stringify({
+          assetId: this.assetId,
           symbol: this.symbol
         })
       })

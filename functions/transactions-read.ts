@@ -11,7 +11,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const getTransactions = client`SELECT * FROM uspReadTransactions(${eventBody.holdingId})`
 
     const getAssetData = client`
-        SELECT current_price, prev_close, currency, symbol, exchange, name
+        SELECT assets.id, current_price, prev_close, currency, symbol, exchange, name
         FROM assets
         INNER JOIN holdings AS h ON h.asset_id = assets.id
         WHERE h.id = ${eventBody.holdingId}`

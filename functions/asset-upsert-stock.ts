@@ -34,6 +34,20 @@ const handler: Handler = requireAuth(async (event, context) => {
                           exchange = ${asset.primaryExchange || eventBody.exchange}
         RETURNING id;`
 
+
+    // Add historical data for this stock chart
+    await fetch(`${process.env.DOMAIN}/api/asset-data-insert`, {
+        headers: {
+            authorization: 'Bearer ' + eventBody.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            assetId: createdAsset[0].id,
+            symbol: asset.symbol
+        })
+    })
+
+
     return {
         statusCode: 200,
         body: JSON.stringify({
