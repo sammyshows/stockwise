@@ -56,7 +56,7 @@ export default defineComponent({
     this.getAssetChart()
     this.fetchQuote()
     this.fetchStats()
-    setInterval(this.getTransactions(), 60000)
+    setInterval(() => this.getTransactions(), 60000)
 
   },
 
@@ -98,22 +98,33 @@ export default defineComponent({
   },
 
   computed: {
-    total() {
-      if (this.transactions) {
-        return this.transactions.reduce((total, { current_value, initial_value, type }) => {
+    total: function() {
+      return this.transactions.reduce((total, { type, current_quantity, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
             if (type === 0) {
+              total.current_quantity = total.current_quantity.plus(current_quantity)
               total.current_value = total.current_value.plus(current_value)
               total.initial_value = total.initial_value.plus(initial_value)
+              total.daily_change = total.daily_change.plus(daily_change)
+              total.all_time_initial = total.all_time_initial.plus(all_time_initial)
+            }
+
+            if (realized) {
+              total.realized = total.realized.plus(realized)
+              total.realized_initial = total.realized_initial.plus(realized_initial)
             }
 
             return total
           },
           // This is the initial value, `total`, passed to reduce:
           {
+            current_quantity: new BigNumber(0),
             current_value: new BigNumber(0),
-            initial_value: new BigNumber(0)
+            initial_value: new BigNumber(0),
+            daily_change: new BigNumber(0),
+            all_time_initial: new BigNumber(0),
+            realized: new BigNumber(0),
+            realized_initial: new BigNumber(0)
           })
-      }
     },
 
     viewTransactions() {
@@ -168,6 +179,8 @@ export default defineComponent({
       chartData.push({
         current_value: this.total.current_value.toNumber(),
         initial_value: this.total.initial_value.toNumber(),
+        all_time_change: this.total.current_value.plus(this.total.realized).minus(this.total.initial_value).toNumber(),
+        all_time_percent: this.total.current_value.plus(this.total.realized).minus(this.total.initial_value).div(this.total.all_time_initial).times(100).toNumber(),
         date: this.currentDate()
       })
 

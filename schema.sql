@@ -20,43 +20,67 @@ WHERE parent_table = 'partman';
 
 CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO users (id, email) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
-CREATE TABLE partman.user_portfolios_data (id uuid DEFAULT gen_random_uuid(), user_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE TABLE partman.user_portfolios_data (id uuid DEFAULT gen_random_uuid(), user_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX user_portfolios_data_time_brin_index
     ON partman.user_portfolios_data
         USING BRIN (date)
     WITH (pages_per_range = 32);
-SELECT partman.create_parent('partman.user_portfolios_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19913.78, 15498.00, '2022-06-20');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19119.13, 15498.00, '2022-06-21');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19528.72, 15498.00, '2022-06-22');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19299.48, 15498.00, '2022-06-23');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19269.10, 15498.00, '2022-06-24');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19119.10, 15498.00, '2022-06-25');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19070.10, 15498.00, '2022-06-26');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19449.10, 15498.00, '2022-06-27');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19239.10, 15498.00, '2022-06-28');
+SELECT partman.create_parent('partman.user_portfolios_data', 'date', 'native', 'daily', p_start_partition := '2022-06-12');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8911.25, 10740.4077062204, -1801.76, -22.12, '2022-06-12');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8891.25, 10740.4077062204, -1901.76, -23.12, '2022-06-13');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9031.25, 10740.4077062204, -1701.76, -21.12, '2022-06-14');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9181.25, 10740.4077062204, -1601.76, -20.12, '2022-06-15');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9161.25, 10740.4077062204, -1601.76, -20.12, '2022-06-16');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9031.25, 10740.4077062204, -1701.76, -21.12, '2022-06-17');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8961.25, 10740.4077062204, -1801.76, -22.12, '2022-06-18');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8821.25, 10740.4077062204, -1901.76, -23.12, '2022-06-19');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8921.25, 10740.4077062204, -1801.76, -22.12, '2022-06-20');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 8951.25, 10740.4077062204, -1801.76, -22.12, '2022-06-21');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9061.25, 10740.4077062204, -1701.76, -21.12, '2022-06-22');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 9101.25, 10740.4077062204, -1601.76, -20.12, '2022-06-23');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19201.25, 20740.4077062204, -1501.76, -19.12, '2022-06-24');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19401.25, 20740.4077062204, -1301.76, -7.12, '2022-06-25');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19501.25, 20740.4077062204, -1201.76, -3.12, '2022-06-26');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19701.25, 20740.4077062204, -701.76, -1.12, '2022-06-27');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19901.25, 20740.4077062204, -201.76, 0.12, '2022-06-28');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19801.25, 20740.4077062204, -301.76, 3.12, '2022-06-29');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19701.25, 20740.4077062204, -101.76, 2.12, '2022-06-30');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 20001.25, 20740.4077062204, 51.76, 0.12, '2022-07-01');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 20101.25, 20740.4077062204, 101.76, 3.12, '2022-07-02');
+
 
 CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('26fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('36fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
 
-CREATE TABLE partman.portfolio_data (id uuid DEFAULT gen_random_uuid(), portfolio_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE TABLE partman.portfolio_data (id uuid DEFAULT gen_random_uuid(), portfolio_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX portfolio_data_time_brin_index
     ON partman.portfolio_data
         USING BRIN (date)
     WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.portfolio_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5913.78, 5498.00, '2022-06-20');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3119.13, 5498.00, '2022-06-21');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3528.72, 5498.00, '2022-06-22');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3299.48, 5498.00, '2022-06-23');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3269.10, 5498.00, '2022-06-24');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3119.10, 5498.00, '2022-06-25');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3070.10, 5498.00, '2022-06-26');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3449.10, 5498.00, '2022-06-27');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 3239.10, 5498.00, '2022-06-28');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4319.10, 5498.00, '2022-06-29');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4911.25, 4500.28470726, -1801.76, -22.12, '2022-06-12');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4891.25, 4500.28470726, -1901.76, -23.12, '2022-06-13');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4031.25, 4500.28470726, -1701.76, -21.12, '2022-06-14');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 4181.25, 4500.28470726, -1601.76, -20.12, '2022-06-15');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5161.25, 5500.28470726, -1601.76, -20.12, '2022-06-16');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5031.25, 5500.28470726, -1701.76, -21.12, '2022-06-17');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5961.25, 5500.28470726, -1801.76, -22.12, '2022-06-18');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5821.25, 5500.28470726, -1901.76, -23.12, '2022-06-19');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5921.25, 5500.28470726, -1801.76, -22.12, '2022-06-20');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5951.25, 5500.28470726, -1801.76, -22.12, '2022-06-21');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5061.25, 5500.28470726, -1701.76, -21.12, '2022-06-22');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 5101.25, 5500.28470726, -1601.76, -20.12, '2022-06-23');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7201.25, 7500.28470726, -1501.76, -19.12, '2022-06-24');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7401.25, 7500.28470726, -1301.76, -7.12, '2022-06-25');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7501.25, 7500.28470726, -1201.76, -3.12, '2022-06-26');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7701.25, 7500.28470726, -701.76, -1.12, '2022-06-27');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7901.25, 7500.28470726, -201.76, -0.12, '2022-06-28');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7801.25, 7500.28470726, -301.76, -3.12, '2022-06-29');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7701.25, 7500.28470726, -101.76, -2.12, '2022-06-30');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7001.25, 7500.28470726, 51.76, -5.12, '2022-07-01');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7101.25, 7500.28470726, 101.76, -3.12, '2022-07-02');
 
 
 CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
@@ -94,33 +118,33 @@ INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VA
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100.000009, 1049.7800944802);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100, 5028.7800944802);
 
-CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id uuid, current_value NUMERIC, initial_value NUMERIC, date DATE NOT NULL, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX holding_data_time_brin_index
     ON partman.holding_data
         USING BRIN (date)
     WITH (pages_per_range = 32);
 SELECT partman.create_parent('partman.holding_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1913.78, 1498.00, '2022-06-20');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 2119.13, 1498.00, '2022-06-21');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1528.72, 1498.00, '2022-06-22');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1399.48, 1498.00, '2022-06-23');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1469.10, 1498.00, '2022-06-24');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 1119.10, 1498.00, '2022-06-25');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 2070.10, 1498.00, '2022-06-26');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2913.78, 1498.00, '2022-06-20');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2119.13, 1498.00, '2022-06-21');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2528.72, 1498.00, '2022-06-22');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 2299.48, 1498.00, '2022-06-23');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1269.10, 1498.00, '2022-06-24');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1119.10, 1498.00, '2022-06-25');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', 1070.10, 1498.00, '2022-06-26');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -2913.78, 1498.00, '2022-06-20');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -1119.13, 1498.00, '2022-06-21');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -528.72, 1498.00, '2022-06-22');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -299.48, 1498.00, '2022-06-23');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', -1269.10, 1498.00, '2022-06-24');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', 519.10, 1498.00, '2022-06-25');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, date) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', 1070.10, 1498.00, '2022-06-26');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 511.25, 640.1830728, 1801.76, 22.12, '2022-06-12');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 591.25, 640.1830728, 1901.76, 23.12, '2022-06-13');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 531.25, 640.1830728, 1701.76, 21.12, '2022-06-14');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 581.25, 640.1830728, 1601.76, 20.12, '2022-06-15');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 571.25, 640.1830728, 1601.76, 20.12, '2022-06-16');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 561.25, 640.1830728, 1701.76, 21.12, '2022-06-17');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 571.25, 640.1830728, 1801.76, 22.12, '2022-06-18');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 581.25, 640.1830728, 1901.76, 23.12, '2022-06-19');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 621.25, 640.1830728, 1801.76, 22.12, '2022-06-20');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 671.25, 640.1830728, 1801.76, 22.12, '2022-06-21');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 651.25, 640.1830728, 1701.76, 21.12, '2022-06-22');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 671.25, 640.1830728, 1601.76, 20.12, '2022-06-23');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 741.25, 640.1830728, 1501.76, 19.12, '2022-06-24');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 731.25, 640.1830728, 1301.76, 17.12, '2022-06-25');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 721.25, 640.1830728, 1201.76, 13.12, '2022-06-26');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 711.25, 640.1830728, 1701.76, 11.12, '2022-06-27');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 751.25, 640.1830728, 1201.76, 10.12, '2022-06-28');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 721.25, 640.1830728, 1301.76, 13.12, '2022-06-29');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 731.25, 640.1830728, 1101.76, 12.12, '2022-06-30');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 711.25, 640.1830728, 1151.76, 10.12, '2022-07-01');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 701.25, 640.1830728, 1101.76, 13.12, '2022-07-02');
 
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());

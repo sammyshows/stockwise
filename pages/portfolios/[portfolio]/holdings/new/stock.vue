@@ -97,7 +97,7 @@
               </div>
 
               <div key="8" class="grow flex items-end justify-end text-right mb-7">
-                <ButtonsCyan text="SAVE" @clicked="addHolding()" />
+                <ButtonsCyan :disabled="disabledSave" text="SAVE" @clicked="addHolding()" />
               </div>
             </TransitionGroup>
           </div>

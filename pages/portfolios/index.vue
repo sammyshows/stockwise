@@ -70,34 +70,7 @@ import BigNumber from "bignumber.js";
 export default defineComponent({
   name: "Portfolios",
 
-  props: ['portfolios'],
-
-  computed: {
-    total: function() {
-      return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            total.current_value = total.current_value.plus(current_value)
-            total.initial_value = total.initial_value.plus(initial_value)
-            total.daily_change = total.daily_change.plus(daily_change)
-            total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
-
-            if (realized) {
-              total.realized = total.realized.plus(realized)
-              total.realized_initial = total.realized_initial.plus(realized_initial)
-            }
-
-            return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_value: new BigNumber(0),
-            initial_value: new BigNumber(0),
-            daily_change: new BigNumber(0),
-            all_time_initial: new BigNumber(0),
-            realized: new BigNumber(0),
-            realized_initial: new BigNumber(0)
-          })
-    }
-  },
+  props: ['portfolios', 'total'],
 
   methods: {
     BigNumber

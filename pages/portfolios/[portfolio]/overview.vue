@@ -1,6 +1,11 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <h2 class="w-max mx-auto mb-1.5 pb-0.5 text-xl text-center border-b border-gray-400">Portfolio Value</h2>
+    <select v-model="chartType" @change="createChart(activeRange, activeText, -7)" class="flex items-center w-max-c mx-auto mb-2.5 pb-0.5 text-lg bg-transparent border border-0 border-b focus:ring-0 focus:border-gray-300 border-gray-400">Total Value<span class="ml-2 mt-0.5 text-xs">&#9660;</span>
+      <option value="current_value">Total Portfolio Value</option>
+      <option value="initial_value">Initial Portfolio Value</option>
+      <option value="all_time_change">All-time Change</option>
+      <option value="all_time_percent">All-time Change (%)</option>
+    </select>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart || overviewChart.length === 0 }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
@@ -8,8 +13,8 @@
 
     <p v-if="overviewChart && overviewChart.length === 0" class="grow flex items-center py-2 px-2 text-xs text-bright-cyan text-center">Your portfolio hasn't been saved long enough for any daily totals to be recorded yet</p>
 
-    <p class="mt-2 font-normal text-center text-sm" :class="{ 'hidden': !chartInitialValue, 'text-bright-red': total.current_value.minus(chartInitialValue).toNumber() < 0, 'text-bright-green': total.current_value.minus(chartInitialValue).toNumber() > 0 }">
-      {{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).toNumber(), 3)) }} ({{ $addSign($formatNumber(total.current_value.minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2)) }}%)&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
+    <p class="mt-2 font-normal text-center text-sm" :class="{ 'hidden': !chartInitialValue, 'text-bright-red': BigNumber(chartFinalValue).minus(chartInitialValue).toNumber() < 0, 'text-bright-green': BigNumber(chartFinalValue).minus(chartInitialValue).toNumber() > 0 }">
+      {{ $addSign($formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).toNumber(), 3)) }} <span v-if="chartType !== 'all_time_percent' && chartInitialValue > 0">({{ $addSign($formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2)) }}%)</span>&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
     <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activeRange) }">
@@ -68,7 +73,9 @@ export default defineComponent({
       holdingId: this.$route.params.holding,
       activeRange: '',
       activeText: '',
+      chartType: 'current_value',
       chartInitialValue: 0,
+      chartFinalValue: 0,
       ranges: [
         {
           period: '1W',
@@ -121,8 +128,9 @@ export default defineComponent({
 
       const chart = document.getElementById('chart') as HTMLCanvasElement || this.$refs.chart
 
-      const prices = this.filterChartData(range, 'current_value', dataSlice)
+      const prices = this.configureChartData(range, dataSlice)
       this.chartInitialValue = prices[0]
+      this.chartFinalValue = prices[prices.length - 1]
 
       const labels = this.overviewChart.slice(dataSlice).map(dailyData => dailyData.date.slice(0, 10))
 
@@ -144,6 +152,8 @@ export default defineComponent({
           }
         }
       }
+
+      const chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
       new Chart(chart.getContext('2d'), {
@@ -210,6 +220,16 @@ export default defineComponent({
           },
           plugins: {
             tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = `${context.dataset.label}: ${context.formattedValue}`
+
+                  if (chartType == 3)
+                    label = label + '%'
+
+                  return label
+                }
+              },
               caretPadding: 20,
               displayColors: false
             },
@@ -221,19 +241,19 @@ export default defineComponent({
       });
     },
 
-    filterChartData(range, dataType, dataSlice?) {
-      let chartValues;
+    configureChartData(range, dataSlice?) {
+      let chartData;
       if (dataSlice) {
-        chartValues = this.overviewChart.slice(dataSlice)
-        return chartValues.map(dailyData => dailyData[dataType])
+        chartData = this.overviewChart.slice(dataSlice)
+        return chartData.map(data => data[this.chartType])
       } else if (range === 'YTD') {
         const year = this.overviewChart[this.overviewChart.length - 1].date.slice(0,4)
         const firstOfYear = this.overviewChart.findIndex(day => day.date.slice(0,4) === year)
-        chartValues = this.overviewChart.slice(firstOfYear)
-        return chartValues.map(dailyData => dailyData[dataType])
+        chartData = this.overviewChart.slice(firstOfYear)
+        return chartData.map(data => data[this.chartType])
       } else {
-        chartValues = this.overviewChart
-        return chartValues.map(dailyData => dailyData[dataType])
+        chartData = this.overviewChart
+        return chartData.map(data => data[this.chartType])
       }
     },
 
