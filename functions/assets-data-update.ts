@@ -14,7 +14,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     // Use the symbols from above to do a batch call to the IEX Cloud API for historicalData on all of them.
     // At the time of writing a batch is limited to 100 symbols at a time, so when we surpass that, we should split the
     // symbols array into groups of 100 and call each group individually
-    const data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&includeToday=true&token=${process.env.IEXTOKEN}`)
+    const data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
 
     let assetArrays = Object.values(data)
