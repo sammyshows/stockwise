@@ -21,11 +21,12 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     let buyTxs = txs.filter(tx => tx.type === 0)
     let sellTxs = txs.filter(tx => tx.type === 1)
+    console.log(eventBody.holdingId)
 
     await client`
         DELETE FROM sells
         USING transactions AS t
-        WHERE t.holding_id = ${eventBody.holdingId}`
+        WHERE sells.transaction_id = t.id AND t.holding_id = ${eventBody.holdingId}`
 
     // Go through the txs and sell the as many shares as necessary until the total sell quantity has been met.
     let sellQuantity
