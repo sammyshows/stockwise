@@ -60,10 +60,12 @@ export default defineComponent({
   computed: {
     total: function() {
       return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            total.current_value = total.current_value.plus(current_value)
-            total.initial_value = total.initial_value.plus(initial_value)
-            total.daily_change = total.daily_change.plus(daily_change)
-            total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
+            if (current_value && initial_value && all_time_initial) {
+              total.current_value = total.current_value.plus(current_value)
+              total.initial_value = total.initial_value.plus(initial_value)
+              total.daily_change = total.daily_change.plus(daily_change)
+              total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
+            }
 
             if (realized) {
               total.realized = total.realized.plus(realized)

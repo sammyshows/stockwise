@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS studies;
 DROP TABLE IF EXISTS sells;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS holdings;
-DROP TABLE IF EXISTS assets;
 DROP TABLE IF EXISTS portfolios;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS assets;
 DROP FUNCTION IF EXISTS uspReadTransactions;
 DROP FUNCTION IF EXISTS uspUpdateHolding;
 
@@ -18,8 +18,46 @@ SET infinite_time_partitions = true,
     retention_keep_table = true
 WHERE parent_table = 'partman';
 
-CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO users (id, email) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
+
+CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency_id uuid, type INT, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
+WITH currency (code, name) AS (
+    SELECT *
+    FROM
+        UNNEST(
+                ARRAY['USDAUD', 'USDCAD', 'USDCHF', 'USDCNH', 'USDCZK', 'USDDKK', 'USDEUR', 'USDGBP', 'USDHKD', 'USDHUF', 'USDILS', 'USDINR', 'USDJPY', 'USDMXN', 'USDNOK', 'USDNZD', 'USDPLN', 'USDRON', 'USDRUB', 'USDSEK', 'USDSGD', 'USDTHB', 'USDTRY', 'USDZAR']::TEXT[],
+                ARRAY['U.S. Dollar to Australian Dollar', 'U.S. Dollar to Canadian Dollar', 'U.S. Dollar to Swiss Franc', 'U.S. Dollar to Chinese Yuan Renminbi (HK)', 'U.S. Dollar to Czech Koruna', 'U.S. Dollar to Danish Krone', 'U.S. Dollar to Euro', 'U.S. Dollar to British Pound', 'U.S. Dollar to Hong Kong Dollar', 'U.S. Dollar to Hungarian Forint', 'U.S. Dollar to Israeli New Shekel', 'U.S. Dollar to Indian Rupee', 'U.S. Dollar to Japanese Yen', 'U.S. Dollar to Mexican Peso', 'U.S. Dollar to Norwegian Krone', 'U.S. Dollar to New Zealand Dollar', 'U.S. Dollar to Polish Zloty', 'U.S. Dollar to Romanian Leu', 'U.S. Dollar to Russian Ruble', 'U.S. Dollar to Swedish Krona', 'U.S. Dollar to Singapore Dollar', 'U.S. Dollar to Thai Baht', 'U.S. Dollar to Turkish Lira', 'U.S. Dollar to South African Rand']::TEXT[]
+            )
+)
+INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 1.47, 1.43, name, 1 FROM currency;
+
+WITH currency (code, name) AS (
+    SELECT *
+    FROM
+        UNNEST(
+                ARRAY['AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR']::TEXT[],
+                ARRAY['Australian Dollar', 'Canadian Dollar', 'Swiss Franc', 'Chinese Yuan Renminbi (HK)', 'Czech Koruna', 'Danish Krone', 'Euro', 'British Pound', 'Hong Kong Dollar', 'Hungarian Forint', 'Israeli New Shekel','Indian Rupee', 'Japanese Yen', 'Mexican Peso', 'Norwegian Krone', 'New Zealand Dollar', 'Polish Zloty', 'Romanian Leu', 'Russian Ruble', 'Swedish Krona', 'Singapore Dollar', 'Thai Baht', 'Turkish Lira', 'U.S. Dollar', 'South African Rand']::TEXT[]
+            )
+)
+INSERT INTO assets (symbol, current_price, prev_close, name, type) SELECT code, 1, 1, name, 2 FROM currency;
+
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency_id, type) SELECT 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'AAPL', 358.98, 157.71, 'Apple Inc', 'NASDAQ', id, 0 FROM assets WHERE symbol = 'USD' AND type = 2;
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency_id, type) SELECT 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', id, 0 FROM assets WHERE symbol = 'USD' AND type = 2;
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency_id, type) SELECT 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', id, 0 FROM assets WHERE symbol = 'USD' AND type = 2;
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency_id, type) SELECT 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'NNOX', 11.44, 11.02, 'Nano X Technology', 'NASDAQ', id, 0 FROM assets WHERE symbol = 'USD' AND type = 2;
+INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency_id, type) SELECT 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'HPQ', 31.54, 31.77, 'HP Inc', 'NYSE', id, 0 FROM assets WHERE symbol = 'USD' AND type = 2;
+
+
+CREATE TABLE partman.asset_data (id uuid DEFAULT gen_random_uuid(), asset_id uuid, close NUMERIC, label TEXT, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(asset_id) REFERENCES assets(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
+CREATE INDEX asset_data_time_brin_index
+    ON partman.asset_data
+        USING BRIN (date)
+    WITH (pages_per_range = 32);
+SELECT partman.create_parent('partman.asset_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
+
+
+CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, currency_id uuid, email VARCHAR ( 50 ) UNIQUE NOT NULL, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO users (id, currency_id, email) SELECT '60ffde40-5715-4176-8b14-37fbcd39e85d', id, 'sammymac.eng@gmail.com' FROM assets WHERE symbol = 'USDAUD' AND type = 1;
 CREATE TABLE partman.user_portfolios_data (id uuid DEFAULT gen_random_uuid(), user_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX user_portfolios_data_time_brin_index
     ON partman.user_portfolios_data
@@ -83,31 +121,6 @@ INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, 
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7101.25, 7500.28470726, 101.76, -3.12, '2022-07-02');
 
 
-CREATE TABLE assets (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, current_price NUMERIC, prev_close NUMERIC, symbol TEXT, name TEXT, exchange TEXT, currency TEXT, type INT, created_at timestamptz default now(), updated_at timestamptz default now());
-CREATE UNIQUE INDEX unique_asset on assets(symbol) WHERE NOT type = 3;
-INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'AAPL', 158.98, 157.71, 'Apple Inc', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TSLA', 882.92, 883.29, 'Tesla', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'MSFT', 280.18, 278.30, 'Microsoft Inc', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('d3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'NNOX', 10.22, 10.76, 'Nano X Technology', 'NASDAQ', 'USD', 0);
-INSERT INTO assets (id, symbol, current_price, prev_close, name, exchange, currency, type) VALUES ('e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'TDOC', 35.22, 35.76, 'Teladoc Inc', 'NYSE', 'USD', 0);
-WITH currency (code, name) AS (
-    SELECT *
-    FROM
-        UNNEST(
-                ARRAY['AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR']::TEXT[],
-                ARRAY['Australian Dollar', 'Canadian Dollar', 'Swiss Franc', 'Chinese Yuan Renminbi (HK)', 'Czech Koruna', 'Danish Krone', 'Euro', 'British Pound', 'Hong Kong Dollar', 'Hungarian Forint', 'Israeli New Shekel','Indian Rupee', 'Japanese Yen', 'Mexican Peso', 'Norwegian Krone', 'New Zealand Dollar', 'Polish Zloty', 'Romanian Leu', 'Russian Ruble', 'Swedish Krona', 'Singapore Dollar', 'Thai Baht', 'Turkish Lira', 'U.S. Dollar', 'South African Rand']::TEXT[]
-            )
-)
-INSERT INTO assets (symbol, current_price, prev_close, name, currency, type) SELECT code, 1, 1, name, code, 2 FROM currency;
-
-CREATE TABLE partman.asset_data (id uuid DEFAULT gen_random_uuid(), asset_id uuid, close NUMERIC, label TEXT, date DATE NOT NULL, CONSTRAINT fk_portfolio FOREIGN KEY(asset_id) REFERENCES assets(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
-CREATE INDEX asset_data_time_brin_index
-    ON partman.asset_data
-        USING BRIN (date)
-    WITH (pages_per_range = 32);
-SELECT partman.create_parent('partman.asset_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
-
-
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 7.5713, 6860.10163446);
@@ -115,8 +128,8 @@ INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, re
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.8069, 1115.74722, 67.49, 367.860, 1483.60722);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 2.78, 2510.062);
 INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 12, 2284.32);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100.000009, 1049.7800944802);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 100, 5028.7800944802);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 64.048, 1824.7800944802);
+INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 55, 1692.7800944802);
 
 CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX holding_data_time_brin_index
@@ -147,27 +160,27 @@ INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 701.25, 640.1830728, 1101.76, 13.12, '2022-07-02');
 
 
-CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, '2022-04-29T10:02:00.000Z');
+CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, sell_quantity NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, sell_quantity, timestamp) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 50.1289, 142.692, 1.344, 46.8955, '2022-04-29T10:02:00.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('12ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.2, 149.0023, 1.293, '2022-04-29T10:06:01.000Z');
-INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('13ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, -13.68875, 153.27, 1.29, '2022-04-29T10:07:32.000Z');
-INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('14ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, -33.20675, 153.27, 1.29, '2022-04-29T10:08:33.000Z');
+INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, timestamp) VALUES ('13ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, 13.68875, 153.27, '2022-04-29T10:07:32.000Z');
+INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, timestamp) VALUES ('14ffde40-5715-4176-8b14-37fbcd39e85a', '10ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, 33.20675, 153.27, '2022-04-29T10:08:33.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('15ffde40-5715-4176-8b14-37fbcd39e85a', '20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.9056, 934.11, 1.344, '2022-04-29T10:02:01.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('16ffde40-5715-4176-8b14-37fbcd39e85a', '20ffde40-5715-4176-8b14-37fbcd39e85f', 0, 3.6657, 876.1878, 1.344, '2022-04-29T10:02:02.000Z');
-INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('17ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12.6562, 189.90, 1.344, '2022-04-29T10:02:03.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, sell_quantity, timestamp) VALUES ('17ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12.6562, 189.90, 1.344, 7, '2022-04-29T10:02:03.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('18ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 0, 1.1, 161.2011, 1.344, '2022-04-29T10:02:04.000Z');
-INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('19ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, -7, 142.8709, 1.344, '2022-04-29T10:02:05.000Z');
-INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.0069, 213.8, 1.344, '2022-04-29T10:02:05.000Z');
+INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('19ffde40-5715-4176-8b14-37fbcd39e85a', '30ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, 7, 142.8709, 1.344, '2022-04-29T10:02:05.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, sell_quantity, timestamp) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.0069, 213.8, 1.344, 1.5, '2022-04-29T10:02:05.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('21ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 0, 4.3, 245.24, 1.344, '2022-04-29T10:02:06.000Z');
-INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('22ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, -1.5, 290.23, 1.344, '2022-04-29T10:02:07.000Z');
+INSERT INTO transactions (id, holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) VALUES ('22ffde40-5715-4176-8b14-37fbcd39e85a', '40ffde40-5715-4176-8b14-37fbcd39e85f', 1, 0, 1.5, 290.23, 1.344, '2022-04-29T10:02:07.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('23ffde40-5715-4176-8b14-37fbcd39e85a', '50ffde40-5715-4176-8b14-37fbcd39e85f', 0, 2.78, 902.90, 1.344, '2022-04-29T10:02:07.000Z');
 INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('24ffde40-5715-4176-8b14-37fbcd39e85a', '60ffde40-5715-4176-8b14-37fbcd39e85f', 0, 12, 190.36, 1.344, '2022-04-29T10:02:08.000Z');
-INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('25ffde40-5715-4176-8b14-37fbcd39e85a', '70ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100.000009, 10.4978, 1.344, '2022-04-29T10:02:09.000Z');
-INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('26ffde40-5715-4176-8b14-37fbcd39e85a', '80ffde40-5715-4176-8b14-37fbcd39e85f', 0, 100, 50.287800944802, 1.344, '2022-04-29T10:02:09.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('25ffde40-5715-4176-8b14-37fbcd39e85a', '70ffde40-5715-4176-8b14-37fbcd39e85f', 0, 64.048, 31.697, 1.3346, '2022-04-29T10:02:09.000Z');
+INSERT INTO transactions (id, holding_id, type, quantity, initial_price, exchange_rate, timestamp) VALUES ('26ffde40-5715-4176-8b14-37fbcd39e85a', '80ffde40-5715-4176-8b14-37fbcd39e85f', 0, 55, 30.77, 1.48, '2022-04-29T10:02:09.000Z');
 
 CREATE TABLE sells (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, transaction_id uuid, sell_id uuid, quantity NUMERIC, sell_price NUMERIC, exchange_rate NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*sell_price) STORED, CONSTRAINT fk_transaction FOREIGN KEY(transaction_id) REFERENCES transactions(id) ON DELETE CASCADE, CONSTRAINT fk_sell FOREIGN KEY(sell_id) REFERENCES transactions(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '13ffde40-5715-4176-8b14-37fbcd39e85a', 13.68875, 164.76, 1.344);
-INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '14ffde40-5715-4176-8b14-37fbcd39e85a', 33.20675, 164.76, 1.344);
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '13ffde40-5715-4176-8b14-37fbcd39e85a', 13.68875, 153.27);
+INSERT INTO sells (transaction_id, sell_id, quantity, sell_price) VALUES ('11ffde40-5715-4176-8b14-37fbcd39e85a', '14ffde40-5715-4176-8b14-37fbcd39e85a', 33.20675, 153.27);
 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('17ffde40-5715-4176-8b14-37fbcd39e85a', '19ffde40-5715-4176-8b14-37fbcd39e85a', 7, 142.8709, 1.344);
 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate) VALUES ('21ffde40-5715-4176-8b14-37fbcd39e85a', '22ffde40-5715-4176-8b14-37fbcd39e85a', 1.5, 290.23, 1.344);
 
@@ -207,20 +220,24 @@ BEGIN
                t.quantity,
                COALESCE(t.quantity - SUM(s.quantity), t.quantity),
                t.initial_price,
-               COALESCE(t.initial_value - (t.initial_price * SUM(s.quantity)), t.initial_value),
-               COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity),
-               COALESCE((a.current_price - t.initial_price) * (t.quantity - SUM(s.quantity)), (a.current_price - t.initial_price) * t.quantity),
-               COALESCE((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity))), (a.current_price * t.quantity) - (a.prev_close * t.quantity)),
+               (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price),
+               COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity) * asset_c.current_price * user_c.current_price,
+               ((a.current_price * asset_c.current_price * user_c.current_price) - (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))) * (t.quantity - COALESCE(SUM(s.quantity), 0)),
+               ((a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0))) - (a.prev_close * (t.quantity - COALESCE(SUM(s.quantity), 0)))) * asset_c.current_price * user_c.current_price,
                COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity - SUM(s.quantity)), 0), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)),
-               SUM(s.quantity * (s.sell_price - t.initial_price)),
-               SUM(s.quantity * t.initial_price),
-               t.initial_value
+               SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))),
+               SUM(s.quantity * (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))),
+               t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
         FROM transactions as t
-                 INNER JOIN holdings ON holdings.id = t.holding_id
-                 INNER JOIN assets AS a ON holdings.asset_id = a.id
+                 INNER JOIN holdings AS h ON t.holding_id = h.id
+                 INNER JOIN assets AS a ON h.asset_id = a.id
+                 INNER JOIN portfolios AS p ON h.portfolio_id = p.id
+                 INNER JOIN users AS u ON p.user_id = u.id
+                 INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
+                 INNER JOIN assets AS user_c ON u.currency_id = user_c.id
                  LEFT JOIN sells AS s ON t.id = s.transaction_id
-        WHERE holdings.id = $1
-        GROUP BY t.id, a.id, s.transaction_id
+        WHERE h.id = $1
+        GROUP BY t.id, a.id, s.transaction_id, asset_c.id, user_c.id
         ORDER BY MIN(t.timestamp) DESC;
 END;
 $$;
@@ -231,9 +248,15 @@ CREATE OR REPLACE FUNCTION uspUpdateHolding()
 BEGIN
     WITH txs AS (
         SELECT SUM(COALESCE(t.quantity - s.quantity, t.quantity)) as share_count,
-               SUM(t.initial_price * COALESCE(t.quantity - s.quantity, t.quantity)) as initial_value
+               SUM(t.initial_price * COALESCE(t.quantity - s.quantity, t.quantity) * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)) as initial_value
         FROM transactions AS t
-                 LEFT JOIN (
+        INNER JOIN holdings AS h on NEW.holding_id = h.id
+        INNER JOIN portfolios AS p ON h.portfolio_id = p.id
+        INNER JOIN users AS u ON p.user_id = u.id
+        INNER JOIN assets AS a on a.id = h.asset_id
+        INNER JOIN assets AS asset_c on a.currency_id = asset_c.id
+        INNER JOIN assets AS user_c ON u.currency_id = user_c.id
+        LEFT JOIN (
             SELECT SUM(quantity) as quantity,
                    transaction_id,
                    COUNT(sell_id) as sell_count

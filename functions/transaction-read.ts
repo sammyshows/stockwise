@@ -21,7 +21,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             INNER JOIN holdings AS h ON t.holding_id = h.id
             INNER JOIN assets AS a ON h.asset_id = a.id
         WHERE t.id = ${eventBody.transactionId};`
-    console.log(transaction)
+
     return {
         statusCode: 200,
         body: JSON.stringify({

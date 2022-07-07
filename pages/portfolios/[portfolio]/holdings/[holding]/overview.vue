@@ -19,7 +19,7 @@
 
     <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activeRange) }">
       <!--  This chart gets replaced on creation  -->
-      <canvas ref="chart" id="initialChart" height="224" class="w-full"></canvas>
+      <canvas ref="chart" id="initialChart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
     </div>
 
     <div v-if="!overviewChart" style="height: 250px;">

@@ -35,7 +35,7 @@
               <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }}</p>
             </div>
             <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-              <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(BigNumber(transaction.initial_value).negated(), 2) }}</p>
+              <p class="h-5 text-xs text-bright-red">-A${{ $formatNumber(BigNumber(transaction.initial_value), 2) }}</p>
             </div>
             <div class="col-span-5"></div>
           </div>

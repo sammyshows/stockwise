@@ -24,7 +24,7 @@
       <Spinner></Spinner>
     </div>
 
-    <div class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
+    <div v-if="assetData.type === 0" class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
       <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
         <p class="text-tiny mb-0.5">High</p>
         <p class="text-tiny mb-0.5">{{ quote?.["high"] || '-' }}</p>

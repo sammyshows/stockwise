@@ -102,6 +102,7 @@ export default defineComponent({
       openModal: false,
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
+        showLogo: false,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
@@ -152,10 +153,14 @@ export default defineComponent({
       })
         .then(response => response.json())
         .then(response => response.data[0])
+
       this.loaded = true
       this.pageDetails.symbol = response.symbol
       this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
+      if (response.asset_type === 0) {
+        this.pageDetails.showLogo = true
+      }
       this.setDateTime(response.timestamp)
       this.assetType = response.asset_type
       this.transaction.type = response.type
@@ -193,7 +198,7 @@ export default defineComponent({
             transactionId: this.transaction.id,
             holdingId: this.holdingId,
             type: this.transaction.type,
-            quantity: this.getQuantity(),
+            quantity: this.transaction.quantity,
             initialPrice: this.transaction.initialPrice,
             exchangeRate: this.transaction.exchangeRate,
             timestamp: this.parseDate()
@@ -216,13 +221,6 @@ export default defineComponent({
         })
       })
         .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
-    },
-
-    getQuantity(): number {
-      if (this.transaction.type === 0)
-        return this.transaction.quantity
-      else if (this.transaction.type === 1)
-        return this.transaction.quantity * -1
     },
 
     setDateTime(dateString): void {

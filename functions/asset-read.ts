@@ -7,7 +7,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const asset = await client`
-        SELECT symbol, exchange, name
+        SELECT symbol, type, exchange, name
         FROM assets 
             INNER JOIN holdings ON assets.id = holdings.asset_id 
         WHERE holdings.id = ${eventBody.holdingId};`
@@ -15,7 +15,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     return {
         statusCode: 200,
         body: JSON.stringify({
-            asset: asset
+            asset: asset[0]
         })
     }
 })

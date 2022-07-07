@@ -81,6 +81,8 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
       pageDetails: {
+        symbol: this.$route.params.assetSymbol,
+        showLogo: false,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
@@ -131,9 +133,13 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-        .then(data => data.asset[0])
-      this.pageDetails.title = response.symbol
-      this.pageDetails.subtitle = response.name
+
+      this.pageDetails.symbol = response.asset.symbol
+      this.pageDetails.title = response.asset.symbol
+      this.pageDetails.subtitle = response.asset.name
+      if (response.asset.type === 0) {
+        this.pageDetails.showLogo = true
+      }
     },
 
     async getHolding(): Promise<void> {

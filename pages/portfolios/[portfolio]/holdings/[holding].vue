@@ -75,6 +75,7 @@ export default defineComponent({
       symbol: '',
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
+        showLogo: false,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
@@ -151,6 +152,9 @@ export default defineComponent({
       this.pageDetails.symbol = response.assetData.symbol
       this.pageDetails.title = response.assetData.symbol
       this.pageDetails.subtitle = response.assetData.name
+      if (response.assetData.type === 0) {
+        this.pageDetails.showLogo = true
+      }
     },
 
     async getOverviewChart() {

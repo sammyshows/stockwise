@@ -21,7 +21,6 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     let buyTxs = txs.filter(tx => tx.type === 0)
     let sellTxs = txs.filter(tx => tx.type === 1)
-    console.log(eventBody.holdingId)
 
     await client`
         DELETE FROM sells
@@ -31,7 +30,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     // Go through the txs and sell the as many shares as necessary until the total sell quantity has been met.
     let sellQuantity
     for (const sellTx of sellTxs) {
-        let unallocatedQuantity = new BigNumber(sellTx.quantity).negated()
+        let unallocatedQuantity = new BigNumber(sellTx.quantity)
         while (unallocatedQuantity.isGreaterThan(0)) {
             let buyTx = buyTxs[0]
 
@@ -42,7 +41,6 @@ const handler: Handler = requireAuth(async (event, context) => {
                 sellQuantity = unallocatedQuantity.toNumber()
                 buyTxs[0].quantity = BigNumber(buyTxs[0].quantity).minus(sellQuantity).toNumber()
             }
-
             await client`
                 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate)
                 VALUES (${buyTx.id}, ${sellTx.id}, ${sellQuantity}, ${sellTx.initial_price}, ${sellTx.exchange_rate});`
@@ -50,6 +48,20 @@ const handler: Handler = requireAuth(async (event, context) => {
             unallocatedQuantity = unallocatedQuantity.minus(sellQuantity)
         }
     }
+
+    await client`
+        WITH sells_total AS (
+            SELECT SUM(s.quantity) as quantity,
+                   t.id
+            FROM transactions AS t
+                LEFT JOIN sells AS s ON t.id = s.transaction_id
+            WHERE t.holding_id = ${eventBody.holdingId}
+            GROUP BY t.id
+        ) 
+        UPDATE transactions
+        SET sell_quantity = sells_total.quantity
+        FROM sells_total 
+        WHERE transactions.id = sells_total.id`
 
     return {
         statusCode: 200
