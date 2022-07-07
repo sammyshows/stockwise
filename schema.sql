@@ -121,15 +121,15 @@ INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, 
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7101.25, 7500.28470726, 101.76, -3.12, '2022-07-02');
 
 
-CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, share_count NUMERIC, initial_value NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.43340, 640.18307280, 1034.89, 6691.61268600, 7331.7957588);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 7.5713, 6860.10163446);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc', 6.7562, 1251.433590, -329.20, 1329.30, 2580.73359);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value, realized, realized_initial, all_time_initial) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 4.8069, 1115.74722, 67.49, 367.860, 1483.60722);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc', 2.78, 2510.062);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 12, 2284.32);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 64.048, 1824.7800944802);
-INSERT INTO holdings (id, portfolio_id, asset_id, share_count, initial_value) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc', 55, 1692.7800944802);
+CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('20ffde40-5715-4176-8b14-37fbcd39e85f', '16fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('30ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'a3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('40ffde40-5715-4176-8b14-37fbcd39e85f', '26fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('50ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'b3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('70ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc');
+INSERT INTO holdings (id, portfolio_id, asset_id) VALUES ('80ffde40-5715-4176-8b14-37fbcd39e85f', '36fc5ca2-32ba-499a-a606-49679dfed51e', 'e3113ec5-d9c8-4c76-aea0-6bd28b239edc');
 
 CREATE TABLE partman.holding_data (id uuid DEFAULT gen_random_uuid(), holding_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX holding_data_time_brin_index
@@ -241,37 +241,3 @@ BEGIN
         ORDER BY MIN(t.timestamp) DESC;
 END;
 $$;
-
-
-CREATE OR REPLACE FUNCTION uspUpdateHolding()
-    RETURNS TRIGGER AS $$
-BEGIN
-    WITH txs AS (
-        SELECT SUM(COALESCE(t.quantity - s.quantity, t.quantity)) as share_count,
-               SUM(t.initial_price * COALESCE(t.quantity - s.quantity, t.quantity) * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)) as initial_value
-        FROM transactions AS t
-        INNER JOIN holdings AS h on NEW.holding_id = h.id
-        INNER JOIN portfolios AS p ON h.portfolio_id = p.id
-        INNER JOIN users AS u ON p.user_id = u.id
-        INNER JOIN assets AS a on a.id = h.asset_id
-        INNER JOIN assets AS asset_c on a.currency_id = asset_c.id
-        INNER JOIN assets AS user_c ON u.currency_id = user_c.id
-        LEFT JOIN (
-            SELECT SUM(quantity) as quantity,
-                   transaction_id,
-                   COUNT(sell_id) as sell_count
-            FROM sells
-            GROUP BY transaction_id
-        ) AS s ON t.id = s.transaction_id
-        WHERE t.holding_id = NEW.holding_id AND t.type = 0
-    )
-    UPDATE holdings
-    SET share_count = txs.share_count,
-        initial_value = txs.initial_value
-    FROM txs
-    WHERE id = NEW.holding_id;
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
-
-CREATE TRIGGER update_holding_calculations AFTER INSERT OR UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE uspUpdateHolding();

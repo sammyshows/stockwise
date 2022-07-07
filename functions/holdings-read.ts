@@ -7,7 +7,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const holdings = await client`
-        WITH transaction_data AS (
+        WITH cte AS (
             SELECT h.id AS holding_id,
                    a.current_price AS current_price,
                    t.quantity - COALESCE(SUM(s.quantity), 0) as current_quantity,
@@ -31,19 +31,19 @@ const handler: Handler = requireAuth(async (event, context) => {
             GROUP BY h.id, a.id, p.id, asset_c.id, user_c.id, t.id
             ORDER BY h.created_at
         )
-        SELECT t.holding_id,
-               t.current_price,
-               SUM(t.current_quantity) AS current_quantity,
-               t.symbol,
-               t.asset_name,
-               SUM(t.initial_value) as initial_value,
-               SUM(t.current_value) AS current_value,
-               SUM(t.daily_change) AS daily_change,
-               SUM(t.realized) AS realized,
-               SUM(t.realized_initial) AS realized_initial,
-               SUM(t.all_time_initial) AS all_time_initial
-        FROM transaction_data AS t
-        GROUP BY t.holding_id, t.current_price, t.symbol, t.asset_name;`
+        SELECT cte.holding_id,
+               cte.current_price,
+               SUM(cte.current_quantity) AS current_quantity,
+               cte.symbol,
+               cte.asset_name,
+               SUM(cte.initial_value) as initial_value,
+               SUM(cte.current_value) AS current_value,
+               SUM(cte.daily_change) AS daily_change,
+               SUM(cte.realized) AS realized,
+               SUM(cte.realized_initial) AS realized_initial,
+               SUM(cte.all_time_initial) AS all_time_initial
+        FROM cte
+        GROUP BY cte.holding_id, cte.current_price, cte.symbol, cte.asset_name;`
 
     return {
         statusCode: 200,

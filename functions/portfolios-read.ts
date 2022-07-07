@@ -6,24 +6,6 @@ const client = require("../database/client.ts")
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    // const portfolios = await client`
-    //     SELECT portfolios.id,
-    //            portfolios.name,
-    //            COUNT(holdings.id) as holding_count,
-    //            SUM(initial_value) as initial_value,
-    //            SUM(current_price*share_count) as current_value,
-    //            SUM((current_price - prev_close) * share_count) as daily_change,
-    //            SUM(current_price*share_count - initial_value) as total_change,
-    //            SUM(realized) as realized,
-    //            SUM(realized_initial) as realized_initial,
-    //            SUM(COALESCE(all_time_initial, initial_value)) as all_time_initial
-    //     FROM portfolios
-    //          LEFT JOIN holdings ON portfolios.id = holdings.portfolio_id
-    //          LEFT JOIN assets ON holdings.asset_id = assets.id
-    //     WHERE portfolios.user_id = ${eventBody.uuid}
-    //     GROUP BY portfolios.id
-    //     ORDER BY portfolios.created_at;`
-
     const portfolios = await client`
         WITH cte AS (
             SELECT p.id AS portfolio_id,
@@ -50,17 +32,17 @@ const handler: Handler = requireAuth(async (event, context) => {
             GROUP BY p.id, a.id, p.id, asset_c.id, user_c.id, t.id
             ORDER BY p.created_at
         )
-        SELECT c.portfolio_id,
-               c.portfolio_name,
-               SUM(c.current_quantity) AS current_quantity,
-               SUM(c.initial_value) as initial_value,
-               SUM(c.current_value) AS current_value,
-               SUM(c.daily_change) AS daily_change,
-               SUM(c.realized) AS realized,
-               SUM(c.realized_initial) AS realized_initial,
-               SUM(c.all_time_initial) AS all_time_initial
-        FROM cte AS c
-        GROUP BY c.portfolio_id, c.portfolio_name;`
+        SELECT cte.portfolio_id,
+               cte.portfolio_name,
+               SUM(cte.current_quantity) AS current_quantity,
+               SUM(cte.initial_value) as initial_value,
+               SUM(cte.current_value) AS current_value,
+               SUM(cte.daily_change) AS daily_change,
+               SUM(cte.realized) AS realized,
+               SUM(cte.realized_initial) AS realized_initial,
+               SUM(cte.all_time_initial) AS all_time_initial
+        FROM cte
+        GROUP BY cte.portfolio_id, cte.portfolio_name;`
 
     return {
         statusCode: 200,

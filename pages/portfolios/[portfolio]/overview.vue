@@ -1,6 +1,6 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <select v-model="chartType" @change="createChart(activeRange, activeText, -7)" class="flex items-center w-max-c mx-auto mb-2.5 pb-0.5 text-lg bg-transparent border border-0 border-b focus:ring-0 focus:border-gray-300 border-gray-400">Total Value<span class="ml-2 mt-0.5 text-xs">&#9660;</span>
+    <select v-model="chartType" @change="createChart(activeRange, activeText, activeSlice)" class="flex items-center w-max-c mx-auto mb-2.5 pb-0.5 text-lg bg-transparent border border-0 border-b focus:ring-0 focus:border-gray-300 border-gray-400">Total Value<span class="ml-2 mt-0.5 text-xs">&#9660;</span>
       <option value="current_value">Total Portfolio Value</option>
       <option value="initial_value">Initial Portfolio Value</option>
       <option value="all_time_change">All-time Change</option>
@@ -73,6 +73,7 @@ export default defineComponent({
       holdingId: this.$route.params.holding,
       activeRange: '',
       activeText: '',
+      activeSlice: 0,
       chartType: 'current_value',
       chartInitialValue: 0,
       chartFinalValue: 0,
@@ -118,6 +119,7 @@ export default defineComponent({
     createChart(range, periodText, dataSlice?) {
       this.activeRange = range
       this.activeText = periodText
+      this.activeSlice = dataSlice
 
       // Here we need to know whether this is the first time loading the chart because if the page is mounted and the data
       // has already been received and passed from the [holding] parent to this child, then the chart probably won't automatically
