@@ -7,45 +7,45 @@
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 grow overflow-scroll text-sm">
           <TransitionGroup tag="div" name="form">
-            <div :key="1" class="mb-4">
-              <label for="type" class="flex items-end">Transaction type</label>
+            <div :key="1" class="mb-2">
+              <label for="type" class="flex items-end text-xs">Transaction type</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-              <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option value="" disabled selected hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
               </select>
             </div>
-            <div :key="2" class="mb-4">
-              <label for="quantity">Quantity</label>
+            <div :key="2" class="mb-2">
+              <label for="quantity" class="text-xs">Quantity</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
-              <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="3" class="mb-4">
-              <label for="initialPrice">Price</label>
+            <div :key="3" class="mb-2">
+              <label for="initialPrice" class="text-xs">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
-              <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="4" v-if="assetType === 0" class="mb-4">
-              <label for="exchangeRate">Exchange rate (optional)</label>
+            <div :key="4" v-if="assetType === 0" class="mb-2">
+              <label for="exchangeRate" class="text-xs">Exchange rate (optional)</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-              <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div v-if="transaction.type === 1" :key="5" class="mb-4">
-              <label for="method" class="flex items-end">Method</label>
-              <select v-model="transaction.sellMethod" id="method" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            <div v-if="transaction.type === 1" :key="5" class="mb-2">
+              <label for="method" class="flex items-end text-xs">Method</label>
+              <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option :value="0">FIFO</option>
                 <option :value="1">Custom Selection</option>
               </select>
             </div>
             <div :key="6" class="w-full flex justify-between gap-x-4">
-              <div>
-                <label for="date">Date</label>
-                <input v-model="transaction.date" id="date" type="date" class="bg-transparent text-sm border border-0 border-b focus:ring-0 focus:border-gray-300" />
+              <div class="flex flex-col w-full">
+                <label for="date" class="text-xs">Date</label>
+                <input v-model="transaction.date" id="date" type="date" class="mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
-              <div>
-                <label for="time">Time</label>
-                <input v-model="transaction.time" id="time" type="time" class="w-full bg-transparent text-sm border border-0 border-b focus:ring-0 focus:border-gray-300" />
+              <div class="flex flex-col w-full">
+                <label for="time" class="text-xs">Time</label>
+                <input v-model="transaction.time" id="time" type="time" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
             </div>
           </TransitionGroup>

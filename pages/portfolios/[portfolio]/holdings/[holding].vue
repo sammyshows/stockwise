@@ -2,7 +2,7 @@
   <div class="flex flex-col grow overflow-hidden">
     <div v-if="viewTransactions" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
-        <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
+        <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle } }">
             <PlusIcon class="h-8 w-8" />
