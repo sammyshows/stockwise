@@ -38,6 +38,8 @@ const handler: Handler = async () => {
     const stockCurrentPrices = Object.values(stockFilteredData).map(asset => asset["quote"].latestPrice)
     const stockPrevCloses = Object.values(stockFilteredData).map(asset => asset["quote"].previousClose)
 
+    const forexFilteredData = forexData.filter(forex => forex.symbol && forex.rate)
+
     const forexSymbols = forexData.map(forex => forex.symbol)
     const forexRates = forexData.map(forex => forex.rate)
 

@@ -9,7 +9,7 @@
       <div class="flex flex-col gap-y-2.5 px-2 text-xs">
         <NuxtLink class="w-full py-3 px-3" :to="{ path: '/profile/settings' }">
           <label for="currency" class="block">Local currency</label>
-          <select v-model="settings.currency" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+          <select v-model="settings.currency" @change="updateUserSettings()" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
           </select>
         </NuxtLink>
@@ -28,12 +28,15 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    const email = useState('email').value
-    return { token, uuid, email }
+    return { token, uuid }
   },
 
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
+  },
+
+  mounted() {
+    this.getUserSettings()
   },
 
   data() {
@@ -47,14 +50,15 @@ export default defineComponent({
         'AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR'
       ],
       settings: {
+        id: null as (string | null),
         currency: null as (string | null)
       }
     }
   },
 
   methods: {
-    async getHoldings(): Promise<void> {
-      const response = await fetch('/api/user-read', {
+    async getUserSettings(): Promise<void> {
+      const response = await fetch('/api/user-settings-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -63,9 +67,19 @@ export default defineComponent({
           userId: this.uuid
         })
       })
-          .then(response => response.json())
+        .then(response => response.json())
 
-      this.email = response.user.email
+      this.settings = response.data
+    },
+
+    async updateUserSettings(): Promise<void> {
+      await fetch('/api/user-settings-update', {
+        headers: {
+          authorization: 'Bearer ' + this.token
+        },
+        method: 'POST',
+        body: JSON.stringify(this.settings)
+      })
     }
   }
 })

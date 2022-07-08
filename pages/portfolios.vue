@@ -26,6 +26,7 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
+    console.log(uuid)
     return { token, uuid }
   },
 
