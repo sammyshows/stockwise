@@ -41,11 +41,11 @@
             <div :key="6" class="w-full flex justify-between gap-x-4">
               <div class="flex flex-col w-full">
                 <label for="date">Date</label>
-                <input v-model="transaction.date" id="date" type="date" class="mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                <input v-model="transaction.date" id="date" type="date" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
               <div class="flex flex-col w-full">
                 <label for="time">Time</label>
-                <input v-model="transaction.time" id="time" type="time" class="mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                <input v-model="transaction.time" id="time" type="time" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-600/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
             </div>
           </TransitionGroup>
