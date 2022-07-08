@@ -38,7 +38,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                 })
             })
                 .then(response => response.json())
-            console.log(asset['data'])
+
             studyId = await client`
             INSERT INTO studies (user_id, asset_id, name, symbol, type)
             VALUES (${eventBody.uuid}, ${asset['data'].id}, ${asset['data'].name}, ${asset['data'].symbol}, ${eventBody.type})

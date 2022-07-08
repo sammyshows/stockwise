@@ -6,13 +6,11 @@
     </div>
 
     <div class="overflow-scroll">
-      <div class="flex flex-col gap-y-2.5 px-2">
+      <div class="flex flex-col gap-y-2.5 px-2 text-xs">
         <NuxtLink class="w-full py-3 px-3" :to="{ path: '/profile/settings' }">
-          <label for="currency" class="block text-sm">Local currency</label>
-          <select id="currency" class="w-full mt-2 py-1.5 text-sm rounded-md bg-gray-600/20 border border-gray-400/40">
-            <option value="AUD">AUD</option>
-            <option value="USD">USD</option>
-            <option value="JPY">JPY</option>
+          <label for="currency" class="block">Local currency</label>
+          <select v-model="settings.currency" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+            <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
           </select>
         </NuxtLink>
       </div>
@@ -44,6 +42,12 @@ export default defineComponent({
         title: 'Settings',
         subtitle: 'PROFILE',
         returnPath: '/profile'
+      },
+      currencies: [
+        'AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR'
+      ],
+      settings: {
+        currency: null as (string | null)
       }
     }
   },

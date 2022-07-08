@@ -4,10 +4,10 @@ DROP TABLE IF EXISTS sells;
 DROP TABLE IF EXISTS transactions;
 DROP TABLE IF EXISTS holdings;
 DROP TABLE IF EXISTS portfolios;
+DROP TABLE IF EXISTS user_settings;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS assets;
 DROP FUNCTION IF EXISTS uspReadTransactions;
-DROP FUNCTION IF EXISTS uspUpdateHolding;
 
 CREATE SCHEMA partman;
 CREATE EXTENSION pg_partman WITH SCHEMA partman;
@@ -56,8 +56,8 @@ CREATE INDEX asset_data_time_brin_index
 SELECT partman.create_parent('partman.asset_data', 'date', 'native', 'daily', p_start_partition := '2022-06-20');
 
 
-CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, currency_id uuid, email VARCHAR ( 50 ) UNIQUE NOT NULL, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO users (id, currency_id, email) SELECT '60ffde40-5715-4176-8b14-37fbcd39e85d', id, 'sammymac.eng@gmail.com' FROM assets WHERE symbol = 'USDAUD' AND type = 1;
+CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO users (id, email) VALUES('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
 CREATE TABLE partman.user_portfolios_data (id uuid DEFAULT gen_random_uuid(), user_id uuid, current_value NUMERIC, initial_value NUMERIC, all_time_change NUMERIC, all_time_percent NUMERIC, date DATE NOT NULL, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now()) PARTITION BY RANGE(date);
 CREATE INDEX user_portfolios_data_time_brin_index
     ON partman.user_portfolios_data
@@ -83,11 +83,13 @@ INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value,
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19901.25, 20740.4077062204, -201.76, 0.12, '2022-06-28');
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19801.25, 20740.4077062204, -301.76, 3.12, '2022-06-29');
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19701.25, 20740.4077062204, -101.76, 2.12, '2022-06-30');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 20001.25, 20740.4077062204, 51.76, 0.12, '2022-07-01');
-INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 20101.25, 20740.4077062204, 101.76, 3.12, '2022-07-02');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 21001.25, 20740.4077062204, 51.76, 0.12, '2022-07-01');
+INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 23101.25, 20740.4077062204, 101.76, 3.12, '2022-07-02');
 
+CREATE TABLE user_settings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, currency_id uuid, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO user_settings (user_id, currency_id) SELECT '60ffde40-5715-4176-8b14-37fbcd39e85d', id FROM assets WHERE symbol = 'USDAUD' AND type = 1;
 
-CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, created_at timestamptz default now(), updated_at timestamptz default now());
+CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('26fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'U.S. EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('36fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'Commodities', TRUE);
@@ -117,8 +119,8 @@ INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, 
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7901.25, 7500.28470726, -201.76, -0.12, '2022-06-28');
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7801.25, 7500.28470726, -301.76, -3.12, '2022-06-29');
 INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7701.25, 7500.28470726, -101.76, -2.12, '2022-06-30');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7001.25, 7500.28470726, 51.76, -5.12, '2022-07-01');
-INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 7101.25, 7500.28470726, 101.76, -3.12, '2022-07-02');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 8301.25, 7500.28470726, 51.76, -5.12, '2022-07-01');
+INSERT INTO partman.portfolio_data (portfolio_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', 8701.25, 7500.28470726, 101.76, -3.12, '2022-07-02');
 
 
 CREATE TABLE holdings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, portfolio_id uuid, asset_id uuid, CONSTRAINT fk_portfolio FOREIGN KEY(portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE, CONSTRAINT fk_asset FOREIGN KEY(asset_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
@@ -154,10 +156,10 @@ INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 721.25, 640.1830728, 1201.76, 13.12, '2022-06-26');
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 711.25, 640.1830728, 1701.76, 11.12, '2022-06-27');
 INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 751.25, 640.1830728, 1201.76, 10.12, '2022-06-28');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 721.25, 640.1830728, 1301.76, 13.12, '2022-06-29');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 731.25, 640.1830728, 1101.76, 12.12, '2022-06-30');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 711.25, 640.1830728, 1151.76, 10.12, '2022-07-01');
-INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 701.25, 640.1830728, 1101.76, 13.12, '2022-07-02');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 891.25, 640.1830728, 1301.76, 13.12, '2022-06-29');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 851.25, 640.1830728, 1101.76, 12.12, '2022-06-30');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 841.25, 640.1830728, 1151.76, 10.12, '2022-07-01');
+INSERT INTO partman.holding_data (holding_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('10ffde40-5715-4176-8b14-37fbcd39e85f', 940.25, 640.1830728, 1101.76, 13.12, '2022-07-02');
 
 
 CREATE TABLE transactions (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, holding_id uuid, type INT, sell_method INT, quantity NUMERIC, initial_price NUMERIC, timestamp timestamptz, exchange_rate NUMERIC, sell_quantity NUMERIC, initial_value NUMERIC GENERATED ALWAYS AS (quantity*initial_price) STORED, CONSTRAINT fk_holding FOREIGN KEY(holding_id) REFERENCES holdings(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
@@ -232,7 +234,7 @@ BEGIN
                  INNER JOIN holdings AS h ON t.holding_id = h.id
                  INNER JOIN assets AS a ON h.asset_id = a.id
                  INNER JOIN portfolios AS p ON h.portfolio_id = p.id
-                 INNER JOIN users AS u ON p.user_id = u.id
+                 INNER JOIN user_settings AS u ON p.user_id = u.user_id
                  INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
                  INNER JOIN assets AS user_c ON u.currency_id = user_c.id
                  LEFT JOIN sells AS s ON t.id = s.transaction_id
