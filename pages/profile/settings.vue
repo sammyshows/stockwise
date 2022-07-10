@@ -2,7 +2,7 @@
   <div class="flex flex-col grow overflow-hidden">
     <div class="h-20 flex justify-between px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-      <img src="~/assets/images/logo-cyan.png" class="h-12 w-12 -mt-1 mr-1" alt="Stockwise Logo">
+      <img src="/images/logo-cyan.png" class="h-12 w-12 -mt-1 mr-1" alt="Stockwise Logo">
     </div>
 
     <div class="overflow-scroll">
@@ -31,12 +31,18 @@ export default defineComponent({
     return { token, uuid }
   },
 
+  props: [
+    'userSettings'
+  ],
+
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
   },
 
-  mounted() {
-    this.getUserSettings()
+  watch: {
+    userSettings() {
+      this.settings = this.userSettings
+    }
   },
 
   data() {
@@ -49,29 +55,11 @@ export default defineComponent({
       currencies: [
         'AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR'
       ],
-      settings: {
-        id: null as (string | null),
-        currency: null as (string | null)
-      }
+      settings: this.userSettings
     }
   },
 
   methods: {
-    async getUserSettings(): Promise<void> {
-      const response = await fetch('/api/user-settings-read', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          userId: this.uuid
-        })
-      })
-        .then(response => response.json())
-
-      this.settings = response.data
-    },
-
     async updateUserSettings(): Promise<void> {
       await fetch('/api/user-settings-update', {
         headers: {

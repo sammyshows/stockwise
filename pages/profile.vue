@@ -3,7 +3,7 @@
     <div v-if="$route.path === '/profile'" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <img src="~/assets/images/logo-cyan.png" class="h-12 w-12 -mt-1 mr-1" alt="Stockwise Logo">
+        <img src="/images/logo-cyan.png" class="h-12 w-12 -mt-1 mr-1" alt="Stockwise Logo">
       </div>
 
       <div class="overflow-scroll">
@@ -31,7 +31,7 @@
         </div>
       </div>
     </div>
-    <NuxtPage v-else />
+    <NuxtPage v-else :userSettings="userSettings" />
   </NuxtLayout>
 </template>
 
@@ -45,25 +45,29 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    const email = useState('email').value
-    return { token, uuid, email }
+    return { token, uuid }
   },
 
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
   },
 
+  mounted() {
+    this.getUserSettings()
+  },
+
   data() {
     return {
       pageDetails: {
         title: 'Profile'
-      }
+      },
+      userSettings: {}
     }
   },
 
   methods: {
-    async getHoldings(): Promise<void> {
-      const response = await fetch('/api/user-read', {
+    async getUserSettings(): Promise<void> {
+      const response = await fetch('/api/user-settings-read', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -74,7 +78,7 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.email = response.user.email
+      this.userSettings = response.data
     }
   }
 })
