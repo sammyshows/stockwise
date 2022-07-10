@@ -9,10 +9,10 @@
       <div v-if="quote['latestPrice'] && chartDataDay">
         <p class="mr-2 font-normal text-2xl tracking-wider truncate">${{ $formatNumber(quote["latestPrice"], 2) }}</p>
         <p v-if="activeRange === '1D'" class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['change']).toNumber() < 0, 'text-bright-green': BigNumber(quote['change']).toNumber() > 0 }">
-          {{ $addSign($formatNumber(BigNumber(quote["change"]).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+          {{ $formatNumber(BigNumber(quote["change"]).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
         <p v-else class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() > 0 }">
-          {{ $addSign($formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).toNumber(), 3)) }} ({{ $addSign($formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2)) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+          {{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
       </div>
       <Spinner class="h-20" v-else />

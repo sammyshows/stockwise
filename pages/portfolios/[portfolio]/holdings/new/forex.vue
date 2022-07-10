@@ -30,11 +30,11 @@
                 <div class="w-full flex text-base">
                   <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
                   <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
-                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $addSign($formatNumber(quote.currentPrice - quote.prevClose, 5)) }}</p>
+                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $formatNumber(quote.currentPrice - quote.prevClose, 5, false, true) }}</p>
                 </div>
                 <div class="w-full flex text-tiny">
                   <p class="grow truncate mr-3">{{ quote.name }}</p>
-                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $addSign($formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2)) }}%</p>
+                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2, false, true) }}%</p>
                 </div>
               </div>
               <Spinner class="h-16" v-else />

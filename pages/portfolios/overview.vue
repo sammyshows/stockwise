@@ -14,7 +14,7 @@
     <p v-if="overviewChart && overviewChart.length === 0" class="grow flex items-center py-2 px-2 text-xs text-bright-cyan text-center">Your portfolios haven't been saved long enough for any daily totals to be recorded yet</p>
 
     <p class="mt-2 font-normal text-center text-sm" :class="{ 'hidden': !chartInitialValue, 'text-bright-red': BigNumber(chartFinalValue).minus(chartInitialValue).toNumber() < 0, 'text-bright-green': BigNumber(chartFinalValue).minus(chartInitialValue).toNumber() > 0 }">
-      {{ $addSign($formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).toNumber(), 3)) }} <span v-if="chartType !== 'all_time_percent' && chartInitialValue > 0">({{ $addSign($formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2)) }}%)</span>&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
+      {{ $formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).toNumber(), 3, false, true) }} <span v-if="chartType !== 'all_time_percent' && chartInitialValue > 0">({{ $formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2, false, true) }}%)</span>&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
     <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activePeriod) }">

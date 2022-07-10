@@ -38,7 +38,7 @@
                     <div class="w-1 grow">
                       <p class="truncate">{{ quote.primaryExchange }}</p>
                       <p class="truncate">{{ quote.latestPrice }}</p>
-                      <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $addSign($formatNumber(quote.change, 2)) }} ({{ $addSign($formatNumber(quote.changePercent * 100), 2) }}%)</p>
+                      <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $formatNumber(quote.change, 2, false, true) }} ({{ $formatNumber(quote.changePercent * 100, 2 , false, true) }}%)</p>
                     </div>
                   </div>
                   <Spinner class="h-16" v-else />
