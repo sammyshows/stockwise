@@ -15,23 +15,21 @@
               <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.holding_count }} HOLDINGS</p>
             </div>
             <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-              <p class="h-5 text-xs">A${{ $formatNumber(portfolio.current_value, 2) || '0' }}</p>
-              <p class="text-tiny text-gray-300">A${{ $formatNumber(portfolio.initial_value, 2) || '0' }}</p>
+              <p class="h-5 text-xs">{{ $formatNumber(portfolio.current_value, 2, true, false) || '0' }}</p>
+              <p class="text-tiny text-gray-300">{{ $formatNumber(portfolio.initial_value, 2, true, false) || '0' }}</p>
             </div>
             <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
-              <p class="h-5 text-xs">{{ $addSign($formatNumber(portfolio.daily_change, 2)) || '-' }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(BigNumber(portfolio.daily_change).div(BigNumber(portfolio.current_value).minus(portfolio.daily_change)).times(100), 2)) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
+              <p class="h-5 text-xs">{{ $formatNumber(portfolio.daily_change, 2, false, true) || '-' }}</p>
+              <p class="text-tiny">{{ $formatNumber(BigNumber(portfolio.daily_change).div(BigNumber(portfolio.current_value).minus(portfolio.daily_change)).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
             </div>
-            <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
-            should show active transactions but this requires the addition of an 'active' column in the database table    -->
             <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.current_value).minus(portfolio.initial_value) < 0, 'text-bright-green': BigNumber(portfolio.current_value).minus(portfolio.initial_value) > 0 }">
-              <p class="h-5 text-xs">{{ $addSign($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2)) || '-' }}</p>
-              <p class="text-tiny">{{ $addSign($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
+              <p class="h-5 text-xs">{{$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-' }}</p>
+              <p class="text-tiny">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
             </div>
           </div>
           <div v-if="portfolio.realized">
-            <p class="text-tiny h-4">Realized: <span class="font-normal" :class="{ 'text-bright-red': portfolio.realized < 0, 'text-bright-green': portfolio.realized > 0 }">{{ $addSign($formatNumber(portfolio.realized, 2)) }} ({{ $addSign($formatNumber(BigNumber(portfolio.realized).div(portfolio.realized_initial).times(100), 2)) }}%)</span></p>
-            <p class="text-tiny">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isLessThan(0), 'text-bright-green': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isGreaterThan(0) }">{{ $addSign($formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value), 2)) }} ({{ $addSign($formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.all_time_initial).times(100), 2)) }}%)</span></p>
+            <p class="text-tiny h-4">Realized: <span class="font-normal" :class="{ 'text-bright-red': portfolio.realized < 0, 'text-bright-green': portfolio.realized > 0 }">{{ $formatNumber(portfolio.realized, 2, false, true) }} ({{ $formatNumber(BigNumber(portfolio.realized).div(portfolio.realized_initial).times(100), 2, false, true) }}%)</span></p>
+            <p class="text-tiny">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isLessThan(0), 'text-bright-green': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isGreaterThan(0) }">{{ $formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) }} ({{ $formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.all_time_initial).times(100), 2, false, true) }}%)</span></p>
           </div>
         </div>
       </NuxtLink>
@@ -43,21 +41,21 @@
           <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolios.length }} PORTFOLIOS</p>
         </div>
           <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-          <p class="h-5 text-xs">A${{ $formatNumber(total.current_value, 2) }}</p>
-          <p class="text-tiny text-gray-300">A${{ $formatNumber(total.initial_value, 2) }}</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
+          <p class="text-tiny text-gray-300">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
-          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.daily_change, 2)) }}</p>
-          <p class="text-tiny">{{ $addSign($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2)) }}%</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
+          <p class="text-tiny">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
-          <p class="h-5 text-xs">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value), 2)) }}</p>
-          <p class="text-tiny">{{ $addSign($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2)) }}%</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
+          <p class="text-tiny">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
         </div>
       </div>
       <div v-if="total.realized">
-        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $addSign($formatNumber(total.realized, 2)) }} ({{ $addSign($formatNumber(total.realized.div(total.realized_initial).times(100), 2)) }}%)</span></p>
-        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value).isLessThan(0), 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value).isGreaterThan(0) }">{{ $addSign($formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2)) }} ({{ $addSign($formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2)) }}%)</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, false, true) }} ({{ $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) }}%)</span></p>
+        <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value).isLessThan(0), 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value).isGreaterThan(0) }">{{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2, false, true) }} ({{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2, false, true) }}%)</span></p>
       </div>
     </div>
   </div>

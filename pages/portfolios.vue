@@ -19,15 +19,16 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import {BigNumber} from "bignumber.js";
+import { useUser } from "@/store/user.js";
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
+    const store = useUser()
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    console.log(uuid)
-    return { token, uuid }
+    return { store, token, uuid }
   },
 
   components: {
@@ -103,7 +104,13 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
+
       this.portfolios = response.portfolios
+      if (response.portfolios[0]) {
+        this.store.$patch({
+          currency: response.portfolios[0].currency_symbol
+        })
+      }
     },
 
     async getOverviewChart() {

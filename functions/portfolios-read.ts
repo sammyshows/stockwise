@@ -11,6 +11,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             SELECT p.id AS portfolio_id,
                    h.id AS holding_id,
                    p.name AS portfolio_name,
+                   SUBSTRING(user_c.symbol, 4, 6) AS currency_symbol,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
                    a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
                    (a.current_price - a.prev_close) * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS daily_change,
@@ -31,6 +32,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         )
         SELECT cte.portfolio_id,
                cte.portfolio_name,
+               cte.currency_symbol,
                COUNT(DISTINCT cte.holding_id) AS holding_count,
                SUM(cte.initial_value) as initial_value,
                SUM(cte.current_value) AS current_value,
@@ -39,7 +41,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.realized_initial) AS realized_initial,
                SUM(cte.all_time_initial) AS all_time_initial
         FROM cte
-        GROUP BY cte.portfolio_id, cte.portfolio_name;`
+        GROUP BY cte.portfolio_id, cte.portfolio_name, cte.currency_symbol;`
 
     return {
         statusCode: 200,
