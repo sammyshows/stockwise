@@ -33,13 +33,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
+import { usePortfolios } from "@/store/portfolios";
 
 export default defineComponent({
   name: "Edit Portfolio",
 
   async setup() {
+    const portfoliosStore = usePortfolios()
     const token = await useState('authToken').value
-    return { token }
+    return { portfoliosStore, token }
   },
 
   components: {
@@ -95,7 +97,8 @@ export default defineComponent({
         method: 'POST',
         body: JSON.stringify(this.portfolioDetails)
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}`))
+      // this.portfolioStoreUpdate()
+      this.$router.push(`/portfolios/${this.portfolioId}`)
     },
 
     closeModal(): void {
@@ -112,7 +115,20 @@ export default defineComponent({
           portfolioId: this.portfolioId
         })
       })
-        .then(this.$router.push('/portfolios'))
+      this.portfolioStoreDelete()
+      this.$router.push('/portfolios')
+    },
+
+    // portfolioStoreUpdate() {
+    //   this.portfoliosStore.$patch({
+    //     portfolios: this.portfoliosStore.portfolios.map(p => p.portfolio_id !== this.portfolio_id)
+    //   })
+    // },
+
+    portfolioStoreDelete() {
+      this.portfoliosStore.$patch({
+        portfolios: this.portfoliosStore.portfolios.filter(p => p.portfolio_id !== this.portfolio_id)
+      })
     }
   }
 })

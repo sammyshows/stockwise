@@ -8,10 +8,13 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
-      <NuxtPage v-else-if="portfolios" :portfolios="portfolios" :overviewChart="overviewChart" :total="total" />
+      <p v-if="portfoliosStore.portfolios != null && portfoliosStore.portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
+      <NuxtPage v-else-if="portfoliosStore.portfolios"
+                :show="viewPortfolios"
+                :overviewChart="overviewChart"
+                :total="total" />
     </div>
-    <NuxtPage v-else/>
+    <NuxtPage v-else />
   </NuxtLayout>
 </template>
 
@@ -19,16 +22,21 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import {BigNumber} from "bignumber.js";
+import { storeToRefs } from 'pinia'
 import { useUser } from "@/store/user.js";
+import { usePortfolios } from "@/store/portfolios";
+
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
-    const store = useUser()
+    const userStore = useUser()
+    const portfoliosStore = usePortfolios()
+    const { portfolios } = storeToRefs(portfoliosStore)
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { store, token, uuid }
+    return { userStore, portfoliosStore, portfolios, token, uuid }
   },
 
   components: {
@@ -38,8 +46,7 @@ export default defineComponent({
   async mounted() {
     await this.getPortfolios()
     this.getOverviewChart()
-    setInterval(() => this.getPortfolios(), 60000)
-
+    setInterval(() => this.getPortfolios(), 5000)
   },
 
   data() {
@@ -54,37 +61,38 @@ export default defineComponent({
           { name: 'OVERVIEW', path: `/portfolios/overview` }
         ]
       },
-      portfolios: null as ([] | null),
       overviewChart: null as ([] | null)
     }
   },
 
   computed: {
     total: function() {
-      return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            if (current_value && initial_value && all_time_initial) {
-              total.current_value = total.current_value.plus(current_value)
-              total.initial_value = total.initial_value.plus(initial_value)
-              total.daily_change = total.daily_change.plus(daily_change)
-              total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
-            }
+      if (this.portfolios) {
+        return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+              if (current_value && initial_value && all_time_initial) {
+                total.current_value = total.current_value.plus(current_value)
+                total.initial_value = total.initial_value.plus(initial_value)
+                total.daily_change = total.daily_change.plus(daily_change)
+                total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
+              }
 
-            if (realized) {
-              total.realized = total.realized.plus(realized)
-              total.realized_initial = total.realized_initial.plus(realized_initial)
-            }
+              if (realized) {
+                total.realized = total.realized.plus(realized)
+                total.realized_initial = total.realized_initial.plus(realized_initial)
+              }
 
-            return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_value: new BigNumber(0),
-            initial_value: new BigNumber(0),
-            daily_change: new BigNumber(0),
-            all_time_initial: new BigNumber(0),
-            realized: new BigNumber(0),
-            realized_initial: new BigNumber(0)
-          })
+              return total
+            },
+            // This is the initial value, `total`, passed to reduce:
+            {
+              current_value: new BigNumber(0),
+              initial_value: new BigNumber(0),
+              daily_change: new BigNumber(0),
+              all_time_initial: new BigNumber(0),
+              realized: new BigNumber(0),
+              realized_initial: new BigNumber(0)
+            })
+      }
     },
 
     viewPortfolios() {
@@ -105,9 +113,12 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.portfolios = response.portfolios
+      this.portfoliosStore.$patch({
+        portfolios: response.portfolios
+      })
+
       if (response.portfolios[0]) {
-        this.store.$patch({
+        this.userStore.$patch({
           currency: response.portfolios[0].currency_symbol
         })
       }
@@ -124,8 +135,8 @@ export default defineComponent({
           date: this.currentDate()
         })
       })
-          .then(response => response.json())
-          .then(response => response.chartData)
+        .then(response => response.json())
+        .then(response => response.chartData)
 
       if (chartData.length === 0) {
         this.overviewChart = chartData

@@ -132,7 +132,7 @@ export default defineComponent({
           holdingId: this.holdingId
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}`))
+      this.$router.push(`/portfolios/${this.portfolioId}`)
     }
   }
 })
