@@ -90,15 +90,17 @@ export default defineComponent({
     },
 
     async updatePortfolio(): Promise<void> {
-      await fetch('/api/portfolio-update', {
+      const response = await fetch('/api/portfolio-update', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
         method: 'POST',
         body: JSON.stringify(this.portfolioDetails)
       })
-      // this.portfolioStoreUpdate()
-      this.$router.push(`/portfolios/${this.portfolioId}`)
+      if (response.status === 200) {
+        setTimeout(() => this.portfolioStoreUpdate(), 600)
+        this.$router.push(`/portfolios/${this.portfolioId}`)
+      }
     },
 
     closeModal(): void {
@@ -106,7 +108,7 @@ export default defineComponent({
     },
 
     async deletePortfolio(): Promise<void> {
-      await fetch('/api/portfolio-delete', {
+      const response = await fetch('/api/portfolio-delete', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -115,19 +117,28 @@ export default defineComponent({
           portfolioId: this.portfolioId
         })
       })
-      this.portfolioStoreDelete()
-      this.$router.push('/portfolios')
+      if (response.status === 200) {
+        setTimeout(() => this.portfolioStoreDelete(), 600)
+        this.$router.push('/portfolios')
+      }
     },
 
-    // portfolioStoreUpdate() {
-    //   this.portfoliosStore.$patch({
-    //     portfolios: this.portfoliosStore.portfolios.map(p => p.portfolio_id !== this.portfolio_id)
-    //   })
-    // },
+    portfolioStoreUpdate() {
+      console.log('here')
+      const updatedPortfolios = this.portfoliosStore.portfolios.map(p => {
+        if (p.portfolio_id === this.portfolioId) {
+          p.portfolio_name = this.portfolioDetails.name
+        }
+        return p
+      })
+      this.portfoliosStore.$patch({
+        portfolios: updatedPortfolios
+      })
+    },
 
     portfolioStoreDelete() {
       this.portfoliosStore.$patch({
-        portfolios: this.portfoliosStore.portfolios.filter(p => p.portfolio_id !== this.portfolio_id)
+        portfolios: this.portfoliosStore.portfolios.filter(p => p.portfolio_id !== this.portfolioId)
       })
     }
   }

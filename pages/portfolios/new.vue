@@ -8,7 +8,7 @@
       <div class="flex flex-col grow gap-y-6 text-sm">
         <div>
           <label for="name" class="flex items-end">Portfolio name<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-          <input @click="invalidName = false" v-model="portfolioDetails.name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
+          <input @click="invalidName = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
         </div>
         <div class="flex justify-between">
           <label for="included" class="flex items-center">Included in totals</label>
@@ -24,13 +24,16 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { v4 as uuidv4 } from 'uuid';
+import { usePortfolios } from "@/store/portfolios";
 
 export default defineComponent({
   name: "New Portfolio",
 
   async setup() {
     const token = await useState('authToken').value
-    return { token }
+    const portfoliosStore = usePortfolios()
+    return { token, portfoliosStore }
   },
 
   data() {
@@ -40,9 +43,12 @@ export default defineComponent({
         returnPath: '/portfolios'
       },
       invalidName: false,
-      portfolioDetails: {
+      portfolioDetails: { // Has extra info for adding to the current portfolios state
         userId: useState('uuid').value,
-        name: '',
+        portfolio_id: uuidv4(),
+        portfolio_name: '',
+        currency: 'AUD',
+        holding_count: 0,
         included: true
       }
     }
@@ -58,15 +64,24 @@ export default defineComponent({
 
     async createPortfolio(): Promise<void> {
       if (this.validateForm()) {
-        await fetch('/api/portfolio-create', {
+        const response = await fetch('/api/portfolio-create', {
           headers: {
             authorization: 'Bearer ' + this.token
           },
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)
         })
-          .then(this.$router.push("/portfolios"))
+        if (response.status === 200) {
+          setTimeout(() => this.portfolioStoreCreate(), 600)
+          this.$router.push('/portfolios')
+        }
       }
+    },
+
+    portfolioStoreCreate() {
+      this.portfoliosStore.$patch((state) => {
+        state.portfolios.push(this.portfolioDetails)
+      })
     }
   }
 })

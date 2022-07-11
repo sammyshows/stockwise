@@ -46,7 +46,7 @@ export default defineComponent({
   async mounted() {
     await this.getPortfolios()
     this.getOverviewChart()
-    setInterval(() => this.getPortfolios(), 5000)
+    setInterval(() => this.getPortfolios(), 50000)
   },
 
   data() {

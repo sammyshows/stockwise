@@ -34,6 +34,7 @@
     "nuxt": "npm:nuxt3@latest",
     "pinia": "^2.0.14",
     "postgres": "^3.0.2",
+    "uuid": "^8.3.2",
     "vue": "^3.2.31",
     "vue-session": "^1.0.0",
     "vue3-datepicker": "^0.3.3"

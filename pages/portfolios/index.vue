@@ -17,8 +17,8 @@
                   <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.holding_count }} HOLDINGS</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-xs">{{ $formatNumber(portfolio.current_value, 2, true, false) || '0' }}</p>
-                  <p class="text-tiny text-gray-300">{{ $formatNumber(portfolio.initial_value, 2, true, false) || '0' }}</p>
+                  <p class="h-5 text-xs">{{ $formatNumber(portfolio.current_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
+                  <p class="text-tiny text-gray-300">{{ $formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
                   <p class="h-5 text-xs">{{ $formatNumber(portfolio.daily_change, 2, false, true) || '-' }}</p>
@@ -45,16 +45,16 @@
           <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolios.length }} PORTFOLIOS</p>
         </div>
           <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
-          <p class="text-tiny text-gray-300">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.current_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
+          <p class="text-tiny text-gray-300">{{ $formatNumber(total.initial_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.daily_change, 2, false, true) || '-' }}</p>
+          <p class="text-tiny">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true)">%</span></p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
+          <p class="h-5 text-xs">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) || '-' }}</p>
+          <p class="text-tiny">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true)">%</span></p>
         </div>
       </div>
       <div v-if="total.realized.toNumber()">

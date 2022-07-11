@@ -40,7 +40,7 @@ export default defineNuxtPlugin(() => {
                 let numStr = null as (string | null)
 
                 // round and format to local format e.g. 1000.2312 = 1000.23 || 1000,23
-                if (parseFloat(numberString)) {
+                if (parseFloat(numberString) || numberString == '0') {
                     numStr = parseFloat(numberString).toLocaleString(
                         undefined,
                         {minimumFractionDigits: precision, maximumFractionDigits: precision})

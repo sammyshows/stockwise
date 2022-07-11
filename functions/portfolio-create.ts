@@ -7,8 +7,8 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        INSERT INTO portfolios (user_id, name, included) 
-        VALUES (${eventBody.userId}, ${eventBody.name}, ${eventBody.included})`
+        INSERT INTO portfolios (user_id, id, name, included) 
+        VALUES (${eventBody.userId}, ${eventBody.portfolio_id}, ${eventBody.portfolio_name}, ${eventBody.included})`
 
     return {
         statusCode: 200
