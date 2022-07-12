@@ -10,6 +10,7 @@
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
       <NuxtPage v-else-if="portfolios"
+                :show="viewPortfolios"
                 :overviewChart="overviewChart"
                 :total="total" />
     </div>

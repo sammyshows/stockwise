@@ -15,6 +15,7 @@
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <p v-if="responseReceived && holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
       <NuxtPage v-else-if="holdings && holdings.length > 0"
+                :show="viewHoldings"
                 :overviewChart="overviewChart"
                 :total="total" />
     </div>

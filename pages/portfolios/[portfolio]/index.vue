@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col grow overflow-hidden">
+  <div v-if="show" class="flex flex-col grow overflow-hidden">
     <div class="flex justify-end mb-2 px-3 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
@@ -85,7 +85,7 @@ export default defineComponent({
   },
 
   props: [
-    'total'
+    'show', 'total'
   ],
 
   methods: {
