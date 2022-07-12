@@ -47,7 +47,6 @@ export default defineComponent({
         userId: useState('uuid').value,
         portfolio_id: uuidv4(),
         portfolio_name: '',
-        currency: 'AUD',
         holding_count: 0,
         included: true
       }

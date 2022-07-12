@@ -13,8 +13,10 @@
         </div>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <p v-if="holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
-      <NuxtPage v-else-if="holdings" :holdings="holdings" :overviewChart="overviewChart" :total="total" />
+      <p v-if="responseReceived && holdings != null && holdings.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To start tracking an investment in this portfolio, use the "+" icon above to record a transaction</p>
+      <NuxtPage v-else-if="holdings && holdings.length > 0"
+                :overviewChart="overviewChart"
+                :total="total" />
     </div>
     <NuxtPage v-if="!viewHoldings" />
   </div>
@@ -25,13 +27,19 @@ import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import {BigNumber} from "bignumber.js";
+import { computed } from "@vue/reactivity";
+import { useHoldings } from "@/store/holdings";
+
 
 export default defineComponent({
   name: "Portfolio Holdings",
 
   async setup() {
+    const route = useRoute()
     const token = await useState('authToken').value
-    return { token }
+    const holdingsStore = useHoldings()
+    const holdings = computed(() => holdingsStore.getHoldings(route.params.portfolio))
+    return { token, holdingsStore, holdings }
   },
 
   components: {
@@ -67,35 +75,37 @@ export default defineComponent({
           { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/overview` }
         ]
       },
-      overviewChart: null as ([] | null),
-      holdings: null as ([] | null)
+      responseReceived: false, // used to indicate whether a response has been received yet from the API call to holdings-read
+      overviewChart: null as ([] | null)
     }
   },
 
   computed: {
     total: function() {
-      return this.holdings.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            total.current_value = total.current_value.plus(current_value)
-            total.initial_value = total.initial_value.plus(initial_value)
-            total.daily_change = total.daily_change.plus(daily_change)
-            total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
+      if (this.holdings) {
+        return this.holdings.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+              total.current_value = total.current_value.plus(current_value)
+              total.initial_value = total.initial_value.plus(initial_value)
+              total.daily_change = total.daily_change.plus(daily_change)
+              total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
 
-            if (realized) {
-              total.realized = total.realized.plus(realized)
-              total.realized_initial = total.realized_initial.plus(realized_initial)
-            }
+              if (realized) {
+                total.realized = total.realized.plus(realized)
+                total.realized_initial = total.realized_initial.plus(realized_initial)
+              }
 
-            return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_value: new BigNumber(0),
-            initial_value: new BigNumber(0),
-            daily_change: new BigNumber(0),
-            all_time_initial: new BigNumber(0),
-            realized: new BigNumber(0),
-            realized_initial: new BigNumber(0)
-          })
+              return total
+            },
+            // This is the initial value, `total`, passed to reduce:
+            {
+              current_value: new BigNumber(0),
+              initial_value: new BigNumber(0),
+              daily_change: new BigNumber(0),
+              all_time_initial: new BigNumber(0),
+              realized: new BigNumber(0),
+              realized_initial: new BigNumber(0)
+            })
+      }
     },
 
     viewHoldings() {
@@ -115,6 +125,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
+
       this.pageDetails.title = response.data[0].name
     },
 
@@ -129,7 +140,9 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.holdings = response.data
+
+      this.responseReceived = true
+      this.holdingsStore.replaceHoldings(this.portfolioId, response.data)
     },
 
     async getOverviewChart() {

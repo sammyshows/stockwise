@@ -1,6 +1,6 @@
 <template>
   <NuxtLayout name="page-container" activeButton="studies">
-    <div v-if="['/studies', '/studies/completed'].includes($route.path)" class="flex flex-col grow overflow-hidden">
+    <div v-if="viewStudies" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
         <NuxtLink :to="{ path: '/studies/new' }">
@@ -8,7 +8,9 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtPage :uncompletedStudies="uncompletedStudies" :completedStudies="completedStudies" />
+      <NuxtPage :show="viewStudies"
+                :uncompletedStudies="uncompletedStudies"
+                :completedStudies="completedStudies" />
     </div>
     <NuxtPage v-else/>
   </NuxtLayout>
@@ -33,6 +35,12 @@ export default defineComponent({
 
   mounted() {
     this.getStudies()
+  },
+
+  computed: {
+    viewStudies() {
+      return ['/studies', '/studies/completed'].includes(this.$route.path)
+    }
   },
 
   watch: {

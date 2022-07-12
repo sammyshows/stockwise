@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="overflow-hidden flex flex-col grow">
+  <div class="overflow-hidden flex flex-col grow">
     <div class="flex justify-end px-3 mb-2 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-20 text-right ml-2">VALUE/COST</p>
@@ -75,12 +75,11 @@ export default defineComponent({
   name: "Portfolios",
 
   async setup() {
-    const portfoliosStore = usePortfolios()
-    const { portfolios } = storeToRefs(portfoliosStore)
+    const { portfolios } = storeToRefs(usePortfolios())
     return { portfolios }
   },
 
-  props: ['show', 'total'],
+  props: ['total'],
 
   methods: {
     BigNumber

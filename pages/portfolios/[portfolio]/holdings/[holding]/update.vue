@@ -31,6 +31,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
+import { useHoldings } from "~/store/holdings";
+
 
 export default defineComponent({
   name: "Holdings",
@@ -38,7 +40,8 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { token, uuid }
+    const holdingsStore = useHoldings()
+    return { token, uuid, holdingsStore }
   },
 
   components: {
@@ -123,7 +126,7 @@ export default defineComponent({
     },
 
     async deleteHolding(): Promise<void> {
-      await fetch('/api/holding-delete', {
+      const response = await fetch('/api/holding-delete', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -132,7 +135,14 @@ export default defineComponent({
           holdingId: this.holdingId
         })
       })
-      this.$router.push(`/portfolios/${this.portfolioId}`)
+      if (response.status === 200) {
+        setTimeout(() => this.holdingStoreDelete(), 600)
+        this.$router.push(`/portfolios/${this.portfolioId}`)
+      }
+    },
+
+    holdingStoreDelete(): void {
+      this.holdingsStore.deleteHolding(this.holdingId)
     }
   }
 })

@@ -9,6 +9,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const holdings = await client`
         WITH cte AS (
             SELECT h.id AS holding_id,
+                   p.id AS portfolio_id,
                    a.current_price AS current_price,
                    t.quantity - COALESCE(SUM(s.quantity), 0) as current_quantity,
                    a.symbol AS symbol,
@@ -32,6 +33,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             ORDER BY h.created_at
         )
         SELECT cte.holding_id,
+               cte.portfolio_id,
                cte.current_price,
                SUM(cte.current_quantity) AS current_quantity,
                cte.symbol,
@@ -43,7 +45,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.realized_initial) AS realized_initial,
                SUM(cte.all_time_initial) AS all_time_initial
         FROM cte
-        GROUP BY cte.holding_id, cte.current_price, cte.symbol, cte.asset_name;`
+        GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name;`
 
     return {
         statusCode: 200,

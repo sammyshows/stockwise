@@ -7,5 +7,5 @@ export const usePortfolios = defineStore('portfolios', {
         return {
             portfolios: null as (Object[] | null)
         }
-    },
+    }
 })

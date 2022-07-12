@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden flex flex-col grow">
+  <div v-if="show" class="overflow-hidden flex flex-col grow">
     <div class="flex justify-end px-3 text-xs text-gray-400">
       <p class="grow">NAME</p>
       <p class="w-24 text-right ml-2">STUDY LEVEL</p>
@@ -34,6 +34,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "Studies",
 
-  props: ['uncompletedStudies']
+  props: ['show', 'uncompletedStudies']
 })
 </script>

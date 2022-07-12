@@ -124,7 +124,6 @@ export default defineComponent({
     },
 
     portfolioStoreUpdate() {
-      console.log('here')
       const updatedPortfolios = this.portfoliosStore.portfolios.map(p => {
         if (p.portfolio_id === this.portfolioId) {
           p.portfolio_name = this.portfolioDetails.name
