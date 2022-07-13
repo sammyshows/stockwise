@@ -85,6 +85,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { v4 as uuidv4 } from 'uuid';
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
   name: "New Study",
@@ -92,7 +94,8 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { token, uuid }
+    const studyStore = useStudies()
+    return { token, uuid, studyStore }
   },
 
   mounted() {
@@ -111,6 +114,7 @@ export default defineComponent({
       quote: null as ({} | null),
       name: null as (string | null),
       symbol: null as (string | null),
+      studyId: uuidv4(),
       studyType: 0
     }
   },
@@ -156,7 +160,7 @@ export default defineComponent({
     },
 
     async addStudy(): Promise<void> {
-      await fetch('/api/study-create', {
+      const response = await fetch('/api/study-create', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -165,17 +169,37 @@ export default defineComponent({
           token: this.token,
           manualEntry: this.manualForm,
           uuid: this.uuid,
+          studyId: this.studyId,
           name: this.manualForm ? this.name : null,
           symbol: this.manualForm ? this.symbol : this.quote.symbol,
           type: this.studyType
         })
       })
-        .then(response => response.json())
-        .then(data => this.$router.push({name: 'studies-study',
-          params: {
-            study: data.studyId
-          }
-        }))
+      if (response.status === 200) {
+        this.studyStoreCreate()
+        this.$router.push({ name: 'studies-study', params: {study: this.studyId }})
+      }
+    },
+
+    studyStoreCreate() {
+      this.studyStore.$patch((state) => {
+        state.studies.push({
+          completed_qs: 0,
+          name: this.manualForm ? this.name : null,
+          notes: null,
+          question_eight: null,
+          question_five: null,
+          question_four: null,
+          question_one: null,
+          question_seven: null,
+          question_six: null,
+          question_three: null,
+          question_two: null,
+          study_id: this.studyId,
+          symbol: this.manualForm ? this.symbol : this.quote.symbol,
+          type: this.studyType
+        })
+      })
     }
   }
 })

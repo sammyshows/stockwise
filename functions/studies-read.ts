@@ -7,12 +7,21 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     const studies = await client`
-        SELECT name,
+        SELECT id AS study_id,
+               name,
                symbol,
-               studies.id,
                type,
+               notes,
                completed_qs,
-               TO_CHAR(studies.updated_at, 'MM/DD/YYYY') AS updated_date
+               TO_CHAR(studies.updated_at, 'MM/DD/YYYY') AS updated_date,
+               question_one,
+               question_two,
+               question_three,
+               question_four,
+               question_five,
+               question_six,
+               question_seven,
+               question_eight
         FROM studies
         WHERE user_id = ${eventBody.uuid}
         ORDER BY studies.updated_at DESC;

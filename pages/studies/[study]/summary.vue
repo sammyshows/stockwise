@@ -44,7 +44,7 @@
         <textarea v-model="notes" rows="5" name="comment" id="comment" class="bg-transparent block w-full py-1 border border-gray-400 rounded-md focus:border-gray-300 resize-none focus:ring-0 text-xs" placeholder="Add notes..." />
 
         <!-- Spacer element to match the height of the toolbar -->
-        <div v-if="study?.notes != notes" class="py-1" aria-hidden="true">
+        <div v-if="studyDetails.notes != notes" class="py-1" aria-hidden="true">
           <!-- Matches height of button in toolbar (1px border + 36px content height) -->
           <div class="py-px">
             <div class="h-9" />
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <div v-if="study?.notes != notes" class="absolute bottom-0 right-0 pl-3 pr-2 py-2 flex justify-between">
+      <div v-if="studyDetails.notes != notes" class="absolute bottom-0 right-0 pl-3 pr-2 py-2 flex justify-between">
         <div class="flex-shrink-0">
           <button @click="updateNotes" class="px-4 h-8 rounded-lg border border-gray-400 border bg-white/10 text-sm">SAVE</button>
         </div>
@@ -70,13 +70,18 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { TrashIcon, LightBulbIcon, PencilAltIcon } from "@heroicons/vue/outline";
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
-  name: "Portfolio Overview",
+  name: "Study Summary",
 
   async setup() {
+    const route = useRoute()
+    const studyStore = useStudies()
+    const storeStudy = studyStore.getStudy(route.params.study)
     const token = await useState('authToken').value
-    return { token }
+
+    return { studyStore, storeStudy, token }
   },
 
   components: {
@@ -95,8 +100,23 @@ export default defineComponent({
         subtitle: 'STUDIES'
       },
       studyId: this.$route.params.study,
-      study: null as ({} | null),
-      notes: null as (string | null),
+      studyDetails: {
+        name: this.storeStudy?.name,
+        type: this.storeStudy?.type,
+        notes: this.storeStudy?.notes,
+        updatedDate: this.storeStudy?.updated_date
+      },
+      study: {
+        question_one: this.storeStudy?.question_one,
+        question_two: this.storeStudy?.question_two,
+        question_three: this.storeStudy?.question_three,
+        question_four: this.storeStudy?.question_four,
+        question_five: this.storeStudy?.question_five,
+        question_six: this.storeStudy?.question_six,
+        question_seven: this.storeStudy?.question_seven,
+        question_eight: this.storeStudy?.question_eight
+      },
+      notes: this.storeStudy?.notes,
       questions: [
         {
           question: 'question_one',
@@ -131,7 +151,7 @@ export default defineComponent({
           title: 'Owner Earnings'
         }
       ],
-      openModal: false
+      openModal: false,
     }
   },
 
@@ -147,21 +167,38 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.study = response.data
-      this.pageDetails.title = response.data.name
-      this.notes = response.data.notes
+        .then(response => response.data)
+
+      this.study = {
+        question_one: response.question_one,
+        question_two: response.question_two,
+        question_three: response.question_three,
+        question_four: response.question_four,
+        question_five: response.question_five,
+        question_six: response.question_six,
+        question_seven: response.question_seven,
+        question_eight: response.question_eight
+      }
+      this.studyDetails = {
+        name: response.name,
+        type: response.type,
+        notes: response.notes,
+        updatedDate: response.updatedDate
+      }
+      this.pageDetails.title = response.name
+      this.notes = response.notes
     },
 
     async updateNotes() {
-      this.study.notes = this.notes
-      await fetch('/api/study-update', {
+      this.studyDetails.notes = this.notes
+      const response = await fetch('/api/study-update', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
         method: 'POST',
         body: JSON.stringify({
           studyId: this.studyId,
-          notes: this.notes,
+          notes: this.studyDetails.notes,
           question_one: this.study.question_one,
           question_two: this.study.question_two,
           question_three: this.study.question_three,
@@ -173,6 +210,9 @@ export default defineComponent({
         })
       })
 
+      if (response.status === 200) {
+        this.studyStoreUpdate()
+      }
     },
 
     closeModal(): void {
@@ -180,7 +220,7 @@ export default defineComponent({
     },
 
     async deleteStudy(): Promise<void> {
-      await fetch('/api/study-delete', {
+      const response = await fetch('/api/study-delete', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -189,7 +229,27 @@ export default defineComponent({
           studyId: this.studyId
         })
       })
-        .then(this.$router.push('/studies/completed'))
+
+      if (response.status === 200) {
+        setTimeout(() => this.studyStoreDelete(), 600)
+        this.$router.push('/studies/completed')
+      }
+    },
+
+    studyStoreUpdate() {
+      const updatedStudies = this.studyStore.studies.map(s => {
+        if (s.study_id === this.studyId) {
+          s.notes = this.notes
+        }
+        return s
+      })
+      this.studyStore.$patch({
+        studies: updatedStudies
+      })
+    },
+
+    studyStoreDelete() {
+      this.studyStore.deleteStudy(this.studyId)
     }
   }
 })

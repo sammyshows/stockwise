@@ -98,7 +98,7 @@ export default defineComponent({
         body: JSON.stringify(this.portfolioDetails)
       })
       if (response.status === 200) {
-        setTimeout(() => this.portfolioStoreUpdate(), 600)
+        this.portfolioStoreUpdate()
         this.$router.push(`/portfolios/${this.portfolioId}`)
       }
     },

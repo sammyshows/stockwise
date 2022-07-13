@@ -106,7 +106,6 @@ export default defineComponent({
 
   data() {
     return {
-      loaded: false,
       holdingId: this.$route.params.holding,
       portfolioId: this.$route.params.portfolio,
       openModal: false,
@@ -163,7 +162,6 @@ export default defineComponent({
         .then(response => response.json())
         .then(response => response.data[0])
 
-      this.loaded = true
       this.pageDetails.symbol = response.symbol
       this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name

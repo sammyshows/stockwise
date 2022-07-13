@@ -10,19 +10,17 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     if (eventBody.manualEntry) {
         // If it's a manual entry
-        studyId = await client`
-            INSERT INTO studies (user_id, name, symbol, type)
-            VALUES (${eventBody.uuid}, ${eventBody.name}, ${eventBody.symbol}, ${eventBody.type})
-            RETURNING id;`
+        await client`
+            INSERT INTO studies (id, user_id, name, symbol, type)
+            VALUES (${eventBody.studyId}, ${eventBody.uuid}, ${eventBody.name}, ${eventBody.symbol}, ${eventBody.type});`
     } else {
         // If the asset is available via IEX and exists in the database
         try {
-            studyId = await client`
-                INSERT INTO studies (user_id, asset_id, name, symbol, type) 
-                SELECT ${eventBody.uuid}, id, name, symbol, ${eventBody.type}
+            await client`
+                INSERT INTO studies (id, user_id, asset_id, name, symbol, type) 
+                SELECT ${eventBody.studyId}, ${eventBody.uuid}, id, name, symbol, ${eventBody.type}
                 FROM assets
-                WHERE assets.symbol = ${eventBody.symbol}
-                RETURNING id;`
+                WHERE assets.symbol = ${eventBody.symbol};`
             if (!studyId[0])
                 throw 'Asset not found'
         } catch (err) {
@@ -39,18 +37,14 @@ const handler: Handler = requireAuth(async (event, context) => {
             })
                 .then(response => response.json())
 
-            studyId = await client`
-            INSERT INTO studies (user_id, asset_id, name, symbol, type)
-            VALUES (${eventBody.uuid}, ${asset['data'].id}, ${asset['data'].name}, ${asset['data'].symbol}, ${eventBody.type})
-            RETURNING id;`
+            await client`
+                INSERT INTO studies (id, user_id, asset_id, name, symbol, type)
+                VALUES (${eventBody.studyId}, ${eventBody.uuid}, ${asset['data'].id}, ${asset['data'].name}, ${asset['data'].symbol}, ${eventBody.type});`
         }
     }
 
     return {
-        statusCode: 200,
-        body: JSON.stringify({
-            studyId: studyId[0].id
-        })
+        statusCode: 200
     }
 })
 

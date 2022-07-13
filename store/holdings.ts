@@ -21,8 +21,6 @@ export const useHoldings = defineStore('holdings', {
                     return null
             }
         }
-
-
     },
 
     actions: {

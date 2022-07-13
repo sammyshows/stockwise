@@ -8,7 +8,7 @@
         <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-          <p v-if="study" class="absolute right-2.5 bottom-1">{{ study.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+          <p v-if="study" class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
         </div>
       </div>
     </div>
@@ -30,13 +30,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
-  name: "Portfolio Overview",
+  name: "Study Questions",
 
   async setup() {
+    const studyStore = useStudies()
     const token = await useState('authToken').value
-    return { token }
+    return { studyStore, token }
   },
 
   components: {
@@ -60,6 +62,7 @@ export default defineComponent({
       },
       studyId: this.$route.params.study,
       study: null as ({} | null),
+      studyDetails: null as ({} | null),
       currentQuestion: this.$route.params.currentQuestion,
       moreInfo: [
         {
@@ -135,9 +138,25 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.study = response.data
-      this.pageDetails.title = response.data.name
-      this.currentQuestion = response.data.completed_qs + 1
+        .then(response => response.data)
+
+      this.study = {
+        question_one: response.question_one,
+        question_two: response.question_two,
+        question_three: response.question_three,
+        question_four: response.question_four,
+        question_five: response.question_five,
+        question_six: response.question_six,
+        question_seven: response.question_seven,
+        question_eight: response.question_eight
+      }
+      this.studyDetails = {
+        name: response.name,
+        type: response.type,
+        updatedDate: response.updatedDate
+      }
+      this.pageDetails.title = response.name
+      this.currentQuestion = response.completed_qs + 1
     },
 
     updateValue(question, newValue) {
@@ -157,14 +176,14 @@ export default defineComponent({
       await this.$router.push({ name: 'studies-study-summary',
         params: {
           studyId: this.studyId,
-          assetName: this.study.name,
-          updatedDate: this.study.updated_date
+          assetName: this.studyDetails.name,
+          updatedDate: this.studyDetails.updatedDate
         }
       })
     },
 
     async updateStudy(): Promise<void> {
-      await fetch('/api/study-update', {
+      const response = await fetch('/api/study-update', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -181,6 +200,10 @@ export default defineComponent({
           question_eight: this.study.question_eight,
         })
       })
+
+      if (response.status === 200) {
+        this.studyStoreUpdate()
+      }
     },
 
     closeModal(): void {
@@ -188,7 +211,7 @@ export default defineComponent({
     },
 
     async deleteStudy(): Promise<void> {
-      await fetch('/api/study-delete', {
+      const response = await fetch('/api/study-delete', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -197,7 +220,31 @@ export default defineComponent({
           studyId: this.studyId
         })
       })
-        .then(this.$router.push('/studies'))
+
+      if (response.status === 200) {
+        setTimeout(() => this.studyStoreDelete(), 600)
+        this.$router.push('/studies')
+      }
+    },
+
+    studyStoreUpdate() {
+      let completedQs = Object.values(this.study).indexOf(null)
+      if (completedQs === -1)
+        completedQs = 8
+
+      const updatedStudies = this.studyStore.studies.map(s => {
+        if (s.study_id === this.studyId) {
+          s.completed_qs = completedQs
+        }
+        return s
+      })
+      this.studyStore.$patch({
+        studies: updatedStudies
+      })
+    },
+
+    studyStoreDelete() {
+      this.studyStore.deleteStudy(this.studyId)
     }
   }
 })

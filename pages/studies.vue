@@ -8,9 +8,7 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtPage :show="viewStudies"
-                :uncompletedStudies="uncompletedStudies"
-                :completedStudies="completedStudies" />
+      <NuxtPage :show="viewStudies" />
     </div>
     <NuxtPage v-else/>
   </NuxtLayout>
@@ -19,14 +17,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
+    const studyStore = useStudies()
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { token, uuid }
+    return { studyStore, token, uuid }
   },
 
   components: {
@@ -61,9 +61,7 @@ export default defineComponent({
           { name: 'IN PROGRESS', path: `/studies` },
           { name: 'COMPLETED', path: `/studies/completed` }
         ]
-      },
-      uncompletedStudies: [],
-      completedStudies: []
+      }
     }
   },
 
@@ -79,8 +77,10 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.uncompletedStudies = response.data.filter(study => study.completed_qs < 8)
-      this.completedStudies = response.data.filter(study => study.completed_qs === 8)
+
+      this.studyStore.$patch({
+        studies: response.data
+      })
     },
 
     setActiveTab(newTab) {
