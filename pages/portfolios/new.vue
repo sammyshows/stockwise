@@ -32,8 +32,8 @@ export default defineComponent({
 
   async setup() {
     const token = await useState('authToken').value
-    const portfoliosStore = usePortfolios()
-    return { token, portfoliosStore }
+    const portfolioStore = usePortfolios()
+    return { token, portfolioStore }
   },
 
   data() {
@@ -78,7 +78,7 @@ export default defineComponent({
     },
 
     portfolioStoreCreate() {
-      this.portfoliosStore.$patch((state) => {
+      this.portfolioStore.$patch((state) => {
         state.portfolios.push(this.portfolioDetails)
       })
     }

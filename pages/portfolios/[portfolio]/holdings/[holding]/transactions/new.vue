@@ -82,7 +82,7 @@ export default defineComponent({
       holdingId: this.$route.params.holding,
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
-        showLogo: false,
+        showLogo: this.$route.params.showLogo,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`

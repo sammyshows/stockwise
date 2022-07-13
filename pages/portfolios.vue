@@ -32,11 +32,11 @@ export default defineComponent({
 
   async setup() {
     const userStore = useUser()
-    const portfoliosStore = usePortfolios()
-    const { portfolios } = storeToRefs(portfoliosStore)
+    const portfolioStore = usePortfolios()
+    const { portfolios } = storeToRefs(portfolioStore)
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { userStore, portfoliosStore, portfolios, token, uuid }
+    return { userStore, portfolioStore, portfolios, token, uuid }
   },
 
   components: {
@@ -113,7 +113,7 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.portfoliosStore.$patch({
+      this.portfolioStore.$patch({
         portfolios: response.portfolios
       })
 

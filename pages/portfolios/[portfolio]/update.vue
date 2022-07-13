@@ -39,9 +39,9 @@ export default defineComponent({
   name: "Edit Portfolio",
 
   async setup() {
-    const portfoliosStore = usePortfolios()
+    const portfolioStore = usePortfolios()
     const token = await useState('authToken').value
-    return { portfoliosStore, token }
+    return { portfolioStore, token }
   },
 
   components: {
@@ -124,20 +124,20 @@ export default defineComponent({
     },
 
     portfolioStoreUpdate() {
-      const updatedPortfolios = this.portfoliosStore.portfolios.map(p => {
+      const updatedPortfolios = this.portfolioStore.portfolios.map(p => {
         if (p.portfolio_id === this.portfolioId) {
           p.portfolio_name = this.portfolioDetails.name
         }
         return p
       })
-      this.portfoliosStore.$patch({
+      this.portfolioStore.$patch({
         portfolios: updatedPortfolios
       })
     },
 
     portfolioStoreDelete() {
-      this.portfoliosStore.$patch({
-        portfolios: this.portfoliosStore.portfolios.filter(p => p.portfolio_id !== this.portfolioId)
+      this.portfolioStore.$patch({
+        portfolios: this.portfolioStore.portfolios.filter(p => p.portfolio_id !== this.portfolioId)
       })
     }
   }

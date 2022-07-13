@@ -57,6 +57,7 @@
         </div>
       </div>
     </div>
+    <Spinner v-else class="h-20" />
     <DeleteConfirmation :open="openModal"
                         title="Delete Transaction"
                         message="Are you sure you want to delete this holding? This transaction within it will be deleted from our servers. This action cannot be undone."
@@ -69,13 +70,15 @@
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { BigNumber } from "bignumber.js";
+import { useTransactions } from "@/store/transactions";
 
 export default defineComponent({
   name: "Portfolio Holdings",
 
   async setup() {
     const token = await useState('authToken').value
-    return { token }
+    const transactionStore = useTransactions()
+    return { token, transactionStore }
   },
 
   components: {
@@ -102,7 +105,7 @@ export default defineComponent({
       openModal: false,
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
-        showLogo: false,
+        showLogo: this.$route.params.showLogo,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
@@ -209,7 +212,7 @@ export default defineComponent({
     },
 
     async deleteTransaction(): Promise<void> {
-      await fetch('/api/transaction-delete', {
+      const response = await fetch('/api/transaction-delete', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -220,7 +223,15 @@ export default defineComponent({
           holdingId: this.holdingId
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+
+      if (response.status === 200) {
+        setTimeout(() => this.transactionStoreDelete(), 600)
+        this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
+      }
+    },
+
+    transactionStoreDelete(): void {
+      this.transactionStore.deleteTransaction(this.transaction.id)
     },
 
     setDateTime(dateString): void {

@@ -4,10 +4,10 @@
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle } }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle } }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -22,7 +22,15 @@
         </div>
         <Spinner class="h-20" v-else />
       </div>
-      <NuxtPage v-if="transactions" :transactions="transactions" :total="total" :assetData="assetData" :overviewChart="overviewChart" :assetChartDay="assetChartDay" :assetChartMax="assetChartMax" :quote="quote" :stats="stats" />
+      <NuxtPage v-if="transactions"
+                :show="viewTransactions"
+                :total="total"
+                :assetData="assetData"
+                :overviewChart="overviewChart"
+                :assetChartDay="assetChartDay"
+                :assetChartMax="assetChartMax"
+                :quote="quote"
+                :stats="stats" />
     </div>
     <NuxtPage v-if="!viewTransactions" class="flex flex-col grow"/>
   </div>
@@ -33,6 +41,8 @@ import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js"
+import { computed } from "@vue/reactivity";
+import { useTransactions } from "@/store/transactions";
 
 interface StringObject {
   [index: string]: string;
@@ -42,8 +52,11 @@ export default defineComponent({
   name: "Portfolio Holdings",
 
   async setup() {
+    const route = useRoute()
     const token = await useState('authToken').value
-    return { token }
+    const transactionStore = useTransactions()
+    const transactions = computed(() => transactionStore.getTransactions(route.params.holding))
+    return { token, transactionStore, transactions }
   },
 
   components: {
@@ -75,7 +88,7 @@ export default defineComponent({
       symbol: '',
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
-        showLogo: false,
+        showLogo: this.$route.params.showLogo,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
@@ -100,32 +113,34 @@ export default defineComponent({
 
   computed: {
     total: function() {
-      return this.transactions.reduce((total, { type, current_quantity, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-            if (type === 0) {
-              total.current_quantity = total.current_quantity.plus(current_quantity)
-              total.current_value = total.current_value.plus(current_value)
-              total.initial_value = total.initial_value.plus(initial_value)
-              total.daily_change = total.daily_change.plus(daily_change)
-              total.all_time_initial = total.all_time_initial.plus(all_time_initial)
-            }
+      if (this.transactions) {
+        return this.transactions.reduce((total, { type, current_quantity, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+              if (type === 0) {
+                total.current_quantity = total.current_quantity.plus(current_quantity)
+                total.current_value = total.current_value.plus(current_value)
+                total.initial_value = total.initial_value.plus(initial_value)
+                total.daily_change = total.daily_change.plus(daily_change)
+                total.all_time_initial = total.all_time_initial.plus(all_time_initial)
+              }
 
-            if (realized) {
-              total.realized = total.realized.plus(realized)
-              total.realized_initial = total.realized_initial.plus(realized_initial)
-            }
+              if (realized) {
+                total.realized = total.realized.plus(realized)
+                total.realized_initial = total.realized_initial.plus(realized_initial)
+              }
 
-            return total
-          },
-          // This is the initial value, `total`, passed to reduce:
-          {
-            current_quantity: new BigNumber(0),
-            current_value: new BigNumber(0),
-            initial_value: new BigNumber(0),
-            daily_change: new BigNumber(0),
-            all_time_initial: new BigNumber(0),
-            realized: new BigNumber(0),
-            realized_initial: new BigNumber(0)
-          })
+              return total
+            },
+            // This is the initial value, `total`, passed to reduce:
+            {
+              current_quantity: new BigNumber(0),
+              current_value: new BigNumber(0),
+              initial_value: new BigNumber(0),
+              daily_change: new BigNumber(0),
+              all_time_initial: new BigNumber(0),
+              realized: new BigNumber(0),
+              realized_initial: new BigNumber(0)
+            })
+      }
     },
 
     viewTransactions() {
@@ -145,7 +160,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.transactions = response.transactions
+      this.transactionStore.replaceTransactions(this.holdingId, response.transactions)
       this.assetData = response.assetData
       this.assetId = response.assetData.id
       this.symbol = response.assetData.symbol

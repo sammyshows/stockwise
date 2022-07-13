@@ -225,10 +225,11 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_id uuid) RETURNS TABLE (id uuid, type INT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, type INT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
+               h.id,
                t.type,
                t.quantity,
                COALESCE(t.quantity - SUM(s.quantity), t.quantity),
@@ -250,7 +251,7 @@ BEGIN
                  INNER JOIN assets AS user_c ON u.currency_id = user_c.id
                  LEFT JOIN sells AS s ON t.id = s.transaction_id
         WHERE h.id = $1
-        GROUP BY t.id, a.id, s.transaction_id, asset_c.id, user_c.id
+        GROUP BY t.id, h.id, a.id, s.transaction_id, asset_c.id, user_c.id
         ORDER BY MIN(t.timestamp) DESC;
 END;
 $$;

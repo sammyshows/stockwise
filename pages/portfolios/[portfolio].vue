@@ -38,9 +38,9 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const token = await useState('authToken').value
-    const holdingsStore = useHoldings()
-    const holdings = computed(() => holdingsStore.getHoldings(route.params.portfolio))
-    return { token, holdingsStore, holdings }
+    const holdingStore = useHoldings()
+    const holdings = computed(() => holdingStore.getHoldings(route.params.portfolio))
+    return { token, holdingStore, holdings }
   },
 
   components: {
@@ -143,7 +143,7 @@ export default defineComponent({
         .then(response => response.json())
 
       this.responseReceived = true
-      this.holdingsStore.replaceHoldings(this.portfolioId, response.data)
+      this.holdingStore.replaceHoldings(this.portfolioId, response.data)
     },
 
     async getOverviewChart() {

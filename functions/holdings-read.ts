@@ -14,6 +14,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                    t.quantity - COALESCE(SUM(s.quantity), 0) as current_quantity,
                    a.symbol AS symbol,
                    a.name AS asset_name,
+                   a.type AS asset_type,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
                    a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
                    (a.current_price - a.prev_close) * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS daily_change,
@@ -38,6 +39,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.current_quantity) AS current_quantity,
                cte.symbol,
                cte.asset_name,
+               cte.asset_type,
                SUM(cte.initial_value) as initial_value,
                SUM(cte.current_value) AS current_value,
                SUM(cte.daily_change) AS daily_change,
@@ -45,7 +47,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.realized_initial) AS realized_initial,
                SUM(cte.all_time_initial) AS all_time_initial
         FROM cte
-        GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name;`
+        GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name, cte.asset_type;`
 
     return {
         statusCode: 200,

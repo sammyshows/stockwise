@@ -9,7 +9,7 @@
     <div v-if="holdings" class="grow overflow-scroll px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="holding in holdings" :key="holding.holding_id">
-          <NuxtLink :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id, assetSymbol: holding.symbol, assetName: holding.asset_name } }">
+          <NuxtLink :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id, assetSymbol: holding.symbol, assetName: holding.asset_name, showLogo: holding.asset_type === 0 } }">
             <div class="mb-3">
               <div class="flex justify-end">
                 <div class="grow">
@@ -81,6 +81,7 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const holdings = computed(() => useHoldings().getHoldings(route.params.portfolio))
+    console.log(holdings)
     return { holdings }
   },
 

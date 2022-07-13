@@ -11,7 +11,7 @@
           <div>
             <label for="type" class="flex items-end">Portfolio<span></span></label>
             <select v-model="selectedPortfolio" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
-              <option v-for="portfolio in portfolios" :value="portfolio.id" :selected="portfolio.id === selectedPortfolio">{{ portfolio.name }}</option>
+              <option v-for="portfolio in portfolios" :value="portfolio.portfolio_id" :selected="portfolio.portfolio_id === selectedPortfolio">{{ portfolio.portfolio_name }}</option>
             </select>
           </div>
         </div>
@@ -40,8 +40,8 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    const holdingsStore = useHoldings()
-    return { token, uuid, holdingsStore }
+    const holdingStore = useHoldings()
+    return { token, uuid, holdingStore }
   },
 
   components: {
@@ -62,7 +62,7 @@ export default defineComponent({
       holdingId: this.$route.params.holding,
       pageDetails: {
         symbol: this.$route.params.assetSymbol,
-        showLogo: false,
+        showLogo: this.$route.params.showLogo,
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
@@ -142,7 +142,7 @@ export default defineComponent({
     },
 
     holdingStoreDelete(): void {
-      this.holdingsStore.deleteHolding(this.holdingId)
+      this.holdingStore.deleteHolding(this.holdingId)
     }
   }
 })
