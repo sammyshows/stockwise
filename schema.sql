@@ -225,12 +225,15 @@ CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR 
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, type INT, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, type INT, sell_method INT, exchange_rate NUMERIC, datetime timestamptz,  initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
                h.id,
                t.type,
+               t.sell_method,
+               t.exchange_rate,
+               t.timestamp,
                t.quantity,
                COALESCE(t.quantity - SUM(s.quantity), t.quantity),
                t.initial_price,

@@ -81,7 +81,6 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const holdings = computed(() => useHoldings().getHoldings(route.params.portfolio))
-    console.log(holdings)
     return { holdings }
   },
 

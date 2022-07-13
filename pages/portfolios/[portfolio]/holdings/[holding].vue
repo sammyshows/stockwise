@@ -32,7 +32,7 @@
                 :quote="quote"
                 :stats="stats" />
     </div>
-    <NuxtPage v-if="!viewTransactions" class="flex flex-col grow"/>
+    <NuxtPage v-if="!viewTransactions" :assetData="assetData" class="flex flex-col grow"/>
   </div>
 </template>
 

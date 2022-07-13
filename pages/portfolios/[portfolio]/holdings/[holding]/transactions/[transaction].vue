@@ -4,7 +4,7 @@
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" />
     </div>
-    <div v-if="loaded" class="flex flex-col grow px-8">
+    <div v-if="assetData" class="flex flex-col grow px-8">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-xs">
           <TransitionGroup tag="div" name="form">
@@ -26,7 +26,7 @@
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
               <input @click="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="4" v-if="assetType === 0" class="mb-2">
+            <div :key="4" v-if="assetData.type === 0" class="mb-2">
               <label for="exchangeRate">Exchange rate (optional)</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
               <input @click="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
@@ -57,7 +57,6 @@
         </div>
       </div>
     </div>
-    <Spinner v-else class="h-20" />
     <DeleteConfirmation :open="openModal"
                         title="Delete Transaction"
                         message="Are you sure you want to delete this holding? This transaction within it will be deleted from our servers. This action cannot be undone."
@@ -72,14 +71,21 @@ import { TrashIcon } from "@heroicons/vue/outline";
 import { BigNumber } from "bignumber.js";
 import { useTransactions } from "@/store/transactions";
 
+
 export default defineComponent({
   name: "Portfolio Holdings",
 
   async setup() {
+    const route = useRoute()
     const token = await useState('authToken').value
     const transactionStore = useTransactions()
-    return { token, transactionStore }
+    const storeTransaction = transactionStore.getTransaction(route.params.transaction)
+    return { token, transactionStore, storeTransaction }
   },
+
+  props: [
+      'assetData'
+  ],
 
   components: {
     TrashIcon
@@ -88,6 +94,7 @@ export default defineComponent({
   mounted() {
     this.getTransaction()
     this.getHolding()
+    this.setDateTime(this.storeTransaction?.datetime)
   },
 
   watch: {
@@ -110,7 +117,6 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
-      assetType: null as (number | null),
       holdingQuantity: null as (null | number),
       storedTxQuantity: null as (null | number), // This is used when checking if the quantity entered by user is valid
       invalid: {
@@ -121,11 +127,11 @@ export default defineComponent({
       },
       transaction: {
         id: this.$route.params.transaction,
-        type: null as (number | null),
-        sellMethod: null as (number | null),
-        quantity: null as (number | null),
-        initialPrice: null as (number | null),
-        exchangeRate: null as (number | null),
+        type: this.storeTransaction?.type,
+        sellMethod: this.storeTransaction?.sell_method,
+        quantity: this.storeTransaction?.initial_quantity,
+        initialPrice: this.storeTransaction?.price,
+        exchangeRate: this.storeTransaction?.exchange_rate,
         date: null as (string | null),
         time: null as (string | null)
       }
@@ -165,7 +171,6 @@ export default defineComponent({
         this.pageDetails.showLogo = true
       }
       this.setDateTime(response.timestamp)
-      this.assetType = response.asset_type
       this.transaction.type = response.type
       this.transaction.sellMethod = response.sell_method
       this.storedTxQuantity = Math.abs(response.quantity)

@@ -69,7 +69,7 @@
 import { defineComponent } from "vue";
 import BigNumber from "bignumber.js";
 import { usePortfolios } from "@/store/portfolios";
-import {storeToRefs} from "pinia";
+import { storeToRefs } from "pinia";
 
 export default defineComponent({
   name: "Portfolios",

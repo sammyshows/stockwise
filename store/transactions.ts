@@ -18,9 +18,19 @@ export const useTransactions = defineStore('transactions', {
                 else
                     return null
             }
+        },
+
+        getTransaction: (state) => {
+            type Transaction = { // This just satisfies the editor when picking the transaction.portfolio_id below
+                [key: string]: any
+            }
+            return (transactionId) => {
+                if (state.transactions)
+                    return state.transactions.find((t: Transaction) => t.transaction_id === transactionId)
+                else
+                    return null
+            }
         }
-
-
     },
 
     actions: {
