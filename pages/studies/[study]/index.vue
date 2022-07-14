@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between min-h-min px-3 grow">
+  <div v-if="storeStudy" class="flex flex-col justify-between min-h-min px-3 grow">
     <div class="min-h-min flex justify-between pr-2">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
 
@@ -13,7 +13,9 @@
       </div>
     </div>
 
-    <QuestionsStandard v-if="study" :currentValue="study[moreInfo[currentQuestion - 1].question]" :moreInfo="moreInfo[currentQuestion - 1]"
+    <QuestionsStandard v-if="storeStudy"
+                       :currentValue="study[moreInfo[currentQuestion - 1]?.question]"
+                       :moreInfo="moreInfo[currentQuestion - 1]"
                        @updateValue="updateValue"
                        @prevPage="prevPage"
                        @nextPage="nextPage"
@@ -31,6 +33,8 @@
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { useStudies } from "@/store/studies";
+import { computed } from "@vue/reactivity";
+
 
 export default defineComponent({
   name: "Study Questions",
@@ -38,7 +42,7 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const studyStore = useStudies()
-    const storeStudy = studyStore.getStudy(route.params.study)
+    const storeStudy = computed(() => studyStore.getStudy(route.params.study))
     const token = await useState('authToken').value
     return { studyStore, storeStudy, token }
   },
@@ -66,7 +70,16 @@ export default defineComponent({
       studyDetails: {
         type: this.storeStudy?.type
       },
-      study: null as ({} | null),
+      study: {
+        question_one: this.storeStudy?.question_one,
+        question_two: this.storeStudy?.question_two,
+        question_three: this.storeStudy?.question_three,
+        question_four: this.storeStudy?.question_four,
+        question_five: this.storeStudy?.question_five,
+        question_six: this.storeStudy?.question_six,
+        question_seven: this.storeStudy?.question_seven,
+        question_eight: this.storeStudy?.question_eight
+      },
       currentQuestion: this.storeStudy?.completed_qs + 1,
       moreInfo: [
         {

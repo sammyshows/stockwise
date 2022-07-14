@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex grow">
+  <div v-if="moreInfo" class="relative flex grow">
     <Transition name="question">
       <div v-if="!showMoreInfo" class="absolute flex flex-col grow w-full h-full px-3">
         <div v-html="moreInfo.title" class="h-1/2 flex items-end pb-8 text-2xl">
