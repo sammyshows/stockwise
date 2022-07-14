@@ -82,7 +82,7 @@
                 <input v-model="transaction.initialPrice" id="initialPrice" type="number" :class="[ invalidPrice ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
               </div>
               <div key="6">
-                <label for="exchangeRate" class="flex items-end">Exchange rate<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
+                <label for="exchangeRate" class="flex items-end">Exchange rate (optional)<span :class="[ invalidExchange ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
                 <input v-model="transaction.exchangeRate" id="exchangeRate" type="number" :class="[ invalidExchange ? 'border-red-600' : 'border-gray-400' ]" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
               </div>
               <div key="7" class="w-full flex justify-around gap-x-4">
@@ -123,6 +123,8 @@ export default defineComponent({
   mounted() {
     this.getPortfolio()
     this.setDateTime()
+    if (this.$route.params.assetSymbol)
+      this.fetchQuote(this.$route.params.assetSymbol)
   },
 
   data() {

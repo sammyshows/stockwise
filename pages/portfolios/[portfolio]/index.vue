@@ -14,7 +14,7 @@
               <div class="flex justify-end">
                 <div class="grow">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ holding.symbol.toUpperCase() }}</h2>
-                  <p class="text-tiny my-0.5 text-gray-300">{{holding.current_price}} x {{ $formatNumber(holding.current_quantity, 2) }}</p>
+                  <p class="text-tiny my-0.5 text-gray-300">{{holding.current_price}} x {{ $formatNumber(holding.current_quantity, 2) }} shares</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
                   <p class="h-5 text-xs">{{ $formatNumber(holding.current_value, 2, true, false) }}</p>

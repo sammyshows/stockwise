@@ -4,18 +4,16 @@ import { useUser } from "@/store/user.js";
 const beforeSymbols = {
     AUD: "A$",
     CAD: "CA$",
-    CHF: "fr. ",
-    CNH: "¥ ",
+    CHF: "₣ ",
     DKK: "kr.",
-    EUR: "€",
     GBP: "£",
     HKD: "HK$ ",
     ILS: "₪ ",
     INR: "₹ ",
     JPY: "¥ ",
-    MXN: "$ ",
+    MXN: "MX$ ",
     NOK: "kr ",
-    NZD: "$ ",
+    NZD: "NZ$ ",
     SGD: "S$",
     USD: "$",
     ZAR: "R "
@@ -23,11 +21,13 @@ const beforeSymbols = {
 
 // symbols that go after the number
 const afterSymbols = {
+    CNH: " 元",
     CZK: " Kč",
+    EUR: "€",
     HUF: " Ft",
     PLN: " zł",
     RON: " lei",
-    RUB: " p.",
+    RUB: " ₽",
     SEK: " kr",
     THB: " ฿",
     TRY: " ₺",

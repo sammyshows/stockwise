@@ -12,7 +12,7 @@
         </div>
         <div class="flex justify-between">
           <label for="included" class="flex items-center">Included in totals</label>
-          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
         </div>
       </div>
       <div class="text-right mb-7">
