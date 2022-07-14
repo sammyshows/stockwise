@@ -8,26 +8,41 @@ const { requireAuth } = require('../api/auth');
 const handler: Handler = requireAuth(async (event, context) => {
     // Get data on every holding
     const holdingTotals = await client`
-        SELECT users.id as user_id,
-               portfolios.id as portfolio_id,
-               holdings.id as holding_id,
-               initial_value,
-               current_price*share_count as current_value,
-               current_price*share_count - initial_value + COALESCE(realized, 0) as all_time_change,
-               (current_price*share_count + COALESCE(realized, 0) - initial_value) / COALESCE(all_time_initial, initial_value) * 100 as all_time_percent,
-               SUBSTRING((CURRENT_DATE - 1)::TEXT, 1 ,10) as date
-        FROM portfolios
-             INNER JOIN users ON users.id = portfolios.user_id
-             LEFT JOIN holdings ON portfolios.id = holdings.portfolio_id
-             LEFT JOIN assets ON holdings.asset_id = assets.id;
-    `
+        WITH cte AS (
+            SELECT u.user_id AS user_id,
+                   p.id AS portfolio_id,
+                   h.id AS holding_id,
+                   (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
+                   a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
+                   (a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price) - (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) + COALESCE(SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0) as all_time_change,
+                   t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) AS all_time_initial
+            FROM portfolios AS p
+                LEFT JOIN holdings AS h ON h.portfolio_id = p.id
+                INNER JOIN assets AS a ON h.asset_id = a.id
+                INNER JOIN user_settings AS u ON p.user_id = u.user_id
+                INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
+                INNER JOIN assets AS user_c ON u.currency_id = user_c.id
+                INNER JOIN transactions AS t ON h.id = t.holding_id
+                LEFT JOIN sells AS s ON t.id = s.transaction_id
+            GROUP BY u.id, h.id, a.id, p.id, asset_c.id, user_c.id, t.id
+        )
+        SELECT cte.user_id,
+               cte.holding_id,
+               cte.portfolio_id,
+               SUM(cte.initial_value) AS initial_value,
+               SUM(cte.current_value) AS current_value,
+               SUM(cte.all_time_change) AS all_time_change,
+               SUM(cte.all_time_initial) AS all_time_initial,
+               SUBSTRING((CURRENT_DATE - 1)::TEXT, 1 ,10) AS date
+        FROM cte
+        GROUP BY cte.user_id, cte.holding_id, cte.portfolio_id`
 
     // sort data into categorised arrays (unnested into rows for postgres)
     const holdingIds = holdingTotals.map(holding => holding["holding_id"])
     const holdingInitials = holdingTotals.map(holding => holding["initial_value"])
     const holdingCurrents = holdingTotals.map(holding => holding["current_value"])
     const holdingAllTimes = holdingTotals.map(holding => holding["all_time_change"])
-    const holdingAllTimePcs = holdingTotals.map(holding => holding["all_time_percent"])
+    const holdingAllTimePcs = holdingTotals.map(holding => holding["all_time_change"] / holding["all_time_initial"])
     const holdingDates = holdingTotals.map(holding => holding["date"])
     await client`
         WITH holding (holding_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
@@ -47,12 +62,12 @@ const handler: Handler = requireAuth(async (event, context) => {
         FROM holding;`
 
     // reduce the holding data into portfolio data
-    let portfolioTotals = holdingTotals.reduce((portfolioTotal, { user_id, portfolio_id, initial_value, current_value, all_time_change, all_time_percent, date }) => {
-        portfolioTotal[portfolio_id] = portfolioTotal[portfolio_id] || {user_id: user_id, portfolio_id: portfolio_id, initial_value: 0, current_value: 0, all_time_change: 0, all_time_percent: 0, date: date}
+    let portfolioTotals = holdingTotals.reduce((portfolioTotal, { user_id, portfolio_id, initial_value, current_value, all_time_change, all_time_initial, date }) => {
+        portfolioTotal[portfolio_id] = portfolioTotal[portfolio_id] || {user_id: user_id, portfolio_id: portfolio_id, initial_value: 0, current_value: 0, all_time_change: 0, all_time_initial: 0, date: date}
         portfolioTotal[portfolio_id].initial_value = new BigNumber(portfolioTotal[portfolio_id].initial_value).plus(initial_value).toNumber()
         portfolioTotal[portfolio_id].current_value = new BigNumber(portfolioTotal[portfolio_id].current_value).plus(current_value).toNumber()
         portfolioTotal[portfolio_id].all_time_change = new BigNumber(portfolioTotal[portfolio_id].all_time_change).plus(all_time_change).toNumber()
-        portfolioTotal[portfolio_id].all_time_percent = new BigNumber(portfolioTotal[portfolio_id].all_time_percent).plus(all_time_percent).toNumber()
+        portfolioTotal[portfolio_id].all_time_initial = new BigNumber(portfolioTotal[portfolio_id].all_time_initial).plus(all_time_initial).toNumber()
         return portfolioTotal
     }, {})
     portfolioTotals = Object.values(portfolioTotals)
@@ -61,7 +76,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const portfolioInitials = portfolioTotals.map(portfolio => portfolio["initial_value"])
     const portfolioCurrents = portfolioTotals.map(portfolio => portfolio["current_value"])
     const portfolioAllTimes = portfolioTotals.map(portfolio => portfolio["all_time_change"])
-    const portfolioAllTimePcs = portfolioTotals.map(portfolio => portfolio["all_time_percent"])
+    const portfolioAllTimePcs = portfolioTotals.map(portfolio => portfolio["all_time_change"] / portfolio["all_time_initial"])
     const portfolioDates = portfolioTotals.map(portfolio => portfolio["date"])
     await client`
         WITH portfolio (portfolio_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
@@ -81,12 +96,12 @@ const handler: Handler = requireAuth(async (event, context) => {
         FROM portfolio;`
 
 
-    let userTotals = portfolioTotals.reduce((userTotal, { user_id, initial_value, current_value, all_time_change, all_time_percent, date }) => {
-        userTotal[user_id] = userTotal[user_id] || {user_id: user_id, initial_value: 0, current_value: 0, date: date}
+    let userTotals = portfolioTotals.reduce((userTotal, { user_id, initial_value, current_value, all_time_change, all_time_initial, date }) => {
+        userTotal[user_id] = userTotal[user_id] || {user_id: user_id, initial_value: 0, current_value: 0, all_time_change: 0, all_time_initial: 0, date: date}
         userTotal[user_id].initial_value = new BigNumber(userTotal[user_id].initial_value).plus(initial_value).toNumber()
         userTotal[user_id].current_value = new BigNumber(userTotal[user_id].current_value).plus(current_value).toNumber()
         userTotal[user_id].all_time_change = new BigNumber(userTotal[user_id].all_time_change).plus(all_time_change).toNumber()
-        userTotal[user_id].all_time_percent = new BigNumber(userTotal[user_id].all_time_percent).plus(all_time_percent).toNumber()
+        userTotal[user_id].all_time_initial = new BigNumber(userTotal[user_id].all_time_initial).plus(all_time_initial).toNumber()
         return userTotal
     }, {})
     userTotals = Object.values(userTotals)
@@ -95,8 +110,9 @@ const handler: Handler = requireAuth(async (event, context) => {
     const userInitials = userTotals.map(user => user["initial_value"])
     const userCurrents = userTotals.map(user => user["current_value"])
     const userAllTimes = userTotals.map(user => user["all_time_change"])
-    const userAllTimePcs = userTotals.map(user => user["all_time_percent"])
+    const userAllTimePcs = userTotals.map(user => user["all_time_change"] / user["all_time_initial"])
     const userDates = userTotals.map(user => user["date"])
+
     await client`
         WITH user_data (user_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
             SELECT *
@@ -113,7 +129,6 @@ const handler: Handler = requireAuth(async (event, context) => {
         INSERT INTO partman.user_portfolios_data (user_id, initial_value, current_value, all_time_change, all_time_percent, date)
         SELECT user_id, initial_value, current_value, all_time_change, all_time_percent, date
         FROM user_data;`
-
 
 
     await client`CALL partman.run_maintenance_proc();`
