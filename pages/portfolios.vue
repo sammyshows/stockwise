@@ -8,7 +8,7 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <p v-if="portfolios != null && portfolios.length === 0" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
+      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
       <NuxtPage v-else-if="portfolios"
                 :show="viewPortfolios"
                 :overviewChart="overviewChart"
@@ -164,6 +164,10 @@ export default defineComponent({
       const offset = currentDate.getTimezoneOffset()
       currentDate = new Date(currentDate.getTime() - (offset*60*1000))
       return currentDate.toISOString().split('T')[0]
+    },
+
+    displayMessage() {
+      return this.$route.path === '/portfolios' && this.portfolios != null && this.portfolios.length === 0
     },
 
     setActiveTab(newTab) {

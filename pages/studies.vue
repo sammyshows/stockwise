@@ -8,7 +8,11 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <NuxtPage :show="viewStudies" />
+      <div v-if="$route.path === '/studies'" class="flex grow">
+        <p v-if="uncompletedStudies != null && uncompletedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
+        <NuxtPage v-else-if="uncompletedStudies" :show="viewStudies" />
+      </div>
+      <NuxtPage v-else :show="viewStudies" />
     </div>
     <NuxtPage v-else/>
   </NuxtLayout>
@@ -18,15 +22,18 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { useStudies } from "@/store/studies";
+import { computed } from "@vue/reactivity";
+
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
     const studyStore = useStudies()
+    const uncompletedStudies = computed(() => studyStore.getUncompleted())
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { studyStore, token, uuid }
+    return { studyStore, uncompletedStudies, token, uuid }
   },
 
   components: {

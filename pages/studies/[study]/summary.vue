@@ -96,7 +96,7 @@ export default defineComponent({
     return {
       pageDetails: {
         returnPath: '/studies/completed',
-        title: this.$route.params.assetName,
+        title: this.storeStudy?.name,
         subtitle: 'STUDIES'
       },
       studyId: this.$route.params.study,

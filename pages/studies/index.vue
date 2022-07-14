@@ -8,7 +8,7 @@
     <div v-if="studies" class="overflow-scroll flex flex-col grow px-3 divide-y divide-gray-700">
       <TransitionGroup tag="div" name="form">
         <div v-for="study in studies" :key="study.study_id">
-          <NuxtLink :to="{ name: 'studies-study', params: { study: study.study_id, assetName: study.name, currentQuestion: study.completed_qs + 1 } }">
+          <NuxtLink :to="{ name: 'studies-study', params: { study: study.study_id } }">
             <div class="flex justify-end py-2">
               <div class="w-32 flex flex-col justify-around grow">
                 <h2 class="text-bright-cyan font-bold tracking-wider truncate">{{ study.symbol }}</h2>

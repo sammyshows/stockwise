@@ -61,7 +61,7 @@
             <select v-model="studyType" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
               <option value="" disabled selected hidden></option>
               <option :value="0">Standard</option>
-              <option :value="1">Advanced</option>
+              <option :value="1" disabled>Advanced (coming soon...)</option>
             </select>
           </div>
 

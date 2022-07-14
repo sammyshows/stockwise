@@ -3,12 +3,12 @@
     <div class="min-h-min flex justify-between pr-2">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
 
-      <div :class="{ 'invisble': !study }" class="flex">
+      <div class="flex">
         <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5 ml-3" />
         <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-          <p v-if="study" class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+          <p class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
         </div>
       </div>
     </div>
@@ -36,9 +36,11 @@ export default defineComponent({
   name: "Study Questions",
 
   async setup() {
+    const route = useRoute()
     const studyStore = useStudies()
+    const storeStudy = studyStore.getStudy(route.params.study)
     const token = await useState('authToken').value
-    return { studyStore, token }
+    return { studyStore, storeStudy, token }
   },
 
   components: {
@@ -57,13 +59,15 @@ export default defineComponent({
     return {
       pageDetails: {
         returnPath: '/studies',
-        title: this.$route.params.assetName,
+        title: this.storeStudy?.name,
         subtitle: 'STUDIES'
       },
       studyId: this.$route.params.study,
+      studyDetails: {
+        type: this.storeStudy?.type
+      },
       study: null as ({} | null),
-      studyDetails: null as ({} | null),
-      currentQuestion: this.$route.params.currentQuestion,
+      currentQuestion: this.storeStudy?.completed_qs + 1,
       moreInfo: [
         {
           question: 'question_one',
@@ -173,13 +177,7 @@ export default defineComponent({
 
     async submit() {
       await this.updateStudy()
-      await this.$router.push({ name: 'studies-study-summary',
-        params: {
-          studyId: this.studyId,
-          assetName: this.studyDetails.name,
-          updatedDate: this.studyDetails.updatedDate
-        }
-      })
+      await this.$router.push({ name: 'studies-study-summary', params: { studyId: this.studyId } })
     },
 
     async updateStudy(): Promise<void> {
