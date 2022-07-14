@@ -218,7 +218,7 @@ export default defineComponent({
     },
 
     async addTransaction(holdingId): Promise<void> {
-      await fetch('/api/transaction-create', {
+      const response = await fetch('/api/transaction-create', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -231,14 +231,18 @@ export default defineComponent({
           timestamp: this.parseDate()
         })
       })
-        .then(this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+
+      if (response.status === 200) {
+        this.$emit('updateHoldings')
+        this.$router.push({name: 'portfolios-portfolio-holdings-holding',
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,
             assetSymbol: this.transaction.from + this.transaction.to,
             assetName: this.currencies[this.transaction.from] + " to " + this.currencies[this.transaction.from]
           }
-        }))
+        })
+      }
     }
   }
 })

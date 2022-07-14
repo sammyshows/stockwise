@@ -71,7 +71,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.getTransaction()
+    this.getAsset()
     this.getHolding()
     this.setDateTime()
   },
@@ -122,7 +122,7 @@ export default defineComponent({
       return this.invalid.type === false && this.invalid.quantity === false && this.invalid.initialPrice === false && this.invalid.exchangeRate === false
     },
 
-    async getTransaction(): Promise<void> {
+    async getAsset(): Promise<void> {
       const response = await fetch('/api/asset-read', {
         headers: {
           authorization: 'Bearer ' + this.token
@@ -160,7 +160,7 @@ export default defineComponent({
 
     async createTransaction(): Promise<void> {
       if (this.validateForm()) {
-        await fetch('/api/transaction-create', {
+        const response = await fetch('/api/transaction-create', {
           headers: {
             authorization: 'Bearer ' + this.token
           },
@@ -176,15 +176,11 @@ export default defineComponent({
             timestamp: this.parseDate()
           })
         })
-        await this.$router.push({
-            name: 'portfolios-portfolio-holdings-holding',
-            params: {
-              portfolio: this.portfolioId,
-              holding: this.holdingId,
-              assetSymbol: this.pageDetails.title,
-              assetName: this.pageDetails.subtitle
-            }
-          })
+
+        if (response.status === 200) {
+          this.$emit('updateTransactions')
+          this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
+        }
       }
     },
 

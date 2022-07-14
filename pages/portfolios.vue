@@ -14,7 +14,8 @@
                 :overviewChart="overviewChart"
                 :total="total" />
     </div>
-    <NuxtPage v-else />
+    <NuxtPage v-else
+              @updatePortfolios="getPortfolios()" />
   </NuxtLayout>
 </template>
 
@@ -46,11 +47,16 @@ export default defineComponent({
   async mounted() {
     await this.getPortfolios()
     this.getOverviewChart()
-    setInterval(() => this.getPortfolios(), 50000)
+    this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
+  },
+
+  beforeUnmount() {
+    clearInterval(this.intervalLoop)
   },
 
   data() {
     return {
+      intervalLoop: null as (NodeJS.Timeout | null),
       pageDetails: {
         title: 'Portfolios Overview'
       },

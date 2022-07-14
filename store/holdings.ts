@@ -33,6 +33,15 @@ export const useHoldings = defineStore('holdings', {
             }
         },
 
+        updateHolding(holdingId, newPortfolio) {
+            this.holdings = this.holdings.map(h => {
+                if (h.holding_id === holdingId) {
+                    h.portfolio_id = newPortfolio
+                }
+                return h
+            })
+        },
+
         deleteHolding(holdingId) {
             this.holdings = this.holdings.filter(h => h.holding_id !== holdingId)
         }

@@ -194,7 +194,7 @@ export default defineComponent({
 
     async updateTransaction() {
       if (this.validateForm()) {
-        await fetch('/api/transaction-update', {
+        const response = await fetch('/api/transaction-update', {
           headers: {
             authorization: 'Bearer ' + this.token
           },
@@ -210,7 +210,11 @@ export default defineComponent({
             timestamp: this.parseDate()
           })
         })
-          .then(this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`))
+
+        if (response.status === 200) {
+          this.$emit('updateTransactions')
+          this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
+        }
       }
     },
 
@@ -228,13 +232,9 @@ export default defineComponent({
       })
 
       if (response.status === 200) {
-        setTimeout(() => this.transactionStoreDelete(), 600)
+        this.$emit('updateTransactions')
         this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
       }
-    },
-
-    transactionStoreDelete(): void {
-      this.transactionStore.deleteTransaction(this.transaction.id)
     },
 
     setDateTime(dateString): void {

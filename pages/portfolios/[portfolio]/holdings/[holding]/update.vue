@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col grow px-3">
     <div class="h-full flex flex-col">
-      <div class="flex justify-between mb-14">
+      <div class="flex justify-between h-20">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
       </div>
@@ -108,7 +108,7 @@ export default defineComponent({
     },
 
     async updateHolding(): Promise<void> {
-      await fetch('/api/holding-update', {
+      const response = await fetch('/api/holding-update', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
@@ -118,7 +118,12 @@ export default defineComponent({
           portfolioId: this.selectedPortfolio
         })
       })
-        .then(this.$router.push(`/portfolios/${this.portfolioId}`))
+
+      if (response.status === 200) {
+        this.$emit('updatePortfolios')
+        setTimeout(() => this.holdingStoreUpdate(), 600)
+        this.$router.push(`/portfolios/${this.portfolioId}`)
+      }
     },
 
     closeModal(): void {
@@ -135,10 +140,16 @@ export default defineComponent({
           holdingId: this.holdingId
         })
       })
+
       if (response.status === 200) {
+        this.$emit('updatePortfolios')
         setTimeout(() => this.holdingStoreDelete(), 600)
         this.$router.push(`/portfolios/${this.portfolioId}`)
       }
+    },
+
+    holdingStoreUpdate(): void {
+      this.holdingStore.updateHolding(this.holdingId, this.selectedPortfolio)
     },
 
     holdingStoreDelete(): void {

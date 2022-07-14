@@ -19,7 +19,9 @@
                 :overviewChart="overviewChart"
                 :total="total" />
     </div>
-    <NuxtPage v-if="!viewHoldings" />
+    <NuxtPage v-if="!viewHoldings"
+              @updateHoldings="getHoldings(); $emit('updatePortfolios');"
+              @updatePortfolios="$emit('updatePortfolios')" />
   </div>
 </template>
 
@@ -51,7 +53,11 @@ export default defineComponent({
     this.getPortfolio()
     await this.getHoldings()
     this.getOverviewChart()
-    setInterval(() => this.getHoldings(), 60000)
+    this.intervalLoop = setInterval(() => this.getHoldings(), 60000)
+  },
+
+  beforeUnmount() {
+    clearInterval(this.intervalLoop)
   },
 
   watch: {
@@ -63,6 +69,7 @@ export default defineComponent({
 
   data() {
     return {
+      intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
         title: this.$route.params.portfolioName,

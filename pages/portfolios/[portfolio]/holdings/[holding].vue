@@ -32,7 +32,10 @@
                 :quote="quote"
                 :stats="stats" />
     </div>
-    <NuxtPage v-if="!viewTransactions" :assetData="assetData" class="flex flex-col grow"/>
+    <NuxtPage v-if="!viewTransactions" class="flex flex-col grow"
+              :assetData="assetData"
+              @updateTransactions="getTransactions(); $emit('updateHoldings');"
+              @updatePortfolios="$emit('updatePortfolios')" />
   </div>
 </template>
 
@@ -69,8 +72,11 @@ export default defineComponent({
     this.getAssetChart()
     this.fetchQuote()
     this.fetchStats()
-    setInterval(() => this.getTransactions(), 60000)
+    this.intervalLoop = setInterval(() => this.getTransactions(), 60000)
+  },
 
+  beforeUnmount() {
+    clearInterval(this.intervalLoop)
   },
 
   watch: {
@@ -82,6 +88,7 @@ export default defineComponent({
 
   data() {
     return {
+      intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
       assetId: null as (string | null),
