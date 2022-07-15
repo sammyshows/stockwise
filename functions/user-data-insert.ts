@@ -16,14 +16,15 @@ const handler: Handler = requireAuth(async (event, context) => {
                    a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
                    (a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price) - (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) + COALESCE(SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0) as all_time_change,
                    t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) AS all_time_initial
-            FROM portfolios AS p
-                LEFT JOIN holdings AS h ON h.portfolio_id = p.id
+            FROM holdings AS h
+                INNER JOIN portfolios AS p ON h.portfolio_id = p.id
                 INNER JOIN assets AS a ON h.asset_id = a.id
                 INNER JOIN user_settings AS u ON p.user_id = u.user_id
                 INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
                 INNER JOIN assets AS user_c ON u.currency_id = user_c.id
                 INNER JOIN transactions AS t ON h.id = t.holding_id
                 LEFT JOIN sells AS s ON t.id = s.transaction_id
+            WHERE t.type = 0
             GROUP BY u.id, h.id, a.id, p.id, asset_c.id, user_c.id, t.id
         )
         SELECT cte.user_id,
@@ -44,6 +45,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const holdingAllTimes = holdingTotals.map(holding => holding["all_time_change"])
     const holdingAllTimePcs = holdingTotals.map(holding => holding["all_time_change"] / holding["all_time_initial"])
     const holdingDates = holdingTotals.map(holding => holding["date"])
+    console.log(holdingCurrents)
     await client`
         WITH holding (holding_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
             SELECT *
