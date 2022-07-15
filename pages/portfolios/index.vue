@@ -17,16 +17,16 @@
                   <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.holding_count }} HOLDINGS</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5" :class="$fontSize($formatNumber(portfolio.current_value, 2, true, false), 'text-xs')">{{ $formatNumber(portfolio.current_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
-                  <p class="text-tiny text-gray-300">{{ $formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(portfolio.current_value, 2, true, false) || $formatNumber('0', 0, true, false), 'text-xs', 12)">{{ $formatNumber(portfolio.current_value, 2, true, false)+'g' || $formatNumber('0', 0, true, false) }}</p>
+                  <p class="text-gray-300" :class="$fontSize($formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 0, true, false), 'text-tiny', 15)">{{ $formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 0, true, false) }}</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
-                  <p class="h-5 text-xs">{{ $formatNumber(portfolio.daily_change, 2, false, true) || '-' }}</p>
-                  <p class="text-tiny">{{ $formatNumber(BigNumber(portfolio.daily_change).div(BigNumber(portfolio.current_value).minus(portfolio.daily_change)).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
+                  <p class="h-5" :class="$fontSize($formatNumber(portfolio.daily_change, 2, true, false) || '-', 'text-xs')">{{ $formatNumber(portfolio.daily_change, 2, false, true) || '-' }}</p>
+                  <p :class="$fontSize($formatNumber(BigNumber(portfolio.daily_change).div(BigNumber(portfolio.current_value).minus(portfolio.daily_change)).times(100), 2, false, true) || '-', 'text-tiny')">{{ $formatNumber(BigNumber(portfolio.daily_change).div(BigNumber(portfolio.current_value).minus(portfolio.daily_change)).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.current_value).minus(portfolio.initial_value) < 0, 'text-bright-green': BigNumber(portfolio.current_value).minus(portfolio.initial_value) > 0 }">
-                  <p class="h-5 text-xs">{{$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-' }}</p>
-                  <p class="text-tiny">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
+                  <p class="h-5" :class="$fontSize($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-', 'text-xs')">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-' }}</p>
+                  <p  :class="$fontSize($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-', 'text-tiny')">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
                 </div>
               </div>
               <div v-if="portfolio.realized">
