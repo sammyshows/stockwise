@@ -21,14 +21,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon } from "@heroicons/vue/outline";
+import { useUser } from "@/store/user";
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
+    const userStore = useUser()
     const token = await useState('authToken').value
     const uuid = useState('uuid').value
-    return { token, uuid }
+    return { userStore, token, uuid }
   },
 
   props: [
@@ -61,13 +63,19 @@ export default defineComponent({
 
   methods: {
     async updateUserSettings(): Promise<void> {
-      await fetch('/api/user-settings-update', {
+      const response = await fetch('/api/user-settings-update', {
         headers: {
           authorization: 'Bearer ' + this.token
         },
         method: 'POST',
         body: JSON.stringify(this.settings)
       })
+
+      if (response.status === 200) {
+        this.userStore.$patch({
+          currency: this.settings.currency
+        })
+      }
     }
   }
 })

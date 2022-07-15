@@ -286,6 +286,7 @@ export default defineComponent({
       const chart = document.getElementById('chart') as HTMLCanvasElement
 
       let chartData;
+      let lastPrice;
       let prices;
       if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
         chartData = this.chartDataDay
@@ -295,10 +296,14 @@ export default defineComponent({
 
         const unfilteredPrices = chartData.map(dailyData => dailyData.marketClose)
         prices = unfilteredPrices.map((price, index) => {
-          if (price === 0 && index !== 0)
-            return unfilteredPrices[index - 1]
-          else
+          if (!price && index !== 0) // If there was no trading recorded in that minute, use the last price traded at
+            return lastPrice
+          else if (!price && index === 0) { // If there was no trading in the first minute, use the open price from the quote
+            return this.quote.open
+          } else {
+            lastPrice = price
             return price
+          }
         })
       } else if (dataSlice) {
         chartData = this.chartDataMax.slice(dataSlice)
@@ -314,7 +319,10 @@ export default defineComponent({
       }
 
       this.chartInitialPrice = chartData[0].close
-      const labels = chartData.map(dailyData => dailyData.label)
+      const labels = chartData.map(dailyData => {
+        const date = new Date(dailyData.date)
+        return date.toDateString().slice(4)
+      })
 
       const verticalLine = {
         id: 'verticalLine',

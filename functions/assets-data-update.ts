@@ -14,29 +14,29 @@ const handler: Handler = requireAuth(async (event, context) => {
     // Use the symbols from above to do a batch call to the IEX Cloud API for historicalData on all of them.
     // At the time of writing a batch is limited to 100 symbols at a time, so when we surpass that, we should split the
     // symbols array into groups of 100 and call each group individually
-    const data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&includeToday=true&token=${process.env.IEXTOKEN}`)
+    let data;
+    data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&includeToday=true&chartCloseOnly=true&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
 
     let assetArrays = Object.values(data)
     assetArrays = assetArrays.map(asset => Object.values(asset))
-    const historicalData = assetArrays.flat(2)
 
-    // Get an array of all values for each required field. Then we can turn these into rows and use them in the update below
-    const ids = historicalData.map((asset, index) => {
-        if (symbolIds[asset.symbol] != undefined) {
-            return symbolIds[asset.symbol]
-        } else {
-            return symbolIds[historicalData[index - 1].symbol]
-        }
+    allSymbols.forEach((symbol) => {
+        const id = symbolIds[symbol]
+        data[symbol].chart.forEach(assetData => {
+            assetData["id"] = id
+        })
     })
-    const closes = historicalData.map(asset => asset.close)
-    const labels = historicalData.map(asset => asset.label)
-    const dates = historicalData.map(asset => asset.date)
 
-    // ids.forEach(id => {
-    //     if (id == null)
-    //         console.log(id)
-    // })
+    const historicalData = assetArrays.flat(2)
+    const ids = historicalData.map(asset => asset["id"])
+
+    const closes = historicalData.map(asset => asset["close"])
+    const labels = historicalData.map(asset => {
+        const date = new Date(asset["date"])
+        return date.toDateString().slice(4)
+    })
+    const dates = historicalData.map(asset => asset["date"])
 
     await client`
         DELETE FROM partman.asset_data`
