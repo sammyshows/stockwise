@@ -5,7 +5,7 @@ export default defineNuxtPlugin(() => {
                 if (defaultSize === 'text-xs') {
                     if (string.length <= (initialThreshold || 10))
                         return defaultSize
-                    else if (string.length < 13)
+                    else if (string.length < (initialThreshold + 3 || 13))
                         return 'text-tiny'
                     else
                         return 'text-atomic'

@@ -6,14 +6,17 @@ import fetch from 'node-fetch'
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    const data = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/chart/5y?includeToday=true&token=${process.env.IEXTOKEN}`)
+    const data = await fetch(`https://cloud.iexapis.com/stable/stock/${eventBody.symbol}/chart/5y?includeToday=true&chartCloseOnly=true&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
 
     let historicalData = Object.values(data)
 
     // Get an array of all values for each required field. Then we can turn these into rows and use them in the update below
     const closes = historicalData.map(asset => asset.close)
-    const labels = historicalData.map(asset => asset.label)
+    const labels = historicalData.map(asset => {
+        const date = new Date(asset["date"])
+        return date.toDateString().slice(4)
+    })
     const dates = historicalData.map(asset => asset.date)
 
     await client`
