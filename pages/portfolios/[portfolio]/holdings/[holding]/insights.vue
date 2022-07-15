@@ -229,18 +229,24 @@ export default defineComponent({
 
       let chartData;
       let prices;
+      let lastPrice;
       if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (assetChartDay) to historic (assetChartMax).
         chartData = this.assetChartDay
 
         if (chartData.every(day => day.marketClose === undefined))
           this.noDailyChart = true
 
+
         const unfilteredPrices = chartData.map(dailyData => dailyData.marketClose)
         prices = unfilteredPrices.map((price, index) => {
-          if (price === 0 && index !== 0)
-            return unfilteredPrices[index - 1]
-          else
+          if (!price && index !== 0) // If there was no trading recorded in that minute, use the last price traded at
+            return lastPrice
+          else if (!price && index === 0) // If there was no trading in the first minute, use the open price from the quote
+            return this.quote.open
+          else {
+            lastPrice = price
             return price
+          }
         })
       } else if (dataSlice) {
         chartData = this.assetChartMax.slice(dataSlice)

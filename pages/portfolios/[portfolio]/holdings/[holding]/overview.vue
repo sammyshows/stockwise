@@ -250,15 +250,15 @@ export default defineComponent({
       let chartData;
       if (dataSlice) {
         chartData = this.overviewChart.slice(dataSlice)
-        return chartData.map(data => data[this.chartType])
+        return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
       } else if (range === 'YTD') {
         const year = this.overviewChart[this.overviewChart.length - 1].date.slice(0,4)
         const firstOfYear = this.overviewChart.findIndex(day => day.date.slice(0,4) === year)
         chartData = this.overviewChart.slice(firstOfYear)
-        return chartData.map(data => data[this.chartType])
+        return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
       } else {
         chartData = this.overviewChart
-        return chartData.map(data => data[this.chartType])
+        return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
       }
     },
 
