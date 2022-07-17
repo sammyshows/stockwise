@@ -12,7 +12,7 @@
         </NuxtLink>
       </div>
     </div>
-    <NuxtPage v-else></NuxtPage>
+    <NuxtPage v-else @updateHoldings="$emit('updateHoldings')"></NuxtPage>
   </div>
 </template>
 

@@ -17,16 +17,16 @@
                   <p class="text-tiny my-0.5 text-gray-300">{{holding.current_price}} x {{ $formatNumber(holding.current_quantity, 2) }} shares</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-xs">{{ $formatNumber(holding.current_value, 2, true, false) }}</p>
-                  <p class="text-tiny text-gray-300">{{ $formatNumber(holding.initial_value, 2, true, false) }}</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(holding.current_value, 2, true, false), 'text-xs', 13)">{{ $formatNumber(holding.current_value, 2, true, false) }}</p>
+                  <p class="text-tiny text-gray-300" :class="$fontSize($formatNumber(holding.current_value, 2, true, false), 'text-tiny', 16)">{{ $formatNumber(holding.initial_value, 2, true, false) }}</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': holding.daily_change < 0, 'text-bright-green': holding.daily_change > 0 }">
-                  <p class="h-5 text-xs">{{ $formatNumber(holding.daily_change, 2, false, true) }}</p>
-                  <p class="text-tiny">{{ $formatNumber(BigNumber(holding.daily_change).div(BigNumber(holding.current_value).minus(holding.daily_change)).times(100), 2, false, true) }}%</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(holding.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(holding.daily_change, 2, false, true) }}</p>
+                  <p :class="$fontSize($formatNumber(BigNumber(holding.daily_change).div(BigNumber(holding.current_value).minus(holding.daily_change)).times(100), 2, false, true) + '%', 'text-tiny')">{{ $formatNumber(BigNumber(holding.daily_change).div(BigNumber(holding.current_value).minus(holding.daily_change)).times(100), 2, false, true) }}%</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': BigNumber(holding.current_value).minus(holding.initial_value) < 0, 'text-bright-green': BigNumber(holding.current_value).minus(holding.initial_value) > 0 }">
-                  <p class="h-5 text-xs">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value), 2, false, true) }}</p>
-                  <p class="text-tiny">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) }}%</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(BigNumber(holding.current_value).minus(holding.initial_value), 2, false, true), 'text-xs')">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value), 2, false, true) }}</p>
+                  <p :class="$fontSize($formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) + '%', 'text-tiny')">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) }}%</p>
                 </div>
               </div>
 
@@ -47,18 +47,18 @@
           <p class="font-light text-tiny my-0.5 text-gray-300">{{ holdings.length }} HOLDINGS</p>
         </div>
         <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
-          <p class="text-tiny text-gray-300">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.current_value, 2, true, false), 'text-xs', 13)">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
+          <p class="text-gray-300" :class="$fontSize($formatNumber(total.initial_value, 2, true, false), 'text-tiny', 16)">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
+          <p :class="$fontSize($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true), 'text-tiny')">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
         </div>
         <!--    Currently shows all-time for ALL transactions, same as the other two lines as well. Ultimately, this
         should show active transactions but this requires the addition of an 'active' column in the database table    -->
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value - total.initial_value < 0, 'text-bright-green': total.current_value - total.initial_value > 0 }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value), 2, false, true), 'text-xs')">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
+          <p :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true), 'text-tiny')">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
         </div>
       </div>
       <div v-if="total.realized.toNumber()">

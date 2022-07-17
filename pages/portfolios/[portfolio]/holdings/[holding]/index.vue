@@ -18,16 +18,16 @@
                   <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }} per share</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-xs">{{ $formatNumber(transaction.current_value, 2, true, false) }}</p>
-                  <p class="text-tiny text-gray-300">{{ $formatNumber(transaction.initial_value, 2, true, false) }}</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(transaction.current_value, 2, true, false), 'text-xs', 13)">{{ $formatNumber(transaction.current_value, 2, true, false) }}</p>
+                  <p class="text-gray-300" :class="$fontSize($formatNumber(transaction.initial_value, 2, true, false), 'text-tiny', 16)">{{ $formatNumber(transaction.initial_value, 2, true, false) }}</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.daily_change < 0, 'text-bright-green': transaction.daily_change > 0 }">
-                  <p class="h-5 text-xs">{{ $formatNumber(transaction.daily_change, 2, false, true) }}</p>
-                  <p class="text-tiny">{{ transaction.current_quantity > 0 ? $formatNumber(transaction.daily_percent, 2, false, true) : '0.00' }}%</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(transaction.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(transaction.daily_change, 2, false, true) }}</p>
+                  <p :class="$fontSize(transaction.current_quantity > 0 ? $formatNumber(transaction.daily_percent, 2, false, true) + '%' : '0.00', 'text-tiny')">{{ transaction.current_quantity > 0 ? $formatNumber(transaction.daily_percent, 2, false, true) : '0.00' }}%</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
-                  <p class="h-5 text-xs">{{ $formatNumber(transaction.total_change, 2, false, true) }}</p>
-                  <p class="text-tiny">{{ transaction.current_quantity > 0 ? $formatNumber(BigNumber(transaction.total_change).div(transaction.initial_value).times(100), 2, false, true) : '0.00' }}%</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(transaction.total_change, 2, false, true), 'text-xs')">{{ $formatNumber(transaction.total_change, 2, false, true) }}</p>
+                  <p :class="$fontSize(transaction.current_quantity > 0 ? $formatNumber(BigNumber(transaction.total_change).div(transaction.initial_value).times(100), 2, false, true) + '%' : '0.00', 'text-tiny')">{{ transaction.current_quantity > 0 ? $formatNumber(BigNumber(transaction.total_change).div(transaction.initial_value).times(100), 2, false, true) : '0.00' }}%</p>
                 </div>
               </div>
 
@@ -37,7 +37,7 @@
                   <p class="font-light text-tiny my-0.5 text-gray-300">@ {{ $formatNumber(transaction.price, 3) }} per share</p>
                 </div>
                 <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-xs text-bright-red">-{{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }}</p>
+                  <p class="h-5 text-bright-red" :class="$fontSize($formatNumber(transaction.total_change, 2, false, true), 'text-xs')">-{{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }}</p>
                 </div>
                 <div class="col-span-5"></div>
               </div>
@@ -60,19 +60,19 @@
           <p class="font-light text-tiny my-0.5 text-gray-300">{{ transactions.length }} TRANSACTIONS</p>
         </div>
         <div class="w-20 text-right mt-0.5 ml-2 font-normal">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
-          <p class="text-tiny text-gray-300">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.current_value, 2, true, false), 'text-xs', 13)">{{ $formatNumber(total.current_value, 2, true, false) }}</p>
+          <p class="text-gray-300" :class="$fontSize($formatNumber(total.initial_value, 2, true, false), 'text-tiny', 16)">{{ $formatNumber(total.initial_value, 2, true, false) }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
+          <p :class="$fontSize($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) + '%', 'text-tiny')">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value.minus(total.initial_value).isLessThan(0), 'text-bright-green': total.current_value.minus(total.initial_value).isGreaterThan(0) }">
-          <p class="h-5 text-xs">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
-          <p class="text-tiny">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
+          <p class="h-5" :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value), 2, false, true), 'text-xs')">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
+          <p :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true), 'text-tiny')">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
         </div>
       </div>
-      <p v-if="total.current_quantity.isGreaterThan(0)" class="font-light text-tiny my-0.5 text-gray-300">UNREALIZED: {{ $formatNumber(total.current_quantity, 3) }} SHARES @ {{ $formatNumber(total.initial_value.div(total.current_quantity), 3) }}</p>
+      <p v-if="total.current_quantity.isGreaterThan(0)" class="font-light text-tiny my-0.5 text-gray-300">UNREALIZED: {{ $formatNumber(total.current_quantity, 2) }} SHARES @ {{ $formatNumber(total.initial_value.div(total.current_quantity), 3) }}</p>
       <div v-if="total.realized.toNumber()">
         <p class="text-tiny my-0.5 text-gray-300">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, false, true) }} ({{ $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) }}%)</span></p>
         <p class="text-tiny my-0.5 text-gray-300">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value) < 0, 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value) > 0 }">{{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2, false, true) }} ({{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2, false, true) }}%)</span></p>
