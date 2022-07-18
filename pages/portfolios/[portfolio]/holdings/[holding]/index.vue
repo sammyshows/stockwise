@@ -43,7 +43,7 @@
               </div>
 
               <div v-if="transaction.realized">
-                <p class="my-0.5 text-tiny text-gray-300">Remaining quantity: {{ $formatNumber(transaction.current_quantity, 2) }} shares</p>
+                <p class="text-tiny text-gray-300">Remaining quantity: {{ $formatNumber(transaction.current_quantity, 2) }} shares</p>
                 <p class="my-0.5 font-light text-tiny">Realized: <span :class="{ 'text-bright-red': BigNumber(transaction.realized).isLessThan(0), 'text-bright-green': BigNumber(transaction.realized).isGreaterThan(0) }">{{ $formatNumber(transaction.realized, 2, true, true) }} ({{ $formatNumber(BigNumber(transaction.realized).div(transaction.realized_initial).times(100), 2, false, true) }}%)</span></p>
                 <p class="my-0.5 font-light text-tiny">All-time: <span :class="{ 'text-bright-red': parseFloat(transaction.realized) + parseFloat(transaction.total_change) < 0, 'text-bright-green': parseFloat(transaction.realized) + parseFloat(transaction.total_change) > 0 }">{{ $formatNumber(BigNumber(transaction.realized).plus(transaction.total_change), 2, true, true) }} ({{ $formatNumber(BigNumber(transaction.realized).plus(transaction.total_change).div(transaction.all_time_initial).times(100), 2, false, true) }}%)</span></p>
               </div>

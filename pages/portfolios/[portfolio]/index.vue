@@ -30,7 +30,7 @@
                 </div>
               </div>
 
-              <p class="text-tiny my-0.5 text-gray-300">Cost: {{ $formatNumber(holding.avg_initial_price, 2, true, false, holding.currency_symbol) }} ({{ $formatNumber(holding.initial_value / holding.current_quantity, 2, true, false) }}) x {{ $formatNumber(holding.current_quantity, 2) }} shares</p>
+              <p class="text-tiny text-gray-300">Cost: {{ $formatNumber(holding.avg_initial_price, 2, true, false, holding.currency_symbol) }} ({{ $formatNumber(holding.initial_value / holding.current_quantity, 2, true, false) }}) x {{ $formatNumber(holding.current_quantity, 2) }} shares</p>
 
               <div v-if="holding.realized">
                 <p class="my-0.5 font-light text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': holding.realized < 0, 'text-bright-green': holding.realized > 0 }">{{ $formatNumber(holding.realized, 2, true, true) }} ({{ $formatNumber(BigNumber(holding.realized).div(holding.realized_initial).times(100), 2, false, true) }}%)</span></p>
