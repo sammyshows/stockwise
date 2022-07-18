@@ -19,12 +19,15 @@ const handler: Handler = requireAuth(async (event, context) => {
         .then(response => response.json())
 
     const createdAsset = await client`
-        INSERT INTO assets (symbol, current_price, prev_close, name, type)
-        VALUES (${eventBody.from + eventBody.to},
-                ${quote["currentPrice"]},
-                ${quote["prevClose"]},
-                ${quote["name"]},
-                1)
+        INSERT INTO assets (symbol, current_price, prev_close, name, currency_id, type)
+        SELECT ${eventBody.from + eventBody.to},
+               ${quote["currentPrice"]},
+               ${quote["prevClose"]},
+               ${quote["name"]},
+               id,
+               1
+        FROM assets
+        WHERE symbol = ${eventBody.to + 'USD'} AND type = 1
         ON CONFLICT (symbol)
         WHERE NOT (type = 3)
             DO UPDATE SET current_price = ${quote["currentPrice"]}

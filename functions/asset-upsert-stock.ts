@@ -27,7 +27,8 @@ const handler: Handler = requireAuth(async (event, context) => {
                ${asset.primaryExchange},
                id,
                0
-        FROM assets WHERE symbol = ${asset.currency} AND type = 2
+        FROM assets 
+        WHERE symbol = ${ asset.currency + 'USD'} AND type = 1
         ON CONFLICT (symbol)
         WHERE NOT (type = 3)
             DO UPDATE SET current_price = ${asset.latestPrice},

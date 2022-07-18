@@ -167,6 +167,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
+      console.log(response)
       this.transactionStore.replaceTransactions(this.holdingId, response.transactions)
       this.assetData = response.assetData
       this.assetId = response.assetData.id

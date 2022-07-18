@@ -224,6 +224,7 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
+          token: this.token,
           holdingId: holdingId,
           type: this.transaction.type,
           quantity: this.transaction.amount,

@@ -12,10 +12,6 @@ const handler: Handler = requireAuth(async (event, context) => {
     // If not then we call asset-upsert to create it first, but 99% of the time the asset will exist (someone out in the
     // world would most likely already have the holding) so it's pointless wasting time upserting everytime.
 
-    // FUN FACT: As you can see below we don't need to pass any params to create a holding besides the portfolio_id & asset_id.
-    // This is because of a stored function that updates the share_count, initial_value and transaction_count automatically
-    // on insert or update.
-
     try {
         holdingId = await client`
         INSERT INTO holdings (portfolio_id, asset_id) 
