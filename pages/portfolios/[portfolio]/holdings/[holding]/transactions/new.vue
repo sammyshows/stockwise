@@ -154,7 +154,7 @@ export default defineComponent({
       })
         .then(response => response.json())
         .then(response => response.data)
-      this.assetType = response.type
+      this.assetType = response.asset_type
       this.holdingQuantity = response.current_quantity
     },
 

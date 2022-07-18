@@ -11,10 +11,12 @@ const handler: Handler = requireAuth(async (event, context) => {
             SELECT h.id AS holding_id,
                    p.id AS portfolio_id,
                    a.current_price AS current_price,
-                   t.quantity - COALESCE(SUM(s.quantity), 0) as current_quantity,
                    a.symbol AS symbol,
                    a.name AS asset_name,
                    a.type AS asset_type,
+                   SUBSTRING(asset_c.symbol, 4, 6) AS currency_symbol,
+                   (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price AS initial_value_asset_c,
+                   t.quantity - COALESCE(SUM(s.quantity), 0) AS current_quantity,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
                    a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
                    (a.current_price - a.prev_close) * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS daily_change,
@@ -36,10 +38,12 @@ const handler: Handler = requireAuth(async (event, context) => {
         SELECT cte.holding_id,
                cte.portfolio_id,
                cte.current_price,
+               SUM(cte.initial_value_asset_c) / SUM(cte.current_quantity) AS avg_initial_price,
                SUM(cte.current_quantity) AS current_quantity,
                cte.symbol,
                cte.asset_name,
                cte.asset_type,
+               cte.currency_symbol,
                SUM(cte.initial_value) as initial_value,
                SUM(cte.current_value) AS current_value,
                SUM(cte.daily_change) AS daily_change,
@@ -47,7 +51,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.realized_initial) AS realized_initial,
                SUM(cte.all_time_initial) AS all_time_initial
         FROM cte
-        GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name, cte.asset_type;`
+        GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name, cte.asset_type, cte.currency_symbol;`
 
     return {
         statusCode: 200,

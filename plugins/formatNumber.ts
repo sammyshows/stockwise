@@ -7,13 +7,13 @@ const beforeSymbols = {
     CHF: "₣ ",
     DKK: "kr.",
     GBP: "£",
-    HKD: "HK$ ",
+    HKD: "HK$",
     ILS: "₪ ",
     INR: "₹ ",
     JPY: "¥ ",
-    MXN: "MX$ ",
+    MXN: "MX$",
     NOK: "kr ",
-    NZD: "NZ$ ",
+    NZD: "NZ$",
     SGD: "S$",
     USD: "$",
     ZAR: "R "
@@ -36,12 +36,13 @@ const afterSymbols = {
 export default defineNuxtPlugin(() => {
     return {
         provide: {
-            formatNumber: (numberString: string, precision: number, addCurrency: boolean, addSign: boolean ) => {
+            formatNumber: (numberString: string, precision: number, addCurrency: boolean, addSign: boolean, currencySymbol?: string ) => {
                 let numStr = null as (string | null)
+                const isNegative = parseFloat(numberString) < 0
 
                 // round and format to local format e.g. 1000.2312 = 1000.23 || 1000,23
                 if (parseFloat(numberString) || numberString == '0') {
-                    numStr = parseFloat(numberString).toLocaleString(
+                    numStr = Math.abs(parseFloat(numberString)).toLocaleString(
                         undefined,
                         {minimumFractionDigits: precision, maximumFractionDigits: precision})
                 } else {
@@ -50,7 +51,7 @@ export default defineNuxtPlugin(() => {
 
                 // add symbol to string e.g. 10,000.34 = A$10,000.34 || 10,000.34 Ft
                 if (addCurrency) {
-                    const symbol = useUser().currency
+                    const symbol = currencySymbol || useUser().currency
                     if (Object.keys(beforeSymbols).includes(symbol))
                         numStr = beforeSymbols[symbol] + numStr
 
@@ -58,7 +59,12 @@ export default defineNuxtPlugin(() => {
                         numStr = numStr + afterSymbols[symbol]
                 }
 
-                // Add '+' sign to string if number is positive (negative numbers already have '-' of course)
+                // in step one we convert numbers to positive for the sake of adding currency symbols, now is the time
+                // to add back the '-' symbol if the number was indeed negative
+                if (isNegative)
+                    numStr = '-' + numStr
+
+                // Add '+' sign to string if number is positive
                 if (addSign) {
                     if (parseFloat(numberString) > 0)
                         numStr = '+' + numStr

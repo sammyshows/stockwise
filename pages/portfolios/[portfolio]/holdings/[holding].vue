@@ -15,7 +15,7 @@
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <div class="flex items-center h-20 mb-4 py-3 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
         <div v-if="assetData">
-          <p class="mr-2 font-normal text-2xl tracking-wider truncate">${{ $formatNumber(assetData.current_price, 2) }}</p>
+          <p class="mr-2 font-normal text-2xl tracking-wider truncate">{{ $formatNumber(assetData.current_price, 2, true, false, assetData.currency_symbol) }}</p>
           <p class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
             {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)
           </p>
