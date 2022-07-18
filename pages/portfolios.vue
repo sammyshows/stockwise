@@ -74,17 +74,19 @@ export default defineComponent({
   computed: {
     total: function() {
       if (this.portfolios) {
-        return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
-              if (current_value && initial_value && all_time_initial) {
-                total.current_value = total.current_value.plus(current_value)
-                total.initial_value = total.initial_value.plus(initial_value)
-                total.daily_change = total.daily_change.plus(daily_change)
-                total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
-              }
+        return this.portfolios.reduce((total, { current_value, initial_value, daily_change, all_time_initial, realized, realized_initial, portfolio_included }) => {
+              if (portfolio_included) {
+                if (current_value && initial_value && all_time_initial) {
+                  total.current_value = total.current_value.plus(current_value)
+                  total.initial_value = total.initial_value.plus(initial_value)
+                  total.daily_change = total.daily_change.plus(daily_change)
+                  total.all_time_initial = total.all_time_initial.plus(all_time_initial || initial_value)
+                }
 
-              if (realized) {
-                total.realized = total.realized.plus(realized)
-                total.realized_initial = total.realized_initial.plus(realized_initial)
+                if (realized) {
+                  total.realized = total.realized.plus(realized)
+                  total.realized_initial = total.realized_initial.plus(realized_initial)
+                }
               }
 
               return total

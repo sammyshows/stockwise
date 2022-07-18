@@ -14,7 +14,7 @@
           </div>
           <div class="flex justify-between">
             <label for="included" class="flex items-center">Included in totals</label>
-            <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+            <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/50 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
           </div>
         </div>
         <div class="text-right">
@@ -127,6 +127,7 @@ export default defineComponent({
       const updatedPortfolios = this.portfolioStore.portfolios.map(p => {
         if (p.portfolio_id === this.portfolioId) {
           p.portfolio_name = this.portfolioDetails.name
+          p.portfolio_included = this.portfolioDetails.included
         }
         return p
       })
