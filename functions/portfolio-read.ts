@@ -6,7 +6,12 @@ const client = require("../database/client.ts")
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
-    const portfolio = await client`SELECT id, name, included FROM portfolios WHERE id = ${eventBody.portfolioId};`
+    const portfolio = await client`
+        SELECT id, 
+               name AS portfolio_name,
+               included 
+        FROM portfolios 
+        WHERE id = ${eventBody.portfolioId};`
 
     return {
         statusCode: 200,

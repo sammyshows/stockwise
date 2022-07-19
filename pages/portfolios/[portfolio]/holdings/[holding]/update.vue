@@ -7,10 +7,10 @@
       </div>
 
       <div class="flex flex-col grow justify-between px-6">
-        <div class="flex flex-col grow gap-y-4 text-sm">
+        <div class="flex flex-col grow gap-y-4 text-xs">
           <div>
             <label for="type" class="flex items-end">Portfolio<span></span></label>
-            <select v-model="selectedPortfolio" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            <select v-model="selectedPortfolio" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               <option v-for="portfolio in portfolios" :value="portfolio.portfolio_id" :selected="portfolio.portfolio_id === selectedPortfolio">{{ portfolio.portfolio_name }}</option>
             </select>
           </div>

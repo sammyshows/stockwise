@@ -55,7 +55,7 @@ export default defineComponent({
         })
       })
           .then(response => response.json())
-      this.pageDetails.subtitle = response.data[0].name
+      this.pageDetails.subtitle = response.data[0].portfolio_name
     }
   }
 })

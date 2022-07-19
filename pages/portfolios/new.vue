@@ -5,15 +5,18 @@
     </div>
 
     <div class="flex flex-col grow justify-between px-6">
-      <div class="flex flex-col grow gap-y-6 text-sm">
-        <div>
-          <label for="name" class="flex items-end">Portfolio name<span :class="[ invalidName ? 'text-red-600': 'hidden' ]">&nbsp;&#10033;</span></label>
-          <input @click="invalidName = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full py-4 h-8 bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm" autofocus>
-        </div>
-        <div class="flex justify-between">
-          <label for="included" class="flex items-center">Included in totals</label>
-          <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
-        </div>
+      <div class="flex flex-col grow text-xs">
+        <TransitionGroup tag="div" name="form">
+          <div key="1">
+            <label for="name" class="flex items-end">Portfolio name</label>
+            <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a name for your portfolio</p>
+            <input @click="invalid.name = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+          </div>
+          <div key="2" class="flex justify-between mt-4">
+            <label for="included" class="flex items-center">Included in totals</label>
+            <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+          </div>
+        </TransitionGroup>
       </div>
       <div class="text-right mb-7">
         <ButtonsCyan text="SAVE" @clicked="createPortfolio()" />
@@ -42,7 +45,9 @@ export default defineComponent({
         title: 'New Portfolio',
         returnPath: '/portfolios'
       },
-      invalidName: false,
+      invalid: {
+        name: false
+      },
       portfolioDetails: { // Has extra info for adding to the current portfolios state
         userId: useState('uuid').value,
         portfolio_id: uuidv4(),
@@ -55,10 +60,10 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
-      if (this.portfolioDetails.name !== '')
-        return true
-      else
-        this.invalidName = true
+      if (this.portfolioDetails.portfolio_name === '')
+        this.invalid.name = true
+
+      return this.invalid.name === false
     },
 
     async createPortfolio(): Promise<void> {

@@ -43,22 +43,22 @@
             </div>
           </div>
 
-          <div v-else key="3" class="w-full">
+          <div v-else key="3" class="w-full text-xs">
             <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your study:</p>
             <div>
               <label for="name" class="flex items-end">Name</label>
-              <input v-model="name" id="name" type="text" autocomplete="off" placeholder="e.g. Apple" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+              <input v-model="name" id="name" type="text" autocomplete="off" placeholder="e.g. Apple" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
-            <div class="mt-5">
+            <div class="mt-4">
               <label for="symbol" class="flex items-end">Symbol</label>
-              <input v-model="symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. AAPL" class="w-full bg-transparent text-white border border-0 border-b placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white text-sm">
+              <input v-model="symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. AAPL" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
           </div>
 
-          <div class="mt-5 text-sm" key="4">
+          <div class="mt-4 text-xs" key="4">
             <label for="type" class="flex items-end">Study type</label>
-            <select v-model="studyType" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+            <select v-model="studyType" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               <option value="" disabled selected hidden></option>
               <option :value="0">Standard</option>
               <option :value="1" disabled>Advanced (coming soon...)</option>

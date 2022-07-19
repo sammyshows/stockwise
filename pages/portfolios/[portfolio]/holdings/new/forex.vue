@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex justify-between h-14 mb-5">
+    <div class="flex justify-between h-14 mb-5 px-3">
       <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 
@@ -156,7 +156,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      this.pageDetails.subtitle = response.data[0].name
+      this.pageDetails.subtitle = response.data[0].portfolio_name
     },
 
     setDateTime(): void {
