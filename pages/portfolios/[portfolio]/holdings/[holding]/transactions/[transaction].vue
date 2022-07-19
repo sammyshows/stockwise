@@ -2,7 +2,9 @@
   <div class="flex flex-col grow">
     <div class="h-20 px-3 flex justify-between">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-      <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" />
+      <div>
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" />
+      </div>
     </div>
     <div v-if="assetData" class="flex flex-col grow px-8">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">

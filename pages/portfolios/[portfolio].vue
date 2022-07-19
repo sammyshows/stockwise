@@ -2,7 +2,7 @@
   <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
-        <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
+        <PageTitle :pageDetails="{ title: this.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
             <PlusIcon class="h-8 w-8" />
@@ -31,6 +31,7 @@ import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import {BigNumber} from "bignumber.js";
 import { computed } from "@vue/reactivity";
+import { usePortfolios } from "@/store/portfolios";
 import { useHoldings } from "@/store/holdings";
 
 
@@ -40,9 +41,11 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const token = await useState('authToken').value
+    const portfolioStore = usePortfolios()
+    const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
     const holdingStore = useHoldings()
     const holdings = computed(() => holdingStore.getHoldings(route.params.portfolio))
-    return { token, holdingStore, holdings }
+    return { token, portfolio, holdingStore, holdings }
   },
 
   components: {
@@ -50,7 +53,6 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.getPortfolio()
     await this.getHoldings()
     this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getHoldings(), 60000)
@@ -72,7 +74,7 @@ export default defineComponent({
       intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
-        title: this.$route.params.portfolioName,
+        title: this.portfolio?.portfolio_name,
         subtitle: 'PORTFOLIOS',
         returnPath: '/portfolios'
       },
@@ -122,21 +124,6 @@ export default defineComponent({
   },
 
   methods: {
-    async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          portfolioId: this.portfolioId
-        })
-      })
-        .then(response => response.json())
-
-      this.pageDetails.title = response.data[0].name
-    },
-
     async getHoldings(): Promise<void> {
       const response = await fetch('/api/holdings-read', {
         headers: {

@@ -59,7 +59,7 @@
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Market Cap -->
         <p class="text-tiny mb-0.5">Market Cap</p>
-        <p class="text-tiny mb-0.5">{{ (parseInt(quote["marketCap"]) / 100000000).toFixed(2) || '-' }}M</p> <!-- May want to use a computed value here? -->
+        <p class="text-tiny mb-0.5">{{ $simplify(quote["marketCap"], 2) || '-' }}</p> <!-- May want to use a computed value here? -->
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Open -->
         <p class="text-tiny mb-0.5">Open</p>
@@ -83,15 +83,15 @@
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Volume -->
         <p class="text-tiny mb-0.5">Volume</p>
-        <p class="text-tiny mb-0.5">{{ quote["volume"] || '-' }}</p>
+        <p class="text-tiny mb-0.5">{{ $simplify(quote["volume"], 2) || '-' }}</p>
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- 1 Year Target -->
         <p class="text-tiny mb-0.5">EBITDA</p>
-        <p class="text-tiny mb-0.5">{{ stats["EBITDA"] / 1000000000 || '-' }}</p>
+        <p class="text-tiny mb-0.5">{{ $simplify(stats["EBITDA"], 2) || '-' }}</p>
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Shares -->
         <p class="text-tiny mb-0.5">Shares</p>
-        <p class="text-tiny mb-0.5">{{ stats["sharesOutstanding"] / 1000000 || '-' }}M</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
+        <p class="text-tiny mb-0.5">{{ $simplify(stats["sharesOutstanding"], 2) || '-' }}</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Price / Sales -->
         <p class="text-tiny mb-0.5">Price / Sales</p>
@@ -103,11 +103,11 @@
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
         <p class="text-tiny mb-0.5">Cash</p>
-        <p class="text-tiny mb-0.5">{{ stats["totalCash"] / 1000000000 || '-' }}B</p>
+        <p class="text-tiny mb-0.5">{{ $simplify(stats["totalCash"], 2) || '-' }}</p>
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
         <p class="text-tiny mb-0.5">Debt</p>
-        <p class="text-tiny mb-0.5">{{ stats["currentDebt"] / 1000000000 || '-' }}B</p>
+        <p class="text-tiny mb-0.5">{{ $simplify(stats["currentDebt"], 2) || '-' }}</p>
       </div>
       <div class="cols-span-1 flex justify-between"> <!-- Dividend Per Share -->
         <p class="text-tiny mb-0.5">Div Per Share</p>

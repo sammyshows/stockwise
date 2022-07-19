@@ -7,5 +7,19 @@ export const usePortfolios = defineStore('portfolios', {
         return {
             portfolios: null as (Object[] | null)
         }
-    }
+    },
+
+    getters: {
+        getPortfolio: (state) => {
+            type Portfolio = { // This just satisfies the editor when picking the transaction.portfolio_id below
+                [key: string]: any
+            }
+            return (portfolioId) => {
+                if (state.portfolios)
+                    return state.portfolios.find((p: Portfolio) => p.portfolio_id === portfolioId)
+                else
+                    return null
+            }
+        }
+    },
 })

@@ -44,7 +44,7 @@ export default defineNuxtPlugin(() => {
                 if (parseFloat(numberString) || numberString == '0') {
                     numStr = Math.abs(parseFloat(numberString)).toLocaleString(
                         undefined,
-                        {minimumFractionDigits: precision, maximumFractionDigits: precision})
+                        { minimumFractionDigits: 2, maximumFractionDigits: precision })
                 } else {
                     return null
                 }
