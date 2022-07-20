@@ -12,7 +12,7 @@
             <div key="1">
               <label for="name" class="flex items-end">Portfolio name</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a name for your portfolio</p>
-              <input @click="invalid.name = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <input @keyup="invalid.name = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div key="2" class="flex justify-between mt-4">
               <label for="included" class="flex items-center">Included in totals</label>

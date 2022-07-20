@@ -17,11 +17,10 @@
             <label for="included" class="flex items-center">Included in totals</label>
             <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
           </div>
-
-          <div key="3" class="grow flex items-end justify-end my-7">
-            <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="createPortfolio()" />
-          </div>
         </TransitionGroup>
+      </div>
+      <div class="grow flex items-end justify-end my-7 text-right">
+        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="createPortfolio()" />
       </div>
     </div>
   </div>

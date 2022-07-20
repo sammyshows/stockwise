@@ -11,7 +11,7 @@
             <TransitionGroup name="form">
               <div key="1" v-if="!manualForm">
                 <div class="relative" >
-                  <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a company</p>
+                  <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
                   <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
                   <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
                     <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
@@ -286,7 +286,7 @@ export default defineComponent({
 
     async addHolding(): Promise<void> {
       this.disabledSave = true
-      this.validateForm() // This is so that the validation checks are still run even if validateManualForm fails below
+      this.validateForm() // This is so that the validation checks are still run even if validateQuote fails below
       if (this.validateQuote() && this.validateForm()) {
         const holdingId = await fetch('/api/holding-create-stock', {
           headers: {

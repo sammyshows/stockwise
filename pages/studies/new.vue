@@ -9,7 +9,8 @@
         <TransitionGroup name="form">
           <div v-if="!manualForm" class="w-full">
             <div class="relative mb-3" key="1">
-              <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Find a company..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
+              <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
+              <input @keyup="fetchSearch($event.target.value); invalid.quote = false;" autocomplete="off" type="text" name="search" placeholder="Find a company..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
               <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
                 <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
                   <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
@@ -47,12 +48,14 @@
             <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your study:</p>
             <div>
               <label for="name" class="flex items-end">Name</label>
-              <input v-model="name" id="name" type="text" autocomplete="off" placeholder="e.g. Apple" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the name of the company</p>
+              <input v-model="name" @keyup="invalid.name = false" id="name" type="text" autocomplete="off" placeholder="e.g. Apple" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
             <div class="mt-4">
               <label for="symbol" class="flex items-end">Symbol</label>
-              <input v-model="symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. AAPL" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.symbol ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the symbol of the company</p>
+              <input v-model="symbol" @keyup="invalid.symbol = false" id="symbol" type="text" autocomplete="off" placeholder="e.g. AAPL" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
           </div>
 
@@ -74,8 +77,8 @@
           <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-10 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
         </TransitionGroup>
       </div>
-      <div class="text-right mb-7">
-        <ButtonsCyan text="CREATE" @clicked="addStudy()" />
+      <div class="grow flex items-end justify-end my-7 text-right">
+        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="addStudy()" />
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->
@@ -105,21 +108,43 @@ export default defineComponent({
 
   data() {
     return {
+      disabledSave: false,
       pageDetails: {
         returnPath: '/studies',
         title: 'Start a Study'
       },
       manualForm: false,
       searchResults: [],
+      invalid: {
+        quote: false,
+        name: false,
+        symbol: false
+      },
       quote: null as ({} | null),
-      name: null as (string | null),
-      symbol: null as (string | null),
+      name: '' as (string | null),
+      symbol: '' as (string | null),
       studyId: uuidv4(),
       studyType: 0
     }
   },
 
   methods: {
+    validateForm(): Boolean {
+      if (this.manualForm) {
+        if (this.name === '')
+          this.invalid.name = true
+        if (this.symbol === '')
+          this.invalid.symbol = true
+
+        return this.invalid.name === false && this.invalid.symbol === false
+      } else {
+        if (!this.quote)
+          this.invalid.quote = true
+
+        return this.invalid.quote === false
+      }
+    },
+
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
         headers: {
@@ -160,32 +185,36 @@ export default defineComponent({
     },
 
     async addStudy(): Promise<void> {
-      const response = await fetch('/api/study-create', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          token: this.token,
-          manualEntry: this.manualForm,
-          uuid: this.uuid,
-          studyId: this.studyId,
-          name: this.manualForm ? this.name : null,
-          symbol: this.manualForm ? this.symbol : this.quote.symbol,
-          type: this.studyType
+      this.disabledSave = true
+      if (this.validateForm()) {
+        const response = await fetch('/api/study-create', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            token: this.token,
+            manualEntry: this.manualForm,
+            uuid: this.uuid,
+            studyId: this.studyId,
+            name: this.manualForm ? this.name : null,
+            symbol: this.manualForm ? this.symbol : this.quote.symbol,
+            type: this.studyType
+          })
         })
-      })
-      if (response.status === 200) {
-        this.studyStoreCreate()
-        this.$router.push({ name: 'studies-study', params: {study: this.studyId }})
+        if (response.status === 200) {
+          this.studyStoreCreate()
+          await this.$router.push({name: 'studies-study', params: {study: this.studyId}})
+        }
       }
+      this.disabledSave = false
     },
 
     studyStoreCreate() {
       this.studyStore.$patch((state) => {
         state.studies.push({
           completed_qs: 0,
-          name: this.manualForm ? this.name : null,
+          name: this.manualForm ? this.name : this.quote.companyName,
           notes: null,
           question_eight: null,
           question_five: null,
