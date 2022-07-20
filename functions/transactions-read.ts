@@ -18,7 +18,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                a.symbol, 
                a.exchange, 
                a.name,
-               SUBSTRING(asset_c.symbol, 4, 6) AS currency_symbol
+               SUBSTRING(asset_c.symbol, 1, 3) AS currency_symbol
         FROM assets AS a
         INNER JOIN assets AS asset_c ON asset_c.id = a.currency_id
         INNER JOIN holdings AS h ON h.asset_id = a.id

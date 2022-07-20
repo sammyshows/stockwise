@@ -2,6 +2,9 @@ export default defineNuxtPlugin(() => {
     return {
         provide: {
             fontSize: (string, defaultSize, initialThreshold?) => {
+                if (!string)
+                    return defaultSize
+
                 if (defaultSize === 'text-xs') {
                     if (string.length <= (initialThreshold || 10))
                         return defaultSize

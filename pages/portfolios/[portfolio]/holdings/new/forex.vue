@@ -6,19 +6,21 @@
 
     <div class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
-        <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-sm">
+        <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-xs">
           <TransitionGroup name="form">
             <div key="1" class="flex w-full gap-x-3">
               <div class="grow">
                 <label for="from" class="flex items-end">From</label>
-                <select v-model="transaction.from" @change="getQuote()" id="from" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
+                <select v-model="transaction.from" @change="getQuote(); invalid.from = false;" id="from" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   <option value="" disabled selected hidden></option>
                   <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
                 </select>
               </div>
               <div class="grow">
                 <label for="to" class="flex items-end">To</label>
-                <select v-model="transaction.to" @change="getQuote()" id="to" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.to ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
+                <select v-model="transaction.to" @change="getQuote(); invalid.to = false;" id="to" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   <option value="" disabled selected hidden></option>
                   <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
                 </select>
@@ -42,36 +44,46 @@
 
             <div key="3">
               <label for="type" class="flex items-end">Transaction type</label>
-              <select v-model="transaction.type" id="type" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-gray-300 text-sm">
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
+              <select v-model="transaction.type" @change="invalid.type = false;" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option value="" disabled selected hidden></option>
                 <option :value="0">BUY</option>
-                <option :value="1">SELL</option>
+                <option :value="1" disabled>SELL</option>
               </select>
             </div>
 
             <div key="4">
               <label for="amount" class="flex items-end">Amount</label>
-              <input v-model="transaction.amount" id="amount" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.amount ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive amount</p>
+              <input v-model="transaction.amount" @keyup="invalid.amount = false;" id="amount" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
             <div key="5">
               <label for="initial_rate" class="flex items-end">Initial rate</label>
-              <input v-model="transaction.initialRate" id="initial_rate" type="number" class="w-full bg-transparent text-white border border-0 border-b focus:ring-0 focus:border-white text-sm">
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the currency rate</p>
+              <input v-model="transaction.initialRate" @keyup="invalid.initialRate = false;" id="initial_rate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
-            <div key="6" class="w-full flex justify-around gap-x-4">
+            <div :key="6">
+              <label for="exchangeRate">Exchange rate (optional)</label>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
+              <input v-model="transaction.exchangeRate" @keyup="invalid.exchangeRate = false;" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+            </div>
+
+            <div key="7" class="w-full flex justify-around gap-x-4">
               <div>
                 <label for="date">Date</label>
-                <input v-model="transaction.date" id="date" type="date" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+                <input v-model="transaction.date" id="date" type="date" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
               <div>
                 <label for="time">Time</label>
-                <input v-model="transaction.time" id="time" type="time" class="box-border bg-transparent text-sm border border-0 border-b border-gray-400 focus:ring-0 focus:border-white" />
+                <input v-model="transaction.time" id="time" type="time" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
             </div>
 
-            <div key="7" class="grow flex items-end justify-end text-right mb-7">
-              <ButtonsCyan text="SAVE" @clicked="addHolding()" />
+            <div key="8" class="grow flex items-end justify-end text-right mb-7">
+              <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
             </div>
           </TransitionGroup>
         </div>
@@ -98,6 +110,7 @@ export default defineComponent({
 
   data() {
     return {
+      disabledSave: false,
       pageDetails: {
         title: 'Add Forex',
         subtitle: this.$route.params.portfolioName,
@@ -132,12 +145,21 @@ export default defineComponent({
         ZAR: "South African Rand"
       },
       quote: null as ({} | null),
+      invalid: {
+        from: false,
+        to: false,
+        type: false,
+        amount: false,
+        initialRate: false,
+        exchangeRate: false
+      },
       transaction: {
-        type: null as (number | null),
         from: null as (string | null),
         to: null as (string | null),
+        type: null as (number | null),
         amount: null as (number | null),
         initialRate: null as (number | null),
+        exchangeRate: null as (number | null),
         date: null as (string | null),
         time: null as (string | null)
       }
@@ -145,6 +167,23 @@ export default defineComponent({
   },
 
   methods: {
+    validateForm(): Boolean {
+      if (this.transaction.from === null)
+        this.invalid.from = true
+      if (this.transaction.to === null)
+        this.invalid.to = true
+      if (this.transaction.type === null)
+        this.invalid.type = true
+      if (!this.transaction.amount || this.transaction.amount <= 0)
+        this.invalid.amount = true
+      if (!this.transaction.initialRate || this.transaction.initialRate < 0)
+        this.invalid.initialRate = true
+      if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
+        this.invalid.exchangeRate = true
+
+      return this.invalid.from === false && this.invalid.to === false && this.invalid.type === false && this.invalid.amount === false && this.invalid.initialRate === false && this.invalid.exchangeRate === false
+    },
+
     async getPortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
         headers: {
@@ -199,22 +238,26 @@ export default defineComponent({
     },
 
     async addHolding(): Promise<void> {
-      const holdingId = await fetch('/api/holding-create-forex', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          token: this.token,
-          portfolio: this.portfolioId,
-          from: this.transaction.from,
-          to: this.transaction.to
+      this.disabledSave = true
+      if (this.validateForm()) {
+        const holdingId = await fetch('/api/holding-create-forex', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            token: this.token,
+            portfolio: this.portfolioId,
+            from: this.transaction.from,
+            to: this.transaction.to
+          })
         })
-      })
-        .then(response => response.json())
-        .then(data => data.holdingId)
+            .then(response => response.json())
+            .then(data => data.holdingId)
 
-      await this.addTransaction(holdingId)
+        await this.addTransaction(holdingId)
+      }
+      this.disabledSave = false
     },
 
     async addTransaction(holdingId): Promise<void> {
@@ -229,13 +272,14 @@ export default defineComponent({
           type: this.transaction.type,
           quantity: this.transaction.amount,
           initialPrice: this.transaction.initialRate,
+          exchangeRate: this.transaction.exchangeRate,
           timestamp: this.parseDate()
         })
       })
 
       if (response.status === 200) {
         this.$emit('updateHoldings')
-        this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+        await this.$router.push({name: 'portfolios-portfolio-holdings-holding',
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,

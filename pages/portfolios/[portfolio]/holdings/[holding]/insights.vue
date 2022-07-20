@@ -1,124 +1,129 @@
 <template>
-  <div class="px-3 overflow-scroll">
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !assetChartMax }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
-      <button disabled class="px-2 py-1 text-gray-600">15Y</button>
+  <div class="flex flex-col grow px-3 overflow-scroll">
+    <div v-if="assetData.type !== 0" class="flex items-center justify-center grow">
+      <h2 class="text-xl text-center font-medium tracking-wider text-gray-500">No Data</h2>
     </div>
+    <div v-else>
+      <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !assetChartMax }">
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+        <button disabled class="px-2 py-1 text-gray-600">15Y</button>
+      </div>
 
-    <div :class="{ 'hidden': !assetChartMax }" class="mt-2 font-normal text-center text-sm">
-      <p v-if="activeRange !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
-        {{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
-      </p>
-      <p v-else-if="noDailyChart && activeRange === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
-      <p v-else :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
-        {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
-      </p>
-    </div>
+      <div :class="{ 'hidden': !assetChartMax }" class="mt-2 font-normal text-center text-sm">
+        <p v-if="activeRange !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
+          {{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+        </p>
+        <p v-else-if="noDailyChart && activeRange === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
+        <p v-else :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
+          {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+        </p>
+      </div>
 
-    <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
-      <!--  This chart gets replaced on creation  -->
-      <canvas ref="chart" id="initialChart" height="224" class="w-full" :class="{ 'hidden': !assetChartMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
-    </div>
+      <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+        <!--  This chart gets replaced on creation  -->
+        <canvas ref="chart" id="initialChart" height="224" class="w-full" :class="{ 'hidden': !assetChartMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+      </div>
 
-    <div v-if="!assetChartMax" style="height: 278px;">
-      <Spinner></Spinner>
-    </div>
+      <div v-if="assetChartMax === null" style="height: 278px;">
+        <Spinner></Spinner>
+      </div>
 
-    <div v-if="assetData.type === 0" class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
-      <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
-        <p class="text-tiny mb-0.5">High</p>
-        <p class="text-tiny mb-0.5">{{ quote["high"] || '-' }}</p>
+      <div v-if="assetData.type === 0 && quote && stats" class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
+        <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
+          <p class="text-tiny mb-0.5">High</p>
+          <p class="text-tiny mb-0.5">{{ quote["high"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 52 week high -->
+          <p class="text-tiny mb-0.5">52wk High</p>
+          <p class="text-tiny mb-0.5">{{ stats["week52high"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Daily low -->
+          <p class="text-tiny mb-0.5">Low</p>
+          <p class="text-tiny mb-0.5">{{ quote["low"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 52 week low -->
+          <p class="text-tiny mb-0.5">52wk Low</p>
+          <p class="text-tiny mb-0.5">{{ stats["week52low"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Prev Close -->
+          <p class="text-tiny mb-0.5">Prev Close</p>
+          <p class="text-tiny mb-0.5">{{ quote["previousClose"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Market Cap -->
+          <p class="text-tiny mb-0.5">Market Cap</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(quote["marketCap"], 2) || '-' }}</p> <!-- May want to use a computed value here? -->
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Open -->
+          <p class="text-tiny mb-0.5">Open</p>
+          <p class="text-tiny mb-0.5">{{ quote["open"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Beta -->
+          <p class="text-tiny mb-0.5">Beta</p>
+          <p class="text-tiny mb-0.5">{{ parseFloat(stats["beta"]).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- P/E Ratio -->
+          <p class="text-tiny mb-0.5">P/E</p>
+          <p class="text-tiny mb-0.5">{{ quote["peRatio"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Fwd P/E Ratio -->
+          <p class="text-tiny mb-0.5">Forward P/E</p>
+          <p class="text-tiny mb-0.5">{{ (parseFloat(stats["forwardPERatio"])).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- EPS -->
+          <p class="text-tiny mb-0.5">EPS</p>
+          <p class="text-tiny mb-0.5">{{ stats["ttmEPS"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Volume -->
+          <p class="text-tiny mb-0.5">Volume</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(quote["volume"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 1 Year Target -->
+          <p class="text-tiny mb-0.5">EBITDA</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["EBITDA"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Shares -->
+          <p class="text-tiny mb-0.5">Shares</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["sharesOutstanding"], 2) || '-' }}</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Sales -->
+          <p class="text-tiny mb-0.5">Price / Sales</p>
+          <p class="text-tiny mb-0.5">{{ stats["priceToSales"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Price / Book</p>
+          <p class="text-tiny mb-0.5">{{ stats["priceToBook"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Cash</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["totalCash"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Debt</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["currentDebt"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Dividend Per Share -->
+          <p class="text-tiny mb-0.5">Div Per Share</p>
+          <p class="text-tiny mb-0.5">{{ (parseFloat(stats["ttmDividendRate"])).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Dividend Yield -->
+          <p class="text-tiny mb-0.5">Div Yield</p>
+          <p class="text-tiny mb-0.5">{{ (stats["dividendYield"] * 100).toFixed(2) || '-' }}%</p>
+        </div>
       </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 52 week high -->
-        <p class="text-tiny mb-0.5">52wk High</p>
-        <p class="text-tiny mb-0.5">{{ stats["week52high"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Daily low -->
-        <p class="text-tiny mb-0.5">Low</p>
-        <p class="text-tiny mb-0.5">{{ quote["low"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 52 week low -->
-        <p class="text-tiny mb-0.5">52wk Low</p>
-        <p class="text-tiny mb-0.5">{{ stats["week52low"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Prev Close -->
-        <p class="text-tiny mb-0.5">Prev Close</p>
-        <p class="text-tiny mb-0.5">{{ quote["previousClose"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Market Cap -->
-        <p class="text-tiny mb-0.5">Market Cap</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(quote["marketCap"], 2) || '-' }}</p> <!-- May want to use a computed value here? -->
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Open -->
-        <p class="text-tiny mb-0.5">Open</p>
-        <p class="text-tiny mb-0.5">{{ quote["open"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Beta -->
-        <p class="text-tiny mb-0.5">Beta</p>
-        <p class="text-tiny mb-0.5">{{ parseFloat(stats["beta"]).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- P/E Ratio -->
-        <p class="text-tiny mb-0.5">P/E</p>
-        <p class="text-tiny mb-0.5">{{ quote["peRatio"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Fwd P/E Ratio -->
-        <p class="text-tiny mb-0.5">Forward P/E</p>
-        <p class="text-tiny mb-0.5">{{ (parseFloat(stats["forwardPERatio"])).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- EPS -->
-        <p class="text-tiny mb-0.5">EPS</p>
-        <p class="text-tiny mb-0.5">{{ stats["ttmEPS"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Volume -->
-        <p class="text-tiny mb-0.5">Volume</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(quote["volume"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 1 Year Target -->
-        <p class="text-tiny mb-0.5">EBITDA</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["EBITDA"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Shares -->
-        <p class="text-tiny mb-0.5">Shares</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["sharesOutstanding"], 2) || '-' }}</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Sales -->
-        <p class="text-tiny mb-0.5">Price / Sales</p>
-        <p class="text-tiny mb-0.5">{{ stats["priceToSales"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Price / Book</p>
-        <p class="text-tiny mb-0.5">{{ stats["priceToBook"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Cash</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["totalCash"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Debt</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["currentDebt"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Dividend Per Share -->
-        <p class="text-tiny mb-0.5">Div Per Share</p>
-        <p class="text-tiny mb-0.5">{{ (parseFloat(stats["ttmDividendRate"])).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Dividend Yield -->
-        <p class="text-tiny mb-0.5">Div Yield</p>
-        <p class="text-tiny mb-0.5">{{ (stats["dividendYield"] * 100).toFixed(2) || '-' }}%</p>
-      </div>
-    </div>
 
-    <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
-    <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Income Statement</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-    </div>
-    <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Balance Sheet</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-    </div>
-    <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Cash Flow</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
+      <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Income Statement</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
+      <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Balance Sheet</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
+      <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Cash Flow</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
     </div>
   </div>
 </template>

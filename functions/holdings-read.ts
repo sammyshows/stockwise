@@ -14,7 +14,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                    a.symbol AS symbol,
                    a.name AS asset_name,
                    a.type AS asset_type,
-                   SUBSTRING(asset_c.symbol, 4, 6) AS currency_symbol,
+                   SUBSTRING(asset_c.symbol, 1, 3) AS currency_symbol,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price AS initial_value_asset_c,
                    t.quantity - COALESCE(SUM(s.quantity), 0) AS current_quantity,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,

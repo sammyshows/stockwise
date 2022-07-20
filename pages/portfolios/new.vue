@@ -6,20 +6,22 @@
 
     <div class="flex flex-col grow justify-between px-6">
       <div class="flex flex-col grow text-xs">
-        <TransitionGroup tag="div" name="form">
+        <TransitionGroup name="form">
           <div key="1">
             <label for="name" class="flex items-end">Portfolio name</label>
             <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a name for your portfolio</p>
-            <input @click="invalid.name = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" :class="[ invalidName ? 'border-red-600' : 'border-gray-600' ]" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+            <input @keyup="invalid.name = false" v-model="portfolioDetails.portfolio_name" autocomplete="off" id="name" type="text" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
           </div>
+
           <div key="2" class="flex justify-between mt-4">
             <label for="included" class="flex items-center">Included in totals</label>
             <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
           </div>
+
+          <div key="3" class="grow flex items-end justify-end my-7">
+            <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="createPortfolio()" />
+          </div>
         </TransitionGroup>
-      </div>
-      <div class="text-right mb-7">
-        <ButtonsCyan text="SAVE" @clicked="createPortfolio()" />
       </div>
     </div>
   </div>
@@ -41,6 +43,7 @@ export default defineComponent({
 
   data() {
     return {
+      disabledSave: false,
       pageDetails: {
         title: 'New Portfolio',
         returnPath: '/portfolios'
@@ -67,6 +70,7 @@ export default defineComponent({
     },
 
     async createPortfolio(): Promise<void> {
+      this.disabledSave = true
       if (this.validateForm()) {
         const response = await fetch('/api/portfolio-create', {
           headers: {
@@ -77,9 +81,10 @@ export default defineComponent({
         })
         if (response.status === 200) {
           setTimeout(() => this.portfolioStoreCreate(), 600)
-          this.$router.push('/portfolios')
+          await this.$router.push('/portfolios')
         }
       }
+      this.disabledSave = false
     },
 
     portfolioStoreCreate() {

@@ -121,9 +121,10 @@ export default defineComponent({
   computed: {
     total: function() {
       if (this.transactions) {
-        return this.transactions.reduce((total, { type, current_quantity, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+        return this.transactions.reduce((total, { type, current_quantity, price, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
               if (type === 0) {
                 total.current_quantity = total.current_quantity.plus(current_quantity)
+                total.initial_value_unexchanged = total.initial_value_unexchanged.plus(new BigNumber(current_quantity).times(price).toNumber())
                 total.current_value = total.current_value.plus(current_value)
                 total.initial_value = total.initial_value.plus(initial_value)
                 total.daily_change = total.daily_change.plus(daily_change)
@@ -140,6 +141,7 @@ export default defineComponent({
             // This is the initial value, `total`, passed to reduce:
             {
               current_quantity: new BigNumber(0),
+              initial_value_unexchanged: new BigNumber(0),
               current_value: new BigNumber(0),
               initial_value: new BigNumber(0),
               daily_change: new BigNumber(0),
@@ -167,7 +169,7 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-      console.log(response)
+
       this.transactionStore.replaceTransactions(this.holdingId, response.transactions)
       this.assetData = response.assetData
       this.assetId = response.assetData.id

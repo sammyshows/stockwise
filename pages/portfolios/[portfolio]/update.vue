@@ -1,6 +1,6 @@
 <template>
   <div class="grow px-3">
-    <div class="h-full pb-12 flex flex-col">
+    <div class="h-full flex flex-col">
       <div class="h-20 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
         <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
@@ -20,8 +20,8 @@
             </div>
           </TransitionGroup>
         </div>
-        <div class="text-right">
-          <ButtonsCyan text="SAVE" @clicked="updatePortfolio()" />
+        <div class="grow flex items-end justify-end my-7 text-right">
+          <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updatePortfolio()" />
         </div>
       </div>
     </div>
@@ -59,6 +59,7 @@ export default defineComponent({
 
   data() {
     return {
+      disabledSave: false,
       openModal: false,
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
@@ -97,6 +98,7 @@ export default defineComponent({
     },
 
     async updatePortfolio(): Promise<void> {
+      this.disabledSave = true
       if (this.validateForm()) {
         const response = await fetch('/api/portfolio-update', {
           headers: {
@@ -108,9 +110,10 @@ export default defineComponent({
 
         if (response.status === 200) {
           this.portfolioStoreUpdate()
-          this.$router.push(`/portfolios/${this.portfolioId}`)
+          await this.$router.push(`/portfolios/${this.portfolioId}`)
         }
       }
+      this.disabledSave = false
     },
 
     closeModal(): void {
@@ -129,14 +132,14 @@ export default defineComponent({
       })
       if (response.status === 200) {
         setTimeout(() => this.portfolioStoreDelete(), 600)
-        this.$router.push('/portfolios')
+        await this.$router.push('/portfolios')
       }
     },
 
     portfolioStoreUpdate() {
       const updatedPortfolios = this.portfolioStore.portfolios.map(p => {
         if (p.portfolio_id === this.portfolioId) {
-          p.portfolio_name = this.portfolioDetails.name
+          p.portfolio_name = this.portfolioDetails.portfolio_name
           p.portfolio_included = this.portfolioDetails.included
         }
         return p

@@ -7,7 +7,7 @@
     <div class="flex flex-col grow px-3">
       <div class="flex flex-col grow pb-3">
         <div class="flex flex-col grow justify-between mt-3">
-          <div class="h-0 px-4 flex flex-col grow overflow-scroll text-sm">
+          <div class="h-0 px-4 flex flex-col grow overflow-scroll text-xs">
             <TransitionGroup name="form">
               <div key="1" v-if="!manualForm">
                 <div class="relative" >
@@ -46,7 +46,7 @@
                 </div>
               </div>
 
-              <div v-else key="2" class="text-xs">
+              <div v-else key="2">
                 <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
                 <div>
                   <label for="name" class="flex items-end">Name</label>
@@ -70,7 +70,7 @@
               </div>
 
               <div :key="3" class="mb-2">
-                <label for="type" class="flex items-end text-xs">Transaction type</label>
+                <label for="type" class="flex items-end">Transaction type</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
                 <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   <option value="" disabled selected hidden></option>
@@ -79,22 +79,22 @@
                 </select>
               </div>
               <div :key="4" class="mb-2">
-                <label for="quantity" class="text-xs">Quantity</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
+                <label for="quantity">Quantity</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive quantity</p>
                 <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               </div>
               <div :key="5" class="mb-2">
-                <label for="initialPrice" class="text-xs">Price</label>
+                <label for="initialPrice">Price</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
                 <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               </div>
               <div :key="6" class="mb-2">
-                <label for="exchangeRate" class="text-xs">Exchange rate (optional)</label>
+                <label for="exchangeRate">Exchange rate (optional)</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
                 <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               </div>
               <div v-if="transaction.type === 1" :key="5" class="mb-2">
-                <label for="method" class="flex items-end text-xs">Method</label>
+                <label for="method" class="flex items-end">Method</label>
                 <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   <option :value="0">FIFO</option>
                   <option :value="1">Custom Selection</option>
@@ -112,7 +112,7 @@
               </div>
 
               <div key="8" class="grow flex items-end justify-end my-7 text-right">
-                <ButtonsCyan :disabled="disabledSave" text="SAVE" @clicked="addHolding()" />
+                <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
               </div>
             </TransitionGroup>
           </div>
@@ -145,6 +145,7 @@ export default defineComponent({
   data() {
     return {
       manualForm: false,
+      disabledSave: false,
       pageDetails: {
         title: 'Add Stock',
         subtitle: this.$route.params.portfolioName,
@@ -161,8 +162,7 @@ export default defineComponent({
         type: false,
         quantity: false,
         initialPrice: false,
-        exchangeRate: false,
-        date: false
+        exchangeRate: false
       },
       transaction: {
         name: '' as (string | null),
@@ -182,7 +182,7 @@ export default defineComponent({
     validateForm(): Boolean {
       if (this.transaction.type === null)
         this.invalid.type = true
-      if (this.transaction.quantity <= 0 || (this.holdingQuantity < this.transaction.quantity && this.transaction.type === 1))
+      if (!this.transaction.quantity || this.transaction.quantity <= 0)
         this.invalid.quantity = true
       if (!this.transaction.initialPrice || this.transaction.initialPrice < 0)
         this.invalid.initialPrice = true
@@ -285,6 +285,7 @@ export default defineComponent({
     },
 
     async addHolding(): Promise<void> {
+      this.disabledSave = true
       this.validateForm() // This is so that the validation checks are still run even if validateManualForm fails below
       if (this.validateQuote() && this.validateForm()) {
         const holdingId = await fetch('/api/holding-create-stock', {
@@ -306,6 +307,7 @@ export default defineComponent({
 
         await this.addTransaction(holdingId)
       }
+      this.disabledSave = false
     },
 
     async addTransaction(holdingId): Promise<void> {
@@ -326,7 +328,7 @@ export default defineComponent({
 
       if (response.status === 200) {
         this.$emit('updateHoldings')
-        this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+        await this.$router.push({name: 'portfolios-portfolio-holdings-holding',
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,
