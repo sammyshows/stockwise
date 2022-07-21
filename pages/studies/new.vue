@@ -212,7 +212,7 @@ export default defineComponent({
 
     studyStoreCreate() {
       this.studyStore.$patch((state) => {
-        state.studies.push({
+        state.studies.unshift({
           completed_qs: 0,
           name: this.manualForm ? this.name : this.quote.companyName,
           notes: null,

@@ -218,10 +218,13 @@ END;
 $$ language 'plpgsql';
 
 CREATE TRIGGER update_user_update_time BEFORE UPDATE ON users FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_user_settings_update_time BEFORE UPDATE ON user_settings FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 CREATE TRIGGER update_portfolio_update_time BEFORE UPDATE ON portfolios FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 CREATE TRIGGER update_asset_update_time BEFORE UPDATE ON assets FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 CREATE TRIGGER update_holding_update_time BEFORE UPDATE ON holdings FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 CREATE TRIGGER update_transaction_update_time BEFORE UPDATE ON transactions FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_sell_update_time BEFORE UPDATE ON sells FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
+CREATE TRIGGER update_study_update_time BEFORE UPDATE ON studies FOR EACH ROW EXECUTE PROCEDURE updateColumnUpdatedAt();
 
 
 

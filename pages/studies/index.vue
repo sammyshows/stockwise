@@ -42,7 +42,7 @@ export default defineComponent({
 
   async setup() {
     const studyStore = useStudies()
-    const studies = computed(() => studyStore.getUncompleted())
+    let studies = computed(() => studyStore.getUncompleted())
     return { studies }
   },
 

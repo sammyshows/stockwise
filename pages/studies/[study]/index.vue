@@ -35,14 +35,13 @@ import { TrashIcon } from "@heroicons/vue/outline";
 import { useStudies } from "@/store/studies";
 import { computed } from "@vue/reactivity";
 
-
 export default defineComponent({
   name: "Study Questions",
 
   async setup() {
     const route = useRoute()
     const studyStore = useStudies()
-    const storeStudy = computed(() => studyStore.getStudy(route.params.study))
+    const storeStudy = studyStore.getStudy(route.params.study)
     const token = await useState('authToken').value
     return { studyStore, storeStudy, token }
   },
@@ -71,7 +70,7 @@ export default defineComponent({
         type: this.storeStudy?.type
       },
       study: {
-        question_one: this.storeStudy?.question_one,
+        question_one: this.s?.question_one,
         question_two: this.storeStudy?.question_two,
         question_three: this.storeStudy?.question_three,
         question_four: this.storeStudy?.question_four,
@@ -188,32 +187,38 @@ export default defineComponent({
       this.currentQuestion += 1
     },
 
+    studyUnchanged() {
+      return this.storeStudy?.question_one === this.study.question_one && this.storeStudy?.question_two === this.study.question_two && this.storeStudy?.question_three === this.study.question_three && this.storeStudy?.question_four === this.study.question_four && this.storeStudy?.question_five === this.study.question_five && this.storeStudy?.question_six === this.study.question_six && this.storeStudy?.question_seven === this.study.question_seven && this.storeStudy?.question_eight === this.study.question_eight
+    },
+
     async submit() {
       await this.updateStudy()
       await this.$router.push({ name: 'studies-study-summary', params: { studyId: this.studyId } })
     },
 
     async updateStudy(): Promise<void> {
-      const response = await fetch('/api/study-update', {
-        headers: {
-          authorization: 'Bearer ' + this.token
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          studyId: this.studyId,
-          question_one: this.study.question_one,
-          question_two: this.study.question_two,
-          question_three: this.study.question_three,
-          question_four: this.study.question_four,
-          question_five: this.study.question_five,
-          question_six: this.study.question_six,
-          question_seven: this.study.question_seven,
-          question_eight: this.study.question_eight,
+      if (!this.studyUnchanged()) {
+        const response = await fetch('/api/study-update', {
+          headers: {
+            authorization: 'Bearer ' + this.token
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            studyId: this.studyId,
+            question_one: this.study.question_one,
+            question_two: this.study.question_two,
+            question_three: this.study.question_three,
+            question_four: this.study.question_four,
+            question_five: this.study.question_five,
+            question_six: this.study.question_six,
+            question_seven: this.study.question_seven,
+            question_eight: this.study.question_eight,
+          })
         })
-      })
 
-      if (response.status === 200) {
-        this.studyStoreUpdate()
+        if (response.status === 200) {
+          this.studyStoreUpdate()
+        }
       }
     },
 
@@ -243,12 +248,20 @@ export default defineComponent({
       if (completedQs === -1)
         completedQs = 8
 
-      const updatedStudies = this.studyStore.studies.map(s => {
+      let updatedStudies = this.studyStore.studies.map(s => {
         if (s.study_id === this.studyId) {
           s.completed_qs = completedQs
         }
         return s
       })
+
+      updatedStudies.forEach((study, index) => {
+        if(study.study_id === this.studyId){
+          updatedStudies.splice(index, 1);
+          updatedStudies.unshift(study);
+        }
+      })
+
       this.studyStore.$patch({
         studies: updatedStudies
       })
