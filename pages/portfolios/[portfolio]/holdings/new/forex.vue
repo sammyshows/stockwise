@@ -71,7 +71,7 @@
               <input v-model="transaction.exchangeRate" @keyup="invalid.exchangeRate = false;" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
-            <div key="7" class="w-full flex justify-around gap-x-4">
+            <div key="7" class="w-full flex justify-between gap-x-4">
               <div>
                 <label for="date">Date</label>
                 <input v-model="transaction.date" id="date" type="date" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />

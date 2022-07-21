@@ -21,17 +21,17 @@
             <div :key="2" class="mb-2">
               <label for="quantity">Quantity</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber() }}</p>
-              <input @click="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div :key="3" class="mb-2">
               <label for="initialPrice">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
-              <input @click="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div :key="4" v-if="assetData.type !== 2" class="mb-2">
               <label for="exchangeRate">Exchange rate (optional)</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-              <input @click="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div v-if="transaction.type === 1" :key="5" class="mb-2">
               <label for="method" class="flex items-end">Method</label>
@@ -143,7 +143,7 @@ export default defineComponent({
     validateForm(): Boolean {
       if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
         this.invalid.quantity = true
-      if (this.transaction.initialPrice < 0)
+      if (!this.transaction.initialPrice || this.transaction.initialPrice < 0)
         this.invalid.initialPrice = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
