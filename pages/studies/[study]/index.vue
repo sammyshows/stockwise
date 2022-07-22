@@ -86,18 +86,21 @@ export default defineComponent({
         {
           question: 'question_one',
           title: `<h2 class="font-medium text-bright-cyan">IS THE BUSINESS SIMPLE AND UNDERSTANDABLE?</h2>`,
-          info: `<div class="text-xs">
-          <h2 class="font-medium mb-1 text-base text-bright-cyan">CIRCLE OF COMPETENCE</h2>
-          <p>When investing it is wise to define a "circle of competence" and stay within it. This is an area or industry that you understand quite well. It's important to understand how a business generates its revenue, cash flow, what influences the industry, and more.
-          <br><br>For example a company like Coca Cola can be considered relatively easy to understand from a business point of view: they sell soft drinks. On the other hand insurance companies tend to have many products, and they can be quite complex.
-          <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">WORDS FROM THE BUFF</h2>
-          <span class="italic">“Everybody's got a different circle of competence. The important thing is not how big the circle is. The important thing is staying inside the circle.”</span> – Warren Buffett
-          <br><br>With that in mind a couple things you can ask yourself are:
-          <br><br>
-          <ul class="px-5 text-xs list-disc">
-            <li>Is this company in my circle of competence?</li>
-            <li>Are the financials relatively simple or difficult to understand?</li>
-          </ul></p></div>`
+          info: `
+          <div class="text-xs">
+            <h2 class="font-medium mb-1 text-base text-bright-cyan">Circle of competence</h2>
+            <p>When investing it is wise to define a "circle of competence" and stay within it. This is an area or industry that you understand quite well. It's important to understand how a business generates its revenue, cash flow, what influences the industry, and more.
+            <br><br>For example a company like Coca Cola can be considered relatively easy to understand from a business point of view: they sell soft drinks. On the other hand insurance companies tend to have many products, and they can be quite complex.
+            <br><br>With that in mind a couple things you can ask yourself are:
+            <br><br>
+            <ul class="px-5 text-xs list-disc">
+              <li>Is this company in my circle of competence?</li>
+              <li>Are the financials relatively simple or difficult to understand?</li>
+            </ul>
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
+            <span class="italic">“Everybody's got a different circle of competence. The important thing is not how big the circle is. The important thing is staying inside the circle.”</span> – Warren Buffett
+            </p>
+          </div>`
         },
         {
           question: 'question_two',
@@ -107,7 +110,7 @@ export default defineComponent({
             <p>Essentially what we're trying to answer here is whether the company has demonstrated consistent results selling the same product / service for years.
             <br><br>Many companies are quite young and have exciting plans for success in the space they operate in. Sometimes they hit the nail on the head, but a lot of the time they need to pivot for unforeseen circumstances. Alternatively, a business might be undergoing a radical change in their business model or leadership.
             <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come.
-            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">WORDS FROM THE BUFF</h2>
+            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“To the extent that we have been successful, it is because we concentrated on identifying one-foot hurdles that we could step over rather than because we acquired any ability to clear seven-footers.”</span> – Warren Buffett
             <br><br>What Buffett means here is that his and Charlie Munger's success at Berkshire Hathaway isn't because they learnt how to solve big problems, rather because they learnt how to avoid them.
             </p>
@@ -118,7 +121,7 @@ export default defineComponent({
           title: `<h2 class="font-medium text-bright-cyan">HOW FAVOURABLE ARE THE LONG-TERM PROSPECTS OF THE BUSINESS?</h2>`,
           info: `
           <div class="text-xs">
-            <h2 class="font-medium mb-1 text-base text-bright-cyan">WHAT TO LOOK FOR</h2>
+            <h2 class="font-medium mb-1 text-base text-bright-cyan">What to look for?</h2>
             <p>When considering the long-term prospects of a business, the product / service of the company is important. Consider whether the product / service of the company is:
             <br><br>
             <ul class="px-5 text-xs list-disc">
@@ -137,7 +140,7 @@ export default defineComponent({
           title: `<h2 class="font-medium text-bright-cyan">IS MANAGEMENT RATIONAL?</h2>`,
           info: `<div class="text-xs"><p>Management is challenging to evaluate because humans are more complicated than numbers. However, management is very important to a company's success, so it is certainly worthwhile doing some analysis.
           <br><br>Managers must be rational in their decisions and allocate capital efficiently. If a company has extra cash and can produce an above-average return on equity (ROE), then the company should reinvest all of its extra earnings for further growth.
-          <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">RATIONALITY WITH LOW EARNINGS</h2>
+          <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Rationality with low earnings</h2>
           On the contrary, if the company has unremarkable investment returns, they have a few options. This is where we can discern the rationality of management. They can:
           <br><br>
           <ul class="px-5 text-xs list-decimal">
@@ -164,7 +167,7 @@ export default defineComponent({
               <li>Are their past statements and strategies consistent with the current situation?</li>
               <li>Do they present clear and honest explanations when addressing shareholder concerns?</li>
             </ul>
-            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">WORDS FROM THE BUFF</h2>
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“In evaluating people, you look for three qualities: integrity, intelligence, and energy. If you don’t have the first, the other two will kill you.” </span> – Warren Buffett
             </p>
           </div>`
@@ -194,8 +197,8 @@ export default defineComponent({
               <li>Exclude all capital gains, losses and extraordinary items which may affect operating earnings</li>
               <li>Ensure there is little or no significant debt</li>
             </ul>
-            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">WHAT'S WRONG WITH DEBT?</h2>
-            Nothing, necessarily. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (Net Income - numerator), hence boosting the ROE. Additionally, debt will reduce the shareholder's equity (denominator), increasing the ROE by default.
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">What's wrong with debt?</h2>
+            Nothing, necessarily. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (Net Income - numerator), hence boosting the ROE.
             <br><br>The problem is simply that having too much debt will diminish the value of calculating the ROE. If a company has a lot of debt it's worth considering why the company has borrowed so much, how it's being used etc.
             </p>
           </div>`
