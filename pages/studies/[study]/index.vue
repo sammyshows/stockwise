@@ -113,22 +113,40 @@ export default defineComponent({
             <li>Has no close substitute, and</li>
             <li>Is not highly regulated.</li>
           </ul>
-          <br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p></div>`
+          <br>Companies that possess the above traits have the pricing power to raise them without fears of losing market share, providing a greater return on capital. For example people still want to buy the new iPhone regardless of price increases. This creates what Buffett calls a 'moat' which gives the company a competitive advantage.
+          <br><br>Be aware of companies that have large marketing expenditure but haven't achieved product differentiation. These are considered to have weak moats around them.
+          <br><br>By lacking the competitive advantage of a differentiated product, they are often forced to compete on cost, which eats into their profit margins. These businesses tend to only yield good returns when there is a poor supply of their product / service, however, that is hard to predict.</p></div>`
         },
         {
           question: 'question_four',
-          title: `<h2 class="font-medium text-bright-cyan">IS MANAGEMENT CANDID WITH ITS SHAREHOLDERS?</h2>`,
-          info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
+          title: `<h2 class="font-medium text-bright-cyan">IS MANAGEMENT RATIONAL?</h2>`,
+          info: `<div class="text-xs"><p>Management is challenging to evaluate because humans are more complicated than numbers. However, management is very important to a company's success, so it is certainly worthwhile doing some analysis.
+          <br><br>Managers must be rational in their decisions and allocate capital efficiently. If a company has extra cash and can produce an above-average return on equity (ROE), then the company should reinvest all of its extra earnings for further growth.
+          <br><br>On the contrary, if the company has unremarkable investment returns, they have a few options. This is where we can discern the rationality of management. They can:
+          <br><br>
+          <ul class="px-5 text-xs list-decimal">
+            <li>Ignore it and reinvest their extra cash anyway,</li>
+            <li>Acquire other companies, or</li>
+            <li>Return excess cash to investors (dividends or share buybacks)</li>
+          </ul>
+          <br><span class="text-bright-cyan">Option 1: </span>This is the most common choice managers make - reinvest anyway, assuming the downturn is temporary and that they can increase profitability. However, if the problem persists, the company's cash pile will decline. In these periods, all eyes are on the earnings forecasts/reports.
+          <br><br><span class="text-bright-cyan">Option 2: </span>It is understandable to have your eyebrows raised when a company must buy growth through acquisitions. In addition, it is often purchased at a premium price and integrating a new business is not easy.
+          <br><br><span class="text-bright-cyan">Option 3: </span>Returning excess capital to investors is the most responsible option, if the company has a growing cash pile that can't be reinvested at above-average rates.
+          <br><br>If a company has excess cash and a poor return on equity (ROE), it is reassuring to see management go with option 3.</p></div>`
         },
         {
           question: 'question_five',
-          title: `<h2 class="font-medium text-bright-cyan">HOW MUCH DOES MANAGEMENT RESIST THE INSTITUTIONAL IMPERATIVE?</h2>`,
-          info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
+          title: `<h2 class="font-medium text-bright-cyan">IS MANAGEMENT CANDID WITH ITS SHAREHOLDERS?</h2>`,
+          info: `<div class="text-xs"><p>When considering the candour of management, look for honesty, transparency and genuine character.
+          <br><br>Being candid with shareholders means being willing to speak on tough topics, providing clear explanations to hard questions and shareholder concerns and being open about their failures.
+          <br><br><span class="italic">“In evaluating people, you look for three qualities: integrity, intelligence, and energy. If you don’t have the first, the other two will kill you.” </span> – Warren Buffett
+          <br><br>A good way to figure this out is to go through Annual Reports, CEO letters to shareholders, interviews, and anything else you can get your hands on from the CEO/management. Consider:
+          <br><br>
+          <ul class="px-5 text-xs list-disc">
+            <li>Are they very transparent and forthcoming in good periods for the business, but reserved and uncommunicative in bad times?</li>
+            <li>Are their past statements and strategies consistent with the current situation?</li>
+            <li>Do they present clear and honest explanations when addressing shareholder concerns?</li>
+          </ul></p></div>`
         },
         {
           question: 'question_six',
