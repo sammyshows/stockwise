@@ -20,6 +20,7 @@
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
       <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+      <button disabled class="px-2 py-1 text-gray-600">15Y</button>
     </div>
 
     <div class="relative">
@@ -214,11 +215,7 @@ export default defineComponent({
           period: '5Y',
           slice: -1300,
           periodText: 'past 5 years'
-        },
-        {
-          period: '15Y',
-          periodText: 'past 15 years'
-        },
+        }
       ],
       chartDataDay: null as ([] | null),
       chartDataMax: null as ([] | null),

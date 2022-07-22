@@ -46,12 +46,8 @@
     <Transition name="info">
       <div v-if="showMoreInfo" class="absolute flex flex-col grow h-full pt-8">
         <div class="overflow-scroll h-5/6 flex flex-col gap-y-4 pb-4 text-xl">
-          <div v-html="moreInfo.title" class="px-3">
-
-          </div>
-          <div v-html="moreInfo.info" class="px-3">
-
-          </div>
+          <div v-html="moreInfo.title" class="px-3"></div>
+          <div v-html="moreInfo.info" class="px-3"></div>
         </div>
         <div class="h-1/6 px-3">
           <div @click="toggleMoreInfo" class="flex w-max mt-5">
