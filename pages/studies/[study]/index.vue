@@ -84,23 +84,37 @@ export default defineComponent({
         {
           question: 'question_one',
           title: `<h2 class="font-medium text-bright-cyan">IS THE BUSINESS SIMPLE AND UNDERSTANDABLE?</h2>`,
-          info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
+          info: `<div class="text-xs"><p>When investing it is wise to define a "circle of competence" and stay within it. This is an area or industry that you understand quite well. It's important to understand how a business generates its revenue, cash flow, what influences the industry, and more.
+          <br><br>For example a company like Coca Cola can be considered relatively easy to understand from a business point of view: they sell soft drinks. On the other hand insurance companies tend to have many products, and they can be quite complex.
+          <br><br><span class="italic">“Everybody's got a different circle of competence. The important thing is not how big the circle is. The important thing is staying inside the circle.”</span> – Warren Buffett
+          <br><br>With that in mind a couple things you can ask yourself are:
+          <br><br>
+          <ul class="px-5 text-xs list-disc">
+            <li>Is this company in my circle of competence?</li>
+            <li>Are the financials relatively simple or difficult to understand?</li>
+          </ul></p></div>`
         },
         {
           question: 'question_two',
           title: `<h2 class="font-medium text-bright-cyan">HOW CONSISTENT IS THE OPERATING HISTORY OF THE BUSINESS?</h2>`,
-          info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
+          info: `<p class="text-xs">Essentially what we're trying to answer here is whether the company has demonstrated consistent results selling the same products for years.
+          <br><br>Many companies are quite young and have exciting plans for success in the space they operate in. Sometimes they hit the nail on the head, but a lot of the time they need to pivot for unforeseen circumstances. Alternatively, a business might be undergoing a radical change in their business model or leadership.
+          <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come.
+          <br><br><span class="italic">“To the extent that we have been successful, it is because we concentrated on identifying one-foot hurdles that we could step over rather than because we acquired any ability to clear seven-footers.”</span> – Warren Buffett
+          <br><br>What Buffett means here is that his and Charlie Munger's success at Berkshire Hathaway isn't because they learnt how to solve big problems, rather because they learnt how to avoid them.</p>`
         },
         {
           question: 'question_three',
           title: `<h2 class="font-medium text-bright-cyan">HOW FAVOURABLE ARE THE LONG-TERM PROSPECTS OF THE BUSINESS?</h2>`,
-          info: `<p class="text-xs">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.
-          <br><br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>`
+          info: `<div class="text-xs"><p>When considering the long-term prospects of a business, the product / service of the company is important. Consider whether the product / service of the company is:
+          <br><br>
+          <ul class="px-5 text-xs list-disc">
+            <li>Needed or desired,</li>
+            <li>Has no close substitute, and</li>
+            <li>Is not highly regulated.</li>
+          </ul>
+          <br>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.
+          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p></div>`
         },
         {
           question: 'question_four',

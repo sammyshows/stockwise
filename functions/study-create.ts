@@ -16,12 +16,13 @@ const handler: Handler = requireAuth(async (event, context) => {
     } else {
         // If the asset is available via IEX and exists in the database
         try {
-            await client`
+            const response = await client`
                 INSERT INTO studies (id, user_id, asset_id, name, symbol, type) 
                 SELECT ${eventBody.studyId}, ${eventBody.uuid}, id, name, symbol, ${eventBody.type}
                 FROM assets
-                WHERE assets.symbol = ${eventBody.symbol};`
-            if (!studyId[0])
+                WHERE assets.symbol = ${eventBody.symbol}
+                RETURNING id;`
+            if (!response[0])
                 throw 'Asset not found'
         } catch (err) {
             // If error, it's likely the asset is available via IEX but doesn't yet exist in the database
