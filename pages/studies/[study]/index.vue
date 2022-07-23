@@ -118,7 +118,7 @@ export default defineComponent({
               <li>Does they have a long history of profits?</li>
               <li>Has the current management / CEO been in the position for a long period?</li>
             </ul>
-            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“To the extent that we have been successful, it is because we concentrated on identifying one-foot hurdles that we could step over rather than because we acquired any ability to clear seven-footers.”</span> – Warren Buffett
             <br><br>What Buffett means here is that his and Charlie Munger's success at Berkshire Hathaway isn't because they learnt how to solve big problems, rather because they learnt how to avoid them.
             </p>
@@ -137,7 +137,7 @@ export default defineComponent({
               <li>Has no close substitute, and</li>
               <li>Is not highly regulated.</li>
             </ul>
-            <br>Companies that possess the above traits have the pricing power to raise them without fears of losing market share, providing a greater return on capital. For example people still want to buy the new iPhone regardless of price increases. This creates what Buffett calls a 'moat' which gives the company a competitive advantage.
+            <br>Companies that possess the above traits have the pricing power to raise prices without fears of losing market share, providing a greater return on capital. For example people still want to buy the new iPhone regardless of price increases. This creates what Buffett calls a 'moat' which gives the company a competitive advantage.
             <br><br>Be aware of companies that have large marketing expenditure but haven't achieved product differentiation. These are considered to have weak moats around them.
             <br><br>By lacking the competitive advantage of a differentiated product, they are often forced to compete on cost, which eats into their profit margins. These businesses tend to only yield good returns when there is a poor supply of their product / service, however, that is hard to predict.
             </p>
@@ -188,7 +188,7 @@ export default defineComponent({
             <p class="text-gray-400 italic">Calculating the ROE is more advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">ROE, not EPS?</h2>
             A lot of analysts like to use the earnings per share (EPS) to guage a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
-            <br><br>Since the denominator (shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
+            <br><br>Since the denominator (number of shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Fair enough, so what's ROE?</h2>
             Return on equity (ROE) is a better measure of management's ability to generate a return on the shareholder's capital. Here's the formula:
             <br><br><div class="flex justify-center items-center px-3 py-2 text-base rounded-xl border border-bright-cyan/30">
@@ -199,8 +199,8 @@ export default defineComponent({
               </div>
             </div>
             <br><span class="text-gray-400 italic">If either of these figures are negative (-), ROE will not be a useful metric and should not be calculated.</span>
-            <br><br><span class="text-bright-cyan">Net Income </span>can be found in a financial report's cash flow statement.
-            <br><span class="text-bright-cyan">Shareholder's Equity </span>can be found in a financial report's balance sheet and can be calculated as Total assets - Total liabilities.
+            <br><br><span class="text-bright-cyan">Net Income </span>can be found in an the cash flow statement.
+            <br><span class="text-bright-cyan">Shareholder's Equity </span>can be found in the balance sheet and can be calculated as (Total assets - Total liabilities).
             <br><br>However, some adjustments must be made, so we can get a more accurate view of the ROE at the core.
             <br><br><ul class="px-5 text-xs list-decimal">
               <li>Marketable securities should be valued at cost instead of market value</li>
@@ -221,12 +221,19 @@ export default defineComponent({
             <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the 'Free Cash Flow' on the web and use that instead, which is similar.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner Earnings?</h2>
             'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
-            <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level. Here's the formula:
-            <br><br><div class="px-3 py-2 text-base rounded-xl border border-bright-cyan/30">
-              <p>Owner's earnings =</p>
-              <p>Net income</p>
-              <p>+ Deprecitation, Amortization and other non-cash charges</p>
+            <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level.
+            <br><br>
+            <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
+                <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
+              <p><span class="invisible">+ </span>Net income</p>
+              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
+              <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
+              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
             </div>
+            <br><br><span class="text-bright-cyan">Net Income </span>can be found in the cash flow statement.
+            <br><span class="text-bright-cyan">Depreciation, Amortization and other non-cash charges </span>can be found in the cash flow statement. Share-based compensation is another common non-cash charge.
+            <br><span class="text-bright-cyan">Capital expenditure (CAPEX) </span>refers to the property, plant and equipment expense found in the investment activities section of the cash flow statement.
+            <br><span class="text-bright-cyan">Change in working capital </span>refers to the change in capital over a period that is available to the company in the short term i.e. current assets.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
             </p>
