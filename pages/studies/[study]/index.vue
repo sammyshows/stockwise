@@ -89,13 +89,13 @@ export default defineComponent({
           info: `
           <div class="text-xs">
             <h2 class="font-medium mb-1 text-base text-bright-cyan">Circle of competence</h2>
-            <p>When investing it is wise to define a "circle of competence" and stay within it. This is an area or industry that you understand quite well. It's important to understand how a business generates its revenue, cash flow, what influences the industry, and more.
-            <br><br>For example a company like Coca Cola can be considered relatively easy to understand from a business point of view: they sell soft drinks. On the other hand insurance companies tend to have many products, and they can be quite complex.
+            <p>When investing, it is wise to define a "circle of competence" and stay within it. This is an area or industry that you understand quite well. It's important to understand how a business generates its revenue, cash flow, what influences the industry, and more.
+            <br><br>For example, a company like Coca Cola can be considered relatively easy to understand from a business point of view: they sell soft drinks. On the other hand, insurance companies tend to have many products, and they can be quite complex.
             <br><br>With that in mind a couple things you can ask yourself are:
             <br><br>
             <ul class="px-5 text-xs list-disc">
               <li>Is this company in my circle of competence?</li>
-              <li>Are the financials relatively simple or difficult to understand?</li>
+              <li>Is the business model relatively simple or difficult to understand?</li>
             </ul>
             <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“Everybody's got a different circle of competence. The important thing is not how big the circle is. The important thing is staying inside the circle.”</span> – Warren Buffett
@@ -191,14 +191,16 @@ export default defineComponent({
               </div>
             </div>
             <br><span class="text-gray-400 italic">If either of these figures are negative (-), ROE will not be a useful metric and should not be calculated.</span>
-            <br><br><span class="text-bright-cyan">Net Income </span>and <span class="text-bright-cyan">Shareholder's Equity </span>can be calculated using information available in a company's financial report. However, some adjustments must be made, so we can get a more accurate view of the ROE at the core.
+            <br><br><span class="text-bright-cyan">Net Income </span>can be found in a financial report's cash flow statement.
+            <br><span class="text-bright-cyan">Shareholder's Equity </span>can be found in a financial report's balance sheet and can be calculated as Total assets - Total liabilities.
+            <br><br>However, some adjustments must be made, so we can get a more accurate view of the ROE at the core.
             <br><br><ul class="px-5 text-xs list-decimal">
               <li>Marketable securities should be valued at cost instead of market value</li>
               <li>Exclude all capital gains, losses and extraordinary items which may affect operating earnings</li>
               <li>Ensure there is little or no significant debt</li>
             </ul>
             <br><h2 class="font-medium mb-1 text-base text-bright-cyan">What's wrong with debt?</h2>
-            Nothing, necessarily. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (Net Income - numerator), hence boosting the ROE.
+            Nothing, necessarily. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (numerator), hence boosting the ROE.
             <br><br>The problem is simply that having too much debt will diminish the value of calculating the ROE. If a company has a lot of debt it's worth considering why the company has borrowed so much, how it's being used etc.
             </p>
           </div>`
@@ -206,16 +208,33 @@ export default defineComponent({
         {
           question: 'question_seven',
           title: `<h2 class="font-medium text-bright-cyan">CALCULATE OWNER EARNINGS</h2>`,
-          info: `<div class="text-xs"><p>A lot of analysts like to use the earnings per share (EPS) to guage a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
-          <br><br>Since the denominator (shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</div></p>`
-        },
+          info: `
+          <div class="text-xs">
+            <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the 'Free Cash Flow' on the web and use that instead, which is similar.
+            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner Earnings?</h2>
+            'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
+            <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level. Here's the formula:
+            <br><br><div class="px-3 py-2 text-base rounded-xl border border-bright-cyan/30">
+              <p>Owner's earnings =</p>
+              <p>Net income</p>
+              <p>+ Deprecitation, Amortization </p>
+            </div>
+            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
+            <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
+            </p>
+          </div>`
+          },
         {
           question: 'question_eight',
           title: `<h2 class="font-medium text-bright-cyan">HOW STRONG IS THE BUSINESS RELATIVE TO THE REST OF THE INDUSTRY?</h2>`,
-          info: `<div class="text-xs"><p>A lot of analysts like to use the earnings per share (EPS) to guage a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
-          <br><br>Since the denominator (shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
-          <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</div></p>`
+          info: `
+          <div class="text-xs">
+            <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.
+            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">ROE, not EPS?</h2>
+            <br><br>Since the denominator (shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
+            <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.
+            </p>
+          </div>`
         }
       ],
       openModal: false
