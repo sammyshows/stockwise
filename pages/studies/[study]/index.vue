@@ -95,6 +95,8 @@ export default defineComponent({
             <br><br>
             <ul class="px-5 text-xs list-disc">
               <li>Is this company in my circle of competence?</li>
+              <li>Are the products / services offered complex?</li>
+              <li>Do they focus on a few core products or have a large range?</li>
               <li>Is the business model relatively simple or difficult to understand?</li>
             </ul>
             <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
