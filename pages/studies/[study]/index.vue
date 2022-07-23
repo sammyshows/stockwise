@@ -111,7 +111,13 @@ export default defineComponent({
           <div class="text-xs">
             <p>Essentially what we're trying to answer here is whether the company has demonstrated consistent results selling the same product / service for years.
             <br><br>Many companies are quite young and have exciting plans for success in the space they operate in. Sometimes they hit the nail on the head, but a lot of the time they need to pivot for unforeseen circumstances. Alternatively, a business might be undergoing a radical change in their business model or leadership.
-            <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come.
+            <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come. Ask yourself:
+           <br><br>
+            <ul class="px-5 text-xs list-disc">
+              <li>Has the company been operating for 10 years+?</li>
+              <li>Does they have a long history of profits?</li>
+              <li>Has the current management / CEO been in the position for a long period?</li>
+            </ul>
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“To the extent that we have been successful, it is because we concentrated on identifying one-foot hurdles that we could step over rather than because we acquired any ability to clear seven-footers.”</span> – Warren Buffett
             <br><br>What Buffett means here is that his and Charlie Munger's success at Berkshire Hathaway isn't because they learnt how to solve big problems, rather because they learnt how to avoid them.
@@ -219,7 +225,7 @@ export default defineComponent({
             <br><br><div class="px-3 py-2 text-base rounded-xl border border-bright-cyan/30">
               <p>Owner's earnings =</p>
               <p>Net income</p>
-              <p>+ Deprecitation, Amortization </p>
+              <p>+ Deprecitation, Amortization and other non-cash charges</p>
             </div>
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
             <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
