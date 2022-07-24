@@ -219,23 +219,23 @@ export default defineComponent({
           info: `
           <div class="text-xs">
             <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the 'Free Cash Flow' on the web and use that instead, which is similar.
-            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner Earnings?</h2>
-            'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
-            <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level.
-            <br><br>
-            <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
-                <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
-              <p><span class="invisible">+ </span>Net income</p>
-              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
-              <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
-              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
-            </div>
-            <br><br><span class="text-bright-cyan">Net Income </span>can be found in the cash flow statement.
-            <br><span class="text-bright-cyan">Depreciation, Amortization and other non-cash charges </span>can be found in the cash flow statement. Share-based compensation is another common non-cash charge.
-            <br><span class="text-bright-cyan">Capital expenditure (CAPEX) </span>refers to the property, plant and equipment expense found in the investment activities section of the cash flow statement.
-            <br><span class="text-bright-cyan">Change in working capital </span>refers to the change in capital over a period that is available to the company in the short term i.e. current assets.
-            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
-            <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
+              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner Earnings?</h2>
+              'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
+              <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level.
+              <br><br>
+              <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
+                  <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
+                <p><span class="invisible">+ </span>Net income</p>
+                <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
+                <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
+                <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
+              </div>
+              <br><br><span class="text-bright-cyan">Net Income </span>can be found in the cash flow statement.
+              <br><span class="text-bright-cyan">Depreciation, Amortization and other non-cash charges </span>can be found in the cash flow statement. Share-based compensation is another common non-cash charge.
+              <br><span class="text-bright-cyan">Capital expenditure (CAPEX) </span>refers to the property, plant and equipment expense found in the investment activities section of the cash flow statement.
+              <br><span class="text-bright-cyan">Change in working capital </span>refers to the change in capital over a period that is available to the company in the short term i.e. current assets.
+              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
+              <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
             </p>
           </div>`
           },
@@ -244,10 +244,10 @@ export default defineComponent({
           title: `<h2 class="font-medium text-bright-cyan">HOW STRONG IS THE BUSINESS RELATIVE TO THE REST OF THE INDUSTRY?</h2>`,
           info: `
           <div class="text-xs">
-            <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.
-            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">ROE, not EPS?</h2>
-            <br><br>Since the denominator (shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
-            <br><br>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.
+            <p>
+              It is wise to compare the company to its peers in the industry. Being in the same industry they likely share the same market pressures and target the same consumers, so it's good to think about how the company fairs against them.
+              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">WHAT TO CONSIDER</h2>
+              Having a competitive advantage is crucial here because the company is competing for market share. The more competitors there are, the harder it is to capture that market share so having a strong competitive advantage is important to retaining that market share.
             </p>
           </div>`
         }
