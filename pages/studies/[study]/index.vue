@@ -8,7 +8,7 @@
         <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-          <p class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '8' : '(Number of questions in an advanced study...)' }}</p>
+          <p class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '9' : '0' }}</p>
         </div>
       </div>
     </div>
@@ -35,7 +35,6 @@
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { useStudies } from "@/store/studies";
-import { computed } from "@vue/reactivity";
 
 export default defineComponent({
   name: "Study Questions",
@@ -111,10 +110,10 @@ export default defineComponent({
           <div class="text-xs">
             <p>Essentially what we're trying to answer here is whether the company has demonstrated consistent results selling the same product / service for years.
             <br><br>Many companies are quite young and have exciting plans for success in the space they operate in. Sometimes they hit the nail on the head, but a lot of the time they need to pivot for unforeseen circumstances. Alternatively, a business might be undergoing a radical change in their business model or leadership.
-            <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come. Ask yourself:
+            <br><br>What many of these companies lack is a long, stable and consistent operating history that makes it not unreasonable to anticipate similar results in the years to come. You can ask yourself:
            <br><br>
             <ul class="px-5 text-xs list-disc">
-              <li>Has the company been operating for 10 years+?</li>
+              <li>Has the company been operating for 10+ years?</li>
               <li>Does they have a long history of profits?</li>
               <li>Has the current management / CEO been in the position for a long period?</li>
             </ul>
@@ -185,18 +184,19 @@ export default defineComponent({
           title: `<h2 class="font-medium text-bright-cyan">CALCULATE THE RETURN ON EQUITY (ROE)</h2>`,
           info: `
           <div class="text-xs">
-            <p class="text-gray-400 italic">Calculating the ROE is more advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.
+            <span class="text-gray-400 italic">Calculating the ROE is more advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.            </span>
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">ROE, not EPS?</h2>
             A lot of analysts like to use the earnings per share (EPS) to guage a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
             <br><br>Since the denominator (number of shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Fair enough, so what's ROE?</h2>
             Return on equity (ROE) is a better measure of management's ability to generate a return on the shareholder's capital. Here's the formula:
-            <br><br><div class="flex justify-center items-center px-3 py-2 text-base rounded-xl border border-bright-cyan/30">
-              <h2>ROE =</h2>
-              <div class="flex flex-col items-center ml-2 divide-y-2 divide-bright-cyan">
-                <h2 class="px-3 pb-1">Net Income</h2>
-                <h2 class="px-3 pt-1">Shareholder's Equity</h2>
+            <br><br><div class="flex justify-center items-center px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
+              <h2>ROE (%) =</h2>
+              <div class="flex flex-col items-center px-2 divide-y-2 divide-bright-cyan">
+                <h2 class="px-2 pb-1">Net Income</h2>
+                <h2 class="px-2 pt-1">Shareholder's Equity</h2>
               </div>
+              <h2> x 100</h2>
             </div>
             <br><span class="text-gray-400 italic">If either of these figures are negative (-), ROE will not be a useful metric and should not be calculated.</span>
             <br><br><span class="text-bright-cyan">Net Income </span>can be found in an the cash flow statement.
@@ -208,9 +208,11 @@ export default defineComponent({
               <li>Ensure there is little or no significant debt</li>
             </ul>
             <br><h2 class="font-medium mb-1 text-base text-bright-cyan">What's wrong with debt?</h2>
-            Nothing, necessarily. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (numerator), hence boosting the ROE.
-            <br><br>The problem is simply that having too much debt will diminish the value of calculating the ROE. If a company has a lot of debt it's worth considering why the company has borrowed so much, how it's being used etc.
-            </p>
+            Nothing, necessarily. Sometimes taking on debt can be a good idea when used wisely. The third point concerning debt is due to the fact that a company can borrow money and use it to boost earnings (numerator), hence boosting the ROE.
+            <br><br>The problem is simply that having too much debt will diminish the value of calculating the ROE. If a company has a lot of debt it's worth considering why the company has borrowed so much, how it's being used etc. - good businesses should be able to generate a decent return on equity without debt.
+            <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">I have the ROE, what now?</h2>
+            A high ROE should suggest the company is utilizing its equity capital well (assuming they have little to no debt). Look at previous years - a rising ROE indicates that the company is generating more profits without deploying as much capital.
+            <br><br>As for what a 'high' or 'low' ROE is, the industry the company is in should be used to define these. Compare the return on equity to others in the same industry and see how it fairs. If the industry standard is around 11.5% and a company in that sector has an ROE of 15%, then it is fair to suggest that management is doing a good job of generating profits off of its equity capital.
           </div>`
         },
         {
@@ -218,35 +220,58 @@ export default defineComponent({
           title: `<h2 class="font-medium text-bright-cyan">CALCULATE OWNER EARNINGS</h2>`,
           info: `
           <div class="text-xs">
-            <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the 'Free Cash Flow' on the web and use that instead, which is similar.
-              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner Earnings?</h2>
-              'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
-              <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level.
-              <br><br>
-              <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
-                  <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
-                <p><span class="invisible">+ </span>Net income</p>
-                <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
-                <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
-                <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
-              </div>
-              <br><br><span class="text-bright-cyan">Net Income </span>can be found in the cash flow statement.
-              <br><span class="text-bright-cyan">Depreciation, Amortization and other non-cash charges </span>can be found in the cash flow statement. Share-based compensation is another common non-cash charge.
-              <br><span class="text-bright-cyan">Capital expenditure (CAPEX) </span>refers to the property, plant and equipment expense found in the investment activities section of the cash flow statement.
-              <br><span class="text-bright-cyan">Change in working capital </span>refers to the change in capital over a period that is available to the company in the short term i.e. current assets.
-              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
-              <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
-            </p>
+            <p class="text-gray-400 italic">Calculating Owner Earnings is more advanced and requires you to use a company's financials. If you prefer, you can likely find the 'Free Cash Flow' on the web and use that instead, which is similar.</p>
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Why Owner earnings?</h2>
+            'Owner earnings' is a term introduced by Berkshire Hathaway in its letter to shareholders in 1986. It can be used instead of cash flow to get a more clear picture of a company's value.
+            <br><br>Owner earings is a measure of a company's ability to generate cash over a period of time. What makes it a great metric is that, unlike operating cash flow, it accounts for the capital expenditures required by the business to continue operating at the same level.
+            <br><br>You can consider owner earnings as the amount of profits that's left over after the costs of generating the capital have been deducted. It's essentially the amount of money that could be returned to shareholders without harming the health of the business.
+            <br><br>
+            <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
+                <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
+              <p><span class="invisible">+ </span>Net income</p>
+              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
+              <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
+              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
+            </div>
+            <br><br><span class="text-bright-cyan">Net Income </span>can be found in the cash flow statement.
+            <br><span class="text-bright-cyan">Depreciation, Amortization and other non-cash charges </span>can be found in the cash flow statement. Share-based compensation is another common non-cash charge.
+            <br><span class="text-bright-cyan">Capital expenditure (CAPEX) </span>refers to the property, plant and equipment expense found in the investment activities section of the cash flow statement.
+            <br><span class="text-bright-cyan">Change in working capital </span>refers to the change in capital over a period that is available to the company in the short term i.e. current assets.
+            <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
+            <span class="italic">“Calculate "owner earnings" to get a true reflection of value.”</span> – Warren Buffett
           </div>`
-          },
+        },
         {
           question: 'question_eight',
+          title: `<h2 class="font-medium text-bright-cyan">WHAT IS THE VALUE OF THE BUSINESS?</h2>`,
+          info: `
+          <div class="text-xs">
+            <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
+              <h2 class="font-medium mb-1 text-base text-bright-cyan">Warren Buffett</h2>
+              <span class="italic">“The value of a business is the present value of all the future cash flows expected to occur over the lifetime of a business which is discounted at an appropriate discount rate.”</span>
+            </div>
+            <br>By this method, the value of a company can be calculated by using these pieces of information:
+            <br><br><ul class="px-5 text-xs list-decimal">
+              <li>Owner earnings</li>
+              <li>Growth rate</li>
+              <li>Discount rate</li>
+              <li>Number of years</li>
+            </ul>
+            <br><span class="text-bright-cyan">Growth rate </span>is the rate at which we expect the owner earnings to increase each year over a number of years.
+            <br><span class="text-bright-cyan">Discount rate </span>is the rate we discount the earnings at each year to account for the effect of inflation. Buffett likes to use the long-term U.S. treasury bond rate as the discount rate.
+            <br><br><p class="text-gray-400 italic">There will soon be calculator built into the app allowing you to calculate the value of a company using the values you determine for the above. This is a present value of a growing annuity calculator.</p>
+            <br>Now that you have determined the value of the business, you should now consider the current market price of the company.
+            <br><br>The margin of safety is the difference between the value of the business and the current market price. You should consider what margin of safety is right for you. Most investors set their own margin of safety, for example, Warren Buffett generally aims for around a 30% discount as his margin of safety.
+          </div>`
+        },
+        {
+          question: 'question_nine',
           title: `<h2 class="font-medium text-bright-cyan">HOW STRONG IS THE BUSINESS RELATIVE TO THE REST OF THE INDUSTRY?</h2>`,
           info: `
           <div class="text-xs">
             <p>
               It is wise to compare the company to its peers in the industry. Being in the same industry they likely share the same market pressures and target the same consumers, so it's good to think about how the company fairs against them.
-              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">WHAT TO CONSIDER</h2>
+              <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">What to consider?</h2>
               Having a competitive advantage is crucial here because the company is competing for market share. The more competitors there are, the harder it is to capture that market share so having a strong competitive advantage is important to retaining that market share.
             </p>
           </div>`

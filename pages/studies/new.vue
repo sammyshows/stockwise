@@ -67,14 +67,12 @@
               <option :value="1" disabled>Advanced (coming soon...)</option>
             </select>
           </div>
+          <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-5 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
 
-  <!--        <p class="mt-5 text-tiny text-gray-300 text-center">-->
-  <!--          Study a company by answering a series of questions about a company's performance in different areas.-->
-  <!--          When you are finished a summary is created showing a compilation of your answers and key insights. The idea-->
-  <!--          here is not to provide you with advice, but rather to give you an overall view of how you rate the company.-->
-  <!--        </p>-->
-
-          <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-10 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
+          <p key="5" class="mt-5 text-tiny text-gray-300 text-center">
+            The information contained in or provided from a study is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+            The information within a study, from our through a study is general in nature and is not specific to you the User or anyone else.
+          </p>
         </TransitionGroup>
       </div>
       <div class="grow flex items-end justify-end my-7 text-right">

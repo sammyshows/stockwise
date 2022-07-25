@@ -3,7 +3,7 @@
     <div v-if="$route.path === '/profile'" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <img src="/images/logo-cyan.png" class="h-12 w-12 -mt-1 mr-1" alt="Stockwise Logo">
+        <img src="/images/logo-cyan.png" class="h-10 -mt-1 mr-1" alt="Stockwise Logo">
       </div>
 
       <div class="overflow-scroll">

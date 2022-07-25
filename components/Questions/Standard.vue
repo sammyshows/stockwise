@@ -5,7 +5,7 @@
         <div v-html="moreInfo.title" class="h-1/2 flex items-end pb-8 text-2xl">
         </div>
         <div class="h-1/2">
-          <div v-if="['question_six', 'question_seven'].includes(moreInfo.question)" class="h-14">
+          <div v-if="['question_six', 'question_seven', 'question_eight'].includes(moreInfo.question)" class="h-14">
             <input v-model="value" @keyup="$emit('updateValue' ,moreInfo.question, this.value)" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-32 border-gray-600 rounded-md tracking-wide" />
           </div>
 
