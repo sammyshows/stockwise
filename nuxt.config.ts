@@ -10,8 +10,23 @@ export default defineNuxtConfig({
 
     modules: [
         '@nuxtjs/tailwindcss',
-        '@pinia/nuxt'
+        '@pinia/nuxt',
+        '@kevinmarrec/nuxt-pwa'
     ],
+
+    pwa: {
+        workbox: {
+            enabled: true
+        },
+
+        icon: {
+            source: 'static/icon.png'
+        },
+
+        manifest: {
+            start_url: '/portfolios'
+        }
+    },
 
     meta: {
         meta: [
