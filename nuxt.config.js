@@ -25,12 +25,6 @@ export default defineNuxtConfig({
 
         meta: {
           nativeUI: true
-        },
-
-        manifest: {
-            id: 'https://www.stockwise.app/portfolios/',
-            start_url: 'https://www.stockwise.app/',
-            scope: 'https://www.stockwise.app/'
         }
     },
 
