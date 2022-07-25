@@ -28,9 +28,8 @@ export default defineNuxtConfig({
         },
 
         manifest: {
-            id: '/portfolios',
             start_url: '/portfolios',
-            scope: '/portfolios'
+            scope: '/'
         }
     },
 
