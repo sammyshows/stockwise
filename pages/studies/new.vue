@@ -75,11 +75,14 @@
           </div>
           <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-5 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
 
-          <p key="5" class="mt-5 pt-5 border-t border-bright-cyan/40 text-teeny line-height text-justify text-gray-400 uppercase leading-3">
-            DISCLAIMER: The information contained in or provided from a study is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
-            The information within a study, from or through a study is general in nature and is not specific to you the User or anyone else.
-            You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app without undertaking independent due diligence and consultation with a professional broker or financial advisor.
-          </p>
+          <div key="5" class="mt-5 pt-5 border-t border-bright-cyan/40 text-gray-400">
+            <h2 class="mb-1 text-xs">DISCLAIMER</h2>
+            <p class="text-teeny line-height text-justify uppercase leading-3">
+              The information contained in or provided from a study is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+              The information within a study, from or through a study is general in nature and is not specific to you the User or anyone else.
+              You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app without undertaking independent due diligence and consultation with a professional broker or financial advisor.
+            </p>
+          </div>
         </TransitionGroup>
       </div>
       <div class="grow flex items-end justify-end my-7 text-right">
