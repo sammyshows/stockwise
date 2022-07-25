@@ -16,7 +16,8 @@ const handler: Handler = requireAuth(async (event, context) => {
             question_five = ${eventBody.question_five},
             question_six = ${eventBody.question_six},
             question_seven = ${eventBody.question_seven},
-            question_eight = ${eventBody.question_eight}
+            question_eight = ${eventBody.question_eight},
+            question_nine = ${eventBody.question_nine}
         WHERE studies.id = ${eventBody.studyId};`
 
     return {

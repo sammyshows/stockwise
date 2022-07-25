@@ -1,9 +1,9 @@
 export default defineNuxtPlugin(() => {
     return {
         provide: {
-            simplify: (numberString: string, precision: number) => {
+            simplify: (numberString: string, precision: number, minimumFraction: number) => {
                 let num = null as (number | null)
-                let letter = null as (string | null)
+                let letter = ''
 
                 // round and format to local format e.g. 1000.2312 = 1000.23 || 1000,23
                 if (parseFloat(numberString))
@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
                     }
                 }
 
-                return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: precision }) + letter
+                return num.toLocaleString(undefined, { minimumFractionDigits: minimumFraction || 0, maximumFractionDigits: precision }) + letter
             }
         }
     }

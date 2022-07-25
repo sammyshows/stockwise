@@ -1,6 +1,6 @@
 <template>
   <div class="h-full flex flex-col">
-    <div class="flex justify-between mb-10 px-3">
+    <div class="flex justify-between h-14 mb-5 px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 
@@ -8,13 +8,18 @@
       <div class="relative flex flex-col">
         <TransitionGroup name="form">
           <div v-if="!manualForm" class="w-full">
-            <div class="relative mb-3" key="1">
+            <div class="mb-3" key="1">
               <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
-              <input @keyup="fetchSearch($event.target.value); invalid.quote = false;" autocomplete="off" type="text" name="search" placeholder="Find a company..." class="placeholder:text-sm placeholder:text-gray-400 placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
-              <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
-                <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
-                  <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
-                  <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none text-gray-600">
+                  <SearchIcon class="h-7 w-7" aria-hidden="true" />
+                </div>
+                <input @keyup="fetchSearch($event.target.value); invalid.quote = false;" autocomplete="off" type="text" name="search" placeholder="Search for a company..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
+                <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
+                  <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                    <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
+                    <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -63,15 +68,17 @@
             <label for="type" class="flex items-end">Study type</label>
             <select v-model="studyType" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               <option value="" disabled selected hidden></option>
-              <option :value="0">Standard</option>
-              <option :value="1" disabled>Advanced (coming soon...)</option>
+              <option :value="0">Warren Buffett's Principles</option>
+              <option :value="1" disabled>Coming soon...</option>
             </select>
+            <p class="mt-1 text-tiny text-center text-gray-400">A study based on Warren Buffett's principles for investing.</p>
           </div>
           <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-5 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
 
-          <p key="5" class="mt-5 text-tiny text-gray-300 text-center">
-            The information contained in or provided from a study is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
-            The information within a study, from our through a study is general in nature and is not specific to you the User or anyone else.
+          <p key="5" class="mt-5 pt-5 border-t border-bright-cyan/40 text-teeny line-height text-justify text-gray-400 uppercase leading-3">
+            DISCLAIMER: The information contained in or provided from a study is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+            The information within a study, from or through a study is general in nature and is not specific to you the User or anyone else.
+            You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app without undertaking independent due diligence and consultation with a professional broker or financial advisor.
           </p>
         </TransitionGroup>
       </div>
@@ -88,6 +95,7 @@
 import { defineComponent } from "vue";
 import { v4 as uuidv4 } from 'uuid';
 import { useStudies } from "@/store/studies";
+import { SearchIcon } from '@heroicons/vue/solid'
 
 export default defineComponent({
   name: "New Study",
@@ -97,6 +105,10 @@ export default defineComponent({
     const uuid = useState('uuid').value
     const studyStore = useStudies()
     return { token, uuid, studyStore }
+  },
+
+  components: {
+    SearchIcon
   },
 
   mounted() {

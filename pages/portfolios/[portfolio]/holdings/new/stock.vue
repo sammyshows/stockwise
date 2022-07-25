@@ -11,8 +11,11 @@
             <TransitionGroup name="form">
               <div key="1" v-if="!manualForm">
                 <div class="relative" >
+                  <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none text-gray-600">
+                    <SearchIcon class="h-7 w-7" aria-hidden="true" />
+                  </div>
                   <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
-                  <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="placeholder:text-sm placeholder:italic focus:ring-0 focus:border-white block bg-gray-500/20 w-full border-gray-600 rounded-md" />
+                  <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
                   <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
                     <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
                       <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
@@ -126,6 +129,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { SearchIcon } from '@heroicons/vue/solid'
 
 export default defineComponent({
   name: "New Stock",
@@ -133,6 +137,10 @@ export default defineComponent({
   async setup() {
     const token = await useState('authToken').value
     return { token }
+  },
+
+  components: {
+    SearchIcon
   },
 
   mounted() {

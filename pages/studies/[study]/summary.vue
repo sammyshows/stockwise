@@ -8,30 +8,25 @@
     <div class="mt-6 text-xs">
       <h2 class="mb-0.5">BUSINESS</h2>
       <div v-for="question in questions.slice(0, 4)" class="flex justify-between ml-8 pt-0.5">
-        <p>{{ question.title }}</p>
-        <p class="px-4 text-xs" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+        <p class="text-bright-cyan">{{ question.title }}</p>
+        <p class="px-4 text-xs">{{ study?.[question.question] }}</p>
       </div>
 
       <h2 class="mt-1 mb-0.5">MANAGEMENT</h2>
       <div v-for="question in questions.slice(4, 6)" class="flex justify-between ml-8 pt-0.5">
-        <p>{{ question.title }}</p>
-        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 4, 'text-bright-yellow': study?.[question.question] >= 4 && study?.[question.question] <= 7, 'text-bright-green': study?.[question.question] > 7 }]">{{ study?.[question.question] }} </p>
+        <p class="text-bright-cyan">{{ question.title }}</p>
+        <p class="px-4">{{ study?.[question.question] }}</p>
       </div>
 
       <h2 class="mt-1 mb-0.5">FINANCIAL</h2>
-      <div v-for="question in questions.slice(6, 8)" class="flex justify-between ml-8 pt-0.5">
-        <p>{{ question.title }}</p>
-        <p class="px-4" :class="[{ 'text-bright-red': study?.[question.question] < 1, 'text-bright-yellow': study?.[question.question] >= 1 && study?.[question.question] <= 1.5, 'text-bright-green': study?.[question.question] > 1.5 }]">{{ study?.[question.question] }} </p>
+      <div class="flex justify-between ml-8 pt-0.5">
+        <p class="text-bright-cyan">{{ questions[6].title }}</p>
+        <p class="px-4">{{ study?.[questions[6].question] }}</p>
       </div>
-    </div>
-
-    <div class="flex items-center mt-6">
-      <LightBulbIcon class="h-5 mr-3" />
-      <h2>KEY INSIGHTS</h2>
-    </div>
-    <div class="mt-2 text-xs">
-      <p>A low <span class="text-bright-red">{{ questions[1].title }}</span> often suggests that the company is still quite young and is yet to prove its long-term earnings capability</p>
-      <p class="mt-2">A high <span class="text-bright-green">{{ questions[4].title }}</span> means that management is quite honest and transparent about the business which is important for maintaining trust with shareholders and consumers</p>
+      <div v-for="question in questions.slice(7, 9)" class="flex justify-between ml-8 pt-0.5">
+        <p class="text-bright-cyan">{{ question.title }}</p>
+        <p class="px-4">{{ $simplify(study?.[question.question], 2) }}</p>
+      </div>
     </div>
 
     <div class="relative mt-6">
@@ -58,6 +53,12 @@
         </div>
       </div>
     </div>
+
+    <p class="mt-5 pt-5 border-t border-bright-cyan/40 text-teeny text-gray-300 line-height text-justify uppercase leading-3">
+      DISCLAIMER: The information contained in or provided from a study or study summary is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+      The information within, from or through a study or study summary is general in nature and is not specific to you the User or anyone else.
+      You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app, including this page, without undertaking independent due diligence and consultation with a professional broker or financial advisor.
+    </p>
 
     <DeleteConfirmation :open="openModal"
                         title="Delete Study"
@@ -114,7 +115,8 @@ export default defineComponent({
         question_five: this.storeStudy?.question_five,
         question_six: this.storeStudy?.question_six,
         question_seven: this.storeStudy?.question_seven,
-        question_eight: this.storeStudy?.question_eight
+        question_eight: this.storeStudy?.question_eight,
+        question_nine: this.storeStudy?.nine,
       },
       notes: this.storeStudy?.notes,
       questions: [
@@ -131,12 +133,8 @@ export default defineComponent({
           title: 'Long-term Prospects'
         },
         {
-          question: 'question_eight',
-          title: 'Strength in Industry'
-        },
-        {
           question: 'question_four',
-          title: 'Management Candor'
+          title: 'Strength in Industry'
         },
         {
           question: 'question_five',
@@ -144,12 +142,20 @@ export default defineComponent({
         },
         {
           question: 'question_six',
-          title: 'Return on Equity (ROE)'
+          title: 'Management Candor'
         },
         {
           question: 'question_seven',
+          title: 'Return on Equity (%)'
+        },
+        {
+          question: 'question_eight',
           title: 'Owner Earnings'
-        }
+        },
+        {
+          question: 'question_nine',
+          title: 'Company Value'
+        },
       ],
       openModal: false,
     }
@@ -177,7 +183,8 @@ export default defineComponent({
         question_five: response.question_five,
         question_six: response.question_six,
         question_seven: response.question_seven,
-        question_eight: response.question_eight
+        question_eight: response.question_eight,
+        question_nine: response.question_nine
       }
       this.studyDetails = {
         name: response.name,

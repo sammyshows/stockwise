@@ -21,7 +21,8 @@ const handler: Handler = requireAuth(async (event, context) => {
                question_five,
                question_six,
                question_seven,
-               question_eight
+               question_eight,
+               question_nine
         FROM studies
         WHERE user_id = ${eventBody.uuid}
         ORDER BY studies.updated_at DESC;

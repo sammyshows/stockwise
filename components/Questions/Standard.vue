@@ -5,7 +5,7 @@
         <div v-html="moreInfo.title" class="h-1/2 flex items-end pb-8 text-2xl">
         </div>
         <div class="h-1/2">
-          <div v-if="['question_six', 'question_seven', 'question_eight'].includes(moreInfo.question)" class="h-14">
+          <div v-if="['question_seven', 'question_eight', 'question_nine'].includes(moreInfo.question)" class="h-14">
             <input v-model="value" @keyup="$emit('updateValue' ,moreInfo.question, this.value)" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-32 border-gray-600 rounded-md tracking-wide" />
           </div>
 
@@ -37,7 +37,7 @@
 
         <div class="mb-7 flex justify-between">
           <button @click="$emit('prevPage')" :class="{ 'invisible': moreInfo.question === 'question_one' }" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
-          <button v-if="moreInfo.question !== 'question_eight'" @click="$emit('nextPage')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
+          <button v-if="moreInfo.question !== 'question_nine'" @click="$emit('nextPage')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
           <button v-else @click="$emit('submit')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">SUBMIT</button>
         </div>
       </div>
@@ -47,7 +47,7 @@
       <div v-if="showMoreInfo" class="absolute flex flex-col grow h-full pt-8">
         <div class="overflow-scroll h-5/6 flex flex-col gap-y-4 pb-4 text-xl">
           <div v-html="moreInfo.title" class="px-3"></div>
-          <div v-html="moreInfo.info" class="px-3"></div>
+          <div v-html="moreInfo.info + disclaimer" class="px-3"></div>
         </div>
         <div class="h-1/6 px-3">
           <div @click="toggleMoreInfo" class="flex w-max mt-5">
@@ -84,7 +84,12 @@ export default defineComponent({
   data() {
     return {
       value: this.currentValue,
-      showMoreInfo: false
+      showMoreInfo: false,
+      disclaimer: `<p class="mt-4 pt-4 border-t border-bright-cyan/40 text-teeny line-height text-justify text-gray-400 uppercase leading-3">
+              DISCLAIMER: The information contained in or provided from this page is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+              The information within this page is general in nature and is not specific to you the User or anyone else.
+              You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app, including this page, without undertaking independent due diligence and consultation with a professional broker or financial advisor.
+            </p>`
     }
   },
 
