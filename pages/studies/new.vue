@@ -4,7 +4,7 @@
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
 
-    <div class="flex flex-col justify-between grow px-5">
+    <div class="flex flex-col justify-between grow px-5 overflow-scroll">
       <div class="relative flex flex-col">
         <TransitionGroup name="form">
           <div v-if="!manualForm" class="w-full">

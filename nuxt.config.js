@@ -23,8 +23,14 @@ export default defineNuxtConfig({
             source: 'static/icon.png'
         },
 
+        meta: {
+          nativeUI: true
+        },
+
         manifest: {
-            start_url: '/portfolios'
+            id: '/portfolios',
+            start_url: '/portfolios',
+            scope: '/portfolios'
         }
     },
 
