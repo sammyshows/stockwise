@@ -35,6 +35,10 @@ export default defineNuxtConfig({
             orientation: 'portrait',
             theme_color: '#FFE100',
             background_color: '#FFE100'
+        },
+
+        workbox: {
+            enabled: true
         }
     },
 

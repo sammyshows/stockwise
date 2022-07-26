@@ -6,7 +6,6 @@
     "dev": "nuxi dev ",
     "build": "nuxi build",
     "start": "node .output/server/index.mjs",
-    "generate": "nuxt generate",
     "createdb_dev": "cat schema.sql | psql stockwise -U postgres",
     "createdb_prod": "cat schema.sql | heroku pg:psql"
   },
