@@ -10,8 +10,8 @@ export default defineNuxtPlugin(() => {
                     domain: "stockwise.us.auth0.com",
                     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
                     audience: "https://stockwise.app/api",
-                    redirect_uri: "http://localhost:8888/portfolios"
-                    // redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
+                    // redirect_uri: "http://localhost:8888/portfolios"
+                    redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
                 });
 
                 let isAuthenticated = await auth0.isAuthenticated();
