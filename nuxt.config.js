@@ -1,5 +1,4 @@
 import { defineNuxtConfig } from 'nuxt'
-import { VitePWA } from 'vite-plugin-pwa'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
@@ -12,34 +11,34 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/tailwindcss',
         '@pinia/nuxt',
-        'nuxt-vite'
+        '@kevinmarrec/nuxt-pwa'
     ],
 
-    vite: {
-        plugins: [
-            VitePWA({
-                registerType: 'autoUpdate',
-                devOptions: {
-                    enabled: true
-                }
-            })
-        ]
-    },
+    pwa: {
+        workbox: {
+            enabled: true
+        },
 
-    // pwa: {
-    //     icon: {
-    //         source: 'static/icon.png'
-    //     },
-    //
-    //     manifest: {
-    //         // id: 'https://www.stockwise.app/portfolios/',
-    //         // start_url: 'https://www.stockwise.app/',
-    //         // scope: 'https://www.stockwise.app/',
-    //         name: 'Stockwise',
-    //         lang: 'en',
-    //         orientation: 'portrait'
-    //     }
-    // },
+        meta: {
+            theme_color: '#FFFFFF'
+        },
+
+        icon: {
+            source: 'static/icon.png'
+        },
+
+        manifest: {
+            // id: 'https://www.stockwise.app/portfolios/',
+            // start_url: 'https://www.stockwise.app/',
+            // scope: 'https://www.stockwise.app/',
+            name: 'Stockwise',
+            short_name: 'Stockwise',
+            description: 'Stockwise brings you the ability to track your portfolios and study companies in one place.',
+            lang: 'en',
+            display: 'standalone',
+            orientation: 'portrait'
+        }
+    },
 
     meta: {
         meta: [

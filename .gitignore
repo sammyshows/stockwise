@@ -9,4 +9,5 @@ nuxt.d.ts
 .netlify
 sw.*
 gradle/
+.idea/
 
