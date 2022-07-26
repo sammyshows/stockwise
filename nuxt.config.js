@@ -1,4 +1,5 @@
 import { defineNuxtConfig } from 'nuxt'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
@@ -11,14 +12,34 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/tailwindcss',
         '@pinia/nuxt',
-        '@kevinmarrec/nuxt-pwa'
+        'nuxt-vite'
     ],
 
-    pwa: {
-        icon: {
-            source: 'static/icon.png'
-        }
+    vite: {
+        plugins: [
+            VitePWA({
+                registerType: 'autoUpdate',
+                devOptions: {
+                    enabled: true
+                }
+            })
+        ]
     },
+
+    // pwa: {
+    //     icon: {
+    //         source: 'static/icon.png'
+    //     },
+    //
+    //     manifest: {
+    //         // id: 'https://www.stockwise.app/portfolios/',
+    //         // start_url: 'https://www.stockwise.app/',
+    //         // scope: 'https://www.stockwise.app/',
+    //         name: 'Stockwise',
+    //         lang: 'en',
+    //         orientation: 'portrait'
+    //     }
+    // },
 
     meta: {
         meta: [
