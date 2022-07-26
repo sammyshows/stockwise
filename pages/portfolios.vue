@@ -35,9 +35,9 @@ export default defineComponent({
     const userStore = useUser()
     const portfolioStore = usePortfolios()
     const { portfolios } = storeToRefs(portfolioStore)
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
-    return { userStore, portfolioStore, portfolios, token, uuid }
+    // console.log(await useState('authToken').value)
+    // const uuid = useState('uuid').value
+    return { userStore, portfolioStore, portfolios }
   },
 
   components: {
@@ -45,6 +45,9 @@ export default defineComponent({
   },
 
   async mounted() {
+    await this.$login()
+    this.token = await useState('authToken').value
+    this.uuid = useState('uuid').value
     await this.getPortfolios()
     this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
@@ -56,6 +59,8 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
+      uuid: '',
       intervalLoop: null as (NodeJS.Timeout | null),
       pageDetails: {
         title: 'Portfolios Overview'

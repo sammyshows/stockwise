@@ -32,7 +32,7 @@
     "chart.js": "^3.8.0",
     "netlify-cli": "^10.5.1",
     "node-fetch": "^3.2.3",
-    "nuxt": "npm:nuxt3@latest",
+    "nuxt": "3.0.0-rc.2",
     "pinia": "^2.0.14",
     "postgres": "^3.0.2",
     "uuid": "^8.3.2",

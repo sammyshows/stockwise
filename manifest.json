@@ -1,0 +1,19 @@
+{
+  "name": "Stockwise",
+  "short_name": "Stockwise",
+  "description": "Stockwise brings you the ability to track your portfolios and study companies in one place.",
+  "icons": [
+    {
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "/static/icon.png",
+      "type": "image/png"
+    }
+  ],
+  "lang": "en",
+  "start_url": "/portfolios?standalone=true",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#00FFD1",
+  "background_color": "#00FFD1"
+}

@@ -10,7 +10,7 @@ export default defineNuxtConfig({
 
     pwa: {
         meta: {
-            author: '@zeebats',
+            author: '@sammyshows',
             theme_color: '#FFFFFF'
         },
 
