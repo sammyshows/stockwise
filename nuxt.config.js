@@ -26,7 +26,7 @@ export default defineNuxtConfig({
 
         manifest: {
             // id: 'https://www.stockwise.app/portfolios/',
-            start_url: 'https://www.stockwise.app/portfolios/?standalone=true',
+            start_url: '/',
             name: 'Stockwise',
             short_name: 'Stockwise',
             description: 'Stockwise brings you the ability to track your portfolios and study companies in one place.',
