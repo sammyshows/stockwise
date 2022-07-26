@@ -15,16 +15,8 @@ export default defineNuxtConfig({
     ],
 
     pwa: {
-        workbox: {
-            enabled: true
-        },
-
         icon: {
             source: 'static/icon.png'
-        },
-
-        meta: {
-          nativeUI: true
         }
     },
 

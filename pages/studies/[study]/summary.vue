@@ -57,7 +57,7 @@
     <div class="mt-5 pt-5 border-t border-bright-cyan/40 text-gray-400">
       <h2 class="mb-1 text-xs">DISCLAIMER</h2>
       <p class="text-teeny line-height text-justify uppercase leading-3">
-        DISCLAIMER: The information contained in or provided from a study or study summary is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
+        The information contained in or provided from a study or study summary is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.
         The information within, from or through a study or study summary is general in nature and is not specific to you the User or anyone else.
         You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app, including this page, without undertaking independent due diligence and consultation with a professional broker or financial advisor.
       </p>
