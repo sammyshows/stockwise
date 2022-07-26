@@ -20,6 +20,11 @@ export default defineNuxtConfig({
         },
 
         meta: {
+            author: '@zeebats',
+            description: 'Internet\'s Zuurste Memes',
+            favicon: false,
+            mobileAppIOS: true,
+            name: '',
             theme_color: '#FFFFFF'
         },
 
@@ -29,14 +34,15 @@ export default defineNuxtConfig({
 
         manifest: {
             // id: 'https://www.stockwise.app/portfolios/',
-            // start_url: 'https://www.stockwise.app/',
-            // scope: 'https://www.stockwise.app/',
+            start_url: 'https://www.stockwise.app/portfolios',
             name: 'Stockwise',
             short_name: 'Stockwise',
             description: 'Stockwise brings you the ability to track your portfolios and study companies in one place.',
             lang: 'en',
             display: 'standalone',
-            orientation: 'portrait'
+            orientation: 'portrait',
+            theme_color: '#FFE100',
+            background_color: '#FFE100'
         }
     },
 
