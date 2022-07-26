@@ -15,16 +15,8 @@ export default defineNuxtConfig({
     ],
 
     pwa: {
-        workbox: {
-            enabled: true
-        },
-
         meta: {
             author: '@zeebats',
-            description: 'Internet\'s Zuurste Memes',
-            favicon: false,
-            mobileAppIOS: true,
-            name: '',
             theme_color: '#FFFFFF'
         },
 
@@ -34,7 +26,7 @@ export default defineNuxtConfig({
 
         manifest: {
             // id: 'https://www.stockwise.app/portfolios/',
-            start_url: 'https://www.stockwise.app/portfolios',
+            start_url: 'https://www.stockwise.app/portfolios/?standalone=true',
             name: 'Stockwise',
             short_name: 'Stockwise',
             description: 'Stockwise brings you the ability to track your portfolios and study companies in one place.',
