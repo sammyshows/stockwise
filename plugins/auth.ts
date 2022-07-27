@@ -18,11 +18,8 @@ export default defineNuxtPlugin(() => {
                 console.log('heya')
                 let isAuthenticated = await auth0.isAuthenticated();
 
-                const handleLogin = async () => {
+                if (!isAuthenticated) {
                     console.log('hey ya')
-                    if (isAuthenticated) {
-                        return
-                    }
                     console.log('you think you got it ooooohhhhhhh you think you got it')
 
                     const queryString = window.location.search;
@@ -33,15 +30,13 @@ export default defineNuxtPlugin(() => {
                         console.log('Handling redirect callback...')
                         await auth0.handleRedirectCallback();
                         window.history.replaceState({}, "", "/");
-                        return
                     } else {
                         console.log('Login with redirect...')
-                        await auth0.loginWithRedirect();
-                        return
+                        auth0.loginWithRedirect({
+                            redirect_uri: "https://www.stockwise.app/portfolios"
+                        });
                     }
                 }
-
-                await handleLogin()
 
                 const token = await auth0.getTokenSilently()
                 useState('authToken', () => token)
