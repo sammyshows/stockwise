@@ -5,6 +5,7 @@ export default defineNuxtPlugin(() => {
     return {
         provide: {
             login: async () => {
+                console.log('hey')
                 const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
                     return await createAuth0Client({
                         domain: "stockwise.us.auth0.com",
@@ -14,12 +15,15 @@ export default defineNuxtPlugin(() => {
                     })
                 }).value;
 
+                console.log('heya')
                 let isAuthenticated = await auth0.isAuthenticated();
 
                 const handleLogin = async () => {
+                    console.log('hey ya')
                     if (isAuthenticated) {
                         return
                     }
+                    console.log('you think you got it ooooohhhhhhh you think you got it')
 
                     const queryString = window.location.search;
                     const query = new URLSearchParams(queryString)
