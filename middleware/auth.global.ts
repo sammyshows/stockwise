@@ -32,5 +32,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // const token = await auth0.getTokenSilently()
     // useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
 
-    navigateTo(to.path);
+    // navigateTo(to.path);
 });

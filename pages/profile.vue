@@ -42,22 +42,27 @@ import { CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon } fro
 export default defineComponent({
   name: "Portfolio Overview",
 
-  async setup() {
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
-    return { token, uuid }
-  },
+  // async setup() {
+  //   const token = await useState('authToken').value
+  //   const uuid = useState('uuid').value
+  //   return { token, uuid }
+  // },
 
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
   },
 
-  mounted() {
-    this.getUserSettings()
+  async mounted() {
+    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+    this.token = await useState('authToken').value
+    this.uuid = useState('uuid').value
+    await this.getUserSettings()
   },
 
   data() {
     return {
+      token: '',
+      uuid: '',
       pageDetails: {
         title: 'Profile'
       },

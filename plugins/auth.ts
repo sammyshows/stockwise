@@ -6,37 +6,42 @@ export default defineNuxtPlugin(() => {
         provide: {
             // currently login ain't even used because the middleware handles auth checks between re-routes... consider removing
             login: async () => {
-                const auth0 = await createAuth0Client({
-                    domain: "stockwise.us.auth0.com",
-                    client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-                    audience: "https://stockwise.app/api",
-                    // redirect_uri: "http://localhost:8888/portfolios"
-                    redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
-                });
+                const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
+                    return await createAuth0Client({
+                        domain: "stockwise.us.auth0.com",
+                        client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
+                        audience: "https://stockwise.app/api",
+                        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
+                    })
+                }).value;
 
                 let isAuthenticated = await auth0.isAuthenticated();
+                // console.log(await auth0.isLoading)
+                console.log(await auth0.isAuthenticated())
 
-                if (isAuthenticated) {
-                    useState('authToken', async () => await auth0.getTokenSilently())
-                } else {
-                    const queryString = window.location.search;
-                    const query = new URLSearchParams(queryString)
-                    if (query && query.get("code") && query.get("state")) {
-                        await auth0.handleRedirectCallback();
-                        let url = new URL(window.location.href)
-                        url.searchParams.delete("code")
-                        url.searchParams.delete("state")
-
-                        window.history.replaceState(null, "", url.toString());
-                        console.log('Handling redirect callback...')
-                    } else {
-                        await auth0.loginWithRedirect();
-                        console.log('Login with redirect...')
+                const handleLogin = async () => {
+                    if (isAuthenticated) {
+                        return
                     }
-                    useState('authToken', async () => await auth0.getTokenSilently())
+
+                    const query = window.location.search;
+                    if (query.includes("code=") && query.includes("state=")) {
+                        console.log('Handling redirect callback...')
+                        await auth0.handleRedirectCallback();
+                        window.history.replaceState({}, "", "/");
+                        return
+                    }
+
+                    console.log('Login with redirect...')
+                    await auth0.loginWithRedirect({
+                        redirect_uri: "http://localhost:8888/portfolios"
+                    });
                 }
 
+                await handleLogin()
+
                 const token = await auth0.getTokenSilently()
+                useState('authToken', () => token)
                 useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
             },
 
