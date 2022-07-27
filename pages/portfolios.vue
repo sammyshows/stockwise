@@ -47,28 +47,14 @@ export default defineComponent({
   },
 
   async mounted() {
-    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-    // await createAuth0Client({
-    //   domain: "stockwise.us.auth0.com",
-    //   client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-    //   audience: "https://stockwise.app/api",
-    //   redirect_uri: "http://localhost:8888/portfolios"
-    //   // redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
-    // }).then(async (auth0) => {
-    //   let a = await auth0.isAuthenticated()
-    //
-    //   if (!a)
-    //     auth0.loginWithRedirect()
-    //
-    //   const token = await auth0.getTokenSilently()
-    //   useState('authToken', () => token)
-    //   useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
-    // })
-    this.token = await useState('authToken').value
-    this.uuid = useState('uuid').value
-    await this.getPortfolios()
-    this.getOverviewChart()
-    this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
+    setTimeout(async () => {
+      await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+      this.token = await useState('authToken').value
+      this.uuid = useState('uuid').value
+      await this.getPortfolios()
+      this.getOverviewChart()
+      this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
+    }, 5000)
   },
 
   beforeUnmount() {
