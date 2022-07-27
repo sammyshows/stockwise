@@ -45,7 +45,7 @@ export default defineNuxtPlugin(() => {
             logout: async () => {
                 const auth0 = await useState<Auth0Client>('auth0').value
                 auth0.logout({
-                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios",
+                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app",
                     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u"
                 });
             }
