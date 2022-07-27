@@ -10,6 +10,7 @@
     "createdb_prod": "cat schema.sql | heroku pg:psql"
   },
   "devDependencies": {
+    "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/strapi": "^1.3.0",
     "@nuxtjs/tailwindcss": "^5.0.0-4",
     "@tailwindcss/typography": "^0.5.2",
