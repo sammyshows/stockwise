@@ -4,7 +4,6 @@ import jwt_decode from 'jwt-decode';
 export default defineNuxtPlugin(() => {
     return {
         provide: {
-            // currently login ain't even used because the middleware handles auth checks between re-routes... consider removing
             login: async () => {
                 const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
                     return await createAuth0Client({
@@ -16,8 +15,6 @@ export default defineNuxtPlugin(() => {
                 }).value;
 
                 let isAuthenticated = await auth0.isAuthenticated();
-                // console.log(await auth0.isLoading)
-                console.log(await auth0.isAuthenticated())
 
                 const handleLogin = async () => {
                     if (isAuthenticated) {
@@ -48,7 +45,7 @@ export default defineNuxtPlugin(() => {
             logout: async () => {
                 const auth0 = await useState<Auth0Client>('auth0').value
                 auth0.logout({
-                    returnTo: window.location.origin,
+                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios",
                     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u"
                 });
             }

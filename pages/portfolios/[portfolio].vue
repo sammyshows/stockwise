@@ -2,7 +2,7 @@
   <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
-        <PageTitle :pageDetails="{ title: this.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
+        <PageTitle v-if="portfolio" :pageDetails="{ title: this.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
             <PlusIcon class="h-8 w-8" />
@@ -40,12 +40,11 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
-    const token = await useState('authToken').value
     const portfolioStore = usePortfolios()
     const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
     const holdingStore = useHoldings()
     const holdings = computed(() => holdingStore.getHoldings(route.params.portfolio))
-    return { token, portfolio, holdingStore, holdings }
+    return { portfolio, holdingStore, holdings }
   },
 
   components: {
@@ -53,6 +52,8 @@ export default defineComponent({
   },
 
   async mounted() {
+    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+    this.token = await useState('authToken').value
     await this.getHoldings()
     this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getHoldings(), 60000)
@@ -71,6 +72,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
