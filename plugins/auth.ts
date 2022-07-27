@@ -28,17 +28,14 @@ export default defineNuxtPlugin(() => {
                     console.log(query && query.get("code") && query.get("state"))
                     if (query && query.get("code") && query.get("state")) {
                         console.log('Handling redirect callback...')
-                        await auth0.handleRedirectCallback();
-                        window.history.replaceState({}, "", "/");
-                        const token = await auth0.getTokenSilently()
-                        useState('authToken', () => token)
-                        useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
+                        // await auth0.handleRedirectCallback();
+                        // window.history.replaceState({}, "", "/");
+                        // const token = await auth0.getTokenSilently()
+                        // useState('authToken', () => token)
+                        // useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
                     } else {
                         console.log('Login with redirect...')
-                        await auth0.loginWithRedirect({
-                            audience: "https://stockwise.app/api",
-                            redirect_uri: "https://www.stockwise.app/portfolios"
-                        })
+                        await auth0.loginWithRedirect()
                         const token = await auth0.getTokenSilently()
                         useState('authToken', () => token)
                         useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
