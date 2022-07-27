@@ -21,8 +21,10 @@ export default defineNuxtPlugin(() => {
                         return
                     }
 
-                    const query = window.location.search;
-                    if (query.includes("code=") && query.includes("state=")) {
+                    const queryString = window.location.search;
+                    const query = new URLSearchParams(queryString)
+                    console.log(query && query.get("code") && query.get("state"))
+                    if (query && query.get("code") && query.get("state")) {
                         console.log('Handling redirect callback...')
                         await auth0.handleRedirectCallback();
                         window.history.replaceState({}, "", "/");
