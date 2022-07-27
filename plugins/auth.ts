@@ -6,41 +6,41 @@ export default defineNuxtPlugin(() => {
         provide: {
             login: async () => {
                 console.log('hey')
-                const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
-                    return await createAuth0Client({
-                        domain: "stockwise.us.auth0.com",
-                        client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-                        audience: "https://stockwise.app/api",
-                        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
-                    })
-                }).value;
-
-                console.log('heya')
-                let isAuthenticated = await auth0.isAuthenticated();
-
-                if (!isAuthenticated) {
-                    console.log('hey ya')
-                    console.log('you think you got it ooooohhhhhhh you think you got it')
-
-                    const queryString = window.location.search;
-                    const query = new URLSearchParams(queryString)
-                    console.log('query:')
-                    console.log(query && query.get("code") && query.get("state"))
-                    if (query && query.get("code") && query.get("state")) {
-                        console.log('Handling redirect callback...')
-                        await auth0.handleRedirectCallback();
-                        window.history.replaceState({}, "", "/");
-                    } else {
-                        console.log('Login with redirect...')
-                        auth0.loginWithRedirect({
-                            redirect_uri: "https://www.stockwise.app/portfolios"
-                        });
-                    }
-                }
-
-                const token = await auth0.getTokenSilently()
-                useState('authToken', () => token)
-                useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
+                // const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
+                //     return await createAuth0Client({
+                //         domain: "stockwise.us.auth0.com",
+                //         client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
+                //         audience: "https://stockwise.app/api",
+                //         redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
+                //     })
+                // }).value;
+                //
+                // console.log('heya')
+                // let isAuthenticated = await auth0.isAuthenticated();
+                //
+                // if (!isAuthenticated) {
+                //     console.log('hey ya')
+                //     console.log('you think you got it ooooohhhhhhh you think you got it')
+                //
+                //     const queryString = window.location.search;
+                //     const query = new URLSearchParams(queryString)
+                //     console.log('query:')
+                //     console.log(query && query.get("code") && query.get("state"))
+                //     if (query && query.get("code") && query.get("state")) {
+                //         console.log('Handling redirect callback...')
+                //         await auth0.handleRedirectCallback();
+                //         window.history.replaceState({}, "", "/");
+                //     } else {
+                //         console.log('Login with redirect...')
+                //         auth0.loginWithRedirect({
+                //             redirect_uri: "https://www.stockwise.app/portfolios"
+                //         });
+                //     }
+                // }
+                //
+                // const token = await auth0.getTokenSilently()
+                // useState('authToken', () => token)
+                // useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
             },
 
             logout: async () => {
