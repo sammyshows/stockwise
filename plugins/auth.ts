@@ -30,9 +30,7 @@ export default defineNuxtPlugin(() => {
                     }
 
                     console.log('Login with redirect...')
-                    await auth0.loginWithRedirect({
-                        redirect_uri: "http://localhost:8888/portfolios"
-                    });
+                    await auth0.loginWithRedirect();
                 }
 
                 await handleLogin()
