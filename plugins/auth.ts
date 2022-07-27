@@ -34,6 +34,10 @@ export default defineNuxtPlugin(() => {
                         await auth0.handleRedirectCallback();
                         window.history.replaceState({}, "", "/");
                         return
+                    } else {
+                        console.log('Login with redirect...')
+                        await auth0.loginWithRedirect();
+                        return
                     }
                 }
 
