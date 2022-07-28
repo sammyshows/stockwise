@@ -54,7 +54,7 @@ export default defineComponent({
       await this.getPortfolios()
       this.getOverviewChart()
       this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
-    }, 5000)
+    }, 3000)
   },
 
   beforeUnmount() {
