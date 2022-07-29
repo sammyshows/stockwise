@@ -9,16 +9,7 @@
   publish = ".output" # Folder with the static content for _redirect file
 
  # Although there is also this redirect rule in "/public/_redirects", this must be here for local redirects.
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
 
-[[redirects]]
-  from = "/portfolios"
-  to = "/handle-login/:code/:state"
-  status = 301
-  query = { code = ":code", state = ":state" }
 
 
 [functions]
