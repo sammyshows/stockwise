@@ -16,9 +16,10 @@
 
 [[redirects]]
   from = "/portfolios"
-  to = "/handle-login/:code/:state"
+  to = "/handle-login/:code/:state?testing=true&code=4&state=1"
   status = 301
   query = { code = ":code", state = ":state" }
+
 
 [functions]
   directory = "functions"
