@@ -1,3 +1,0 @@
-/api/* /.netlify/functions/:splat 200
-
-/portfolios code=:code state=:state /handle-login/:code/:state?redirect 301
