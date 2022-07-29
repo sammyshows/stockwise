@@ -5,8 +5,7 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/tailwindcss',
         '@pinia/nuxt',
-        '@kevinmarrec/nuxt-pwa',
-        '@nuxtjs/pwa'
+        '@kevinmarrec/nuxt-pwa'
     ],
 
     meta: {
@@ -33,23 +32,11 @@ export default defineNuxtConfig({
     pwa: {
         meta: {
             author: '@sammyshows',
-            theme_color: '#FFFFFF'
+            theme_color: '#000000'
         },
 
         icon: {
             source: 'static/icon.png'
-        },
-
-        manifest: {
-            start_url: '/portfolios?standalone=true',
-            name: 'Stockwise',
-            short_name: 'Stockwise',
-            description: 'Stockwiseeeee brings you the ability to track your portfolios and study companies in one place.',
-            lang: 'en',
-            display: 'standalone',
-            orientation: 'portrait',
-            theme_color: '#FFE100',
-            background_color: '#FFE100'
         },
 
         workbox: {

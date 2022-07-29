@@ -59,10 +59,13 @@ SELECT partman.create_parent('partman.asset_data', 'date', 'native', 'daily', p_
 CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) UNIQUE NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO users (id, email) VALUES('60ffde40-5715-4176-8b14-37fbcd39e85d', 'sammymac.eng@gmail.com');
 
+CREATE TABLE user_settings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, currency_id uuid, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
+INSERT INTO user_settings (user_id, currency_id) SELECT '60ffde40-5715-4176-8b14-37fbcd39e85d', id FROM assets WHERE symbol = 'USDAUD' AND type = 1;
+
 CREATE OR REPLACE FUNCTION insertUserSettings()
     RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO user_settings (user_id, currency_id) SELECT NEW.id, id FROM assets WHERE symbol = 'USDAUD' AND type = 1;
+    INSERT INTO user_settings (user_id, currency_id) SELECT NEW.id, id FROM assets WHERE symbol = 'USDUSD' AND type = 1;
     RETURN NEW;
 END;
 $$ language 'plpgsql';
@@ -96,9 +99,6 @@ INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value,
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 19701.25, 20740.4077062204, -101.76, 2.12, '2022-06-30');
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 21001.25, 20740.4077062204, 51.76, 0.12, '2022-07-01');
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('60ffde40-5715-4176-8b14-37fbcd39e85d', 23101.25, 20740.4077062204, 101.76, 3.12, '2022-07-02');
-
-CREATE TABLE user_settings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, currency_id uuid, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO user_settings (user_id, currency_id) SELECT '60ffde40-5715-4176-8b14-37fbcd39e85d', id FROM assets WHERE symbol = 'USDAUD' AND type = 1;
 
 CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '60ffde40-5715-4176-8b14-37fbcd39e85d', 'AUS EQUITIES', TRUE);

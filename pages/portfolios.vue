@@ -47,14 +47,12 @@ export default defineComponent({
   },
 
   async mounted() {
-    setTimeout(async () => {
-      await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-      this.token = await useState('authToken').value
-      this.uuid = useState('uuid').value
-      await this.getPortfolios()
-      this.getOverviewChart()
-      this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
-    }, 3000)
+    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+    this.token = await useState('authToken').value
+    this.uuid = useState('uuid').value
+    await this.getPortfolios()
+    this.getOverviewChart()
+    this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
   },
 
   beforeUnmount() {
