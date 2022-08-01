@@ -28,10 +28,6 @@
             <LogoutIcon class="h-6 text-red-400" />
             <p class="ml-6 text-sm">Log Out</p>
           </div>
-          <div @click="login" class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
-            <LogoutIcon class="h-6 text-bright-cyan" />
-            <p class="ml-6 text-sm">Log In</p>
-          </div>
         </div>
       </div>
     </div>
@@ -58,12 +54,10 @@ export default defineComponent({
   },
 
   async mounted() {
-    setTimeout(async () => {
-      await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-      this.token = await useState('authToken').value
-      this.uuid = useState('uuid').value
-      await this.getUserSettings()
-    }, 3000)
+    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+    this.token = await useState('authToken').value
+    this.uuid = useState('uuid').value
+    await this.getUserSettings()
   },
 
   data() {
@@ -91,21 +85,6 @@ export default defineComponent({
         .then(response => response.json())
 
       this.userSettings = response.data
-    },
-
-    async login() {
-      const auth0 = await createAuth0Client({
-        domain: "stockwise.us.auth0.com",
-        client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-        audience: "https://stockwise.app/api",
-        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
-      })
-
-      console.log('Login with redirect...')
-      await auth0.loginWithRedirect({
-          audience: "https://stockwise.app/api",
-          redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888?chicken=beak" : "https://www.stockwise.app/portfolios"
-      })
     }
   }
 })

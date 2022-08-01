@@ -26,8 +26,6 @@ import {BigNumber} from "bignumber.js";
 import { storeToRefs } from 'pinia'
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
-import createAuth0Client from "@auth0/auth0-spa-js";
-import jwt_decode from 'jwt-decode';
 
 
 export default defineComponent({
@@ -51,7 +49,7 @@ export default defineComponent({
     this.token = await useState('authToken').value
     this.uuid = useState('uuid').value
     await this.getPortfolios()
-    this.getOverviewChart()
+    await this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
   },
 
