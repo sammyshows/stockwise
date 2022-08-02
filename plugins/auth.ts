@@ -17,9 +17,13 @@ export default defineNuxtPlugin(() => {
                 let isAuthenticated = await auth0.isAuthenticated();
 
                 if (!isAuthenticated) {
-                    const query = window.location.search;
-                    if (query.includes("code=") && query.includes("state=")) {
-                        await auth0.handleRedirectCallback()
+                    let urlParams = new URLSearchParams(window.location.search)
+                    if (urlParams.has("code") && urlParams.has("state")) {
+                        await auth0.handleRedirectCallback();
+
+                        let url = new URL(window.location.href)
+                        url.searchParams.delete("code")
+                        url.searchParams.delete("state")
                         window.history.replaceState({}, "", "/portfolios")
                     } else {
                         await auth0.loginWithRedirect()
@@ -34,7 +38,7 @@ export default defineNuxtPlugin(() => {
             logout: async () => {
                 const auth0 = await useState<Auth0Client>('auth0').value
                 auth0.logout({
-                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888" : "https://www.stockwise.app",
+                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios",
                     client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u"
                 });
             }

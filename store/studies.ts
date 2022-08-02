@@ -15,7 +15,7 @@ export const useStudies = defineStore('studies', {
         getCompleted: (state) => {
             return () => {
                 if (state.studies)
-                    return state.studies.filter((study: Study) => study.completed_qs === 8)
+                    return state.studies.filter((study: Study) => study.completed_qs === 9)
                 else
                     return null
             }
@@ -24,7 +24,7 @@ export const useStudies = defineStore('studies', {
         getUncompleted: (state) => {
             return () => {
                 if (state.studies)
-                    return state.studies.filter((study: Study) => study.completed_qs < 8)
+                    return state.studies.filter((study: Study) => study.completed_qs < 9)
                 else
                     return null
             }
