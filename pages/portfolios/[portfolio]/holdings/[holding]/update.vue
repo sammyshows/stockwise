@@ -15,8 +15,8 @@
             </select>
           </div>
         </div>
-        <div class="text-right mb-7">
-          <ButtonsCyan text="SAVE" @clicked="updateHolding()" />
+        <div key="8" class="grow flex items-end justify-end my-7 text-right">
+          <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updateHolding()" />
         </div>
       </div>
     </div>
@@ -32,16 +32,19 @@
 import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 import { useHoldings } from "~/store/holdings";
+import { useAuth } from "@/store/auth";
+import { useUser } from "@/store/user";
 
 
 export default defineComponent({
   name: "Holdings",
 
   async setup() {
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
     const holdingStore = useHoldings()
-    return { token, uuid, holdingStore }
+    const authStore = useAuth()
+    const userStore = useUser()
+
+    return { holdingStore, authStore, userStore }
   },
 
   components: {
@@ -50,13 +53,19 @@ export default defineComponent({
 
   props: ['holdings'],
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
     this.getHoldingDetails()
     this.getPortfolios()
   },
 
   data() {
     return {
+      token: '',
+      uuid: '',
+      disabledSave: '',
       openModal: false,
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
@@ -76,7 +85,7 @@ export default defineComponent({
     async getHoldingDetails(): Promise<void> {
       const response = await fetch('/api/asset-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -96,7 +105,7 @@ export default defineComponent({
     async getPortfolios(): Promise<void> {
       const response = await fetch('/api/portfolios-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -108,9 +117,10 @@ export default defineComponent({
     },
 
     async updateHolding(): Promise<void> {
+      this.disabledSave = true
       const response = await fetch('/api/holding-update', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -124,6 +134,8 @@ export default defineComponent({
         setTimeout(() => this.holdingStoreUpdate(), 600)
         this.$router.push(`/portfolios/${this.portfolioId}`)
       }
+
+      this.disabledSave = false
     },
 
     closeModal(): void {
@@ -133,7 +145,7 @@ export default defineComponent({
     async deleteHolding(): Promise<void> {
       const response = await fetch('/api/holding-delete', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto";
+import { Chart } from "chart.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 import Spinner from "~/components/Spinner.vue";
@@ -139,11 +139,10 @@ export default defineComponent({
   name: "Asset Detail",
 
   async setup() {
-    const token = await useState('authToken').value
     const chartContainer = ref(null)
     const chart = ref(null)
 
-    return { token, chartContainer, chart }
+    return { chartContainer, chart }
   },
 
   props: [
@@ -155,7 +154,7 @@ export default defineComponent({
     SpeakerphoneIcon
   },
 
-  mounted() {
+  async mounted() {
     if (this.assetChartDay) {
       this.createChart('1D', 'today')
     }
@@ -254,6 +253,7 @@ export default defineComponent({
           }
         })
       } else if (dataSlice) {
+        console.log(this.assetChartMax)
         chartData = this.assetChartMax.slice(dataSlice)
         prices = chartData.map(dailyData => dailyData.close)
       } else if (range === 'YTD') {

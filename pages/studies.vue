@@ -21,26 +21,31 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
-import { useStudies } from "@/store/studies";
 import { computed } from "@vue/reactivity";
+import { useStudies } from "@/store/studies";
+import { useAuth } from "@/store/auth";
+import { useUser } from "@/store/user";
 
 
 export default defineComponent({
-  name: "Portfolio Overview",
+  name: "Studies",
 
   async setup() {
     const studyStore = useStudies()
     const uncompletedStudies = computed(() => studyStore.getUncompleted())
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
-    return { studyStore, uncompletedStudies, token, uuid }
+    const authStore = useAuth()
+    const userStore = useUser()
+    return { studyStore, uncompletedStudies, authStore, userStore }
   },
 
   components: {
     PlusIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
     this.getStudies()
   },
 
@@ -59,6 +64,8 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
+      uuid: '',
       pageDetails: {
         title: 'Studies'
       },
@@ -76,7 +83,7 @@ export default defineComponent({
     async getStudies(): Promise<void> {
       const response = await fetch('/api/studies-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

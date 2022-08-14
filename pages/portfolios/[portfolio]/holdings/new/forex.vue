@@ -94,22 +94,28 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAuth } from "@/store/auth";
+
 
 export default defineComponent({
   name: "New Forex",
 
-  async setup() {
-    const token = await useState('authToken').value
-    return { token }
+  setup() {
+    const authStore = useAuth()
+
+    return { authStore }
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getPortfolio()
     this.setDateTime()
   },
 
   data() {
     return {
+      token: '',
       disabledSave: false,
       pageDetails: {
         title: 'Add Forex',
@@ -187,7 +193,7 @@ export default defineComponent({
     async getPortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -224,7 +230,7 @@ export default defineComponent({
         this.quote = {}
         const data = await fetch('/api/iex-quote-forex', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({
@@ -242,7 +248,7 @@ export default defineComponent({
       if (this.validateForm()) {
         const holdingId = await fetch('/api/holding-create-forex', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({
@@ -263,7 +269,7 @@ export default defineComponent({
     async addTransaction(holdingId): Promise<void> {
       const response = await fetch('/api/transaction-create', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

@@ -1,46 +1,125 @@
-import createAuth0Client, {Auth0Client, Auth0ClientOptions} from '@auth0/auth0-spa-js';
-import jwt_decode from 'jwt-decode';
+import { useAuth } from "@/store/auth.js";
+import { useUser } from "@/store/user.js";
 
 export default defineNuxtPlugin(() => {
     return {
         provide: {
-            login: async () => {
-                const auth0 = await useState<Promise<Auth0Client>>('auth0', async (): Promise<Auth0Client> => {
-                    return await createAuth0Client({
-                        domain: "stockwise.us.auth0.com",
-                        client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u",
-                        audience: "https://stockwise.app/api",
-                        redirect_uri: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios"
+            login: async (email?, password?): Promise<string> => {
+                const config = useRuntimeConfig()
+                let message = "error" // default return message
+
+                if (useAuth().accessToken)
+                    return
+
+                const response = await fetch('/api/auth-login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: email || null,
+                        password: password || null
                     })
-                }).value;
+                }).then(async (res) => {
+                    const body = await res.json()
 
-                let isAuthenticated = await auth0.isAuthenticated();
-
-                if (!isAuthenticated) {
-                    let urlParams = new URLSearchParams(window.location.search)
-                    if (urlParams.has("code") && urlParams.has("state")) {
-                        await auth0.handleRedirectCallback();
-
-                        let url = new URL(window.location.href)
-                        url.searchParams.delete("code")
-                        url.searchParams.delete("state")
-                        window.history.replaceState({}, "", "/portfolios")
-                    } else {
-                        await auth0.loginWithRedirect()
+                    if (res.status === 200) {
+                        message = "authorized"
+                        return body
                     }
+
+                    if (res.status === 300) {
+                        if (body.errorMessage === "LoginRequired")
+                            window.location.href = `${config.public.DOMAIN}/auth/login`
+
+                        if (body.errorMessage === "NotAuthorizedException")
+                            message = "notAuthorized"
+                    }
+                })
+
+                if (response.accessToken) {
+                    useAuth().$patch({
+                        accessToken: response.accessToken
+                    })
                 }
 
-                const token = await auth0.getTokenSilently()
-                useState('authToken', () => token)
-                useState('uuid', () => jwt_decode(token)["https://stockwise.app/uuid"])
+                if (response.userId) {
+                    useUser().$patch({
+                        userId: response.userId
+                    })
+                }
+
+                return message
             },
 
-            logout: async () => {
-                const auth0 = await useState<Auth0Client>('auth0').value
-                auth0.logout({
-                    returnTo: window.location.origin === "http://localhost:8888" ? "http://localhost:8888/portfolios" : "https://www.stockwise.app/portfolios",
-                    client_id: "fkOrDjhrepusnXmq9eWbGFxGl5W4Rm8u"
-                });
+            logout: async (): Promise<void> => {
+                const config = useRuntimeConfig()
+
+                const response = await fetch('/api/auth-logout', {
+                    method: 'POST'
+                })
+
+
+                if (response.status === 200)
+                    window.location.href = `${config.public.DOMAIN}/auth/login`
+            },
+
+            signUp: async (email, password): Promise<string> => {
+                const config = useRuntimeConfig()
+
+                return await fetch('/api/auth-signup', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                }).then(async (res) => {
+                    if (res.status === 200) {
+                        await fetch('/api/auth-login', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                email: email,
+                                password: password
+                            })
+                        })
+                        window.location.href = `${config.public.DOMAIN}/portfolios`
+                    }
+
+                    if (res.status === 303) {
+                        // Ideally, this doesn't redirect right away but instead displays an error message give the user the option to try login with this email
+                        const body = await res.json()
+                        if (body.errorMessage === "UsernameExistsException") {
+                            return 'userExists'
+                        }
+                    }
+                    return 'error'
+                })
+            },
+
+            googleLogin: async (code) => {
+                await fetch('/api/auth-google-login', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        code: code
+                    })
+                })
+            },
+
+            forgotPassword: async (email) => {
+                await fetch('/api/auth-password-forgot', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        email: email
+                    })
+                })
+            },
+
+            confirmPassword: async (verificationCode, email, newPassword) => {
+                return await fetch('/api/auth-password-confirm', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        verificationCode: verificationCode,
+                        email: email,
+                        newPassword: newPassword
+                    })
+                }).then(res => res.status)
             }
         }
     }

@@ -130,20 +130,25 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { SearchIcon } from '@heroicons/vue/solid'
+import { useAuth } from "@/store/auth";
+
 
 export default defineComponent({
   name: "New Stock",
 
-  async setup() {
-    const token = await useState('authToken').value
-    return { token }
+  setup() {
+    const authStore = useAuth()
+
+    return { authStore }
   },
 
   components: {
     SearchIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getPortfolio()
     this.setDateTime()
     if (this.$route.params.assetSymbol)
@@ -152,6 +157,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       manualForm: false,
       disabledSave: false,
       pageDetails: {
@@ -221,7 +227,7 @@ export default defineComponent({
     async getPortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -235,7 +241,7 @@ export default defineComponent({
     async fetchSearch(searchTerm: string): Promise<void> {
       const data = await fetch('/api/stock-search', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -252,7 +258,7 @@ export default defineComponent({
       this.quote = {}
       const quote = await fetch('/api/stock-quote', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -298,7 +304,7 @@ export default defineComponent({
       if (this.validateQuote() && this.validateForm()) {
         const holdingId = await fetch('/api/holding-create-stock', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({
@@ -321,7 +327,7 @@ export default defineComponent({
     async addTransaction(holdingId): Promise<void> {
       const response = await fetch('/api/transaction-create', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

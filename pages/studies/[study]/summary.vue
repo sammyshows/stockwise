@@ -168,7 +168,7 @@ export default defineComponent({
     async getStudy(): Promise<void> {
       const response = await fetch('/api/study-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -203,7 +203,7 @@ export default defineComponent({
       this.studyDetails.notes = this.notes
       const response = await fetch('/api/study-update', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -232,7 +232,7 @@ export default defineComponent({
     async deleteStudy(): Promise<void> {
       const response = await fetch('/api/study-delete', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

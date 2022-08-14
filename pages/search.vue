@@ -44,25 +44,30 @@
 import { defineComponent } from "vue"
 import { SearchIcon } from '@heroicons/vue/solid'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline'
+import { useAuth } from "@/store/auth";
+
 
 export default defineComponent({
   name: "Search",
 
   async setup() {
-    const token = await useState('authToken').value
-    return { token }
+    const authStore = useAuth()
+    return { authStore }
   },
 
   components: {
     SearchIcon, ArrowNarrowRightIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getSearches()
   },
 
   data() {
     return {
+      token: '',
       pageDetails: {
         title: "Search",
       },
@@ -76,7 +81,7 @@ export default defineComponent({
       if (searchTerm !== '') {
         const data = await fetch('/api/stock-search', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({

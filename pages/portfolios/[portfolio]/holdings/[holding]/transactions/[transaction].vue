@@ -72,6 +72,7 @@ import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { BigNumber } from "bignumber.js";
 import { useTransactions } from "@/store/transactions";
+import { useAuth } from "@/store/auth";
 
 
 export default defineComponent({
@@ -79,10 +80,11 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
-    const token = await useState('authToken').value
     const transactionStore = useTransactions()
     const storeTransaction = transactionStore.getTransaction(route.params.transaction)
-    return { token, transactionStore, storeTransaction }
+    const authStore = useAuth()
+
+    return { transactionStore, storeTransaction, authStore }
   },
 
   props: [
@@ -93,7 +95,9 @@ export default defineComponent({
     TrashIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getTransaction()
     this.getHolding()
     this.setDateTime(this.storeTransaction?.datetime)
@@ -108,6 +112,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       holdingId: this.$route.params.holding,
       portfolioId: this.$route.params.portfolio,
       openModal: false,
@@ -154,7 +159,7 @@ export default defineComponent({
     async getTransaction(): Promise<void> {
       const response = await fetch('/api/transaction-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -182,7 +187,7 @@ export default defineComponent({
     async getHolding(): Promise<void> {
       const response = await fetch('/api/holding-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -198,7 +203,7 @@ export default defineComponent({
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-update', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({
@@ -223,7 +228,7 @@ export default defineComponent({
     async deleteTransaction(): Promise<void> {
       const response = await fetch('/api/transaction-delete', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

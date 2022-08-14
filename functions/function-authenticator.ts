@@ -31,7 +31,7 @@ const handler: Handler = async (event, context) => {
 
     await fetch(eventBody.url, {
         headers: {
-            authorization: 'Bearer ' + auth["access_token"]
+            authorization: auth["access_token"]
         },
         method: 'POST'
     })

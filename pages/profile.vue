@@ -38,16 +38,18 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon } from "@heroicons/vue/outline";
-import createAuth0Client from "@auth0/auth0-spa-js";
+import { useAuth } from "@/store/auth";
+import { useUser } from "@/store/user";
+
 
 export default defineComponent({
   name: "Portfolio Overview",
 
-  // async setup() {
-  //   const token = await useState('authToken').value
-  //   const uuid = useState('uuid').value
-  //   return { token, uuid }
-  // },
+  async setup() {
+    const authStore = useAuth()
+    const userStore = useUser()
+    return { authStore, userStore }
+  },
 
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
@@ -55,8 +57,8 @@ export default defineComponent({
 
   async mounted() {
     await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-    this.token = await useState('authToken').value
-    this.uuid = useState('uuid').value
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
     await this.getUserSettings()
   },
 
@@ -75,7 +77,7 @@ export default defineComponent({
     async getUserSettings(): Promise<void> {
       const response = await fetch('/api/user-settings-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

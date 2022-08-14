@@ -142,10 +142,10 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto";
+import { Chart } from "chart.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
-
+import { useAuth } from "@/store/auth";
 
 interface StringObject {
   [index: string]: string;
@@ -154,10 +154,10 @@ interface StringObject {
 export default defineComponent({
   name: "Asset Detail",
 
-  async setup() {
-    const token = await useState('authToken').value
+  setup() {
+    const authStore = useAuth()
 
-    return { token }
+    return { authStore }
   },
 
   components: {
@@ -165,6 +165,7 @@ export default defineComponent({
   },
 
   mounted() {
+    this.token = this.authStore.accessToken
     this.getChartData()
     this.fetchQuote()
     this.fetchStats()
@@ -172,6 +173,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       pageDetails: {
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
@@ -228,7 +230,7 @@ export default defineComponent({
     async fetchQuote(): Promise<void> {
       const response = await fetch('/api/stock-quote', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -245,7 +247,7 @@ export default defineComponent({
     async fetchStats(): Promise<void> {
       const response = await fetch('/api/stock-stats', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -260,7 +262,7 @@ export default defineComponent({
     async getChartData() {
       const chartData = await fetch('/api/iex-chart', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

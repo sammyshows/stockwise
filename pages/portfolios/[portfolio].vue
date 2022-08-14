@@ -2,7 +2,7 @@
   <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
-        <PageTitle v-if="portfolio" :pageDetails="{ title: this.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
+        <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
             <PlusIcon class="h-8 w-8" />
@@ -33,6 +33,7 @@ import {BigNumber} from "bignumber.js";
 import { computed } from "@vue/reactivity";
 import { usePortfolios } from "@/store/portfolios";
 import { useHoldings } from "@/store/holdings";
+import { useAuth } from "@/store/auth";
 
 
 export default defineComponent({
@@ -40,11 +41,12 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const authStore = useAuth()
     const portfolioStore = usePortfolios()
     const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
     const holdingStore = useHoldings()
     const holdings = computed(() => holdingStore.getHoldings(route.params.portfolio))
-    return { portfolio, holdingStore, holdings }
+    return { authStore, portfolio, holdingStore, holdings }
   },
 
   components: {
@@ -52,8 +54,8 @@ export default defineComponent({
   },
 
   async mounted() {
-    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-    this.token = await useState('authToken').value
+    await this.$login()
+    this.token = this.authStore.accessToken
     await this.getHoldings()
     this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getHoldings(), 60000)
@@ -129,7 +131,7 @@ export default defineComponent({
     async getHoldings(): Promise<void> {
       const response = await fetch('/api/holdings-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -145,7 +147,7 @@ export default defineComponent({
     async getOverviewChart() {
       let chartData = await fetch('/api/portfolio-data-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

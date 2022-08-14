@@ -43,7 +43,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         } catch (err) {
             const asset = await fetch(process.env.DOMAIN + '/api/asset-upsert-stock', {
                 headers: {
-                    authorization: 'Bearer ' + eventBody.token
+                    authorization: eventBody.token
                 },
                 method: 'POST',
                 body: JSON.stringify({

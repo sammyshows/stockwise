@@ -28,7 +28,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             // If error, it's likely the asset is available via IEX but doesn't yet exist in the database
             const asset = await fetch(`${process.env.DOMAIN}/api/asset-upsert-stock`, {
                 headers: {
-                    authorization: 'Bearer ' + eventBody.token
+                    authorization: eventBody.token
                 },
                 method: 'POST',
                 body: JSON.stringify({

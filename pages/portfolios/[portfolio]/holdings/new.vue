@@ -18,21 +18,26 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAuth } from "@/store/auth";
 
 export default defineComponent({
   name: "New Holding",
 
-  async setup() {
-    const token = await useState('authToken').value
-    return { token }
+  setup() {
+    const authStore = useAuth()
+
+    return { authStore }
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getPortfolio()
   },
 
   data() {
     return {
+      token: '',
       pageDetails: {
         title: 'Add Holding',
         subtitle: this.$route.params.portfolioName,
@@ -47,7 +52,7 @@ export default defineComponent({
     async getPortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

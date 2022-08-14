@@ -22,22 +22,21 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
-import {BigNumber} from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { storeToRefs } from 'pinia'
+import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
-
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
+    const authStore = useAuth()
     const userStore = useUser()
     const portfolioStore = usePortfolios()
     const { portfolios } = storeToRefs(portfolioStore)
-    // console.log(await useState('authToken').value)
-    // const uuid = useState('uuid').value
-    return { userStore, portfolioStore, portfolios }
+    return { authStore, userStore, portfolioStore, portfolios }
   },
 
   components: {
@@ -45,9 +44,13 @@ export default defineComponent({
   },
 
   async mounted() {
-    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
-    this.token = await useState('authToken').value
-    this.uuid = useState('uuid').value
+    if (this.$route.query.code) {
+      await this.$googleLogin(this.$route.query.code)
+      this.$router.replace({'query': null})
+    }
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
     await this.getPortfolios()
     await this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
@@ -117,7 +120,7 @@ export default defineComponent({
     async getPortfolios(): Promise<void> {
       const response = await fetch('/api/portfolios-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -140,7 +143,7 @@ export default defineComponent({
     async getOverviewChart() {
       let chartData = await fetch('/api/portfolios-data-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

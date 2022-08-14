@@ -30,10 +30,11 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto";
+import { Chart, registerables } from 'chart.js';
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
+Chart.register(...registerables);
 
 interface StringObject {
   [index: string]: string;
@@ -43,11 +44,10 @@ export default defineComponent({
   name: "Total Portfolios Overview",
 
   async setup() {
-    const token = await useState('authToken').value
     const chartContainer = ref(null)
     const chart = ref(null)
 
-    return { token, chartContainer, chart }
+    return { chartContainer, chart }
   },
 
   props: ['portfolios', 'total', 'overviewChart'],
@@ -56,7 +56,7 @@ export default defineComponent({
     SpeakerphoneIcon
   },
 
-  mounted() {
+  async mounted() {
     if (this.overviewChart) {
       this.createChart('1W', 'past week', -7)
     }

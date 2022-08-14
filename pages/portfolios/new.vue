@@ -30,18 +30,29 @@
 import { defineComponent } from "vue";
 import { v4 as uuidv4 } from 'uuid';
 import { usePortfolios } from "@/store/portfolios";
+import { useAuth } from "@/store/auth";
+import { useUser } from "@/store/user";
 
 export default defineComponent({
   name: "New Portfolio",
 
   async setup() {
-    const token = await useState('authToken').value
     const portfolioStore = usePortfolios()
-    return { token, portfolioStore }
+    const authStore = useAuth()
+    const userStore = useUser()
+
+    return { portfolioStore, authStore, userStore }
+  },
+
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.portfolioDetails.userId = this.userStore.userId
   },
 
   data() {
     return {
+      token: null as (string | null),
       disabledSave: false,
       pageDetails: {
         title: 'New Portfolio',
@@ -51,7 +62,7 @@ export default defineComponent({
         name: false
       },
       portfolioDetails: { // Has extra info for adding to the current portfolios state
-        userId: useState('uuid').value,
+        userId: '',
         portfolio_id: uuidv4(),
         portfolio_name: '',
         holding_count: 0,
@@ -73,7 +84,7 @@ export default defineComponent({
       if (this.validateForm()) {
         const response = await fetch('/api/portfolio-create', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)

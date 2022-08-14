@@ -8,7 +8,7 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     const quote = await fetch(`${process.env.DOMAIN}/api/iex-quote-forex`, {
         headers: {
-            authorization: 'Bearer ' + eventBody.token
+            authorization: eventBody.token
         },
         method: 'POST',
         body: JSON.stringify({

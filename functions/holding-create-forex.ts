@@ -25,7 +25,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         // This logic is reusable for both forex and stocks, so just do a simple check to see which function to call:
         const asset = await fetch(process.env.DOMAIN + '/api/asset-upsert-forex', {
             headers: {
-                authorization: 'Bearer ' + eventBody.token
+                authorization: eventBody.token
             },
             method: 'POST',
             body: JSON.stringify({

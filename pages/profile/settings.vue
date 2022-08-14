@@ -22,15 +22,15 @@
 import { defineComponent } from "vue";
 import { CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon } from "@heroicons/vue/outline";
 import { useUser } from "@/store/user";
+import { useAuth } from "@/store/auth";
 
 export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
     const userStore = useUser()
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
-    return { userStore, token, uuid }
+    const authStore = useAuth()
+    return { userStore, authStore }
   },
 
   props: [
@@ -47,8 +47,15 @@ export default defineComponent({
     }
   },
 
+  mounted() {
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
+  },
+
   data() {
     return {
+      token: '',
+      userId: '',
       pageDetails: {
         title: 'Settings',
         subtitle: 'PROFILE',
@@ -65,7 +72,7 @@ export default defineComponent({
     async updateUserSettings(): Promise<void> {
       const response = await fetch('/api/user-settings-update', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify(this.settings)

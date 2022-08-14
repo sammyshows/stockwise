@@ -61,16 +61,20 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useAuth } from "@/store/auth";
 
 export default defineComponent({
   name: "New Transaction",
 
-  async setup() {
-    const token = await useState('authToken').value
-    return { token }
+  setup() {
+    const authStore = useAuth()
+
+    return { authStore }
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getAsset()
     this.getHolding()
     this.setDateTime()
@@ -125,7 +129,7 @@ export default defineComponent({
     async getAsset(): Promise<void> {
       const response = await fetch('/api/asset-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -145,7 +149,7 @@ export default defineComponent({
     async getHolding(): Promise<void> {
       const response = await fetch('/api/holding-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -162,7 +166,7 @@ export default defineComponent({
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-create', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify({

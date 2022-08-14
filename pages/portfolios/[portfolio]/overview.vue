@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto";
+import { Chart } from "chart.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -43,11 +43,10 @@ export default defineComponent({
   name: "Asset Detail",
 
   async setup() {
-    const token = await useState('authToken').value
     const chartContainer = ref(null)
     const chart = ref(null)
 
-    return { token, chartContainer, chart }
+    return { chartContainer, chart }
   },
 
   props: ['holdings', 'total', 'overviewChart'],
@@ -56,7 +55,7 @@ export default defineComponent({
     SpeakerphoneIcon
   },
 
-  mounted() {
+  async mounted() {
     if (this.overviewChart) {
       this.createChart('1W', 'past week', -7)
     }

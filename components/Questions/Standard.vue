@@ -64,7 +64,6 @@
 import { defineComponent } from "vue";
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline';
-import PrevNextButtons from "~/components/PrevNextButtons.vue";
 
 export default defineComponent({
   name: "Question Standard Five",

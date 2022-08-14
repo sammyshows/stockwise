@@ -46,6 +46,8 @@ import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js"
 import { computed } from "@vue/reactivity";
 import { useTransactions } from "@/store/transactions";
+import { useAuth } from "@/store/auth";
+
 
 interface StringObject {
   [index: string]: string;
@@ -56,10 +58,10 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
-    const token = await useState('authToken').value
+    const authStore = useAuth()
     const transactionStore = useTransactions()
     const transactions = computed(() => transactionStore.getTransactions(route.params.holding))
-    return { token, transactionStore, transactions }
+    return { authStore, transactionStore, transactions }
   },
 
   components: {
@@ -67,6 +69,8 @@ export default defineComponent({
   },
 
   async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     await this.getTransactions()
     this.getOverviewChart()
     this.getAssetChart()
@@ -88,6 +92,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
@@ -161,7 +166,7 @@ export default defineComponent({
     async getTransactions(): Promise<void> {
       const response = await fetch('/api/transactions-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -185,7 +190,7 @@ export default defineComponent({
     async getOverviewChart() {
       let chartData = await fetch('/api/holding-data-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -219,7 +224,7 @@ export default defineComponent({
     async getAssetChart() {
       const chartData = await fetch('/api/asset-data-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -236,7 +241,7 @@ export default defineComponent({
     async fetchQuote(): Promise<void> {
       this.quote = await fetch('/api/stock-quote', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -250,7 +255,7 @@ export default defineComponent({
     async fetchStats(): Promise<void> {
       this.stats = await fetch('/api/stock-stats', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

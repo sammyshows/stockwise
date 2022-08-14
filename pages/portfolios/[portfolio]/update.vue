@@ -37,14 +37,17 @@
 import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 import { usePortfolios } from "@/store/portfolios";
+import { useAuth } from "@/store/auth";
+
 
 export default defineComponent({
   name: "Edit Portfolio",
 
   async setup() {
     const portfolioStore = usePortfolios()
-    const token = await useState('authToken').value
-    return { portfolioStore, token }
+    const authStore = useAuth()
+
+    return { portfolioStore, authStore }
   },
 
   components: {
@@ -53,12 +56,15 @@ export default defineComponent({
 
   props: ['holdings'],
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getPortfolioDetails()
   },
 
   data() {
     return {
+      token: '',
       disabledSave: false,
       openModal: false,
       portfolioId: this.$route.params.portfolio,
@@ -85,7 +91,7 @@ export default defineComponent({
     async getPortfolioDetails(): Promise<void> {
       const response = await fetch('/api/portfolio-read', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -102,7 +108,7 @@ export default defineComponent({
       if (this.validateForm()) {
         const response = await fetch('/api/portfolio-update', {
           headers: {
-            authorization: 'Bearer ' + this.token
+            authorization: this.token
           },
           method: 'POST',
           body: JSON.stringify(this.portfolioDetails)
@@ -123,7 +129,7 @@ export default defineComponent({
     async deletePortfolio(): Promise<void> {
       const response = await fetch('/api/portfolio-delete', {
         headers: {
-          authorization: 'Bearer ' + this.token
+          authorization: this.token
         },
         method: 'POST',
         body: JSON.stringify({

@@ -8,7 +8,7 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     const asset = await fetch(`${process.env.DOMAIN}/api/stock-quote`, {
         headers: {
-            authorization: 'Bearer ' + eventBody.token
+            authorization: eventBody.token
         },
         method: 'POST',
         body: JSON.stringify({
@@ -40,7 +40,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     // Add historical data for this stock chart
     await fetch(`${process.env.DOMAIN}/api/asset-data-insert`, {
         headers: {
-            authorization: 'Bearer ' + eventBody.token
+            authorization: eventBody.token
         },
         method: 'POST',
         body: JSON.stringify({
