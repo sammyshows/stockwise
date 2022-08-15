@@ -1,7 +1,7 @@
 import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
-export default defineNuxtConfig({
+export default {
     runtimeConfig: {
         public: {
             DOMAIN: process.env.DOMAIN,
@@ -22,8 +22,7 @@ export default defineNuxtConfig({
 
     meta: {
         meta: [
-            { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' },
-            { name: "google-signin-client_id", content: "1049285064618-q9pnul0mtp98n3fsu5p07pg9dlgqslik.apps.googleusercontent.com" }
+            { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
         ],
         link: [
             { rel: 'manifest', href: '/manifest.json' },
@@ -33,8 +32,7 @@ export default defineNuxtConfig({
         ],
         script: [
             { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },
-            { src: '/js/polyfills.js' },
-            { src: 'https://accounts.google.com/gsi/client', defer: true, async: true }
+            { src: '/js/polyfills.js' }
         ]
     },
 
@@ -56,4 +54,4 @@ export default defineNuxtConfig({
             enabled: true
         }
     }
-});
+};
