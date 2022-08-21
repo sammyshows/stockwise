@@ -57,7 +57,6 @@ const verifyJwt = (handler) => async (event, context) => {
             await updateJwks()
             return await validToken(event.headers.authorization)
         })
-    console.log(isValidToken)
 
     if (isValidToken)
         return handler(event, context)

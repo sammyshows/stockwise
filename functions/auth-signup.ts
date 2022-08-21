@@ -58,9 +58,7 @@ exports.handler = async (event, context) => {
             } else {
                 await client`
                     INSERT INTO users (id, email)
-                    VALUES (${uuid}, ${eventBody.email})
-                    ON CONFLICT (email) 
-                    DO NOTHING;`
+                    VALUES (${uuid}, ${eventBody.email});`
 
                 resolve(cognitoUser = result.user)
             }

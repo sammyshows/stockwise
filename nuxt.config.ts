@@ -1,7 +1,7 @@
 import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
-export default {
+export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             DOMAIN: process.env.DOMAIN,
@@ -54,4 +54,4 @@ export default {
             enabled: true
         }
     }
-};
+});
