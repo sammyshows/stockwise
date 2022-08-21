@@ -2,13 +2,13 @@ import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
-    runtimeConfig: {
-        public: {
-            DOMAIN: process.env.DOMAIN,
-            AWS_AUTH_URL: process.env.AWS_AUTH_URL,
-            AWS_CLIENT_ID: process.env.AWS_CLIENT_ID
-        }
-    },
+    // runtimeConfig: {
+    //     public: {
+    //         DOMAIN: process.env.DOMAIN,
+    //         AWS_AUTH_URL: process.env.AWS_AUTH_URL,
+    //         AWS_CLIENT_ID: process.env.AWS_CLIENT_ID
+    //     }
+    // },
 
     modules: [
         '@nuxtjs/tailwindcss',
