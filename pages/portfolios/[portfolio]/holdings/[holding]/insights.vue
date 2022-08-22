@@ -253,7 +253,6 @@ export default defineComponent({
           }
         })
       } else if (dataSlice) {
-        console.log(this.assetChartMax)
         chartData = this.assetChartMax.slice(dataSlice)
         prices = chartData.map(dailyData => dailyData.close)
       } else if (range === 'YTD') {
