@@ -46,7 +46,11 @@ exports.handler = async (event, context) => {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: `grant_type=authorization_code&client_id=${process.env.AWS_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.DOMAIN + '/portfolios')}&code=${eventBody.code}`
-    }).then(res => res.json())
+    }).then(res => {
+        console.log(res)
+        console.log(res.json())
+        return res.json()
+    })
 
     accessToken = response["access_token"]
     idToken = response["id_token"]
