@@ -53,8 +53,11 @@ exports.handler = async (event, context) => {
     refreshToken = response["refresh_token"]
 
     const userId = jwt.decode(idToken)?.["custom:sw_user_id"]
+    console.log('here')
 
     if (idToken && !userId) {
+        console.log('idToken && !userId')
+
         const cognito = new AWS.CognitoIdentityServiceProvider();
         const username = jwt.decode(accessToken)["username"]
         const email = jwt.decode(idToken)["email"]
@@ -86,8 +89,8 @@ exports.handler = async (event, context) => {
         })
     }
 
-
     setCookies()
+
     if (accessToken && idToken && refreshToken) {
         return {
             statusCode: 200,
