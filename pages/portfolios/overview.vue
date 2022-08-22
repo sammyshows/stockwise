@@ -30,11 +30,10 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import { Chart } from 'chart.js';
+import Chart from "chart.js/auto/auto.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
-// Chart.register(...registerables);
 
 interface StringObject {
   [index: string]: string;

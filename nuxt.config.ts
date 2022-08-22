@@ -10,6 +10,12 @@ export default defineNuxtConfig({
         }
     },
 
+    build: {
+        transpile: [
+            '@heroicons/vue'
+        ]
+    },
+
     modules: [
         '@nuxtjs/tailwindcss',
         '@pinia/nuxt',

@@ -18,12 +18,12 @@
       </div>
       <a href="/auth/password-reset" class="mt-2 float-right text-gray-400 text-xs underline underline-offset-4">Forgot password?</a>
       <button @click="login" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Sign in</button>
+      <p class="mt-5 text-center text-gray-300 text-sm">Don't have an account? <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
       <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
       <div @click="googleLogin" class="flex items-center bg-white rounded-full">
         <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
         <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
       </div>
-      <p class="mt-5 text-center text-gray-300 text-sm">Don't have an account? <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
     </div>
     <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
   </div>

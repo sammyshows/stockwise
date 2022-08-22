@@ -129,8 +129,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref} from "vue";
-import { Chart } from "chart.js";
+import { defineComponent, ref } from "vue";
+import Chart from "chart.js/auto/auto.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 import Spinner from "~/components/Spinner.vue";
