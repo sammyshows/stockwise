@@ -50,14 +50,11 @@ exports.handler = async (event, context) => {
         return res.json()
     })
 
-    console.log(response)
-
     accessToken = response["access_token"]
     idToken = response["id_token"]
     refreshToken = response["refresh_token"]
 
     const userId = jwt.decode(idToken)?.["custom:sw_user_id"]
-    console.log('here')
 
     if (idToken && !userId) {
         console.log('idToken && !userId')
