@@ -125,7 +125,8 @@ exports.handler = async (event, context) => {
         }
     })()
 
-    console.log(accessToken && refreshToken && idToken)
+    if (accessToken && refreshToken && idToken)
+        console.log('All 3 tokens are present')
 
     if (accessToken && refreshToken && idToken) {
         const userId = jwt.decode(idToken)['custom:sw_user_id']
