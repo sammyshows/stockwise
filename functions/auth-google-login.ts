@@ -96,10 +96,10 @@ exports.handler = async (event, context) => {
         console.log('success google login')
         return {
             statusCode: 200,
+            'multiValueHeaders': {
+                'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
+            },
             headers: {
-                'Set-Cookie': accessCookie,
-                'Set-Cookie': idCookie,
-                'Set-Cookie': refreshCookie,
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
             }
