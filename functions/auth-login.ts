@@ -125,7 +125,11 @@ exports.handler = async (event, context) => {
         }
     })()
 
+    console.log(accessToken)
+    console.log(idToken)
     console.log(accessToken && refreshToken && idToken)
+    console.log(refreshToken)
+
     if (accessToken && refreshToken && idToken) {
         const userId = jwt.decode(idToken)['custom:sw_user_id']
         console.log(userId)
