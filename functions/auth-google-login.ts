@@ -95,7 +95,12 @@ exports.handler = async (event, context) => {
     if (accessToken && idToken && refreshToken) {
         console.log('success google login')
         return {
-            statusCode: 200
+            statusCode: 200,
+            headers: {
+                'Set-Cookie': [ accessCookie ],
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'text/html'
+            }
         }
     } else {
         console.log('failed google login')
