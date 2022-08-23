@@ -93,7 +93,7 @@ exports.handler = async (event, context) => {
     setCookies()
 
     if (accessToken && refreshToken && idToken)
-        console.log('All 3 tokens are present'
+        console.log('All 3 tokens are present')
 
     if (accessToken && idToken && refreshToken) {
         return {
