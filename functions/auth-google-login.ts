@@ -97,7 +97,8 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
-                'Set-Cookie': [ accessCookie ],
+                'access-control-expose-headers': 'Set-Cookie',
+                'Set-Cookie': [ accessCookie, idCookie, refreshCookie ],
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
             }
