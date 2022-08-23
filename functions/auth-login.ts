@@ -125,9 +125,6 @@ exports.handler = async (event, context) => {
         }
     })()
 
-    console.log(accessToken)
-    console.log(idToken)
-    console.log(refreshToken)
     console.log(accessToken && refreshToken && idToken)
 
     if (accessToken && refreshToken && idToken) {

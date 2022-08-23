@@ -92,9 +92,6 @@ exports.handler = async (event, context) => {
 
     setCookies()
 
-    console.log(accessToken)
-    console.log(idToken)
-    console.log(refreshToken)
     console.log(accessToken && refreshToken && idToken)
 
     if (accessToken && idToken && refreshToken) {
