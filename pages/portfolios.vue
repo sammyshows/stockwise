@@ -48,7 +48,7 @@ export default defineComponent({
       await this.$googleLogin(this.$route.query.code)
       this.$router.replace({'query': null})
     }
-    await this.$login()
+    // await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
     await this.getPortfolios()

@@ -92,10 +92,9 @@ exports.handler = async (event, context) => {
 
     setCookies()
 
-    if (accessToken && refreshToken && idToken)
-        console.log('All 3 tokens are present')
 
     if (accessToken && idToken && refreshToken) {
+        console.log('success google login')
         return {
             statusCode: 200,
             headers: {
@@ -105,6 +104,7 @@ exports.handler = async (event, context) => {
             }
         }
     } else {
+        console.log('failed google login')
         return {
             statusCode: 500
         }
