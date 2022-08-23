@@ -92,14 +92,12 @@ exports.handler = async (event, context) => {
 
     setCookies()
 
-    console.log(refreshCookie)
-    console.log(accessCookie)
-    console.log(idCookie)
     if (accessToken && idToken && refreshToken) {
         console.log('success google login')
         return {
             statusCode: 200,
             headers: {
+                'Access-Control-Allow-Credentials': "true",
                 'Set-Cookie': [ accessCookie, idCookie, refreshCookie ],
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
