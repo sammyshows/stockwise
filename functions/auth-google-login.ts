@@ -56,6 +56,8 @@ exports.handler = async (event, context) => {
 
     const userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
+    console.log("IDTOKEN:" + idToken)
+    console.log("USERID" + userId)
     if (idToken && !userId) {
         console.log('idToken && !userId')
 
