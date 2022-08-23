@@ -157,89 +157,89 @@ export default defineComponent({
       let chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
-      // new Chart(chart.getContext('2d'), {
-      //   plugins: [verticalLine],
-      //   type: 'line',
-      //   data: {
-      //     labels: labels,
-      //     datasets: [{
-      //       label: 'Value',
-      //       data: prices,
-      //       borderColor: 'rgb(75, 192, 192)',
-      //       backgroundColor: 'rgba(0, 255, 187, 0.10)',
-      //       fill: true
-      //     }]
-      //   },
-      //   options: {
-      //     scales: {
-      //       x: {
-      //         ticks: {
-      //           maxTicksLimit: 10,
-      //           color: 'rgb(175, 175, 175)',
-      //           font: {
-      //             size: 8
-      //           },
-      //           padding: 8,
-      //           maxRotation: 45,
-      //           minRotation: 45
-      //         },
-      //         grid: {
-      //           color: 'rgba(255, 255, 255, 0.07)',
-      //           drawTicks: false
-      //         }
-      //       },
-      //       y: {
-      //         position: 'left',
-      //         ticks: {
-      //           color: 'rgb(175, 175, 175)',
-      //           font: {
-      //             size: 8
-      //           },
-      //           padding: 5
-      //         },
-      //         grid: {
-      //           color: 'rgba(255, 255, 255, 0.07)'
-      //         }
-      //       }
-      //     },
-      //     responsive: true,
-      //     interaction: {
-      //       intersect: false,
-      //       axis: 'x'
-      //     },
-      //     elements: {
-      //       line: {
-      //         borderWidth: 1
-      //       },
-      //       point: {
-      //         radius: 0,
-      //         hoverRadius: 6,
-      //         hoverBackgroundColor: 'rgba(255,255,255, 0.5)',
-      //         hoverBorderColor: 'rgba(255,255,255, 1)',
-      //         hitRadius: 0
-      //       }
-      //     },
-      //     plugins: {
-      //       tooltip: {
-      //         callbacks: {
-      //           label: function(context) {
-      //             let label = `${context.dataset.label}: ${context.formattedValue}`
-      //
-      //             if (chartType == 3)
-      //               label = label + '%'
-      //
-      //             return label
-      //           }
-      //         },
-      //         caretPadding: 20,
-      //         displayColors: false
-      //       },
-      //       legend: {
-      //         display: false
-      //       }
-      //     }
-      //   }
-      // });
+      new Chart(chart.getContext('2d'), {
+        plugins: [verticalLine],
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Value',
+            data: prices,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(0, 255, 187, 0.10)',
+            fill: true
+          }]
+        },
+        options: {
+          scales: {
+            x: {
+              ticks: {
+                maxTicksLimit: 10,
+                color: 'rgb(175, 175, 175)',
+                font: {
+                  size: 8
+                },
+                padding: 8,
+                maxRotation: 45,
+                minRotation: 45
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)',
+                drawTicks: false
+              }
+            },
+            y: {
+              position: 'left',
+              ticks: {
+                color: 'rgb(175, 175, 175)',
+                font: {
+                  size: 8
+                },
+                padding: 5
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.07)'
+              }
+            }
+          },
+          responsive: true,
+          interaction: {
+            intersect: false,
+            axis: 'x'
+          },
+          elements: {
+            line: {
+              borderWidth: 1
+            },
+            point: {
+              radius: 0,
+              hoverRadius: 6,
+              hoverBackgroundColor: 'rgba(255,255,255, 0.5)',
+              hoverBorderColor: 'rgba(255,255,255, 1)',
+              hitRadius: 0
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = `${context.dataset.label}: ${context.formattedValue}`
+
+                  if (chartType == 3)
+                    label = label + '%'
+
+                  return label
+                }
+              },
+              caretPadding: 20,
+              displayColors: false
+            },
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
     },
 
     configureChartData(range, dataSlice?) {
