@@ -157,7 +157,7 @@ export default defineComponent({
       let chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
-      new Chart(chart.getContext('2d'), {
+      const myChart = new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
