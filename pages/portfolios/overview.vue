@@ -30,7 +30,34 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto/auto.js";
+import {
+  Chart,
+  ArcElement,
+  LineElement,
+  BarElement,
+  PointElement,
+  BarController,
+  BubbleController,
+  DoughnutController,
+  LineController,
+  PieController,
+  PolarAreaController,
+  RadarController,
+  ScatterController,
+  CategoryScale,
+  LinearScale,
+  LogarithmicScale,
+  RadialLinearScale,
+  TimeScale,
+  TimeSeriesScale,
+  Decimation,
+  Filler,
+  Legend,
+  Title,
+  Tooltip,
+  SubTitle
+} from 'chart.js';
+
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -116,7 +143,34 @@ export default defineComponent({
 
   methods: {
     createChart(range, periodText, dataSlice?) {
-      console.log(Chart.Chart)
+      Chart.register(
+          ArcElement,
+          LineElement,
+          BarElement,
+          PointElement,
+          BarController,
+          BubbleController,
+          DoughnutController,
+          LineController,
+          PieController,
+          PolarAreaController,
+          RadarController,
+          ScatterController,
+          CategoryScale,
+          LinearScale,
+          LogarithmicScale,
+          RadialLinearScale,
+          TimeScale,
+          TimeSeriesScale,
+          Decimation,
+          Filler,
+          Legend,
+          Title,
+          Tooltip,
+          SubTitle
+      );
+
+      console.log(typeof Chart)
       this.activePeriod = range
       this.activeText = periodText
       this.activeSlice = dataSlice
@@ -158,7 +212,7 @@ export default defineComponent({
       let chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
-      new Chart.Chart(chart.getContext('2d'), {
+      new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
