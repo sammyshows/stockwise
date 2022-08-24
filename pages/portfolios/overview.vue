@@ -30,8 +30,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import pkg from "chart.js";
-const { Chart } = pkg
+import { Chart, registerables } from 'chart.js';
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -117,7 +116,7 @@ export default defineComponent({
 
   methods: {
     createChart(range, periodText, dataSlice?) {
-      console.log(typeof Chart)
+      Chart.register(...registerables);
       this.activePeriod = range
       this.activeText = periodText
       this.activeSlice = dataSlice
