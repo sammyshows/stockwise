@@ -116,7 +116,7 @@ export default defineComponent({
 
   methods: {
     createChart(range, periodText, dataSlice?) {
-      console.log(Chart)
+      console.log(Chart.Chart)
       this.activePeriod = range
       this.activeText = periodText
       this.activeSlice = dataSlice
@@ -158,7 +158,7 @@ export default defineComponent({
       let chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
-      new Chart(chart.getContext('2d'), {
+      new Chart.Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
