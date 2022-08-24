@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto/auto.js";
+import Chart from "chart.js/auto";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -157,7 +157,7 @@ export default defineComponent({
       let chartType = this.chartType
       Chart.defaults.font.family = "Poppins"
 
-      const myChart = new Chart(chart.getContext('2d'), {
+      new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
