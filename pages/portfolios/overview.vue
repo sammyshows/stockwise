@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import Chart from "chart.js/auto/auto.js";
+import twe from "chart.js/auto/auto.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -155,9 +155,9 @@ export default defineComponent({
       }
 
       let chartType = this.chartType
-      Chart.defaults.font.family = "Poppins"
+      twe.defaults.font.family = "Poppins"
 
-      new Chart(chart.getContext('2d'), {
+      new twe(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
