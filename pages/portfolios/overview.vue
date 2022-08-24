@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import twe from "chart.js/auto/auto.js";
+import Chart from "chart.js/auto/auto.js";
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
@@ -116,6 +116,7 @@ export default defineComponent({
 
   methods: {
     createChart(range, periodText, dataSlice?) {
+      console.log(typeof Chart)
       this.activePeriod = range
       this.activeText = periodText
       this.activeSlice = dataSlice
@@ -155,9 +156,9 @@ export default defineComponent({
       }
 
       let chartType = this.chartType
-      twe.defaults.font.family = "Poppins"
+      Chart.defaults.font.family = "Poppins"
 
-      new twe(chart.getContext('2d'), {
+      new Chart(chart.getContext('2d'), {
         plugins: [verticalLine],
         type: 'line',
         data: {
