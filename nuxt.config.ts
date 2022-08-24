@@ -38,6 +38,7 @@ export default defineNuxtConfig({
         ],
         script: [
             { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },
+            { src: '/dist/chart.js' },
             { src: '/js/polyfills.js' }
         ]
     },
