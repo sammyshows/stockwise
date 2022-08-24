@@ -116,7 +116,7 @@ export default defineComponent({
 
   methods: {
     createChart(range, periodText, dataSlice?) {
-      console.log(typeof Chart)
+      console.log(Chart)
       this.activePeriod = range
       this.activeText = periodText
       this.activeSlice = dataSlice
