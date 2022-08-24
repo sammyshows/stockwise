@@ -32,7 +32,6 @@
 import {defineComponent, ref} from "vue";
 import {
   Chart,
-  ArcElement,
   LineElement,
   BarElement,
   PointElement,
@@ -144,7 +143,6 @@ export default defineComponent({
   methods: {
     createChart(range, periodText, dataSlice?) {
       Chart.register(
-          ArcElement,
           LineElement,
           BarElement,
           PointElement,
