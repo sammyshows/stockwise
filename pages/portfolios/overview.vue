@@ -30,7 +30,8 @@
 
 <script lang="ts">
 import {defineComponent, ref} from "vue";
-import { Chart, registerables } from 'chart.js';
+import * as pkg from 'chart.js';
+const { Chart, registerables } = pkg
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 
