@@ -8,7 +8,7 @@
     <div class="flex items-center h-20 mt-4 mb-1 py-3 px-3 border-y border-gray-500 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
       <div v-if="quote['latestPrice'] && chartDataDay">
         <p class="mr-2 font-normal text-2xl tracking-wider truncate">${{ $formatNumber(quote["latestPrice"], 2) }}</p>
-        <p v-if="activeRange === '1D'" class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['change']).toNumber() < 0, 'text-bright-green': BigNumber(quote['change']).toNumber() > 0 }">
+        <p v-if="activePeriod === '1D'" class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['change']).toNumber() < 0, 'text-bright-green': BigNumber(quote['change']).toNumber() > 0 }">
           {{ $formatNumber(BigNumber(quote["change"]).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
         <p v-else class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() > 0 }">
@@ -19,16 +19,16 @@
     </div>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activePeriod === range.period }">{{ range.period }}</button>
       <button disabled class="px-2 py-1 text-gray-600">15Y</button>
     </div>
 
     <div class="relative">
-      <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
+      <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activePeriod) }">
         <!--  This chart gets replaced on creation  -->
         <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
       </div>
-      <div v-if="this.noDailyChart && this.activeRange === '1D'" class="absolute top-1/3 w-full">
+      <div v-if="this.noDailyChart && this.activePeriod === '1D'" class="absolute top-1/3 w-full">
         <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
       </div>
     </div>
@@ -144,7 +144,6 @@
 import {defineComponent, ref} from "vue";
 import * as pkg from 'chart.js';
 const { Chart, registerables } = pkg
-
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 import { useAuth } from "@/store/auth";
@@ -182,7 +181,7 @@ export default defineComponent({
         returnPath: "/search",
       },
       symbol: this.$route.params.symbol,
-      activeRange: '',
+      activePeriod: '',
       activeText: '',
       noDailyChart: false,
       chartInitialPrice: 0,
@@ -280,7 +279,7 @@ export default defineComponent({
 
     createChart(range, periodText, dataSlice?) {
       Chart.register(...registerables);
-      this.activeRange = range
+      this.activePeriod = range
       this.activeText = periodText
 
       document.getElementById('chart').remove()

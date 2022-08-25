@@ -131,15 +131,20 @@
 import { defineComponent } from "vue";
 import { SearchIcon } from '@heroicons/vue/solid'
 import { useAuth } from "@/store/auth";
+import { computed } from "@vue/reactivity";
+import { usePortfolios } from "@/store/portfolios";
 
 
 export default defineComponent({
   name: "New Stock",
 
   setup() {
+    const route = useRoute()
     const authStore = useAuth()
+    const portfolioStore = usePortfolios()
+    const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
 
-    return { authStore }
+    return { authStore, portfolio }
   },
 
   components: {
@@ -162,7 +167,7 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'Add Stock',
-        subtitle: this.$route.params.portfolioName,
+        subtitle: this.$route.params.portfolio_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,

@@ -31,27 +31,30 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
-import { useHoldings } from "~/store/holdings";
 import { useAuth } from "@/store/auth";
 import { useUser } from "@/store/user";
+import { useHoldings } from "@/store/holdings";
+import { computed } from "@vue/reactivity";
 
 
 export default defineComponent({
   name: "Holdings",
 
   async setup() {
-    const holdingStore = useHoldings()
+    const route = useRoute()
     const authStore = useAuth()
     const userStore = useUser()
+    const holdingStore = useHoldings()
+    const holding = computed(() => holdingStore.getHolding(route.params?.holding))
 
-    return { holdingStore, authStore, userStore }
+    return { holdingStore, authStore, userStore, holding }
   },
 
   components: {
     ChevronLeftIcon, TrashIcon
   },
 
-  props: ['holdings'],
+  props: ['holdings', 'assetSymbol'],
 
   async mounted() {
     await this.$login()
@@ -70,10 +73,10 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
       pageDetails: {
-        symbol: this.$route.params.assetSymbol,
-        showLogo: this.$route.params.showLogo,
-        title: this.$route.params.assetSymbol,
-        subtitle: this.$route.params.assetName,
+        symbol: this.holding?.symbol,
+        showLogo: this.holding?.asset_type === 0,
+        title: this.holding?.symbol,
+        subtitle: this.holding?.asset_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       portfolios: [],

@@ -63,14 +63,19 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useAuth } from "@/store/auth";
+import { computed } from "@vue/reactivity";
+import { usePortfolios } from "@/store/portfolios";
 
 export default defineComponent({
   name: "New Forex",
 
   setup() {
+    const route = useRoute()
     const authStore = useAuth()
+    const portfolioStore = usePortfolios()
+    const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
 
-    return { authStore }
+    return { authStore, portfolio }
   },
 
   async mounted() {
@@ -86,7 +91,7 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'Add Cash',
-        subtitle: this.$route.params.portfolioName,
+        subtitle: this.$route.params.portfolio_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,

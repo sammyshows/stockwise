@@ -71,8 +71,10 @@
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { BigNumber } from "bignumber.js";
-import { useTransactions } from "@/store/transactions";
 import { useAuth } from "@/store/auth";
+import { computed } from "@vue/reactivity";
+import { useHoldings } from "@/store/holdings";
+import { useTransactions } from "@/store/transactions";
 
 
 export default defineComponent({
@@ -80,11 +82,13 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const authStore = useAuth()
+    const holdingStore = useHoldings()
+    const holding = computed(() => holdingStore.getHolding(route.params?.holding))
     const transactionStore = useTransactions()
     const storeTransaction = transactionStore.getTransaction(route.params.transaction)
-    const authStore = useAuth()
 
-    return { transactionStore, storeTransaction, authStore }
+    return { holding, transactionStore, storeTransaction, authStore }
   },
 
   props: [
@@ -117,10 +121,10 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       openModal: false,
       pageDetails: {
-        symbol: this.$route.params.assetSymbol,
-        showLogo: this.$route.params.showLogo,
-        title: this.$route.params.assetSymbol,
-        subtitle: this.$route.params.assetName,
+        symbol: this.holding?.symbol,
+        showLogo: this.holding?.asset_type === 0,
+        title: this.holding?.symbol,
+        subtitle: this.holding?.asset_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       holdingQuantity: null as (null | number),

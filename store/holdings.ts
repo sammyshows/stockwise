@@ -20,6 +20,18 @@ export const useHoldings = defineStore('holdings', {
                 else
                     return null
             }
+        },
+
+        getHolding: (state) => {
+            type Holding = { // This just satisfies the editor when picking the transaction.portfolio_id below
+                [key: string]: any
+            }
+            return (holdingId) => {
+                if (state.holdings)
+                    return state.holdings.find((p: Holding) => p.holding_id === holdingId)
+                else
+                    return null
+            }
         }
     },
 

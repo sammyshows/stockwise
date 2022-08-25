@@ -59,6 +59,9 @@ export default defineComponent({
     $route (to, from) {
       if (from.name === 'studies-study-summary')
         this.tabConfig.activeTab = 'COMPLETED'
+
+      if (to.name === 'studies')
+        this.tabConfig.activeTab = 'IN PROGRESS'
     }
   },
 

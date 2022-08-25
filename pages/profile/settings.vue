@@ -62,7 +62,7 @@ export default defineComponent({
         returnPath: '/profile'
       },
       currencies: [
-        'AUD', 'CAD', 'CHF', 'CNH', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'INR', 'JPY', 'MXN', 'NOK', 'NZD', 'PLN', 'RON', 'RUB', 'SEK', 'SGD', 'THB', 'TRY', 'USD', 'ZAR'
+          'AUD - Australian Dollar', 'CAD - Canadian Dollar', 'CHF - Swiss Franc', 'CNH - Chinese Yuan Renminbi (HK)', 'CZK - Czech Koruna', 'DKK - Danish Krone', 'EUR - Euro', 'GBP - British Pound', 'HKD - Hong Kong Dollar', 'HUF - Hungarian Forint', 'ILS - Israeli New Shekel', 'INR - Indian Rupee', 'JPY - Japanese Yen', 'MXN - Mexican Peso', 'NOK - Norwegian Krone', 'NZD - New Zealand Dollar', 'PLN - Polish Zloty', 'RON - Romanian Leu', 'RUB - Russian Ruble', 'SEK - Swedish Krona', 'SGD - Singapore Dollar', 'THB - Thai Baht', 'TRY - Turkish Lira', 'USD - U.S. Dollar', 'ZAR - South African Rand'
       ],
       settings: this.userSettings
     }

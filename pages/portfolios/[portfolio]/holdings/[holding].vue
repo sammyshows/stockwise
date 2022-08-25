@@ -7,7 +7,7 @@
           <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
+          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -44,9 +44,10 @@ import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js"
+import { useAuth } from "@/store/auth";
 import { computed } from "@vue/reactivity";
 import { useTransactions } from "@/store/transactions";
-import { useAuth } from "@/store/auth";
+import { useHoldings } from "@/store/holdings";
 
 
 interface StringObject {
@@ -59,9 +60,11 @@ export default defineComponent({
   async setup() {
     const route = useRoute()
     const authStore = useAuth()
+    const holdingStore = useHoldings()
+    const holding = computed(() => holdingStore.getHolding(route.params?.holding))
     const transactionStore = useTransactions()
     const transactions = computed(() => transactionStore.getTransactions(route.params.holding))
-    return { authStore, transactionStore, transactions }
+    return { authStore, holding, transactionStore, transactions }
   },
 
   components: {
@@ -99,10 +102,10 @@ export default defineComponent({
       assetId: null as (string | null),
       symbol: '',
       pageDetails: {
-        symbol: this.$route.params.assetSymbol,
-        showLogo: this.$route.params.showLogo,
-        title: this.$route.params.assetSymbol,
-        subtitle: this.$route.params.assetName,
+        symbol: this.holding?.symbol,
+        showLogo: this.holding?.asset_type === 0,
+        title: this.holding?.symbol,
+        subtitle: this.holding?.asset_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       tabConfig: {
