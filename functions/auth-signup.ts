@@ -9,40 +9,40 @@ exports.handler = async (event, context) => {
 
     let cognitoUser
     let errorMessage
-    let accessToken
-    let idToken
-    let refreshToken
-    let accessCookie
-    let idCookie
-    let refreshCookie
+    // let accessToken
+    // let idToken
+    // let refreshToken
+    // let accessCookie
+    // let idCookie
+    // let refreshCookie
     let userPool = new CognitoUserPool({
         UserPoolId : process.env.AWS_POOL_ID,
         ClientId : process.env.AWS_CLIENT_ID
     })
 
-    const setCookies = () => {
-        const thirtyDays = 30 * 24 * 3600000
-        accessCookie = cookie.serialize('sw_access_token', accessToken, {
-            secure: true,
-            httpOnly: true,
-            path: '/',
-            maxAge: thirtyDays
-        })
-
-        idCookie = cookie.serialize('sw_id_token', idToken, {
-            secure: true,
-            httpOnly: true,
-            path: '/',
-            maxAge: thirtyDays
-        })
-
-        refreshCookie = cookie.serialize('sw_refresh_token', refreshToken, {
-            secure: true,
-            httpOnly: true,
-            path: '/',
-            maxAge: thirtyDays
-        })
-    }
+    // const setCookies = () => {
+    //     const thirtyDays = 30 * 24 * 3600000
+    //     accessCookie = cookie.serialize('sw_access_token', accessToken, {
+    //         secure: true,
+    //         httpOnly: true,
+    //         path: '/',
+    //         maxAge: thirtyDays
+    //     })
+    //
+    //     idCookie = cookie.serialize('sw_id_token', idToken, {
+    //         secure: true,
+    //         httpOnly: true,
+    //         path: '/',
+    //         maxAge: thirtyDays
+    //     })
+    //
+    //     refreshCookie = cookie.serialize('sw_refresh_token', refreshToken, {
+    //         secure: true,
+    //         httpOnly: true,
+    //         path: '/',
+    //         maxAge: thirtyDays
+    //     })
+    // }
 
     const uuid = uuidv4()
 
@@ -74,14 +74,14 @@ exports.handler = async (event, context) => {
         }
     } else {
         return {
-            statusCode: 200,
-            'multiValueHeaders': {
-                'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
-            },
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Content-Type': 'text/html'
-            }
+            statusCode: 200
+            // 'multiValueHeaders': {
+            //     'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
+            // },
+            // headers: {
+            //     'Cache-Control': 'no-cache',
+            //     'Content-Type': 'text/html'
+            // }
         }
     }
 }

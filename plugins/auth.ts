@@ -80,8 +80,10 @@ export default defineNuxtPlugin(() => {
                             })
                         })
                         window.location.href = `${config.public.DOMAIN}/portfolios`
+                        // should a return be here to stop the code from continuing?
                     }
 
+                    // should these be if/else if/else?
                     if (res.status === 303) {
                         // Ideally, this doesn't redirect right away but instead displays an error message give the user the option to try login with this email
                         const body = await res.json()
@@ -89,6 +91,8 @@ export default defineNuxtPlugin(() => {
                             return 'userExists'
                         }
                     }
+
+                    console.log("If this line appears, the code is returning the message 'error'")
                     return 'error'
                 })
             },

@@ -12,14 +12,14 @@
             <CogIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Settings</p>
           </NuxtLink>
-          <div class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/faq' }">
             <AnnotationIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Frequently Asked Questions</p>
-          </div>
-          <div class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
+          </NuxtLink>
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/contact' }">
             <PhoneIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Contact Us</p>
-          </div>
+          </NuxtLink>
           <div class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
             <ClipboardListIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Terms and Privacy Policy</p>
