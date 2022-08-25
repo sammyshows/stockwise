@@ -60,6 +60,13 @@ export default defineComponent({
     clearInterval(this.intervalLoop)
   },
 
+  watch: {
+    $route (to) {
+      if (to.name === 'portfolios')
+        this.tabConfig.activeTab = 'PORTFOLIOS'
+    }
+  },
+
   data() {
     return {
       token: '',

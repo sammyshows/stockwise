@@ -97,30 +97,37 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { v4 as uuidv4 } from 'uuid';
-import { useStudies } from "@/store/studies";
 import { SearchIcon } from '@heroicons/vue/solid'
+import { useAuth } from "@/store/auth";
+import { useUser } from "@/store/user";
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
   name: "New Study",
 
   async setup() {
-    const token = await useState('authToken').value
-    const uuid = useState('uuid').value
+    const authStore = useAuth()
+    const userStore = useUser()
     const studyStore = useStudies()
-    return { token, uuid, studyStore }
+    return { authStore, userStore, studyStore }
   },
 
   components: {
     SearchIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.userId = this.userStore.userId
     if (this.$route.params.assetSymbol)
       this.fetchQuote(this.$route.params.assetSymbol)
   },
 
   data() {
     return {
+      token: '',
+      userId: '',
       disabledSave: false,
       pageDetails: {
         returnPath: '/studies',
@@ -208,7 +215,7 @@ export default defineComponent({
           body: JSON.stringify({
             token: this.token,
             manualEntry: this.manualForm,
-            uuid: this.uuid,
+            uuid: this.userId,
             studyId: this.studyId,
             name: this.manualForm ? this.name : null,
             symbol: this.manualForm ? this.symbol : this.quote.symbol,
