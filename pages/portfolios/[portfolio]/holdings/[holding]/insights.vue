@@ -5,23 +5,28 @@
     </div>
     <div v-else>
       <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !assetChartMax }">
-        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activePeriod === range.period }">{{ range.period }}</button>
         <button disabled class="px-2 py-1 text-gray-600">15Y</button>
       </div>
 
       <div :class="{ 'hidden': !assetChartMax }" class="mt-2 font-normal text-center text-sm">
-        <p v-if="activeRange !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
+        <p v-if="activePeriod !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
           {{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
-        <p v-else-if="noDailyChart && activeRange === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
+        <p v-else-if="noDailyChart && activePeriod === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
         <p v-else :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
           {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
       </div>
 
-      <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activeRange) }">
-        <!--  This chart gets replaced on creation  -->
-        <canvas ref="chart" id="initialChart" height="224" class="w-full" :class="{ 'hidden': !assetChartMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+      <div class="relative">
+        <div ref="chartContainer" id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activePeriod) }">
+          <!--  This chart gets replaced on creation  -->
+          <canvas ref="chart" id="initialChart" height="224" class="w-full" :class="{ 'hidden': !assetChartMax }" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+        </div>
+        <div v-if="this.noDailyChart && this.activePeriod === '1D'" class="absolute top-1/3 w-full">
+          <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
+        </div>
       </div>
 
       <div v-if="assetChartMax === null" style="height: 278px;">
@@ -175,7 +180,7 @@ export default defineComponent({
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
       },
-      activeRange: '1D',
+      activePeriod: '1D',
       activeText: '',
       noDailyChart: false,
       chartInitialPrice: 0,
@@ -221,7 +226,7 @@ export default defineComponent({
   methods: {
     createChart(range, periodText, dataSlice?) {
       Chart.register(...registerables);
-      this.activeRange = range
+      this.activePeriod = range
       this.activeText = periodText
 
       // Here we need to know whether this is the first time loading the chart because if the page is mounted and the data
