@@ -9,7 +9,7 @@
     <div v-if="portfolios" class="overflow-scroll grow px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="portfolio in portfolios" :key="portfolio.portfolio_id">
-          <NuxtLink :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.portfolio_id, portfolioName: portfolio.portfolio_name } }">
+          <NuxtLink :to="{ name: 'portfolios-portfolio', params: { portfolio: portfolio.portfolio_id } }">
             <div class="mb-3">
               <div class="flex justify-end">
                 <div class="grow">

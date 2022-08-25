@@ -55,7 +55,7 @@
         <!-- This button should only be visible if fields are different. When validation is added, it should set a
         property in data that this buttons display property is bound to -->
         <div class="text-right mb-7">
-          <ButtonsCyan text="SAVE" @clicked="updateTransaction()" />
+          <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updateTransaction()" />
         </div>
       </div>
     </div>
@@ -119,6 +119,7 @@ export default defineComponent({
       token: '',
       holdingId: this.$route.params.holding,
       portfolioId: this.$route.params.portfolio,
+      disabledSave: false,
       openModal: false,
       pageDetails: {
         symbol: this.holding?.symbol,
@@ -204,6 +205,7 @@ export default defineComponent({
     },
 
     async updateTransaction() {
+      this.disabledSave = true
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-update', {
           headers: {
@@ -227,6 +229,7 @@ export default defineComponent({
           this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
         }
       }
+      this.disabledSave = false
     },
 
     async deleteTransaction(): Promise<void> {

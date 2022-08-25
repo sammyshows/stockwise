@@ -83,7 +83,7 @@
             </div>
 
             <div key="8" class="grow flex items-end justify-end text-right mb-7">
-              <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
+              <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="addHolding()" />
             </div>
           </TransitionGroup>
         </div>
@@ -124,7 +124,7 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'Add Forex',
-        subtitle: this.$route.params.portfolio_name,
+        subtitle: this.portfolio?.portfolio_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,

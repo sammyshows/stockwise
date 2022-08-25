@@ -167,8 +167,8 @@ export default defineComponent({
           datasets: [{
             label: 'Value',
             data: prices,
-            borderColor: 'rgb(75, 192, 192)',
-            backgroundColor: 'rgba(0, 255, 187, 0.10)',
+            borderColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgb(75, 192, 192)': 'rgb(192, 75, 75)',
+            backgroundColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgba(0, 255, 187, 0.10)' : 'rgba(255, 0, 0, 0.10)',
             fill: true
           }]
         },

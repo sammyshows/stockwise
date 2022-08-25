@@ -35,23 +35,26 @@
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
 import { useStudies } from "@/store/studies";
+import { useAuth } from "@/store/auth";
 
 export default defineComponent({
   name: "Study Questions",
 
   async setup() {
     const route = useRoute()
+    const authStore = useAuth()
     const studyStore = useStudies()
     const storeStudy = studyStore.getStudy(route.params.study)
-    const token = await useState('authToken').value
-    return { studyStore, storeStudy, token }
+    return { authStore, studyStore, storeStudy }
   },
 
   components: {
     TrashIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login
+    this.token = this.authStore.accessToken
     this.getStudy()
   },
 
@@ -61,6 +64,7 @@ export default defineComponent({
 
   data() {
     return {
+      token: '',
       pageDetails: {
         returnPath: '/studies',
         title: this.storeStudy?.name,
@@ -71,7 +75,7 @@ export default defineComponent({
         type: this.storeStudy?.type
       },
       study: {
-        question_one: this.s?.question_one,
+        question_one: this.storeStudy?.question_one,
         question_two: this.storeStudy?.question_two,
         question_three: this.storeStudy?.question_three,
         question_four: this.storeStudy?.question_four,

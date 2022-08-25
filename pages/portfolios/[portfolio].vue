@@ -4,7 +4,7 @@
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId, portfolioName: pageDetails.title } }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId } }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
           <NuxtLink :to="{ name: `portfolios-portfolio-update`, params: { portfolioId: portfolioId } }">

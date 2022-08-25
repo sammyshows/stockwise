@@ -20,7 +20,7 @@
         </TransitionGroup>
       </div>
       <div class="grow flex items-end justify-end my-7 text-right">
-        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="createPortfolio()" />
+        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="createPortfolio()" />
       </div>
     </div>
   </div>

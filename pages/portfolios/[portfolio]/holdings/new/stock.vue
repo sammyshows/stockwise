@@ -167,7 +167,7 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'Add Stock',
-        subtitle: this.$route.params.portfolio_name,
+        subtitle: this.portfolio?.portfolio_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,

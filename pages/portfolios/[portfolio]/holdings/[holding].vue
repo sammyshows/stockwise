@@ -4,10 +4,10 @@
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding, assetSymbol: pageDetails.title, assetName: pageDetails.subtitle, showLogo: assetData?.type === 0 } }">
+          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>

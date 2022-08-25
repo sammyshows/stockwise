@@ -52,7 +52,7 @@
         </div>
 
         <div class="text-right mb-7">
-          <ButtonsCyan text="SAVE" @clicked="createTransaction()" />
+          <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="createTransaction()" />
         </div>
       </div>
     </div>
@@ -89,6 +89,7 @@ export default defineComponent({
     return {
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
+      disabledSave: false,
       pageDetails: {
         symbol: this.holding?.symbol,
         showLogo: this.holding?.asset_type === 0,
@@ -168,6 +169,7 @@ export default defineComponent({
     },
 
     async createTransaction(): Promise<void> {
+      this.disabledSave = true
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-create', {
           headers: {
@@ -191,6 +193,7 @@ export default defineComponent({
           this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
         }
       }
+      this.disabledSave = false
     },
 
     setDateTime(): void {
