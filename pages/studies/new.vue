@@ -120,8 +120,8 @@ export default defineComponent({
     await this.$login()
     this.token = this.authStore.accessToken
     this.userId = this.userStore.userId
-    if (this.$route.params.assetSymbol)
-      this.fetchQuote(this.$route.params.assetSymbol)
+    if (this.$route.query.symbol)
+      this.fetchQuote(this.$route.query.symbol)
   },
 
   data() {

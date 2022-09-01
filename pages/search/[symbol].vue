@@ -11,8 +11,8 @@
         <p v-if="activePeriod === '1D'" class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['change']).toNumber() < 0, 'text-bright-green': BigNumber(quote['change']).toNumber() > 0 }">
           {{ $formatNumber(BigNumber(quote["change"]).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["changePercent"]).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
-        <p v-else class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(quote['latestPrice']).minus(chartInitialPrice).toNumber() > 0 }">
-          {{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+        <p v-else class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(quote['latestPrice']).minus(chartInitialValue).toNumber() < 0, 'text-bright-green': BigNumber(quote['latestPrice']).minus(chartInitialValue).toNumber() > 0 }">
+          {{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialValue).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(quote["latestPrice"]).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
       </div>
       <Spinner class="h-20" v-else />
@@ -28,7 +28,7 @@
         <!--  This chart gets replaced on creation  -->
         <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
       </div>
-      <div v-if="this.noDailyChart && this.activePeriod === '1D'" class="absolute top-1/3 w-full">
+      <div v-if="noDailyChart && activePeriod === '1D'" class="absolute top-1/3 w-full">
         <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
       </div>
     </div>
@@ -121,7 +121,7 @@
     </div>
 
     <div class="flex px-4 mb-6 gap-x-6">
-      <NuxtLink :to="{ name: 'studies-new', params: { assetSymbol: this?.quote.symbol } }" class="mx-auto px-10 py-2 font-normal text-center bg-bright-cyan/30 rounded-lg drop-shadow-md">Start a Study</NuxtLink>
+      <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" class="mx-auto px-10 py-2 font-normal text-center bg-bright-cyan/30 rounded-lg drop-shadow-md">Start a Study</NuxtLink>
     </div>
 
     <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
@@ -165,7 +165,8 @@ export default defineComponent({
     SpeakerphoneIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
     this.token = this.authStore.accessToken
     this.getChartData()
     this.fetchQuote()
@@ -184,7 +185,7 @@ export default defineComponent({
       activePeriod: '',
       activeText: '',
       noDailyChart: false,
-      chartInitialPrice: 0,
+      chartInitialValue: 0,
       ranges: [
         {
           period: '1D',
@@ -291,6 +292,7 @@ export default defineComponent({
       let prices;
       if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (chartDataDay) to historic (chartDataMax).
         chartData = this.chartDataDay
+        this.chartInitialValue = this.quote["previousClose"]
 
         if (chartData.every(day => day.marketClose === undefined))
           this.noDailyChart = true
@@ -319,7 +321,9 @@ export default defineComponent({
         prices = chartData.map(dailyData => dailyData.close)
       }
 
-      this.chartInitialPrice = chartData[0].close
+      if (range !== '1D')
+        this.chartInitialValue = chartData[0].close
+
       const labels = chartData.map(dailyData => {
         const date = new Date(dailyData.date)
         return date.toDateString().slice(4)
@@ -353,8 +357,8 @@ export default defineComponent({
           datasets: [{
             label: 'Price',
             data: prices,
-            borderColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgb(75, 192, 192)': 'rgb(192, 75, 75)',
-            backgroundColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgba(0, 255, 187, 0.10)' : 'rgba(255, 0, 0, 0.10)',
+            borderColor: new BigNumber(this.quote["latestPrice"]).minus(this.chartInitialValue).isGreaterThanOrEqualTo(0) ? 'rgb(75, 192, 192)': 'rgb(192, 75, 75)',
+            backgroundColor: new BigNumber(this.quote["latestPrice"]).minus(this.chartInitialValue).isGreaterThanOrEqualTo(0) ? 'rgba(0, 255, 187, 0.10)' : 'rgba(255, 0, 0, 0.05)',
             fill: true
           }]
         },

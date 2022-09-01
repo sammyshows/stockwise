@@ -75,24 +75,28 @@
 import { defineComponent } from "vue";
 import { TrashIcon, LightBulbIcon, PencilAltIcon } from "@heroicons/vue/outline";
 import { useStudies } from "@/store/studies";
+import { useAuth } from "@/store/auth";
 
 export default defineComponent({
   name: "Study Summary",
 
   async setup() {
     const route = useRoute()
+    const authStore = useAuth()
     const studyStore = useStudies()
     const storeStudy = studyStore.getStudy(route.params.study)
     const token = await useState('authToken').value
 
-    return { studyStore, storeStudy, token }
+    return { authStore, studyStore, storeStudy, token }
   },
 
   components: {
     TrashIcon, LightBulbIcon, PencilAltIcon
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
+    this.token = this.authStore.accessToken
     this.getStudy()
   },
 
@@ -119,7 +123,7 @@ export default defineComponent({
         question_six: this.storeStudy?.question_six,
         question_seven: this.storeStudy?.question_seven,
         question_eight: this.storeStudy?.question_eight,
-        question_nine: this.storeStudy?.nine,
+        question_nine: this.storeStudy?.nine
       },
       notes: this.storeStudy?.notes,
       questions: [
@@ -201,6 +205,7 @@ export default defineComponent({
 
     async updateNotes() {
       this.studyDetails.notes = this.notes
+      console.log(this.studyDetails.notes)
       const response = await fetch('/api/study-update', {
         headers: {
           authorization: this.token
@@ -216,7 +221,8 @@ export default defineComponent({
           question_five: this.study.question_five,
           question_six: this.study.question_six,
           question_seven: this.study.question_seven,
-          question_eight: this.study.question_eight
+          question_eight: this.study.question_eight,
+          question_nine: this.study.question_nine
         })
       })
 

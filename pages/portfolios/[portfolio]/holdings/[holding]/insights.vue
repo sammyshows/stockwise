@@ -10,8 +10,8 @@
       </div>
 
       <div :class="{ 'hidden': !assetChartMax }" class="mt-2 font-normal text-center text-sm">
-        <p v-if="activePeriod !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber() > 0 }">
-          {{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialPrice).div(chartInitialPrice).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
+        <p v-if="activePeriod !== '1D'" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(chartInitialValue).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(chartInitialValue).toNumber() > 0 }">
+          {{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialValue).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2, false, true) }}%)&nbsp; <span class="text-gray-500 text-xs">{{ activeText }}</span>
         </p>
         <p v-else-if="noDailyChart && activePeriod === '1D'" class="text-gray-500">(Unavailabale during market hours)</p>
         <p v-else :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
@@ -183,8 +183,7 @@ export default defineComponent({
       activePeriod: '1D',
       activeText: '',
       noDailyChart: false,
-      chartInitialPrice: 0,
-      chartFinalPrice: 0,
+      chartInitialValue: 0,
       ranges: [
         {
           period: '1D',
@@ -243,6 +242,7 @@ export default defineComponent({
       let lastPrice;
       if (range === '1D') { // The live day data is minute by minute and delivered by the api separately (assetChartDay) to historic (assetChartMax).
         chartData = this.assetChartDay
+        this.chartInitialValue = this.quote["previousClose"]
 
         if (chartData.every(day => day.marketClose === undefined))
           this.noDailyChart = true
@@ -272,7 +272,9 @@ export default defineComponent({
         prices = chartData.map(dailyData => dailyData.close)
       }
 
-      this.chartInitialPrice = chartData[0].close
+      if (range !== '1D')
+        this.chartInitialValue = chartData[0].close
+
       const labels = chartData.map(dailyData => dailyData.label)
 
       const verticalLine = {
@@ -303,8 +305,8 @@ export default defineComponent({
           datasets: [{
             label: 'Price',
             data: prices,
-            borderColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgb(75, 192, 192)': 'rgb(192, 75, 75)',
-            backgroundColor: (this.chartFinalValue - this.chartInitialValue) >= 0 ? 'rgba(0, 255, 187, 0.10)' : 'rgba(255, 0, 0, 0.10)',
+            borderColor: new BigNumber(this.assetData.current_price).minus(this.chartInitialValue).isGreaterThanOrEqualTo(0) ? 'rgb(75, 192, 192)': 'rgb(192, 75, 75)',
+            backgroundColor: new BigNumber(this.assetData.current_price).minus(this.chartInitialValue).isGreaterThanOrEqualTo(0) ? 'rgba(0, 255, 187, 0.10)' : 'rgba(255, 0, 0, 0.05)',
             fill: true
           }]
         },
