@@ -56,7 +56,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    await this.$login() // temp until nuxt3 auth is released, allowing ssr auth on route change (see '~/middleware/auth/global.ts')
+    await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
     await this.getUserSettings()
@@ -87,6 +87,10 @@ export default defineComponent({
         .then(response => response.json())
 
       this.userSettings = response.data
+
+      this.userStore.$patch({
+        currency: response.data.currency
+      })
     }
   }
 })

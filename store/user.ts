@@ -4,7 +4,7 @@ export const useUser = defineStore('user', {
     state: () => {
         return {
             userId: '',
-            currency: 'USD'
+            currency: ''
         }
     },
 })

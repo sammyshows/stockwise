@@ -10,7 +10,7 @@
         <div class="w-full py-3 px-3">
           <label for="currency" class="block">Local currency</label>
           <select v-model="settings.currency" @change="updateUserSettings()" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-            <option v-for="currency in currencies" :value="currency">{{ currency }}</option>
+            <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
           </select>
         </div>
       </div>
@@ -33,10 +33,6 @@ export default defineComponent({
     return { userStore, authStore }
   },
 
-  props: [
-    'userSettings'
-  ],
-
   components: {
     CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon
   },
@@ -47,9 +43,11 @@ export default defineComponent({
     }
   },
 
-  mounted() {
+  async mounted() {
+    await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
+    this.getUserSettings()
   },
 
   data() {
@@ -62,13 +60,58 @@ export default defineComponent({
         returnPath: '/profile'
       },
       currencies: [
-          'AUD - Australian Dollar', 'CAD - Canadian Dollar', 'CHF - Swiss Franc', 'CNH - Chinese Yuan Renminbi (HK)', 'CZK - Czech Koruna', 'DKK - Danish Krone', 'EUR - Euro', 'GBP - British Pound', 'HKD - Hong Kong Dollar', 'HUF - Hungarian Forint', 'ILS - Israeli New Shekel', 'INR - Indian Rupee', 'JPY - Japanese Yen', 'MXN - Mexican Peso', 'NOK - Norwegian Krone', 'NZD - New Zealand Dollar', 'PLN - Polish Zloty', 'RON - Romanian Leu', 'RUB - Russian Ruble', 'SEK - Swedish Krona', 'SGD - Singapore Dollar', 'THB - Thai Baht', 'TRY - Turkish Lira', 'USD - U.S. Dollar', 'ZAR - South African Rand'
+        { ticker: 'AUD', name: 'Australian Dollar' },
+        { ticker: 'CAD', name: 'Canadian Dollar' },
+        { ticker: 'CHF', name: 'Swiss Franc' },
+        { ticker: 'CNH', name: 'Chinese Yuan Renminbi (HK)' },
+        { ticker: 'CZK', name: 'Czech Koruna' },
+        { ticker: 'DKK', name: 'Danish Krone' },
+        { ticker: 'EUR', name: 'Euro' },
+        { ticker: 'GBP', name: 'British Pound' },
+        { ticker: 'HKD', name: 'Hong Kong Dollar' },
+        { ticker: 'HUF', name: 'Hungarian Forint' },
+        { ticker: 'ILS', name: 'Israeli New Shekel' },
+        { ticker: 'INR', name: 'Indian Rupee' },
+        { ticker: 'JPY', name: 'Japanese Yen' },
+        { ticker: 'MXN', name: 'Mexican Peso' },
+        { ticker: 'NOK', name: 'Norwegian Krone' },
+        { ticker: 'NZD', name: 'New Zealand Dollar' },
+        { ticker: 'PLN', name: 'Polish Zloty' },
+        { ticker: 'RON', name: 'Romanian Leu' },
+        { ticker: 'RUB', name: 'Russian Ruble' },
+        { ticker: 'SEK', name: 'Swedish Krona' },
+        { ticker: 'SGD', name: 'Singapore Dollar' },
+        { ticker: 'THB', name: 'Thai Baht' },
+        { ticker: 'TRY', name: 'Turkish Lira' },
+        { ticker: 'USD', name: 'U.S. Dollar' },
+        { ticker: 'ZAR', name: 'South African Rand' }
       ],
-      settings: this.userSettings
+      settings: {
+        currency: this.userStore?.currency
+      }
     }
   },
 
   methods: {
+    async getUserSettings(): Promise<void> {
+      const response = await fetch('/api/user-settings-read', {
+        headers: {
+          authorization: this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          userId: this.uuid
+        })
+      })
+          .then(response => response.json())
+
+      this.settings.currency = response.data.currency
+
+      this.userStore.$patch({
+        currency: response.data.currency
+      })
+    },
+
     async updateUserSettings(): Promise<void> {
       const response = await fetch('/api/user-settings-update', {
         headers: {
