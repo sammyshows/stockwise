@@ -6,9 +6,9 @@
     </div>
 
     <div class="w-full flex flex-col items-center">
-      <PhoneIcon class="h-24 mb-6 text-bright-cyan" />
-      <p class="mb-10">Email: <span class="text-lg text-bright-cyan">samrmccarthy6@gmail.com</span></p>
-      <p class="px-5 text-sm text-center">
+      <PhoneIcon class="h-16 mb-4 text-bright-cyan" />
+      <p class="mb-4">Email: <span class="text-sm text-bright-cyan">samrmccarthy6@gmail.com</span></p>
+      <p class="px-10 text-xs text-center">
         At Stockwise we are continuously working to develop more great tools and ensure we are offering the best possible experience we can.
         <br><br>We encourage you to reach out to us if you have any feedback, feature requests or anything else that you would like to share.
       </p>
@@ -31,6 +31,7 @@ export default defineComponent({
     return {
       pageDetails: {
         title: 'Contact Us',
+        subtitle: 'PROFILE',
         returnPath: '/profile'
       }
     }

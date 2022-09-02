@@ -9,13 +9,13 @@
         <p class="text-sm text-center">What FAQ do you want to see?</p>
 
         <NuxtLink :to="{ name: 'profile-faq-transactions' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
-          <h2 class="text-center text-xl">TRANSACTIONS</h2>
+          <h2 class="text-center text-lg">TRANSACTIONS</h2>
         </NuxtLink>
         <NuxtLink :to="{ name: 'profile-faq-financial-data' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
-          <h2 class="text-center text-xl">FINANCIAL DATA</h2>
+          <h2 class="text-center text-lg">FINANCIAL DATA</h2>
         </NuxtLink>
         <NuxtLink :to="{ name: 'profile-faq-studies' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
-          <h2 class="text-center text-xl">STUDIES</h2>
+          <h2 class="text-center text-lg">STUDIES</h2>
         </NuxtLink>
       </div>
     </div>
@@ -33,6 +33,7 @@ export default defineComponent({
     return {
       pageDetails: {
         title: 'FAQ',
+        subtitle: 'PROFILE',
         returnPath: '/profile'
       }
     }

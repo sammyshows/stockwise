@@ -76,9 +76,11 @@ export default defineComponent({
     this.token = this.authStore.accessToken
     await this.getTransactions()
     this.getOverviewChart()
-    this.getAssetChart()
-    this.fetchQuote()
-    this.fetchStats()
+    if (this.assetData.type === 0) {
+      this.getAssetChart()
+      this.fetchQuote()
+      this.fetchStats()
+    }
     this.intervalLoop = setInterval(() => this.getTransactions(), 60000)
   },
 

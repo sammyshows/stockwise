@@ -17,9 +17,9 @@ export default defineComponent({
   data() {
     return {
       pageDetails: {
-        returnPath: '/profile/faq',
-        title: "Studies",
-        subtitle: "FAQ"
+        returnPath: '/profile/policies',
+        title: "Privacy Policy",
+        subtitle: "POLICIES"
       }
     }
   }

@@ -33,13 +33,13 @@
               <input v-model="transaction.amount" @change="invalid.amount = false" id="amount" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
 
-            <div key="4">
-              <label for="exchangeRate">Exchange rate (optional)</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" @change="invalid.exchangeRate = false" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-              <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-            </div>
+<!--            <div key="4">-->
+<!--              <label for="exchangeRate">Exchange rate (optional)</label>-->
+<!--              <p class="mt-0.5 ml-1 text-tiny leading-normal" @change="invalid.exchangeRate = false" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>-->
+<!--              <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">-->
+<!--            </div>-->
 
-            <div key="5" class="w-full flex justify-between gap-x-4">
+            <div key="4" class="w-full flex justify-between gap-x-4">
               <div>
                 <label for="date">Date</label>
                 <input v-model="transaction.date" id="date" type="date" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
@@ -50,7 +50,7 @@
               </div>
             </div>
 
-            <div key="6" class="grow flex items-end justify-end text-right mb-7">
+            <div key="5" class="grow flex items-end justify-end text-right mb-7">
               <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
             </div>
           </TransitionGroup>
@@ -132,7 +132,7 @@ export default defineComponent({
         currency: null as (string | null),
         type: null as (number | null),
         amount: null as (number | null),
-        exchangeRate: null as (number | null),
+        exchangeRate: 1,
         date: null as (string | null),
         time: null as (string | null)
       }

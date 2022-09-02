@@ -20,10 +20,10 @@
             <PhoneIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Contact Us</p>
           </NuxtLink>
-          <div class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/policies' }">
             <ClipboardListIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Terms and Privacy Policy</p>
-          </div>
+          </NuxtLink>
           <div @click="$logout()" class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
             <LogoutIcon class="h-6 text-red-400" />
             <p class="ml-6 text-sm">Log Out</p>

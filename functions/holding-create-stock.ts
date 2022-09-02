@@ -19,8 +19,16 @@ const handler: Handler = requireAuth(async (event, context) => {
     if (eventBody.manualEntry) {
         // If it's a manual entry
         const assetId = await client`
-            INSERT INTO assets (symbol, current_price, prev_close, name, type) 
-            VALUES (${eventBody.symbol}, ${eventBody.currentPrice}, ${eventBody.currentPrice}, ${eventBody.name}, 3) 
+            INSERT INTO assets (symbol, current_price, prev_close, name, currency_id, type) 
+            SELECT
+                   ${eventBody.symbol}, 
+                   ${eventBody.currentPrice}, 
+                   ${eventBody.currentPrice}, 
+                   ${eventBody.name},
+                   id,
+                   3
+            FROM assets
+            WHERE symbol = 'USDUSD' AND type = 1
             RETURNING id;`
                 .then(response => response[0].id)
 

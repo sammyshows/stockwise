@@ -17,11 +17,11 @@
               </select>
             </div>
             <div :key="2" class="mb-2">
-              <label for="quantity" class="text-xs">Quantity</label>
+              <label for="quantity" class="text-xs">{{ assetType === 2 ? 'Amount' : 'Quantity' }}</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="3" class="mb-2">
+            <div :key="3" v-if="assetType !== 2" class="mb-2">
               <label for="initialPrice" class="text-xs">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
               <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
@@ -51,7 +51,7 @@
           </TransitionGroup>
         </div>
 
-        <div class="text-right mb-7">
+        <div class="w-full flex justify-end my-7">
           <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="createTransaction()" />
         </div>
       </div>
