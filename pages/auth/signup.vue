@@ -14,7 +14,7 @@
       </div>
       <div class="mt-2.5">
         <p class="text-tiny leading-normal" :class="[ invalid.password ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a valid password</p>
-        <input @keyup="invalid.password = false; validatePassword()" v-model="password" autocomplete="on" placeholder="Password" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+        <input @change="invalid.password = false; validatePassword()" v-model="password" autocomplete="on" placeholder="Password" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
       </div>
       <div v-if="password.length > 0" class="pt-2.5 px-2.5 rounded-xl text-xs text-gray-300">
         <p :class="{ 'text-bright-green': validPassword.minLength }">&#8226; At least 8 characters</p>
