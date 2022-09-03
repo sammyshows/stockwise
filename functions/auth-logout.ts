@@ -1,6 +1,7 @@
 import cookie from 'cookie'
 import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js"
 import jwt from "jsonwebtoken"
+import fetch from "node-fetch";
 
 
 exports.handler = async (event, context) => {
@@ -27,6 +28,7 @@ exports.handler = async (event, context) => {
         cognitoUser.signOut()
     }
 
+    await fetch(`${process.env.AWS_AUTH_URL}/logout?client_id=${process.env.AWS_CLIENT_ID}&logout_uri=https://stockwise.app/auth/login`)
 
     return {
         statusCode: 200,

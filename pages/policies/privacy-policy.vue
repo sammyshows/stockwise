@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col grow overflow-hidden">
+  <div class="flex flex-col grow pt-10 pb-5 overflow-hidden">
     <PageTitle :pageDetails="pageDetails" class="px-3 min-h-min mb-4" />
 
     <div class="h-full px-3 overflow-scroll">
@@ -45,7 +45,6 @@ export default defineComponent({
   data() {
     return {
       pageDetails: {
-        returnPath: '/profile/policies',
         title: "Privacy Policy",
         subtitle: "POLICIES"
       }
