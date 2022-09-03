@@ -5,7 +5,7 @@
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       </div>
 
-      <div class="flex flex-col grow gap-y-10 px-12">
+      <div class="flex flex-col grow gap-y-5 px-12">
         <NuxtLink :to="{ name: 'profile-policies-terms' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-lg">TERMS AND CONDITIONS</h2>
         </NuxtLink>
