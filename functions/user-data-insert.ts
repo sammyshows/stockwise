@@ -132,8 +132,8 @@ const handler: Handler = async (event, context) => {
         SELECT user_id, initial_value, current_value, all_time_change, all_time_percent, date
         FROM user_data;`
 
-
-    await client`CALL partman.run_maintenance_proc();`
+    // Can't use partman right now because Heroku requires you to be on a paid plan for use
+    // await client`CALL partman.run_maintenance_proc();`
 
     return {
         statusCode: 200
