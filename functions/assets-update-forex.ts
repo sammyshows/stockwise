@@ -3,7 +3,7 @@ const client = require("../database/client.ts")
 const { requireAuth } = require('../api/auth');
 import fetch from 'node-fetch'
 
-const handler: Handler = requireAuth(async () => {
+const handler: Handler = async () => {
     // Get all the asset symbols
     const forexAssets = await client`
         SELECT symbol
@@ -48,6 +48,6 @@ const handler: Handler = requireAuth(async () => {
     return {
         statusCode: 200
     }
-})
+}
 
 export { handler }

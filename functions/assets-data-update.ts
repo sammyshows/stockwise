@@ -3,7 +3,7 @@ const { requireAuth } = require('../api/auth');
 const client = require("../database/client.ts")
 import fetch from 'node-fetch'
 
-const handler: Handler = requireAuth(async (event, context) => {
+const handler: Handler = async (event, context) => {
     const assets = await client`
         SELECT id, symbol FROM assets WHERE type = 0;`
 
@@ -17,6 +17,8 @@ const handler: Handler = requireAuth(async (event, context) => {
     let data;
     data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&includeToday=true&chartCloseOnly=true&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
+
+    console.log(data)
 
     let assetArrays = Object.values(data)
     assetArrays = assetArrays.map(asset => Object.values(asset))
@@ -62,6 +64,6 @@ const handler: Handler = requireAuth(async (event, context) => {
     return {
         statusCode: 200
     }
-})
+}
 
 export { handler }

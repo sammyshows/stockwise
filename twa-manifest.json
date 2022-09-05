@@ -1,0 +1,41 @@
+{
+  "packageId": "app.stockwise.twa",
+  "host": "stockwise.app",
+  "name": "Stockwise",
+  "launcherName": "Stockwise",
+  "display": "standalone",
+  "themeColor": "#00FFD1",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#00FFD1",
+  "enableNotifications": true,
+  "startUrl": "/portfolios?standalone=true",
+  "iconUrl": "https://stockwise.app/icons/icon.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://stockwise.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://stockwise.app/",
+  "minSdkVersion": 19,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1"
+}

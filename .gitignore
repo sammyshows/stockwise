@@ -8,6 +8,16 @@ nuxt.d.ts
 .DS_Store
 .netlify
 sw.*
+android.keystore
+build.gradle
+gradle.properties
+gradlew
+gradlew.bat
+manifest-checksum.txt
+settings.gradle
+store_icon.png
+.gradle/
 gradle/
 .idea/
-
+app-release*
+app/

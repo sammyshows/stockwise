@@ -5,7 +5,7 @@ const client = require("../database/client.ts")
 const { requireAuth } = require('../api/auth');
 
 
-const handler: Handler = requireAuth(async (event, context) => {
+const handler: Handler = async (event, context) => {
     // Get data on every holding
     const holdingTotals = await client`
         WITH cte AS (
@@ -138,6 +138,6 @@ const handler: Handler = requireAuth(async (event, context) => {
     return {
         statusCode: 200
     }
-})
+}
 
 export { handler }
