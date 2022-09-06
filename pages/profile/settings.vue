@@ -87,6 +87,7 @@ export default defineComponent({
         { ticker: 'ZAR', name: 'South African Rand' }
       ],
       settings: {
+        id: this.userStore?.id,
         currency: this.userStore?.currency
       }
     }
@@ -105,6 +106,7 @@ export default defineComponent({
       })
           .then(response => response.json())
 
+      this.settings.id = response.data.id
       this.settings.currency = response.data.currency
 
       this.userStore.$patch({
@@ -120,6 +122,8 @@ export default defineComponent({
         method: 'POST',
         body: JSON.stringify(this.settings)
       })
+
+      console.log(this.settings)
 
       if (response.status === 200) {
         this.userStore.$patch({
