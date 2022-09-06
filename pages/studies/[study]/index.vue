@@ -389,7 +389,10 @@ export default defineComponent({
     },
 
     studyStoreUpdate() {
+      // Get the index of the first null value, A.K.A. the first question found without an answer yet
       let completedQs = Object.values(this.study).indexOf(null)
+
+      // If the value is -1, then that means no null values were found so all questions have been completed
       if (completedQs === -1)
         completedQs = 9
 
