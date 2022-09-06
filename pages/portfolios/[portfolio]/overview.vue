@@ -17,9 +17,15 @@
       {{ $formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).toNumber(), 3, false, true) }} <span v-if="chartType !== 'all_time_percent' && chartInitialValue > 0">({{ $formatNumber(BigNumber(chartFinalValue).minus(chartInitialValue).div(chartInitialValue).times(100).toNumber(), 2, false, true) }}%)</span>&nbsp;<span class="text-gray-500 text-xs">{{ activeText }}</span>
     </p>
 
-    <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activeRange) }">
-      <!--  This chart gets replaced on creation  -->
-      <canvas ref="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+    <div class="relative">
+      <div ref="chartContainer" id="chartContainer" :class="{ 'hidden': !overviewChart, 'mr-2': !['5D', '1M'].includes(activeRange) }">
+        <!--  This chart gets replaced on creation  -->
+        <canvas ref="chart" height="224" class="w-full" style="max-height: 218px; min-height: 218px; min-width: 100%;"></canvas>
+      </div>
+
+      <div v-if="overviewChart && overviewChart.length === 0" class="absolute top-1/3 w-full">
+        <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">No data to display</p>
+      </div>
     </div>
 
     <div v-if="!overviewChart" style="height: 250px;">

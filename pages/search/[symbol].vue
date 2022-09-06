@@ -321,13 +321,17 @@ export default defineComponent({
         prices = chartData.map(dailyData => dailyData.close)
       }
 
-      if (range !== '1D')
-        this.chartInitialValue = chartData[0].close
-
-      const labels = chartData.map(dailyData => {
+      let labels;
+      labels = chartData.map(dailyData => {
         const date = new Date(dailyData.date)
         return date.toDateString().slice(4)
       })
+
+      if (range === '1D') {
+        this.chartInitialValue = chartData[0].close
+
+        labels = chartData.map(dailyData => dailyData.label)
+      }
 
       const verticalLine = {
         id: 'verticalLine',

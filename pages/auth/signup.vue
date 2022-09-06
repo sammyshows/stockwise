@@ -83,7 +83,7 @@ export default defineComponent({
     async signUp() {
       this.errorMessage = ''
       if (this.validateForm()) {
-        const response = await this.$signUp(this.email, this.password)
+        const response = await this.$signUp(this.email.trim(), this.password)
         console.log(response)
         this.errorMessage = response
       }

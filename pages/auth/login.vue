@@ -63,7 +63,7 @@ export default defineComponent({
     async login() {
       this.authMessage = ''
       if (this.validateForm()) {
-        this.authMessage = await this.$login(this.email, this.password)
+        this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
           window.location.href = `${this.config.DOMAIN}/portfolios`
       }
