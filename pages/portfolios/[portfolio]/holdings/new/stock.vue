@@ -7,118 +7,120 @@
     <div class="flex flex-col grow px-3">
       <div class="flex flex-col grow pb-3">
         <div class="flex flex-col grow justify-between mt-3">
-          <div class="h-0 px-4 flex flex-col grow overflow-scroll text-xs">
-            <TransitionGroup name="form">
-              <div key="1" v-if="!manualForm">
-                <div class="relative" >
-                  <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none text-gray-600">
-                    <SearchIcon class="h-7 w-7" aria-hidden="true" />
-                  </div>
-                  <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
-                  <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
-                  <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
-                    <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
-                      <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
-                      <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+          <ClientOnly>
+            <div class="h-0 px-4 flex flex-col grow overflow-scroll text-xs">
+              <TransitionGroup name="form">
+                <div key="1" v-if="!manualForm">
+                  <div class="relative" >
+                    <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none text-gray-600">
+                      <SearchIcon class="h-7 w-7" aria-hidden="true" />
+                    </div>
+                    <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
+                    <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
+                    <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
+                      <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                        <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
+                        <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
+                  <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
 
-                <div v-if="quote" class="w-full h-16 px-3 mb-5">
-                  <p class="w-full text-center truncate">{{ quote.companyName }}</p>
-                  <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
-                    <div class="w-1 grow text-right">
-                      <p class="truncate">{{ quote.symbol }}</p>
-                      <p class="truncate">Current price</p>
-                      <p class="truncate">Daily movement</p>
+                  <div v-if="quote" class="w-full h-16 px-3 mb-5">
+                    <p class="w-full text-center truncate">{{ quote.companyName }}</p>
+                    <div v-if="Object.keys(quote).length !== 0" class="flex text-xs">
+                      <div class="w-1 grow text-right">
+                        <p class="truncate">{{ quote.symbol }}</p>
+                        <p class="truncate">Current price</p>
+                        <p class="truncate">Daily movement</p>
+                      </div>
+                      <div class="w-3 text-center">
+                        <p>:</p>
+                        <p>:</p>
+                        <p>:</p>
+                      </div>
+                      <div class="w-1 grow">
+                        <p class="truncate">{{ quote.primaryExchange }}</p>
+                        <p class="truncate">{{ quote.latestPrice }}</p>
+                        <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $formatNumber(quote.change, 2, false, true) }} ({{ $formatNumber(quote.changePercent * 100, 2 , false, true) }}%)</p>
+                      </div>
                     </div>
-                    <div class="w-3 text-center">
-                      <p>:</p>
-                      <p>:</p>
-                      <p>:</p>
-                    </div>
-                    <div class="w-1 grow">
-                      <p class="truncate">{{ quote.primaryExchange }}</p>
-                      <p class="truncate">{{ quote.latestPrice }}</p>
-                      <p class="truncate" :class="{ 'text-bright-red': quote.change < 0, 'text-bright-green': quote.change > 0 }">{{ $formatNumber(quote.change, 2, false, true) }} ({{ $formatNumber(quote.changePercent * 100, 2 , false, true) }}%)</p>
-                    </div>
+                    <Spinner class="h-16" v-else />
                   </div>
-                  <Spinner class="h-16" v-else />
-                </div>
-              </div>
-
-              <div v-else key="2">
-                <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
-                <div>
-                  <label for="name" class="flex items-end">Name</label>
-                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the name of the company</p>
-                  <input @keyup="invalid.name = false" v-model="transaction.name" id="name" type="text" autocomplete="off" placeholder="e.g. Microsoft Inc" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 </div>
 
-                <div class="mt-2">
-                  <label for="symbol" class="flex items-end">Symbol</label>
-                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.symbol ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a symbol for the company</p>
-                  <input @keyup="invalid.symbol = false" v-model="transaction.symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. MSFT" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <div v-else key="2">
+                  <p class="mb-2 px-6 text-xs text-center text-gray-400">Use the fields below to manually enter details for your stock:</p>
+                  <div>
+                    <label for="name" class="flex items-end">Name</label>
+                    <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.name ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the name of the company</p>
+                    <input @keyup="invalid.name = false" v-model="transaction.name" id="name" type="text" autocomplete="off" placeholder="e.g. Microsoft Inc" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  </div>
+
+                  <div class="mt-2">
+                    <label for="symbol" class="flex items-end">Symbol</label>
+                    <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.symbol ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a symbol for the company</p>
+                    <input @keyup="invalid.symbol = false" v-model="transaction.symbol" id="symbol" type="text" autocomplete="off" placeholder="e.g. MSFT" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  </div>
+
+                  <div class="mt-2">
+                    <label for="currentPrice" class="flex items-end">Current price</label>
+                    <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currentPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the current price of the company</p>
+                    <input @keyup="invalid.currentPrice = false" v-model="transaction.currentPrice" id="currentPrice" type="number" autocomplete="off" placeholder="e.g. 271.29" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  </div>
+
+                  <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
                 </div>
 
-                <div class="mt-2">
-                  <label for="currentPrice" class="flex items-end">Current price</label>
-                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currentPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the current price of the company</p>
-                  <input @keyup="invalid.currentPrice = false" v-model="transaction.currentPrice" id="currentPrice" type="number" autocomplete="off" placeholder="e.g. 271.29" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <div :key="3" class="mb-2">
+                  <label for="type" class="flex items-end">Transaction type</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
+                  <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                    <option value="" disabled selected hidden></option>
+                    <option :value="0">BUY</option>
+                    <option :value="1" disabled>SELL</option>
+                  </select>
+                </div>
+                <div :key="4" class="mb-2">
+                  <label for="quantity">Quantity</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive quantity</p>
+                  <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                </div>
+                <div :key="5" class="mb-2">
+                  <label for="initialPrice">Price</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
+                  <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                </div>
+                <div :key="6" class="mb-2">
+                  <label for="exchangeRate">Exchange rate (optional)</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
+                  <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                </div>
+                <div v-if="transaction.type === 1" :key="5" class="mb-2">
+                  <label for="method" class="flex items-end">Method</label>
+                  <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                    <option :value="0">FIFO</option>
+                    <option :value="1">Custom Selection</option>
+                  </select>
+                </div>
+                <div :key="7" class="w-full flex justify-between gap-x-4">
+                  <div class="flex flex-col w-full">
+                    <label for="date" class="text-xs">Date</label>
+                    <input v-model="transaction.date" id="date" type="date" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                  </div>
+                  <div class="flex flex-col w-full">
+                    <label for="time" class="text-xs">Time</label>
+                    <input v-model="transaction.time" id="time" type="time" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                  </div>
                 </div>
 
-                <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
-              </div>
-
-              <div :key="3" class="mb-2">
-                <label for="type" class="flex items-end">Transaction type</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-                <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-                  <option value="" disabled selected hidden></option>
-                  <option :value="0">BUY</option>
-                  <option :value="1" disabled>SELL</option>
-                </select>
-              </div>
-              <div :key="4" class="mb-2">
-                <label for="quantity">Quantity</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive quantity</p>
-                <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-              </div>
-              <div :key="5" class="mb-2">
-                <label for="initialPrice">Price</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
-                <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-              </div>
-              <div :key="6" class="mb-2">
-                <label for="exchangeRate">Exchange rate (optional)</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-                <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-              </div>
-              <div v-if="transaction.type === 1" :key="5" class="mb-2">
-                <label for="method" class="flex items-end">Method</label>
-                <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-                  <option :value="0">FIFO</option>
-                  <option :value="1">Custom Selection</option>
-                </select>
-              </div>
-              <div :key="7" class="w-full flex justify-between gap-x-4">
-                <div class="flex flex-col w-full">
-                  <label for="date" class="text-xs">Date</label>
-                  <input v-model="transaction.date" id="date" type="date" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                <div key="8" class="grow flex items-end justify-end my-7 text-right">
+                  <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
                 </div>
-                <div class="flex flex-col w-full">
-                  <label for="time" class="text-xs">Time</label>
-                  <input v-model="transaction.time" id="time" type="time" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
-                </div>
-              </div>
-
-              <div key="8" class="grow flex items-end justify-end my-7 text-right">
-                <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="addHolding()" />
-              </div>
-            </TransitionGroup>
-          </div>
+              </TransitionGroup>
+            </div>
+          </ClientOnly>
         </div>
       </div>
     </div>

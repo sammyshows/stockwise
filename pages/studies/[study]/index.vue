@@ -391,7 +391,7 @@ export default defineComponent({
     studyStoreUpdate() {
       let completedQs = Object.values(this.study).indexOf(null)
       if (completedQs === -1)
-        completedQs = 8
+        completedQs = 9
 
       let updatedStudies = this.studyStore.studies.map(s => {
         if (s.study_id === this.studyId) {

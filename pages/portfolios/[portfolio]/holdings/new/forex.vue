@@ -6,87 +6,89 @@
 
     <div class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
-        <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-xs">
-          <TransitionGroup name="form">
-            <div key="1" class="flex w-full gap-x-3">
-              <div class="grow">
-                <label for="from" class="flex items-end">From</label>
+        <ClientOnly>
+          <div class="h-0 px-2 flex flex-col grow overflow-scroll overflow-x-hidden gap-y-4 text-xs">
+            <TransitionGroup name="form">
+              <div key="1" class="flex w-full gap-x-3">
+                <div class="grow">
+                  <label for="from" class="flex items-end">From</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
+                  <select v-model="transaction.from" @change="getQuote(); invalid.from = false;" id="from" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                    <option value="" disabled selected hidden></option>
+                    <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
+                  </select>
+                </div>
+                <div class="grow">
+                  <label for="to" class="flex items-end">To</label>
+                  <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.to ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
+                  <select v-model="transaction.to" @change="getQuote(); invalid.to = false;" id="to" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                    <option value="" disabled selected hidden></option>
+                    <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div key="2" v-if="quote">
+                <div v-if="Object.keys(quote).length !== 0" class="flex flex-col justify-center w-full h-full py-3 px-3 rounded border border-gray-600">
+                  <div class="w-full flex text-base">
+                    <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
+                    <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
+                    <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $formatNumber(quote.currentPrice - quote.prevClose, 5, false, true) }}</p>
+                  </div>
+                  <div class="w-full flex text-tiny">
+                    <p class="grow truncate mr-3">{{ quote.name }}</p>
+                    <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2, false, true) }}%</p>
+                  </div>
+                </div>
+                <Spinner class="h-16" v-else />
+              </div>
+
+              <div key="3">
+                <label for="type" class="flex items-end">Transaction type</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
+                <select v-model="transaction.type" @change="invalid.type = false;" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <option value="" disabled selected hidden></option>
+                  <option :value="0">BUY</option>
+                  <option :value="1" disabled>SELL</option>
+                </select>
+              </div>
+
+              <div key="4">
+                <label for="amount" class="flex items-end">Amount</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.amount ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive amount</p>
+                <input v-model="transaction.amount" @keyup="invalid.amount = false;" id="amount" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              </div>
+
+              <div key="5">
+                <label for="initial_rate" class="flex items-end">Initial rate</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the currency rate</p>
+                <input v-model="transaction.initialRate" @keyup="invalid.initialRate = false;" id="initial_rate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              </div>
+
+              <div key="6">
+                <label for="exchangeRate">Exchange rate (optional)</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
-                <select v-model="transaction.from" @change="getQuote(); invalid.from = false;" id="from" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-                  <option value="" disabled selected hidden></option>
-                  <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
-                </select>
+                <input v-model="transaction.exchangeRate" @keyup="invalid.exchangeRate = false;" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               </div>
-              <div class="grow">
-                <label for="to" class="flex items-end">To</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.to ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
-                <select v-model="transaction.to" @change="getQuote(); invalid.to = false;" id="to" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-                  <option value="" disabled selected hidden></option>
-                  <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
-                </select>
-              </div>
-            </div>
 
-            <div key="2" v-if="quote">
-              <div v-if="Object.keys(quote).length !== 0" class="flex flex-col justify-center w-full h-full py-3 px-3 rounded border border-gray-600">
-                <div class="w-full flex text-base">
-                  <p class="grow tracking-wider">{{ transaction.from + transaction.to }}</p>
-                  <p class="w-20 text-right">{{ $formatNumber(quote.currentPrice, 5) }}</p>
-                  <p class="w-20 text-right" :class="{ 'text-bright-red': quote.currentPrice - quote.prevClose < 0, 'text-bright-green': quote.currentPrice - quote.prevClose > 0 }">{{ $formatNumber(quote.currentPrice - quote.prevClose, 5, false, true) }}</p>
+              <div key="7" class="w-full flex justify-between gap-x-4">
+                <div>
+                  <label for="date">Date</label>
+                  <input v-model="transaction.date" id="date" type="date" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
                 </div>
-                <div class="w-full flex text-tiny">
-                  <p class="grow truncate mr-3">{{ quote.name }}</p>
-                  <p class="w-16 text-right" :class="{ 'text-bright-red': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 < 0, 'text-bright-green': (quote.currentPrice - quote.prevClose) / quote.prevClose * 100 > 0 }">{{ $formatNumber((quote.currentPrice - quote.prevClose) / quote.prevClose * 100, 2, false, true) }}%</p>
+                <div>
+                  <label for="time">Time</label>
+                  <input v-model="transaction.time" id="time" type="time" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
                 </div>
               </div>
-              <Spinner class="h-16" v-else />
-            </div>
 
-            <div key="3">
-              <label for="type" class="flex items-end">Transaction type</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-              <select v-model="transaction.type" @change="invalid.type = false;" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-                <option value="" disabled selected hidden></option>
-                <option :value="0">BUY</option>
-                <option :value="1" disabled>SELL</option>
-              </select>
-            </div>
-
-            <div key="4">
-              <label for="amount" class="flex items-end">Amount</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.amount ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive amount</p>
-              <input v-model="transaction.amount" @keyup="invalid.amount = false;" id="amount" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-            </div>
-
-            <div key="5">
-              <label for="initial_rate" class="flex items-end">Initial rate</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the currency rate</p>
-              <input v-model="transaction.initialRate" @keyup="invalid.initialRate = false;" id="initial_rate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-            </div>
-
-            <div :key="6">
-              <label for="exchangeRate">Exchange rate (optional)</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
-              <input v-model="transaction.exchangeRate" @keyup="invalid.exchangeRate = false;" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
-            </div>
-
-            <div key="7" class="w-full flex justify-between gap-x-4">
-              <div>
-                <label for="date">Date</label>
-                <input v-model="transaction.date" id="date" type="date" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+              <div key="8" class="grow flex items-end justify-end text-right mb-7">
+                <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="addHolding()" />
               </div>
-              <div>
-                <label for="time">Time</label>
-                <input v-model="transaction.time" id="time" type="time" class="box-border w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
-              </div>
-            </div>
-
-            <div key="8" class="grow flex items-end justify-end text-right mb-7">
-              <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="addHolding()" />
-            </div>
-          </TransitionGroup>
-        </div>
+            </TransitionGroup>
+          </div>
+        </ClientOnly>
       </div>
     </div>
   </div>
