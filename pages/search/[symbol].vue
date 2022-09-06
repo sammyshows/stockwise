@@ -321,6 +321,8 @@ export default defineComponent({
         prices = chartData.map(dailyData => dailyData.close)
       }
 
+      this.chartInitialValue = chartData[0].close
+
       let labels;
       labels = chartData.map(dailyData => {
         const date = new Date(dailyData.date)
@@ -328,8 +330,6 @@ export default defineComponent({
       })
 
       if (range === '1D') {
-        this.chartInitialValue = chartData[0].close
-
         labels = chartData.map(dailyData => dailyData.label)
       }
 
