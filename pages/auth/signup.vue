@@ -7,7 +7,8 @@
     </div>
     <div>
       <p v-if="errorMessage === 'error'" class="mt-2.5 text-xs text-center text-red-600">&#10033;&nbsp;&nbsp;An error has occurred. Please verify that the details you entered are correct.</p>
-      <p v-if="errorMessage === 'userExists'" class="mt-2.5 text-xs text-center text-red-600">&#10033;&nbsp;&nbsp;An account with that email already exists.</p>
+<!--      currently a bug causes the message below to appear everytime      -->
+<!--      <p v-if="errorMessage === 'userExists'" class="mt-2.5 text-xs text-center text-red-600">&#10033;&nbsp;&nbsp;An account with that email already exists.</p>-->
       <div class="mt-2.5">
         <p class="text-tiny leading-normal" :class="[ invalid.email ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add your email</p>
         <input @keyup="invalid.email = false" v-model="email" autocomplete="on" placeholder="Email" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
