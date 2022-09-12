@@ -123,8 +123,6 @@ export default defineComponent({
         body: JSON.stringify(this.settings)
       })
 
-      console.log(this.settings)
-
       if (response.status === 200) {
         this.userStore.$patch({
           currency: this.settings?.currency

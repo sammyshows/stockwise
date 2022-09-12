@@ -38,7 +38,7 @@ export default defineNuxtPlugin(() => {
         provide: {
             formatNumber: (numberString: string, precision: number, addCurrency: boolean, addSign: boolean, currencySymbol?: string ) => {
                 let numStr = null as (string | null)
-                const isNegative = parseFloat(numberString) < 0
+                const makeNegative = parseFloat(numberString) < 0 && parseFloat(numberString) < -0.0000000001
 
                 // round and format to local format e.g. 1000.2312 = 1000.23 || 1000,23
                 if (parseFloat(numberString) || parseFloat(numberString) == 0) {
@@ -61,7 +61,7 @@ export default defineNuxtPlugin(() => {
 
                 // in step one we convert numbers to positive for the sake of adding currency symbols, now is the time
                 // to add back the '-' symbol if the number was indeed negative
-                if (isNegative)
+                if (makeNegative)
                     numStr = '-' + numStr
 
                 // Add '+' sign to string if number is positive

@@ -25,7 +25,7 @@
                   <p class="h-5" :class="$fontSize($formatNumber(transaction.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(transaction.daily_change, 2, false, true) }}</p>
                   <p :class="$fontSize(transaction.current_quantity > 0 ? $formatNumber(transaction.daily_percent, 2, false, true) + '%' : '0.00', 'text-tiny')">{{ transaction.current_quantity > 0 ? $formatNumber(transaction.daily_percent, 2, false, true) : '0.00' }}%</p>
                 </div>
-                <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < 0, 'text-bright-green': transaction.total_change > 0 }">
+                <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': transaction.total_change < -0.0000000001, 'text-bright-green': transaction.total_change > 0.0000000001 }">
                   <p class="h-5" :class="$fontSize($formatNumber(transaction.total_change, 2, false, true), 'text-xs')">{{ $formatNumber(transaction.total_change, 2, false, true) }}</p>
                   <p :class="$fontSize(transaction.current_quantity > 0 ? $formatNumber(BigNumber(transaction.total_change).div(transaction.initial_value).times(100), 2, false, true) + '%' : '0.00', 'text-tiny')">{{ transaction.current_quantity > 0 ? $formatNumber(BigNumber(transaction.total_change).div(transaction.initial_value).times(100), 2, false, true) : '0.00' }}%</p>
                 </div>
@@ -68,7 +68,8 @@
           <p class="h-5" :class="$fontSize($formatNumber(total.daily_change, 2, false, true), 'text-xs')">{{ $formatNumber(total.daily_change, 2, false, true) }}</p>
           <p :class="$fontSize($formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) + '%', 'text-tiny')">{{ $formatNumber(total.daily_change.div(BigNumber(total.current_value).minus(total.daily_change)).times(100), 2, false, true) }}%</p>
         </div>
-        <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value.minus(total.initial_value).isLessThan(0), 'text-bright-green': total.current_value.minus(total.initial_value).isGreaterThan(0) }">
+        <!--         The 'isGreaterThan(0.00000000001)' is because of a bug where cash holdings come up as a very small negative number       -->
+        <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.current_value.minus(total.initial_value).isLessThan(-0.0000000001), 'text-bright-green': total.current_value.minus(total.initial_value).isGreaterThan(0.0000000001) }">
           <p class="h-5" :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value), 2, false, true), 'text-xs')">{{ $formatNumber(total.current_value.minus(total.initial_value), 2, false, true) }}</p>
           <p :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true), 'text-tiny')">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) }}%</p>
         </div>
