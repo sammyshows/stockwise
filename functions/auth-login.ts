@@ -130,7 +130,6 @@ exports.handler = async (event, context) => {
 
     if (accessToken && refreshToken && idToken) {
         const userId = jwt.decode(idToken)['custom:sw_user_id']
-        console.log(userId)
 
         return {
             statusCode: 200,

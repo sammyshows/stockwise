@@ -62,8 +62,9 @@ SELECT create_parent('partman.asset_data', 'date', 'native', 'daily', p_start_pa
 */
 
 
-CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) NOT NULL, created_at timestamptz default now(), updated_at timestamptz default now());
-INSERT INTO users (id, email) VALUES('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'sammymac.eng@gmail.com');
+CREATE TABLE users (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, email VARCHAR ( 50 ) NOT NULL, account_type INT, created_at timestamptz default now(), updated_at timestamptz default now());
+CREATE UNIQUE INDEX unique_users ON users (email, account_type) WHERE account_type != 0;
+INSERT INTO users (id, email) VALUES('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'sammymac.eng@gmail.com', 1);
 
 CREATE TABLE user_settings (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, currency_id uuid, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, CONSTRAINT fk_currency FOREIGN KEY(currency_id) REFERENCES assets(id), created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO user_settings (user_id, currency_id) SELECT '8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', id FROM assets WHERE symbol = 'USDAUD' AND type = 1;

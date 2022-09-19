@@ -70,12 +70,11 @@ exports.handler = async (event, context) => {
                     Value: uuid
                 }
             ],
-            UserPoolId: process.env.AWS_POOL_ID,
-            Username: username
+            AccessToken: accessToken
         }
 
         await new Promise((resolve, reject): void => {
-            cognito.adminUpdateUserAttributes(params, async (error, session): Promise<void> => {
+            cognito.updateUserAttributes(params, async (error, session): Promise<void> => {
                 if (error) {
                     resolve(console.log(error.message))
                 }
@@ -83,7 +82,8 @@ exports.handler = async (event, context) => {
                 resolve(
                     await client`
                     INSERT INTO users (id, email, account_type)
-                    VALUES (${uuid}, ${email}, 1);`
+                    VALUES (${uuid}, ${email}, 1) ON CONFLICT (email, account_type) 
+                    WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
                 )
             })
         })
