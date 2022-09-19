@@ -31,10 +31,7 @@ export default defineNuxtConfig({
             { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
         ],
         link: [
-            { rel: 'manifest', href: '/manifest.json' },
-            { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-            { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-            { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&family=Roboto:wght@500&display=swap' }
+            { rel: 'manifest', href: '/manifest.json' }
         ],
         script: [
             { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },
