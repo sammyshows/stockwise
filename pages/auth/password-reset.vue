@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-full flex flex-col pt-10 pb-5 overflow-scroll">
+  <div class="page-background relative w-full h-full flex flex-col pt-10 pb-5 overflow-scroll">
     <div>
       <img src="/images/logo-cyan.png" alt="Stockwise Logo" class="h-24 mx-auto">
       <h1 class="pt-3 text-3xl font-medium text-bright-cyan text-center">Stockwise</h1>
@@ -14,7 +14,7 @@
             <input @keyup="invalid.email = false" v-model="email" autocomplete="off" placeholder="Email" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
           </div>
           <button @click="sendResetEmail" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Send reset email</button>
-          <p class="mt-10 text-center text-gray-300 text-sm">Or go back to <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Log in</a> or <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
+          <p class="mt-10 text-center text-gray-300 text-sm">Or go back to <a href="/auth/login" class="underline underline-offset-4 text-bright-cyan">Log in</a> or <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
         </div>
       </Transition>
 

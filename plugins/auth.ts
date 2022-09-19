@@ -34,7 +34,6 @@ export default defineNuxtPlugin(() => {
                     }
                 })
 
-                console.log(response)
                 if (response.accessToken) {
                     useAuth().$patch({
                         accessToken: response.accessToken

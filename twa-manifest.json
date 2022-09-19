@@ -12,14 +12,14 @@
   "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/portfolios?standalone=true",
-  "iconUrl": "https://stockwise.app/icons/icon.png",
+  "iconUrl": "https://stockwise.app/icons/icon-dark.png",
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
     "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.0.12",
-  "appVersionCode": 16,
+  "appVersionName": "1.0.13",
+  "appVersionCode": 17,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://stockwise.app/manifest.json",
@@ -41,5 +41,5 @@
   ],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "1.0.12"
+  "appVersion": "1.0.13"
 }
