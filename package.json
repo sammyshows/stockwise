@@ -1,6 +1,6 @@
 {
   "name": "Stockwise",
-  "description": "Use Stockwise to study stocks and tracking your portfolios.",
+  "description": "Stockwise gives you the ability to study companies, track your stock, forex and cash investments, follow your favourite companies and more.",
   "private": true,
   "scripts": {
     "dev": "nuxi dev ",
