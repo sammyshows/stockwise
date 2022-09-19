@@ -57,8 +57,8 @@ exports.handler = async (event, context) => {
                 resolve(errorMessage = error["code"])
             } else {
                 await client`
-                    INSERT INTO users (id, email)
-                    VALUES (${uuid}, ${eventBody.email});`
+                    INSERT INTO users (id, email, account_type)
+                    VALUES (${uuid}, ${eventBody.email}, 0);`
 
                 resolve(cognitoUser = result.user)
             }

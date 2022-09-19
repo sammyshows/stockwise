@@ -9,7 +9,7 @@
   "navigationColorDark": "#000000",
   "navigationDividerColor": "#000000",
   "navigationDividerColorDark": "#000000",
-  "backgroundColor": "#00FFD1",
+  "backgroundColor": "#000000",
   "enableNotifications": true,
   "startUrl": "/portfolios?standalone=true",
   "iconUrl": "https://stockwise.app/icons/icon.png",
@@ -18,8 +18,8 @@
     "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.0.4",
-  "appVersionCode": 8,
+  "appVersionName": "1.0.12",
+  "appVersionCode": 16,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://stockwise.app/manifest.json",
@@ -41,5 +41,5 @@
   ],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "1.0.4"
+  "appVersion": "1.0.12"
 }

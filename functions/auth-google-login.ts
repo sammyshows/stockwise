@@ -57,7 +57,7 @@ exports.handler = async (event, context) => {
     const userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
     if (idToken && !userId) {
-        console.log('idToken && !userId')
+        console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
 
         const cognito = new AWS.CognitoIdentityServiceProvider();
         const username = jwt.decode(accessToken)["username"]
@@ -82,9 +82,8 @@ exports.handler = async (event, context) => {
 
                 resolve(
                     await client`
-                    INSERT INTO users (id, email)
-                    VALUES (${uuid}, ${email}) ON CONFLICT (email) 
-                    DO NOTHING;`
+                    INSERT INTO users (id, email, account_type)
+                    VALUES (${uuid}, ${email}, 1);`
                 )
             })
         })
