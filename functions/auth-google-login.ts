@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 import cookie from 'cookie'
 import { v4 as uuidv4 } from 'uuid';
 import jwt from "jsonwebtoken"
+import {CognitoRefreshToken, CognitoUser, CognitoUserPool} from "amazon-cognito-identity-js";
 const client = require("../database/client.ts")
 
 
@@ -15,6 +16,10 @@ exports.handler = async (event, context) => {
     let accessCookie
     let idCookie
     let refreshCookie
+    let userPool = new CognitoUserPool({
+        UserPoolId : process.env.AWS_POOL_ID,
+        ClientId : process.env.AWS_CLIENT_ID
+    })
 
     const setCookies = () => {
         const thirtyDays = 30 * 24 * 3600000
@@ -79,12 +84,31 @@ exports.handler = async (event, context) => {
                     resolve(console.log(error.message))
                 }
 
-                resolve(
-                    await client`
-                    INSERT INTO users (id, email, account_type)
-                    VALUES (${uuid}, ${email}, 1) ON CONFLICT (email, account_type) 
-                    WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
-                )
+                await client`
+                INSERT INTO users (id, email, account_type)
+                VALUES (${uuid}, ${email}, 1) ON CONFLICT (email, account_type) 
+                WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
+
+                const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
+
+                const userData = {
+                    Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
+                    Pool: userPool
+                };
+
+                const cognitoUser = new CognitoUser(userData);
+
+                resolve(await new Promise(function(resolve, reject) {
+                    cognitoUser.refreshSession(RefreshToken, async (err, session) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            accessToken = session.accessToken.jwtToken
+                            idToken = session.idToken.jwtToken
+                            resolve(refreshToken = session.refreshToken.token)
+                        }
+                    })
+                }))
             })
         })
     }

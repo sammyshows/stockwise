@@ -99,7 +99,6 @@ exports.handler = async (event, context) => {
         } else if (accessToken && refreshToken) {
             // --------- If there's a valid refreshToken ---------
             console.log('Refreshing token...')
-            const username = jwt.decode(accessToken).username
             const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
             const userData = {
