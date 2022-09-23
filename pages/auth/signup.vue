@@ -95,6 +95,8 @@ export default defineComponent({
         } else {
           this.disabledSignUp = false
         }
+      } else {
+        this.disabledSignUp = false
       }
     }
   }
