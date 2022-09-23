@@ -1,5 +1,5 @@
 <template>
-  <div class="page-background relative w-full h-full flex flex-col pt-10 pb-5 overflow-scroll">
+  <div class="relative w-full h-full flex flex-col pt-10 pb-5 overflow-scroll">
     <div>
       <img src="/images/logo-cyan.png" alt="Stockwise Logo" class="h-24 mx-auto">
       <h1 class="pt-3 text-3xl font-medium text-bright-cyan text-center">Stockwise</h1>

@@ -123,7 +123,7 @@ export default defineComponent({
         question_six: this.storeStudy?.question_six,
         question_seven: this.storeStudy?.question_seven,
         question_eight: this.storeStudy?.question_eight,
-        question_nine: this.storeStudy?.nine
+        question_nine: this.storeStudy?.question_nine
       },
       notes: this.storeStudy?.notes,
       questions: [
