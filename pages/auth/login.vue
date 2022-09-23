@@ -72,8 +72,11 @@ export default defineComponent({
         this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
           window.location.href = `${this.config.DOMAIN}/portfolios`
+        else
+          this.disabledSignIn = false
+      } else {
+        this.disabledSignIn = false
       }
-      this.disabledSignIn = false
     }
   }
 })

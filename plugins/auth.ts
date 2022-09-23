@@ -83,7 +83,7 @@ export default defineNuxtPlugin(() => {
                                 password: password
                             })
                         })
-                        window.location.href = `${config.public.DOMAIN}/portfolios`
+                        return 'success'
                     } else if (res.status === 303) {
                         // Ideally, this doesn't redirect right away but instead displays an error message give the user the option to try login with this email
                         const body = await res.json()
