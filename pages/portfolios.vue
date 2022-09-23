@@ -13,6 +13,7 @@
                 :show="viewPortfolios"
                 :overviewChart="overviewChart"
                 :total="total" />
+      <Spinner class="h-full" v-else />
     </div>
     <NuxtPage v-else
               @updatePortfolios="getPortfolios()" />

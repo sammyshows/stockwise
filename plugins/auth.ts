@@ -6,7 +6,7 @@ export default defineNuxtPlugin(() => {
         provide: {
             login: async (email?, password?): Promise<string> => {
                 const config = useRuntimeConfig()
-                let message = "error" // default return message
+                let message = "" // default return message
 
                 if (useAuth().accessToken)
                     return
@@ -31,6 +31,10 @@ export default defineNuxtPlugin(() => {
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
+
+                        return body
+                    } else {
+                        message = "error"
                     }
                 })
 
@@ -80,20 +84,15 @@ export default defineNuxtPlugin(() => {
                             })
                         })
                         window.location.href = `${config.public.DOMAIN}/portfolios`
-                        // should a return be here to stop the code from continuing?
-                    }
-
-                    // should these be if/else if/else?
-                    if (res.status === 303) {
+                    } else if (res.status === 303) {
                         // Ideally, this doesn't redirect right away but instead displays an error message give the user the option to try login with this email
                         const body = await res.json()
                         if (body.errorMessage === "UsernameExistsException") {
                             return 'userExists'
                         }
+                    } else {
+                        return 'error'
                     }
-
-                    console.log("If this line appears, the code is returning the message 'error'")
-                    return 'error'
                 })
             },
 

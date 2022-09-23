@@ -9,7 +9,7 @@
 import Spinner from "~/components/Spinner.vue";
 export default defineComponent({
   name: 'Cyan button',
-  components: {Spinner},
-  props: ['text', 'disabled']
+  components: { Spinner },
+  props: [ 'text', 'disabled' ]
 })
 </script>

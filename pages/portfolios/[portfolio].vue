@@ -18,6 +18,7 @@
                 :show="viewHoldings"
                 :overviewChart="overviewChart"
                 :total="total" />
+      <Spinner class="h-full" v-else />
     </div>
     <NuxtPage v-if="!viewHoldings"
               @updateHoldings="getHoldings(); $emit('updatePortfolios');"

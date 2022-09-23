@@ -11,8 +11,13 @@
       <div v-if="$route.path === '/studies'" class="flex grow">
         <p v-if="uncompletedStudies != null && uncompletedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
         <NuxtPage v-else-if="uncompletedStudies" :show="viewStudies" />
+        <Spinner class="h-full" v-else />
       </div>
-      <NuxtPage v-else :show="viewStudies" />
+      <div v-else-if="$route.path === '/studies/completed'" class="flex grow">
+        <p v-if="uncompletedStudies != null && uncompletedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
+        <NuxtPage v-else-if="uncompletedStudies" :show="viewStudies" />
+        <Spinner class="h-full" v-else />
+      </div>
     </div>
     <NuxtPage v-else/>
   </NuxtLayout>
