@@ -8,7 +8,7 @@
     </select>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart || overviewChart.length === 0 }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activeRange === range.period }">{{ range.period }}</button>
+      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activeRange === range.period" class="px-2 py-1" :class="{ 'bg-normal-cyan': activeRange === range.period }">{{ range.period }}</button>
     </div>
 
     <p v-if="overviewChart && overviewChart.length === 0" class="grow flex items-center py-2 px-2 text-xs text-bright-cyan text-center">Your portfolio hasn't been saved long enough for any daily totals to be recorded yet</p>

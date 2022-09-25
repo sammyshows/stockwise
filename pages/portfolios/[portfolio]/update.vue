@@ -16,12 +16,12 @@
             </div>
             <div key="2" class="flex justify-between mt-4">
               <label for="included" class="flex items-center">Included in totals</label>
-              <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/50 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+              <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-normal-cyan bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
             </div>
 
             <div key="3" class="flex justify-between mt-4">
               <label for="closedPositions" class="flex items-center">Hide closed positions</label>
-              <input v-model="portfolioDetails.hide_closed_positions" id="closedPositions" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+              <input v-model="portfolioDetails.hide_closed_positions" id="closedPositions" type="checkbox" class="w-6 h-6 my-auto text-normal-cyan bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
             </div>
           </TransitionGroup>
         </div>

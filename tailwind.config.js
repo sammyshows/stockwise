@@ -19,11 +19,12 @@ module.exports = {
 
       colors: {
         cyan: colors.cyan,
+        'normal-cyan': '#1C6E5E',
         'bright-cyan': '#00FFD1',
         'bright-yellow': '#FFFF00',
         'opaque-cyan': 'rgba(0, 255, 187, 0.10)',
         'bright-green': '#45FF58',
-        'bright-red': '#FF4545'
+        'bright-red': '#E02F2F'
       },
 
       fontSize: {

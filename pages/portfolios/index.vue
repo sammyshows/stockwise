@@ -14,11 +14,11 @@
               <div class="flex justify-end">
                 <div class="grow">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ portfolio.portfolio_name }}</h2>
-                  <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolio.transaction_count }} TRANSACTIONS</p>
+                  <p class="font-light text-tiny my-0.5 text-gray-200">{{ portfolio.transaction_count }} TRANSACTIONS</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
                   <p class="h-5" :class="$fontSize($formatNumber(portfolio.current_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-xs', 12)">{{ $formatNumber(portfolio.current_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
-                  <p class="text-gray-300" :class="$fontSize($formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-tiny', 15)">{{ $formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
+                  <p class="text-gray-200" :class="$fontSize($formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-tiny', 15)">{{ $formatNumber(portfolio.initial_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': portfolio.daily_change < 0, 'text-bright-green': portfolio.daily_change > 0 }">
                   <p class="h-5" :class="$fontSize($formatNumber(portfolio.daily_change, 2, true, false) || '-', 'text-xs')">{{ $formatNumber(portfolio.daily_change, 2, false, true) || '-' }}</p>
@@ -39,15 +39,15 @@
         </div>
       </TransitionGroup>
     </div>
-    <div v-if="total" class="py-2 px-3 border-t border-gray-100 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
+    <div v-if="total" class="py-2 px-3 border-t bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
       <div class="flex justify-end">
         <div class="grow">
           <h2 class="text-sm font-bold tracking-wider truncate">Summary</h2>
-          <p class="font-light text-tiny my-0.5 text-gray-300">{{ portfolios.length }} PORTFOLIOS</p>
+          <p class="font-light text-tiny my-0.5 text-gray-200">{{ portfolios.length }} PORTFOLIOS</p>
         </div>
           <div class="w-20 text-right mt-0.5 ml-2 font-normal">
           <p class="h-5" :class="$fontSize($formatNumber(total.current_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-xs', 12)">{{ $formatNumber(total.current_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
-          <p class="text-gray-300" :class="$fontSize($formatNumber(total.initial_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-tiny', 15)">{{ $formatNumber(total.initial_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
+          <p class="text-gray-200" :class="$fontSize($formatNumber(total.initial_value, 2, true, false) || $formatNumber('0', 2, true, false), 'text-tiny', 15)">{{ $formatNumber(total.initial_value, 2, true, false) || $formatNumber('0', 2, true, false) }}</p>
         </div>
         <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': total.daily_change < 0, 'text-bright-green': total.daily_change > 0 }">
           <p class="h-5" :class="$fontSize($formatNumber(total.daily_change, 2, false, true) || '-', 'text-xs')">{{ $formatNumber(total.daily_change, 2, false, true) || '-' }}</p>

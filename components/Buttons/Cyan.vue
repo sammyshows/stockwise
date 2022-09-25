@@ -1,5 +1,5 @@
 <template>
-  <button @click="$emit('clicked')" class="flex px-6 py-1 rounded-lg bg-bright-cyan/30 text-lg font-normal drop-shadow-md">
+  <button @click="$emit('clicked')" class="flex px-6 py-1 rounded-lg bg-normal-cyan text-lg font-normal drop-shadow-md">
     <p>{{ text }}</p>
     <Spinner v-if="disabled" class="h-5 w-5 my-auto ml-2"></Spinner>
   </button>

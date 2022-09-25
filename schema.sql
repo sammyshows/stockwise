@@ -110,7 +110,7 @@ INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value,
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 21001.25, 20740.4077062204, 51.76, 0.12, '2022-07-01');
 INSERT INTO partman.user_portfolios_data (user_id, current_value, initial_value, all_time_change, all_time_percent, date) VALUES ('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 23101.25, 20740.4077062204, 101.76, 3.12, '2022-07-02');
 
-CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
+CREATE TABLE portfolios (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, user_id uuid, name VARCHAR ( 50 ) NOT NULL, included BOOLEAN, hide_closed_positions BOOLEAN DEFAULT false, CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE, created_at timestamptz default now(), updated_at timestamptz default now());
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('16fc5ca2-32ba-499a-a606-49679dfed51e', '8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'AUS EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('26fc5ca2-32ba-499a-a606-49679dfed51e', '8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'U.S. EQUITIES', TRUE);
 INSERT INTO portfolios (id, user_id, name, included) VALUES ('36fc5ca2-32ba-499a-a606-49679dfed51e', '8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'Commodities', TRUE);

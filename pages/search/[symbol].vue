@@ -19,7 +19,7 @@
     </div>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" class="px-2 py-1" :class="{ 'bg-bright-cyan/20': activePeriod === range.period }">{{ range.period }}</button>
+      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
       <button disabled class="px-2 py-1 text-gray-600">15Y</button>
     </div>
 
@@ -121,7 +121,7 @@
     </div>
 
     <div class="flex px-4 mb-6 gap-x-6">
-      <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" class="mx-auto px-10 py-2 font-normal text-center bg-bright-cyan/30 rounded-lg drop-shadow-md">Start a Study</NuxtLink>
+      <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
     </div>
 
     <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
