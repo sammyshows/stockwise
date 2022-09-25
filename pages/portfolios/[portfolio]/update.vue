@@ -18,6 +18,11 @@
               <label for="included" class="flex items-center">Included in totals</label>
               <input v-model="portfolioDetails.included" id="included" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/50 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
             </div>
+
+            <div key="3" class="flex justify-between mt-4">
+              <label for="closedPositions" class="flex items-center">Hide closed positions</label>
+              <input v-model="portfolioDetails.hide_closed_positions" id="closedPositions" type="checkbox" class="w-6 h-6 my-auto text-bright-cyan/40 bg-transparent rounded-sm duration-100 focus:ring-offset-0 focus:ring-0">
+            </div>
           </TransitionGroup>
         </div>
         <div class="grow flex items-end justify-end my-7 text-right">
@@ -38,16 +43,19 @@ import { defineComponent } from "vue";
 import { ChevronLeftIcon, TrashIcon } from "@heroicons/vue/outline";
 import { usePortfolios } from "@/store/portfolios";
 import { useAuth } from "@/store/auth";
+import { computed } from "@vue/reactivity";
 
 
 export default defineComponent({
   name: "Edit Portfolio",
 
   async setup() {
+    const route = useRoute()
     const portfolioStore = usePortfolios()
+    const portfolio = computed(() => portfolioStore.getPortfolio(route.params?.portfolio))
     const authStore = useAuth()
 
-    return { portfolioStore, authStore }
+    return { portfolioStore, portfolio, authStore }
   },
 
   components: {
@@ -72,7 +80,11 @@ export default defineComponent({
         title: 'Edit Portfolio',
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
-      portfolioDetails: {},
+      portfolioDetails: {
+        portfolio_name: this.portfolio?.portfolio_name,
+        included: this.portfolio?.portfolio_included,
+        hide_closed_positions: this.portfolio?.hide_closed_positions
+      },
       invalid: {
         name: false
       },
@@ -115,7 +127,7 @@ export default defineComponent({
         })
 
         if (response.status === 200) {
-          this.portfolioStoreUpdate()
+          setTimeout(() => this.portfolioStoreUpdate(), 600)
           await this.$router.push(`/portfolios/${this.portfolioId}`)
         }
       }
@@ -147,6 +159,7 @@ export default defineComponent({
         if (p.portfolio_id === this.portfolioId) {
           p.portfolio_name = this.portfolioDetails.portfolio_name
           p.portfolio_included = this.portfolioDetails.included
+          p.hide_closed_positions = this.portfolioDetails.hide_closed_positions
         }
         return p
       })

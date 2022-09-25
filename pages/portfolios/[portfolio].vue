@@ -17,7 +17,8 @@
       <NuxtPage v-else-if="holdings && holdings.length > 0"
                 :show="viewHoldings"
                 :overviewChart="overviewChart"
-                :total="total" />
+                :total="total"
+                :portfolio="portfolio" />
       <Spinner class="h-full" v-else />
     </div>
     <NuxtPage v-if="!viewHoldings"

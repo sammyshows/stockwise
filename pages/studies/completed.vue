@@ -12,7 +12,7 @@
             <div class="flex justify-end h-16 py-2">
               <div class="w-32 flex flex-col justify-around grow">
                 <h2 class="text-bright-cyan font-bold tracking-wider truncate">{{ study.symbol }}</h2>
-                <p class="font-light text-xs my-0.5 text-gray-200 truncate">{{ study.name }}</p>
+                <p class="font-light text-xs my-0.5 text-gray-300 truncate">{{ study.name }}</p>
               </div>
               <div class="w-20 flex items-center justify-end ml-2 font-normal">
                 <p class="h-5 text-xs">{{ study.type === 0 ? 'STANDARD' : 'ADVANCED' }}</p>

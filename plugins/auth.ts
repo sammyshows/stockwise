@@ -36,6 +36,9 @@ export default defineNuxtPlugin(() => {
                     } else {
                         message = "error"
                     }
+
+                    // Should it just return the body here once for all the above cases? Because currently if the else
+                    // case is reached, no body is returned and the next check for an accessToken will give an error.
                 })
 
                 if (response.accessToken) {

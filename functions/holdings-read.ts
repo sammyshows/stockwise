@@ -38,7 +38,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         SELECT cte.holding_id,
                cte.portfolio_id,
                cte.current_price,
-               SUM(cte.initial_value_asset_c) / SUM(cte.current_quantity) AS avg_initial_price,
+               SUM(cte.initial_value_asset_c) / NULLIF(SUM(cte.current_quantity), 0) AS avg_initial_price,
                SUM(cte.current_quantity) AS current_quantity,
                cte.symbol,
                cte.asset_name,

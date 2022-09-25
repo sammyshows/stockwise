@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div class="mt-5 pt-5 border-t border-bright-cyan/40 text-gray-400">
+    <div class="mt-5 pt-5 border-t border-bright-cyan/40 text-gray-200">
       <h2 class="mb-1 text-xs">DISCLAIMER</h2>
       <p class="text-teeny line-height text-justify uppercase leading-3">
         The information contained in or provided from a study or study summary is not intended to be and does not constitute financial advice, investment advice, trading advice, or any other advice.

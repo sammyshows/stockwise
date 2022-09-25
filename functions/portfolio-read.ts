@@ -9,7 +9,8 @@ const handler: Handler = requireAuth(async (event, context) => {
     const portfolio = await client`
         SELECT id, 
                name AS portfolio_name,
-               included 
+               included,
+               hide_closed_positions
         FROM portfolios 
         WHERE id = ${eventBody.portfolioId};`
 

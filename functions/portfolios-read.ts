@@ -12,6 +12,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                    h.id AS holding_id,
                    p.name AS portfolio_name,
                    p.included AS portfolio_included,
+                   p.hide_closed_positions,
                    SUBSTRING(user_c.symbol, 4, 6) AS currency_symbol,
                    (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
                    a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
@@ -28,14 +29,21 @@ const handler: Handler = requireAuth(async (event, context) => {
                 LEFT JOIN transactions AS t ON t.type = 0 AND h.id = t.holding_id
                 LEFT JOIN sells AS s ON t.id = s.transaction_id
             WHERE u.user_id = ${eventBody.uuid}
-            GROUP BY p.id, h.id, a.id, p.id, asset_c.id, user_c.id, t.id
+            GROUP BY p.id, h.id, a.id, asset_c.id, user_c.id, t.id
             ORDER BY p.created_at
         )
         SELECT cte.portfolio_id,
                cte.portfolio_name,
                cte.portfolio_included,
+               cte.hide_closed_positions,
                cte.currency_symbol,
-               COUNT(DISTINCT cte.holding_id) AS holding_count,
+               (
+                   SELECT COUNT(*)
+                   FROM transactions AS t
+                   INNER JOIN holdings AS h ON h.id = t.holding_id
+                   INNER JOIN portfolios AS p ON p.id = h.portfolio_id
+                   WHERE p.id = cte.portfolio_id
+               ) AS transaction_count,
                SUM(cte.initial_value) as initial_value,
                SUM(cte.current_value) AS current_value,
                SUM(cte.daily_change) AS daily_change,
@@ -43,7 +51,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                SUM(cte.realized_initial) AS realized_initial,
                SUM(cte.all_time_initial) AS all_time_initial
         FROM cte
-        GROUP BY cte.portfolio_id, cte.portfolio_included, cte.portfolio_name, cte.currency_symbol;`
+        GROUP BY cte.portfolio_id, cte.portfolio_name, cte.portfolio_included, cte.hide_closed_positions, cte.currency_symbol;`
 
     return {
         statusCode: 200,

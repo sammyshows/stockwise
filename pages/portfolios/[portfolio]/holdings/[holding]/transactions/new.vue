@@ -3,7 +3,7 @@
     <div class="h-20 flex justify-between">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
     </div>
-    <div v-if="assetType !== null" class="flex flex-col grow px-5">
+    <div v-if="assetType != null" class="flex flex-col grow px-5">
       <div class="flex flex-col grow justify-between gap-y-4 mt-3">
         <div class="h-0 grow overflow-scroll text-sm">
           <TransitionGroup tag="div" name="form">
@@ -18,7 +18,7 @@
             </div>
             <div :key="2" class="mb-2">
               <label for="quantity" class="text-xs">{{ assetType === 2 ? 'Amount' : 'Quantity' }}</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
+              <p v-if="this" class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div :key="3" v-if="assetType !== 2" class="mb-2">
@@ -35,7 +35,7 @@
               <label for="method" class="flex items-end text-xs">Method</label>
               <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option :value="0">FIFO</option>
-                <option :value="1">Custom Selection</option>
+                <option disabled :value="1">Custom Selection (Coming soon)</option>
               </select>
             </div>
             <div :key="6" class="w-full flex justify-between gap-x-4">
@@ -97,7 +97,7 @@ export default defineComponent({
         subtitle: this.holding?.asset_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
-      assetType: null as (null | number),
+      assetType: this.holding?.asset_type,
       holdingQuantity: null as (null | number),
       invalid: {
         type: false,
@@ -124,7 +124,7 @@ export default defineComponent({
         this.invalid.type = true
       if (this.transaction.quantity <= 0 || (this.holdingQuantity < this.transaction.quantity && this.transaction.type === 1))
         this.invalid.quantity = true
-      if (!this.transaction.initialPrice || this.transaction.initialPrice < 0)
+      if (this.assetType !== 2 && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
@@ -182,7 +182,7 @@ export default defineComponent({
             type: this.transaction.type,
             sellMethod: this.transaction.sellMethod,
             quantity: this.transaction.quantity,
-            initialPrice: this.transaction.initialPrice,
+            initialPrice: this.assetType === 2 ? 1 : this.transaction.initialPrice,
             exchangeRate: this.transaction.exchangeRate,
             timestamp: this.parseDate()
           })

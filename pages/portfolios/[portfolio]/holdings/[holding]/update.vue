@@ -47,7 +47,7 @@ export default defineComponent({
     const holdingStore = useHoldings()
     const holding = computed(() => holdingStore.getHolding(route.params?.holding))
 
-    return { holdingStore, authStore, userStore, holding }
+    return { authStore, userStore, holdingStore, holding }
   },
 
   components: {
