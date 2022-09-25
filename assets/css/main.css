@@ -50,8 +50,23 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-    .body {
+    body {
         background: darkgrey;
         padding-top: 5px; /* Here for mobile dark-mode testing */
+    }
+}
+
+
+/* Simulates a mobile experience for users on desktop */
+@media only screen and (min-width: 1100px) {
+    body {
+        max-width: 380px;
+        margin: auto;
+        border: 1px solid white;
+        border-radius: 25px;
+    }
+
+    html {
+        padding: 30px 0px;
     }
 }
