@@ -1,21 +1,21 @@
 <template>
-  <div class="pt-4 border-t border-gray-100">
+  <div class="pt-4 border-t border-gray-300">
     <div class="sm:block">
       <nav class="flex justify-around px-2.5" aria-label="Tabs">
         <NuxtLink to="/notifications">
-          <BellIcon :class="[{ 'text-gray-600': activeButton !== 'notifications' }, 'h-10 w-10']" />
+          <BellIcon :class="[{ 'text-gray-800': activeButton !== 'notifications' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/search">
-          <SearchIcon :class="[{ 'text-gray-600': activeButton !== 'search' }, 'h-10 w-10']" />
+          <SearchIcon :class="[{ 'text-gray-800': activeButton !== 'search' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/portfolios">
-          <HomeIcon :class="[{ 'text-gray-600': activeButton !== 'overview' }, 'h-10 w-10']" />
+          <HomeIcon :class="[{ 'text-gray-800': activeButton !== 'overview' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/studies">
-          <DocumentSearchIcon :class="[{ 'text-gray-600': activeButton !== 'studies' }, 'h-10 w-10']" />
+          <DocumentSearchIcon :class="[{ 'text-gray-800': activeButton !== 'studies' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/profile">
-          <UserCircleIcon :class="[{ 'text-gray-600': activeButton !== 'profile' }, 'h-10 w-10']" />
+          <UserCircleIcon :class="[{ 'text-gray-800': activeButton !== 'profile' }, 'h-10 w-10']" />
         </NuxtLink>
       </nav>
     </div>
