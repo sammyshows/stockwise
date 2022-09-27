@@ -16,14 +16,18 @@
                 <option value="" :selected="!transaction.type" disabled hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
+                <option :value="2">DIVIDEND</option>
+                <option :value="3">DIVIDEND & REINVESTMENT (DRIP)</option>
+                <option disabled :value="4">SELL SHORT (Coming soon)</option>
+                <option disabled :value="5">SHARE SPLIT (Coming soon)</option>
               </select>
             </div>
             <div :key="2" class="mb-2">
-              <label for="quantity">{{ assetData.type === 2 ? 'Amount' : 'Quantity' }}</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber() }}</p>
+              <label for="quantity" class="text-xs">{{ !priceRequired ? 'Amount' : 'Quantity' }}</label>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + availableShares }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="3" v-if="assetData.type !== 2" class="mb-2">
+            <div :key="3" v-if="priceRequired" class="mb-2">
               <label for="initialPrice">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
               <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
@@ -37,7 +41,7 @@
               <label for="method" class="flex items-end">Method</label>
               <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option :value="0">FIFO</option>
-                <option :value="1">Custom Selection</option>
+                <option disabled :value="1">Custom Selection (Coming soon)</option>
               </select>
             </div>
             <div :key="6" class="w-full flex justify-between gap-x-4">
@@ -98,6 +102,19 @@ export default defineComponent({
     TrashIcon
   },
 
+  computed: {
+    priceRequired() {
+      return this.transaction.type !== 2 && this.assetType !== 2
+    },
+
+    availableShares() {
+      if (this.storedTxType !== 1)
+        return new BigNumber(this.holdingQuantity).minus(this.storedTxQuantity).toNumber()
+      else
+        return new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber()
+    }
+  },
+
   async mounted() {
     await this.$login()
     this.token = this.authStore.accessToken
@@ -128,6 +145,7 @@ export default defineComponent({
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       holdingQuantity: null as (null | number),
+      storedTxType: null as (null | number),
       storedTxQuantity: null as (null | number), // This is used when checking if the quantity entered by user is valid
       invalid: {
         quantity: false,
@@ -150,9 +168,9 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
-      if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
+      if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).minus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
         this.invalid.quantity = true
-      if (!this.transaction.initialPrice || this.transaction.initialPrice < 0)
+      if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
@@ -176,12 +194,14 @@ export default defineComponent({
       this.pageDetails.symbol = response.symbol
       this.pageDetails.title = response.symbol
       this.pageDetails.subtitle = response.name
+      this.assetType = response.asset_type
       if (response.asset_type === 0) {
         this.pageDetails.showLogo = true
       }
       this.setDateTime(response.timestamp)
       this.transaction.type = response.type
       this.transaction.sellMethod = response.sell_method
+      this.storedTxType = response.type
       this.storedTxQuantity = Math.abs(response.quantity)
       this.transaction.quantity = Math.abs(response.quantity)
       this.transaction.initialPrice = response.initial_price
@@ -201,6 +221,7 @@ export default defineComponent({
         .then(response => response.json())
         .then(response => response.data)
       this.holdingQuantity = response.current_quantity
+
     },
 
     async updateTransaction() {
@@ -217,7 +238,7 @@ export default defineComponent({
             holdingId: this.holdingId,
             type: this.transaction.type,
             quantity: this.transaction.quantity,
-            initialPrice: this.transaction.initialPrice,
+            initialPrice: !this.priceRequired ? 1 : this.transaction.initialPrice,
             exchangeRate: this.transaction.exchangeRate,
             timestamp: this.parseDate()
           })

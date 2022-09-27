@@ -132,7 +132,7 @@ export default defineComponent({
   computed: {
     total: function() {
       if (this.transactions) {
-        return this.transactions.reduce((total, { type, current_quantity, price, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+        return this.transactions.reduce((total, { type, initial_quantity, current_quantity, price, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
               if (type === 0) {
                 total.current_quantity = total.current_quantity.plus(current_quantity)
                 total.initial_value_unexchanged = total.initial_value_unexchanged.plus(new BigNumber(current_quantity).times(price).toNumber())
@@ -147,6 +147,17 @@ export default defineComponent({
                 total.realized_initial = total.realized_initial.plus(realized_initial)
               }
 
+              if (type === 2) {
+                total.dividends = total.dividends.plus(realized)
+              }
+
+              if (type === 3) {
+                total.current_quantity = total.current_quantity.plus(current_quantity)
+                total.current_value = total.current_value.plus(current_value)
+                total.daily_change = total.daily_change.plus(daily_change)
+                total.dividends = total.dividends.plus(new BigNumber(price).times(initial_quantity).toNumber())
+              }
+
               return total
             },
             // This is the initial value, `total`, passed to reduce:
@@ -158,7 +169,8 @@ export default defineComponent({
               daily_change: new BigNumber(0),
               all_time_initial: new BigNumber(0),
               realized: new BigNumber(0),
-              realized_initial: new BigNumber(0)
+              realized_initial: new BigNumber(0),
+              dividends: new BigNumber(0)
             })
       }
     },

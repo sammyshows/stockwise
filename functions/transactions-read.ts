@@ -11,7 +11,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     const getTransactions = () => client`SELECT * FROM uspReadTransactions(${eventBody.holdingId})`
 
     const getAssetData = () => client`
-        SELECT a.id, 
+        SELECT a.id,
                a.type, 
                a.current_price, 
                a.prev_close,

@@ -262,9 +262,19 @@ BEGIN
                ((a.current_price * asset_c.current_price * user_c.current_price) - (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))) * (t.quantity - COALESCE(SUM(s.quantity), 0)),
                ((a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0))) - (a.prev_close * (t.quantity - COALESCE(SUM(s.quantity), 0)))) * asset_c.current_price * user_c.current_price,
                COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity - SUM(s.quantity)), 0), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)),
-               SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))),
-               SUM(s.quantity * (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))),
-               t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+               CASE t.type
+                   WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
+                   WHEN 2 THEN t.initial_price * t.quantity * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                   WHEN 3 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price)))
+               END,
+               CASE t.type
+                   WHEN 0 THEN COALESCE(SUM(s.quantity * (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0)
+                   ELSE 0
+               END,
+               CASE t.type
+                   WHEN 0 THEN t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                   ELSE 0
+               END
         FROM transactions as t
                  INNER JOIN holdings AS h ON t.holding_id = h.id
                  INNER JOIN assets AS a ON h.asset_id = a.id

@@ -14,7 +14,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                 LEFT JOIN sells AS s ON t.id = s.transaction_id
                 INNER JOIN holdings AS h ON h.id = t.holding_id
                 INNER JOIN assets AS a ON a.id = h.asset_id
-            WHERE t.type = 0 AND t.holding_id = ${eventBody.holdingId}
+            WHERE (t.type = 0 OR t.type = 3) AND t.holding_id = ${eventBody.holdingId}
             GROUP BY t.id, a.id
         )
         SELECT SUM(cte.current_quantity) AS current_quantity,

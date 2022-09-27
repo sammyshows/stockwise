@@ -27,11 +27,12 @@
                 <!--         The 'isGreaterThan(0.00000000001)' is because of a bug where cash holdings come up as a very small negative number       -->
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.current_value).minus(portfolio.initial_value).isLessThan(-0.0000000001), 'text-bright-green': BigNumber(portfolio.current_value).minus(portfolio.initial_value).isGreaterThan(0.0000000001) }">
                   <p class="h-5" :class="$fontSize($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-', 'text-xs')">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value), 2, false, true) || '-' }}</p>
-                  <p  :class="$fontSize($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-', 'text-tiny')">{{ $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
+                  <p  :class="$fontSize($formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) || '-', 'text-tiny')">{{ portfolio.initial_value > 0 ? $formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2, false, true) : '0.00' }}<span v-if="$formatNumber(BigNumber(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.initial_value).times(100), 2)">%</span></p>
                 </div>
               </div>
-              <div v-if="portfolio.realized">
-                <p class="h-4 text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': portfolio.realized < 0, 'text-bright-green': portfolio.realized > 0 }">{{ $formatNumber(portfolio.realized, 2, true, true) }} ({{ $formatNumber(BigNumber(portfolio.realized).div(portfolio.realized_initial).times(100), 2, false, true) }}%)</span></p>
+
+              <div v-if="new BigNumber(portfolio.all_time_initial).isGreaterThan(portfolio.initial_value) || portfolio.realized > 0">
+                <p class="h-4 text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': portfolio.realized < 0, 'text-bright-green': portfolio.realized > 0 }">{{ $formatNumber(portfolio.realized, 2, true, true) }} ({{ portfolio.realized_initial > 0 ? $formatNumber(BigNumber(portfolio.realized).div(portfolio.realized_initial).times(100), 2, false, true) : '0.00' }}%)</span></p>
                 <p class="text-tiny">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isLessThan(0), 'text-bright-green': BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).isGreaterThan(0) }">{{ $formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value), 2, true, true) }} ({{ $formatNumber(BigNumber(portfolio.realized).plus(portfolio.current_value).minus(portfolio.initial_value).div(portfolio.all_time_initial).times(100), 2, false, true) }}%)</span></p>
               </div>
             </div>
@@ -58,8 +59,8 @@
           <p :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) + '%' || '-', 'text-tiny')">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) || '-' }}<span v-if="$formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true)">%</span></p>
         </div>
       </div>
-      <div v-if="total.realized.toNumber()">
-        <p class="text-tiny my-0.5">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, true, true) }} ({{ $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) }}%)</span></p>
+      <div v-if="total.all_time_initial.isGreaterThan(total.initial_value) || total.realized > 0">
+        <p class="text-tiny my-0.5">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, true, true) }} ({{ total.realized_initial > 0 ? $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) : '0.00' }}%)</span></p>
         <p class="text-tiny my-0.5">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value).isLessThan(0), 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value).isGreaterThan(0) }">{{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2, true, true) }} ({{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2, false, true) }}%)</span></p>
       </div>
     </div>

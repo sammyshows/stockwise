@@ -26,15 +26,15 @@
                 </div>
                 <div class="w-16 text-right mt-0.5 ml-2 font-normal" :class="{ 'text-bright-red': BigNumber(holding.current_value).minus(holding.initial_value).isLessThan(-0.0000000001), 'text-bright-green': BigNumber(holding.current_value).minus(holding.initial_value).isGreaterThan(0.0000000001) }">
                   <p class="h-5" :class="$fontSize($formatNumber(BigNumber(holding.current_value).minus(holding.initial_value), 2, false, true), 'text-xs')">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value), 2, false, true) }}</p>
-                  <p :class="$fontSize($formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) + '%', 'text-tiny')">{{ $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) || '0.00' }}%</p>
+                  <p :class="$fontSize($formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) + '%', 'text-tiny')">{{ holding.initial_value > 0 ? $formatNumber(BigNumber(holding.current_value).minus(holding.initial_value).div(holding.initial_value).times(100), 2, false, true) : '0.00' }}%</p>
                 </div>
               </div>
 
               <p v-if="holding.current_quantity > 0" class="text-tiny text-gray-200">Cost: {{ $formatNumber(holding.avg_initial_price, 2, true, false, holding.currency_symbol) }} ({{ $formatNumber(holding.initial_value / holding.current_quantity, 2, true, false) }}) x {{ $formatNumber(holding.current_quantity, 2) }} shares</p>
 
-              <div v-if="holding.realized">
-                <p class="my-0.5 text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': holding.realized < 0, 'text-bright-green': holding.realized > 0 }">{{ $formatNumber(holding.realized, 2, true, true) }} ({{ $formatNumber(BigNumber(holding.realized).div(holding.realized_initial).times(100), 2, false, true) }}%)</span></p>
-                <p class="my-0.5 text-tiny h-4">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).isLessThan(0), 'text-bright-green': BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).isGreaterThan(0) }">{{ $formatNumber(BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value), 2, true, true) }} ({{ $formatNumber(BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).div(holding.all_time_initial).times(100), 2, false, true) }}%)</span></p>
+              <div v-if="new BigNumber(holding.all_time_initial).isGreaterThan(holding.initial_value) || holding.realized > 0">
+                <p class="my-0.5 text-tiny">Realized: <span class="font-normal" :class="{ 'text-bright-red': holding.realized < 0, 'text-bright-green': holding.realized > 0 }">{{ $formatNumber(holding.realized, 2, true, true) }} ({{ holding.realized_initial > 0 ? $formatNumber(BigNumber(holding.realized).div(holding.realized_initial).times(100), 2, false, true) : '0.00' }}%)</span></p>
+                <p class="my-0.5 text-tiny h-4">All-time: <span class="font-normal" :class="{ 'text-bright-red': BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).isLessThan(0), 'text-bright-green': BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).isGreaterThan(0) }">{{ holding.all_time_initial > 0 ? $formatNumber(BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value), 2, true, true) : '0.00' }} ({{ holding.all_time_initial > 0 ? $formatNumber(BigNumber(holding.realized).plus(holding.current_value).minus(holding.initial_value).div(holding.all_time_initial).times(100), 2, false, true) : '0.00' }}%)</span></p>
               </div>
             </div>
           </NuxtLink>
@@ -62,8 +62,8 @@
           <p :class="$fontSize($formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true), 'text-tiny')">{{ $formatNumber(total.current_value.minus(total.initial_value).div(total.initial_value).times(100), 2, false, true) || '0.00' }}%</p>
         </div>
       </div>
-      <div v-if="total.realized.toNumber()">
-        <p class="text-tiny my-0.5">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, true, true) }} ({{ $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) }}%)</span></p>
+      <div v-if="total.all_time_initial.isGreaterThan(total.initial_value) || total.realized.isGreaterThan(0)">
+        <p class="text-tiny my-0.5">Realized: <span class="font-normal" :class="{ 'text-bright-red': total.realized < 0, 'text-bright-green': total.realized > 0 }">{{ $formatNumber(total.realized, 2, true, true) }} ({{ total.realized_initial > 0 ? $formatNumber(total.realized.div(total.realized_initial).times(100), 2, false, true) : '0.00' }}%)</span></p>
         <p class="text-tiny my-0.5">All-time: <span class="font-normal" :class="{ 'text-bright-red': total.realized.plus(total.current_value).minus(total.initial_value).isLessThan(0), 'text-bright-green': total.realized.plus(total.current_value).minus(total.initial_value).isGreaterThan(0) }">{{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value), 2, true, true) }} ({{ $formatNumber(total.realized.plus(total.current_value).minus(total.initial_value).div(total.all_time_initial).times(100), 2, false, true) }}%)</span></p>
       </div>
     </div>

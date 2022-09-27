@@ -19,7 +19,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         WHERE holding_id = ${eventBody.holdingId}
         ORDER BY timestamp ASC;`
 
-    let buyTxs = txs.filter(tx => tx.type === 0)
+    let buyTxs = txs.filter(tx => tx.type === 0 || tx.type === 3)
     let sellTxs = txs.filter(tx => tx.type === 1)
 
     await client`

@@ -14,14 +14,18 @@
                 <option value="" disabled selected hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
+                <option :value="2">DIVIDEND</option>
+                <option :value="3">DIVIDEND & REINVESTMENT (DRIP)</option>
+                <option disabled :value="4">SELL SHORT (Coming soon)</option>
+                <option disabled :value="5">SHARE SPLIT (Coming soon)</option>
               </select>
             </div>
             <div :key="2" class="mb-2">
-              <label for="quantity" class="text-xs">{{ assetType === 2 ? 'Amount' : 'Quantity' }}</label>
+              <label for="quantity" class="text-xs">{{ !priceRequired ? 'Amount' : 'Quantity' }}</label>
               <p v-if="this" class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="3" v-if="assetType !== 2" class="mb-2">
+            <div :key="3" v-if="priceRequired" class="mb-2">
               <label for="initialPrice" class="text-xs">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
               <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
@@ -85,6 +89,12 @@ export default defineComponent({
     this.setDateTime()
   },
 
+  computed: {
+    priceRequired() {
+      return this.transaction.type !== 2 && this.assetType !== 2
+    }
+  },
+
   data() {
     return {
       portfolioId: this.$route.params.portfolio,
@@ -124,7 +134,7 @@ export default defineComponent({
         this.invalid.type = true
       if (this.transaction.quantity <= 0 || (this.holdingQuantity < this.transaction.quantity && this.transaction.type === 1))
         this.invalid.quantity = true
-      if (this.assetType !== 2 && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
+      if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
@@ -182,7 +192,7 @@ export default defineComponent({
             type: this.transaction.type,
             sellMethod: this.transaction.sellMethod,
             quantity: this.transaction.quantity,
-            initialPrice: this.assetType === 2 ? 1 : this.transaction.initialPrice,
+            initialPrice: !this.priceRequired ? 1 : this.transaction.initialPrice,
             exchangeRate: this.transaction.exchangeRate,
             timestamp: this.parseDate()
           })
