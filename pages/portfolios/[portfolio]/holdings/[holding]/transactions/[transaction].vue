@@ -24,7 +24,7 @@
             </div>
             <div :key="2" class="mb-2">
               <label for="quantity" class="text-xs">{{ !priceRequired ? 'Amount' : 'Quantity' }}</label>
-              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + availableShares }}</p>
+              <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + availableShares.toNumber() }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
             <div :key="3" v-if="priceRequired" class="mb-2">
@@ -109,9 +109,9 @@ export default defineComponent({
 
     availableShares() {
       if (this.storedTxType !== 1)
-        return new BigNumber(this.holdingQuantity).minus(this.storedTxQuantity).toNumber()
+        return new BigNumber(this.holdingQuantity).minus(this.storedTxQuantity)
       else
-        return new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity).toNumber()
+        return new BigNumber(this.holdingQuantity).plus(this.storedTxQuantity)
     }
   },
 
@@ -168,7 +168,7 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
-      if (this.transaction.quantity <= 0 || (new BigNumber(this.holdingQuantity).minus(this.storedTxQuantity).isLessThan(this.transaction.quantity) && this.transaction.type === 1))
+      if (this.transaction.quantity <= 0 || (this.availableShares.isLessThanOrEqualTo(this.transaction.quantity) && this.transaction.type === 1) || (this.availableShares.isGreaterThanOrEqualTo(this.transaction.quantity) && this.transaction.type !== 1))
         this.invalid.quantity = true
       if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
