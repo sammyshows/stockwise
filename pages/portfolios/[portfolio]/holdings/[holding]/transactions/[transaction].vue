@@ -144,6 +144,7 @@ export default defineComponent({
         subtitle: this.holding?.asset_name,
         returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
+      assetType: null as (null | number),
       holdingQuantity: null as (null | number),
       storedTxType: null as (null | number),
       storedTxQuantity: null as (null | number), // This is used when checking if the quantity entered by user is valid
@@ -168,7 +169,7 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
-      if (this.transaction.quantity <= 0 || (this.availableShares.isLessThanOrEqualTo(this.transaction.quantity) && this.transaction.type === 1) || (this.availableShares.isGreaterThanOrEqualTo(this.transaction.quantity) && this.transaction.type !== 1))
+      if (this.transaction.quantity <= 0 || (this.availableShares.isLessThan(this.transaction.quantity) && this.transaction.type === 1) || (this.availableShares.isGreaterThanOrEqualTo(this.transaction.quantity) && this.transaction.type !== 1))
         this.invalid.quantity = true
       if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
