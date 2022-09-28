@@ -52,7 +52,7 @@ body {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background: lightgray !important;
+        background-image: url("../images/background.png") !important;
     }
 }
 
