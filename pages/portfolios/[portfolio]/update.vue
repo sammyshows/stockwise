@@ -6,7 +6,7 @@
         <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
       </div>
 
-      <div class="flex flex-col grow justify-between px-6">
+      <div v-if="portfolioDetails.portfolio_name" class="flex flex-col grow justify-between px-6">
         <div class="flex flex-col grow text-xs">
           <TransitionGroup tag="div" name="form">
             <div key="1">
@@ -29,6 +29,8 @@
           <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updatePortfolio()" />
         </div>
       </div>
+
+      <Spinner class="h-full" v-else />
     </div>
     <DeleteConfirmation :open="openModal"
                         title="Delete Portfolio"
@@ -81,6 +83,7 @@ export default defineComponent({
         returnPath: `/portfolios/${this.$route.params.portfolio}`
       },
       portfolioDetails: {
+        id: this.portfolio?.portfolio_id,
         portfolio_name: this.portfolio?.portfolio_name,
         included: this.portfolio?.portfolio_included,
         hide_closed_positions: this.portfolio?.hide_closed_positions
@@ -112,7 +115,10 @@ export default defineComponent({
       })
         .then(response => response.json())
 
-      this.portfolioDetails = response.data[0]
+      // Since most of the time state is used to prefill the form with current settings, users can make changes.
+      // So, we don't want to restore the settings if they've started making changes...
+      if (!this.portfolioDetails.portfolio_name)
+        this.portfolioDetails = response.data[0]
     },
 
     async updatePortfolio(): Promise<void> {

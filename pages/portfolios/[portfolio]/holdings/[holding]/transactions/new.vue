@@ -16,33 +16,49 @@
                 <option :value="1">SELL</option>
                 <option :value="2">DIVIDEND</option>
                 <option :value="3">DIVIDEND & REINVESTMENT (DRIP)</option>
-                <option disabled :value="4">SELL SHORT (Coming soon)</option>
-                <option disabled :value="5">SHARE SPLIT (Coming soon)</option>
+                <option :value="4">SHARE SPLIT</option>
+                <option disabled :value="5">SELL SHORT (Coming soon)</option>
               </select>
             </div>
-            <div :key="2" class="mb-2">
+
+            <div :key="2" v-if="transaction.type !== 4" class="mb-2">
               <label for="quantity" class="text-xs">{{ !priceRequired ? 'Amount' : 'Quantity' }}</label>
               <p v-if="this" class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.quantity ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;{{ this.transaction.quantity <= 0 ? 'Please add a positive quantity' : 'You cannot sell a quantity larger than you currently have available. Max. for this transaction: ' + this.holdingQuantity }}</p>
               <input @keyup="invalid.quantity = false" v-model="transaction.quantity" id="quantity" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
+
             <div :key="3" v-if="priceRequired" class="mb-2">
               <label for="initialPrice" class="text-xs">Price</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.initialPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive price</p>
               <input @keyup="invalid.initialPrice = false" v-model="transaction.initialPrice" id="initialPrice" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div :key="4" v-if="assetType === 0" class="mb-2">
+
+            <div :key="4" v-if="assetType === 0 && transaction.type !== 4" class="mb-2">
               <label for="exchangeRate" class="text-xs">Exchange rate (optional)</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.exchangeRate ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a positive exchange rate or leave the field empty</p>
               <input @keyup="invalid.exchangeRate = false" v-model="transaction.exchangeRate" id="exchangeRate" type="number" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             </div>
-            <div v-if="transaction.type === 1" :key="5" class="mb-2">
+
+            <div :key="5" v-if="transaction.type === 1" class="mb-2">
               <label for="method" class="flex items-end text-xs">Method</label>
               <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option :value="0">FIFO</option>
                 <option disabled :value="1">Custom Selection (Coming soon)</option>
               </select>
             </div>
-            <div :key="6" class="w-full flex justify-between gap-x-4">
+
+            <div :key="6" v-if="transaction.type === 4" class="w-full my-4">
+              <h2 class="text-center text-gray-300">SPLIT RATIO</h2>
+              <p class="mb-2 text-center text-gray-300 text-tiny leading-3">EXAMPLE: A '4 for 1' split means that every one share you owned previously, now becomes 4 shares, and the cost per share is divided by 4.</p>
+              <p class="mb-1 text-center text-tiny leading-normal" :class="[ invalid.splitRatio ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the split ratio</p>
+              <div class="w-full flex justify-between gap-x-4">
+                <input @keyup="invalid.splitRatio = false" v-model="transaction.split_one" type="number" class="w-24 mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+                <p class="my-auto text-gray-300 text-xs">FOR</p>
+                <input @keyup="invalid.splitRatio = false" v-model="transaction.split_two" type="number" class="w-24 mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
+              </div>
+            </div>
+
+            <div :key="7" class="w-full flex justify-between gap-x-4">
               <div class="flex flex-col w-full">
                 <label for="date" class="text-xs">Date</label>
                 <input v-model="transaction.date" id="date" type="date" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
@@ -91,7 +107,11 @@ export default defineComponent({
 
   computed: {
     priceRequired() {
-      return this.transaction.type !== 2 && this.assetType !== 2
+      return this.assetType !== 2 && this.transaction.type !== 2 && this.transaction.type !== 4
+    },
+
+    splitRatio() {
+      return this.transaction.split_one / this.transaction.split_two
     }
   },
 
@@ -114,6 +134,7 @@ export default defineComponent({
         quantity: false,
         initialPrice: false,
         exchangeRate: false,
+        splitRatio: false,
         date: false
       },
       transaction: {
@@ -122,6 +143,8 @@ export default defineComponent({
         initialPrice: null as (number | null),
         exchangeRate: null as (number | null),
         sellMethod: 0, // 0 == FIFO, 1 == Custom Selection
+        split_one: null as (number | null),
+        split_two: null as (number | null),
         date: null as (string | null),
         time: null as (string | null)
       }
@@ -132,14 +155,16 @@ export default defineComponent({
     validateForm(): Boolean {
       if (this.transaction.type === null)
         this.invalid.type = true
-      if (this.transaction.quantity <= 0 || (this.holdingQuantity < this.transaction.quantity && this.transaction.type === 1))
+      if (this.transaction.type !== 4 && (this.transaction.quantity <= 0 || (this.holdingQuantity < this.transaction.quantity && this.transaction.type === 1)))
         this.invalid.quantity = true
       if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
-      if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
+      if (this.transaction.type !== 4 && this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
+      if (this.transaction.type === 4 && (this.transaction.split_one <= 0 || this.transaction.split_two <= 0))
+        this.invalid.splitRatio = true
 
-      return this.invalid.type === false && this.invalid.quantity === false && this.invalid.initialPrice === false && this.invalid.exchangeRate === false
+      return this.invalid.type === false && this.invalid.quantity === false && this.invalid.initialPrice === false && this.invalid.exchangeRate === false && this.invalid.splitRatio === false
     },
 
     async getAsset(): Promise<void> {
@@ -180,6 +205,7 @@ export default defineComponent({
 
     async createTransaction(): Promise<void> {
       this.disabledSave = true
+      console.log(this.validateForm())
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-create', {
           headers: {
@@ -190,10 +216,10 @@ export default defineComponent({
             token: this.token,
             holdingId: this.holdingId,
             type: this.transaction.type,
-            sellMethod: this.transaction.sellMethod,
-            quantity: this.transaction.quantity,
+            sellMethod: this.transaction.type === 1 ? this.transaction.sellMethod : null,
+            quantity: this.transaction.type === 4 ? this.splitRatio : this.transaction.quantity,
             initialPrice: !this.priceRequired ? 1 : this.transaction.initialPrice,
-            exchangeRate: this.transaction.exchangeRate,
+            exchangeRate: this.transaction.type === 4 ? null : this.transaction.exchangeRate,
             timestamp: this.parseDate()
           })
         })

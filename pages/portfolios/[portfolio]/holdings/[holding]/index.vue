@@ -16,6 +16,7 @@
                 <div class="grow">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
                   <p class="font-light text-tiny my-0.5 text-gray-200">@ {{ $formatNumber(transaction.price, 3, true, false, transaction.currency_symbol) }} per share</p>
+                  <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - BUY</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
                   <p class="h-5" :class="$fontSize($formatNumber(transaction.current_value, 2, true, false), 'text-xs', 12)">{{ $formatNumber(transaction.current_value, 2, true, false) }}</p>
@@ -35,9 +36,10 @@
                 <div class="col-span-4">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
                   <p class="font-light text-tiny my-0.5 text-gray-200">@ {{ $formatNumber(transaction.price, 3, true, false, transaction.currency_symbol) }} per share</p>
+                  <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - SELL</p>
                 </div>
                 <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-bright-red" :class="$fontSize($formatNumber(transaction.initial_value, 2, false, true), 'text-xs', 9)">-{{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }}</p>
+                  <p class="h-5 text-bright-red" :class="$fontSize($formatNumber(transaction.initial_value, 2, false, true), 'text-xs', 9)">({{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }})</p>
                 </div>
                 <div class="col-span-5"></div>
               </div>
@@ -45,9 +47,10 @@
               <div v-else-if="transaction.type === 2" class="grid grid-cols-12">
                 <div class="col-span-4">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">DIVIDEND</h2>
+                  <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - DIVIDEND</p>
                 </div>
                 <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
-                  <p class="h-5 text-bright-green" :class="$fontSize($formatNumber(transaction.initial_value, 2, false, true), 'text-xs', 9)">({{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }})</p>
+                  <p class="h-5" :class="$fontSize($formatNumber(transaction.initial_value, 2, false, true), 'text-xs', 9)">({{ $formatNumber(BigNumber(transaction.initial_value), 2, true, false) }})</p>
                 </div>
                 <div class="col-span-5"></div>
               </div>
@@ -56,7 +59,6 @@
                 <div class="grow">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
                   <p class="font-light text-tiny my-0.5 text-gray-200">@ {{ $formatNumber(transaction.price, 3, true, false, transaction.currency_symbol) }} per share</p>
-                  <p class="font-light text-teeny my-0.5 text-gray-200">(DIVIDEND + REINVESTMENT)</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">
                   <p class="h-5" :class="$fontSize($formatNumber(transaction.current_value, 2, true, false), 'text-xs', 12)">{{ $formatNumber(transaction.current_value, 2, true, false) }}</p>
@@ -70,6 +72,15 @@
                   <p class="h-5" :class="$fontSize($formatNumber(transaction.current_value, 2, false, true), 'text-xs')">{{ $formatNumber(transaction.current_value, 2, false, true) }}</p>
                   <p class="text-tiny">0.00%</p>
                 </div>
+              </div>
+              <p v-if="transaction.type === 3" class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - DIVIDEND + REINVESTMENT</p>
+
+              <div v-else-if="transaction.type === 4" class="grid grid-cols-12">
+                <div class="col-span-4">
+                  <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ transaction.initial_quantity < 1 ? ('1 FOR ' + 1 / transaction.initial_quantity) : (transaction.initial_quantity + ' FOR 1')}}</h2>
+                  <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - SHARE SPLIT</p>
+                </div>
+                <div class="col-span-8"></div>
               </div>
 
               <div v-if="transaction.initial_quantity > transaction.current_quantity">

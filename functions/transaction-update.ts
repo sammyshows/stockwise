@@ -16,7 +16,7 @@ const handler: Handler = requireAuth(async (event, context) => {
             timestamp = ${eventBody.timestamp}
         WHERE id = ${eventBody.transactionId};`
 
-    await fetch(process.env.DOMAIN + '/api/sells-create', {
+    const createSells = () => fetch(process.env.DOMAIN + '/api/sells-create', {
         headers: {
             authorization: eventBody.token
         },
@@ -25,6 +25,18 @@ const handler: Handler = requireAuth(async (event, context) => {
             holdingId: eventBody.holdingId
         })
     })
+
+    const createSplits = () => fetch(process.env.DOMAIN + '/api/transactions-split-create', {
+        headers: {
+            authorization: eventBody.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            holdingId: eventBody.holdingId
+        })
+    })
+
+    await Promise.all([createSells(), createSplits()])
 
     return {
         statusCode: 200

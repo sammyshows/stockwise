@@ -7,11 +7,21 @@ const client = require("../database/client.ts");
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
+
     await client`
         INSERT INTO transactions (holding_id, type, sell_method, quantity, initial_price, exchange_rate, timestamp) 
-        VALUES (${eventBody.holdingId}, ${eventBody.type}, ${eventBody.type === 1 ? eventBody.sellMethod : null }, ${eventBody.quantity}, ${eventBody.initialPrice}, ${eventBody.exchangeRate || null}, ${eventBody.timestamp})`
+        VALUES (
+            ${eventBody.holdingId},
+            ${eventBody.type}, 
+            ${eventBody.sellMethod}, 
+            ${eventBody.quantity}, 
+            ${eventBody.initialPrice},
+            ${eventBody.exchangeRate},
+            ${eventBody.timestamp}
+        )`
 
-    await fetch(process.env.DOMAIN + '/api/sells-create', {
+
+    const createSells = () => fetch(process.env.DOMAIN + '/api/sells-create', {
         headers: {
             authorization: eventBody.token
         },
@@ -20,6 +30,18 @@ const handler: Handler = requireAuth(async (event, context) => {
             holdingId: eventBody.holdingId
         })
     })
+
+    const createSplits = () => fetch(process.env.DOMAIN + '/api/transactions-split-create', {
+        headers: {
+            authorization: eventBody.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+            holdingId: eventBody.holdingId
+        })
+    })
+
+    await Promise.all([createSells(), createSplits()])
 
     return {
         statusCode: 200
