@@ -46,7 +46,7 @@
 
               <div v-else-if="transaction.type === 2" class="grid grid-cols-12">
                 <div class="col-span-4">
-                  <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">DIVIDEND</h2>
+                  <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">-</h2>
                   <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - DIVIDEND</p>
                 </div>
                 <div class="col-span-3 text-right mt-0.5 ml-2 font-normal">
