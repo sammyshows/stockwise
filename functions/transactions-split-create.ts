@@ -11,16 +11,30 @@ const handler: Handler = requireAuth(async (event, context) => {
     const txs = await client`
         SELECT id,
                type,
+               quantity,
                split_multiplier,
                timestamp 
         FROM transactions AS t
-        WHERE holding_id = ${eventBody.holdingId} AND type != 2
-        ORDER BY timestamp ASC, created_at ASC;`
+        WHERE holding_id = ${eventBody.holdingId} AND type != 1 AND type != 2
+        ORDER BY timestamp DESC, created_at DESC;`
 
-    console.log(txs)
+    let split_multiplier = 1
+    const splitAdjustedTxs = txs.map((tx) => {
+        if (tx.type === 4)
+            split_multiplier *= tx.quantity
+        else
+            tx.split_multiplier = split_multiplier
 
-    let buyTxs = txs.filter(tx => tx.type === 0 || tx.type === 3)
-    let sellTxs = txs.filter(tx => tx.type === 1)
+        return tx
+    })
+
+
+    for (const tx of splitAdjustedTxs) {
+        await client`
+            UPDATE transactions
+            SET split_multiplier = ${tx.split_multiplier}
+            WHERE id = ${tx.id}`
+    }
 
     // await client`
     //     DELETE FROM sells

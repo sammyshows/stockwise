@@ -244,31 +244,32 @@ CREATE TRIGGER update_study_update_time BEFORE UPDATE ON studies FOR EACH ROW EX
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, currency_symbol TEXT, type INT, sell_method INT, exchange_rate NUMERIC, datetime timestamptz, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, asset_type INT, currency_symbol TEXT, type INT, sell_method INT, exchange_rate NUMERIC, datetime timestamptz, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
                h.id,
+               a.type,
                SUBSTRING(asset_c.symbol, 1, 3),
                t.type,
                t.sell_method,
                t.exchange_rate,
                t.timestamp,
-               t.quantity,
-               COALESCE(t.quantity - SUM(s.quantity), t.quantity),
+               t.quantity * t.split_multiplier,
+               COALESCE(t.quantity * t.split_multiplier - SUM(s.quantity), t.quantity * t.split_multiplier),
                t.initial_price,
-               (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price),
-               COALESCE(a.current_price * (t.quantity - SUM(s.quantity)), a.current_price * t.quantity) * asset_c.current_price * user_c.current_price,
-               ((a.current_price * asset_c.current_price * user_c.current_price) - (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))) * (t.quantity - COALESCE(SUM(s.quantity), 0)),
-               ((a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0))) - (a.prev_close * (t.quantity - COALESCE(SUM(s.quantity), 0)))) * asset_c.current_price * user_c.current_price,
-               COALESCE(((a.current_price * (t.quantity - SUM(s.quantity))) - (a.prev_close * (t.quantity - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity - SUM(s.quantity)), 0), ((a.current_price * t.quantity) - (a.prev_close * t.quantity))*100.0 / (a.prev_close * t.quantity)),
+               (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price),
+               COALESCE(a.current_price * (t.quantity * t.split_multiplier - SUM(s.quantity)), a.current_price * t.quantity * t.split_multiplier) * asset_c.current_price * user_c.current_price,
+               ((a.current_price * asset_c.current_price * user_c.current_price) - (t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))) * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)),
+               ((a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0))) - (a.prev_close * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)))) * asset_c.current_price * user_c.current_price,
+               COALESCE(((a.current_price * (t.quantity * t.split_multiplier - SUM(s.quantity))) - (a.prev_close * (t.quantity * t.split_multiplier - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity * t.split_multiplier - SUM(s.quantity)), 0), ((a.current_price * t.quantity * t.split_multiplier) - (a.prev_close * t.quantity * t.split_multiplier))*100.0 / (a.prev_close * t.quantity * t.split_multiplier)),
                CASE t.type
-                   WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
+                   WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
                    WHEN 2 THEN t.initial_price * t.quantity * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
                    WHEN 3 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price)))
                END,
                CASE t.type
-                   WHEN 0 THEN COALESCE(SUM(s.quantity * (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0)
+                   WHEN 0 THEN COALESCE(SUM(s.quantity * (t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0)
                    ELSE 0
                END,
                CASE t.type

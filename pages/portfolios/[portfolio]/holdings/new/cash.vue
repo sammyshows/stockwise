@@ -132,7 +132,7 @@ export default defineComponent({
       },
       transaction: {
         currency: null as (string | null),
-        type: null as (number | null),
+        type: 0,
         amount: null as (number | null),
         exchangeRate: 1,
         date: null as (string | null),
@@ -222,6 +222,7 @@ export default defineComponent({
           token: this.token,
           holdingId: holdingId,
           type: this.transaction.type,
+          sellMethod: null,
           quantity: this.transaction.amount,
           exchangeRate: this.transaction.exchangeRate,
           initialPrice: 1,

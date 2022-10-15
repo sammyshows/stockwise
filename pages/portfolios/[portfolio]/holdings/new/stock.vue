@@ -80,6 +80,10 @@
                     <option value="" disabled selected hidden></option>
                     <option :value="0">BUY</option>
                     <option :value="1" disabled>SELL</option>
+                    <option :value="2" disabled>DIVIDEND</option>
+                    <option :value="3" disabled>DIVIDEND & REINVESTMENT (DRIP)</option>
+                    <option :value="4" disabled>SHARE SPLIT</option>
+                    <option :value="5" disabled>SELL SHORT (Coming soon)</option>
                   </select>
                 </div>
                 <div :key="4" class="mb-2">
@@ -205,7 +209,7 @@ export default defineComponent({
         this.invalid.type = true
       if (!this.transaction.quantity || this.transaction.quantity <= 0)
         this.invalid.quantity = true
-      if (!this.transaction.initialPrice || this.transaction.initialPrice < 0)
+      if (this.transaction.initialPrice === null || this.transaction.initialPrice === '' || this.transaction.initialPrice < 0)
         this.invalid.initialPrice = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
@@ -340,6 +344,7 @@ export default defineComponent({
         body: JSON.stringify({
           holdingId: holdingId,
           type: this.transaction.type,
+          sellMethod: null,
           quantity: this.transaction.quantity,
           initialPrice: this.transaction.initialPrice,
           exchangeRate: this.transaction.exchangeRate,

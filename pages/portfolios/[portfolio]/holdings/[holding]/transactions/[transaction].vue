@@ -204,7 +204,7 @@ export default defineComponent({
       // console.log(this.availableShares.isGreaterThanOrEqualTo(this.transaction.quantity) && this.transaction.type !== 1)
       if (this.transaction.type !== 4 && (this.transaction.quantity <= 0 || (this.availableShares.isLessThan(this.transaction.quantity) && this.transaction.type === 1)))
         this.invalid.quantity = true
-      if (this.priceRequired && (!this.transaction.initialPrice || this.transaction.initialPrice < 0))
+      if (this.priceRequired && (this.transaction.initialPrice === null || this.transaction.initialPrice === '' || this.transaction.initialPrice < 0))
         this.invalid.initialPrice = true
       if (this.transaction.type !== 4 && this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true

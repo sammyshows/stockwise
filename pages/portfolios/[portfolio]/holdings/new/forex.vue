@@ -169,7 +169,7 @@ export default defineComponent({
       transaction: {
         from: null as (string | null),
         to: null as (string | null),
-        type: null as (number | null),
+        type: 0,
         amount: null as (number | null),
         initialRate: null as (number | null),
         exchangeRate: null as (number | null),
@@ -181,6 +181,7 @@ export default defineComponent({
 
   methods: {
     validateForm(): Boolean {
+      console.log(this.transaction)
       if (this.transaction.from === null)
         this.invalid.from = true
       if (this.transaction.to === null)
@@ -189,7 +190,7 @@ export default defineComponent({
         this.invalid.type = true
       if (!this.transaction.amount || this.transaction.amount <= 0)
         this.invalid.amount = true
-      if (!this.transaction.initialRate || this.transaction.initialRate < 0)
+      if (this.transaction.initialRate === null || this.transaction.initialRate === '' || this.transaction.initialRate < 0)
         this.invalid.initialRate = true
       if (this.transaction.exchangeRate && this.transaction.exchangeRate <= 0)
         this.invalid.exchangeRate = true
@@ -265,8 +266,8 @@ export default defineComponent({
             to: this.transaction.to
           })
         })
-            .then(response => response.json())
-            .then(data => data.holdingId)
+          .then(response => response.json())
+          .then(data => data.holdingId)
 
         await this.addTransaction(holdingId)
       }
@@ -283,6 +284,7 @@ export default defineComponent({
           token: this.token,
           holdingId: holdingId,
           type: this.transaction.type,
+          sellMethod: null,
           quantity: this.transaction.amount,
           initialPrice: this.transaction.initialRate,
           exchangeRate: this.transaction.exchangeRate,
