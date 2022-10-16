@@ -15,24 +15,24 @@ const handler: Handler = requireAuth(async (event, context) => {
                    p.hide_closed_positions,
                    SUBSTRING(user_c.symbol, 4, 6) AS currency_symbol,
                    CASE t.type
-                       WHEN 0 THEN (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                       WHEN 0 THEN (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
                        ELSE 0
                    END as initial_value,
                    CASE t.type 
-                       WHEN 0 THEN a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
-                       WHEN 3 THEN a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                       WHEN 0 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                       WHEN 3 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
                    END AS current_value,
                    CASE t.type
-                       WHEN 0 THEN (a.current_price - a.prev_close) * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price 
-                       WHEN 3 THEN (a.current_price - a.prev_close) * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price 
+                       WHEN 0 THEN (a.current_price - a.prev_close) * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price 
+                       WHEN 3 THEN (a.current_price - a.prev_close) * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price 
                    END AS daily_change,
                    CASE t.type 
-                       WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
-                       WHEN 2 THEN t.quantity
+                       WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
+                       WHEN 2 THEN t.quantity  * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
                        WHEN 3 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price)))
                    END AS realized,
                    CASE t.type
-                       WHEN 0 THEN SUM(s.quantity * (t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
+                       WHEN 0 THEN SUM(s.quantity * (t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
                        ELSE 0
                    END AS realized_initial,
                    CASE t.type

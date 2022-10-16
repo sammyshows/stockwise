@@ -266,7 +266,7 @@ BEGIN
                COALESCE(((a.current_price * (t.quantity * t.split_multiplier - SUM(s.quantity))) - (a.prev_close * (t.quantity * t.split_multiplier - SUM(s.quantity)))) * 100.0 / NULLIF(a.prev_close * (t.quantity * t.split_multiplier - SUM(s.quantity)), 0), ((a.current_price * t.quantity * t.split_multiplier) - (a.prev_close * t.quantity * t.split_multiplier))*100.0 / (a.prev_close * t.quantity * t.split_multiplier)),
                CASE t.type
                    WHEN 0 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)))
-                   WHEN 2 THEN t.initial_price * t.quantity * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                   WHEN 2 THEN t.quantity * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
                    WHEN 3 THEN SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price)))
                END,
                CASE t.type
