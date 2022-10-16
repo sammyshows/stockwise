@@ -16,7 +16,7 @@
               <div v-if="transaction.type === 0" class="flex">
                 <div class="grow">
                   <h2 class="h-5 w-28 text-sm font-bold tracking-wider truncate">{{ $formatNumber(transaction.initial_quantity, 3) }}</h2>
-                  <p class="font-light text-tiny my-0.5 text-gray-200">@ {{ $formatNumber(transaction.price, 3, true, false, transaction.currency_symbol) }} per share</p>
+                  <p class="font-light text-tiny my-0.5 text-gray-200">@ {{ $formatNumber(BigNumber(transaction.price).div(transaction.split_multiplier), 3, true, false, transaction.currency_symbol) }} per share</p>
                   <p class="font-light text-teeny my-0.5 text-gray-200">{{ new Date(transaction.datetime).toDateString().slice(3)}} - BUY</p>
                 </div>
                 <div class="w-20 text-right mt-0.5 ml-2 font-normal">

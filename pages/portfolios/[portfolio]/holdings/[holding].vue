@@ -132,10 +132,10 @@ export default defineComponent({
   computed: {
     total: function() {
       if (this.transactions) {
-        return this.transactions.reduce((total, { type, initial_quantity, current_quantity, price, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
+        return this.transactions.reduce((total, { type, split_multiplier, initial_quantity, current_quantity, price, current_value, initial_value, daily_change, all_time_initial, realized, realized_initial }) => {
               if (type === 0) {
                 total.current_quantity = total.current_quantity.plus(current_quantity)
-                total.initial_value_unexchanged = total.initial_value_unexchanged.plus(new BigNumber(current_quantity).times(price).toNumber())
+                total.initial_value_unexchanged = total.initial_value_unexchanged.plus(new BigNumber(current_quantity).times(price).div(split_multiplier))
                 total.current_value = total.current_value.plus(current_value)
                 total.initial_value = total.initial_value.plus(initial_value)
                 total.daily_change = total.daily_change.plus(daily_change)

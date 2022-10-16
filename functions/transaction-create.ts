@@ -21,7 +21,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         )`
 
 
-    const createSells = () => fetch(process.env.DOMAIN + '/api/sells-create', {
+    const createSells = async () => fetch(process.env.DOMAIN + '/api/sells-create', {
         headers: {
             authorization: eventBody.token
         },
@@ -31,7 +31,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         })
     })
 
-    const createSplits = () => fetch(process.env.DOMAIN + '/api/transactions-split-create', {
+    const createSplits = async () => fetch(process.env.DOMAIN + '/api/transactions-split-create', {
         headers: {
             authorization: eventBody.token
         },
@@ -41,7 +41,7 @@ const handler: Handler = requireAuth(async (event, context) => {
         })
     })
 
-    await Promise.all([createSells(), createSplits()])
+    await Promise.all([await createSplits(), await createSells()])
 
     return {
         statusCode: 200

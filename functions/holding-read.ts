@@ -8,7 +8,7 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     const holding = await client`
         WITH cte AS (
-            SELECT COALESCE(t.quantity - SUM(s.quantity), t.quantity) AS current_quantity,
+            SELECT COALESCE(t.quantity * t.split_multiplier - SUM(s.quantity), t.quantity * t.split_multiplier) AS current_quantity,
                    a.type AS asset_type
             FROM transactions AS t
                 LEFT JOIN sells AS s ON t.id = s.transaction_id

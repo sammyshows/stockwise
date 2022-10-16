@@ -205,7 +205,6 @@ export default defineComponent({
 
     async createTransaction(): Promise<void> {
       this.disabledSave = true
-      console.log(this.validateForm())
       if (this.validateForm()) {
         const response = await fetch('/api/transaction-create', {
           headers: {

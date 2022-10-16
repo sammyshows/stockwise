@@ -11,8 +11,8 @@
         <div class="h-0 flex flex-col grow overflow-scroll gap-y-4 text-xs">
           <TransitionGroup tag="div" name="form">
             <div :key="1" class="mb-2">
-              <label for="type">Transaction type</label>
-              <select v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <label>Transaction type</label>
+              <select v-model="transaction.type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                 <option value="" :selected="!transaction.type" disabled hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>

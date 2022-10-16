@@ -244,7 +244,7 @@ CREATE TRIGGER update_study_update_time BEFORE UPDATE ON studies FOR EACH ROW EX
 
 
 
-CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, asset_type INT, currency_symbol TEXT, type INT, sell_method INT, exchange_rate NUMERIC, datetime timestamptz, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION uspReadTransactions(holding_uuid uuid) RETURNS TABLE (transaction_id uuid, holding_id uuid, asset_type INT, currency_symbol TEXT, type INT, sell_method INT, exchange_rate NUMERIC, datetime timestamptz, split_multiplier NUMERIC, initial_quantity NUMERIC, current_quantity NUMERIC, price NUMERIC, initial_value NUMERIC, current_value NUMERIC, total_change NUMERIC, daily_change NUMERIC, daily_percent NUMERIC, realized NUMERIC, realized_initial NUMERIC, all_time_initial NUMERIC) LANGUAGE plpgsql AS $$
 BEGIN
     RETURN QUERY
         SELECT t.id,
@@ -255,6 +255,7 @@ BEGIN
                t.sell_method,
                t.exchange_rate,
                t.timestamp,
+               t.split_multiplier,
                t.quantity * t.split_multiplier,
                COALESCE(t.quantity * t.split_multiplier - SUM(s.quantity), t.quantity * t.split_multiplier),
                t.initial_price,

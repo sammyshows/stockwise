@@ -14,6 +14,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                type,
                quantity,
                initial_price,
+               split_multiplier,
                exchange_rate
         FROM transactions AS t
         WHERE holding_id = ${eventBody.holdingId}
@@ -29,17 +30,18 @@ const handler: Handler = requireAuth(async (event, context) => {
 
     // Go through the txs and sell the as many shares as necessary until the total sell quantity has been met.
     let sellQuantity
+    console.log(buyTxs)
     for (const sellTx of sellTxs) {
         let unallocatedQuantity = new BigNumber(sellTx.quantity)
         while (unallocatedQuantity.isGreaterThan(0)) {
             let buyTx = buyTxs[0]
 
             // If this tx has less shares than are required to sell, be sure to sell all you can of this tx anyway.
-            if (unallocatedQuantity.isGreaterThanOrEqualTo(buyTx.quantity)) {
-                sellQuantity = buyTxs.shift().quantity
+            if (unallocatedQuantity.isGreaterThanOrEqualTo(BigNumber(buyTx.quantity).times(buyTx.split_multiplier))) {
+                sellQuantity = BigNumber(buyTxs.shift().quantity).times(buyTx.split_multiplier)
             } else {
                 sellQuantity = unallocatedQuantity.toNumber()
-                buyTxs[0].quantity = BigNumber(buyTxs[0].quantity).minus(sellQuantity).toNumber()
+                buyTxs[0].quantity = BigNumber(buyTxs[0].quantity).times(buyTx.split_mutliplier).minus(sellQuantity).toNumber()
             }
             await client`
                 INSERT INTO sells (transaction_id, sell_id, quantity, sell_price, exchange_rate)
