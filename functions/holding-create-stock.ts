@@ -28,7 +28,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                    id,
                    3
             FROM assets
-            WHERE symbol = 'USDUSD' AND type = 1
+            WHERE symbol = ${ eventBody.currency + 'USD'} AND type = 1
             RETURNING id;`
                 .then(response => response[0].id)
 

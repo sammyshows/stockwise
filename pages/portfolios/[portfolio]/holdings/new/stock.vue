@@ -70,6 +70,14 @@
                     <input @keyup="invalid.currentPrice = false" v-model="transaction.currentPrice" id="currentPrice" type="number" autocomplete="off" placeholder="e.g. 271.29" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   </div>
 
+                  <div class="mt-2">
+                    <label for="currency" class="block">Local currency</label>
+                    <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currency ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select the local currency of the stock</p>
+                    <select @change="invalid.currency = false" v-model="assetCurrency" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                      <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
+                    </select>
+                  </div>
+
                   <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
                 </div>
 
@@ -179,11 +187,40 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       searchResults: [],
       quote: null as ({} | null),
+      currencies: [
+        { ticker: 'AUD', name: 'Australian Dollar' },
+        { ticker: 'CAD', name: 'Canadian Dollar' },
+        { ticker: 'CHF', name: 'Swiss Franc' },
+        { ticker: 'CNH', name: 'Chinese Yuan Renminbi (HK)' },
+        { ticker: 'CZK', name: 'Czech Koruna' },
+        { ticker: 'DKK', name: 'Danish Krone' },
+        { ticker: 'EUR', name: 'Euro' },
+        { ticker: 'GBP', name: 'British Pound' },
+        { ticker: 'HKD', name: 'Hong Kong Dollar' },
+        { ticker: 'HUF', name: 'Hungarian Forint' },
+        { ticker: 'ILS', name: 'Israeli New Shekel' },
+        { ticker: 'INR', name: 'Indian Rupee' },
+        { ticker: 'JPY', name: 'Japanese Yen' },
+        { ticker: 'MXN', name: 'Mexican Peso' },
+        { ticker: 'NOK', name: 'Norwegian Krone' },
+        { ticker: 'NZD', name: 'New Zealand Dollar' },
+        { ticker: 'PLN', name: 'Polish Zloty' },
+        { ticker: 'RON', name: 'Romanian Leu' },
+        { ticker: 'RUB', name: 'Russian Ruble' },
+        { ticker: 'SEK', name: 'Swedish Krona' },
+        { ticker: 'SGD', name: 'Singapore Dollar' },
+        { ticker: 'THB', name: 'Thai Baht' },
+        { ticker: 'TRY', name: 'Turkish Lira' },
+        { ticker: 'USD', name: 'U.S. Dollar' },
+        { ticker: 'ZAR', name: 'South African Rand' }
+      ],
+      assetCurrency: null,
       invalid: {
         quote: false,
         name: false,
         symbol: false,
         currentPrice: false,
+        currency: false,
         type: false,
         quantity: false,
         initialPrice: false,
@@ -225,8 +262,10 @@ export default defineComponent({
           this.invalid.symbol = true
         if (!this.transaction.currentPrice || this.transaction.currentPrice < 0)
           this.invalid.currentPrice = true
+        if (!this.assetCurrency)
+          this.invalid.currency = true
 
-        return this.invalid.name === false && this.invalid.symbol === false && this.invalid.currentPrice === false
+        return this.invalid.name === false && this.invalid.symbol === false && this.invalid.currentPrice === false && this.invalid.currency === false
       } else {
         if (!this.quote)
           this.invalid.quote = true
@@ -324,7 +363,8 @@ export default defineComponent({
             manualEntry: this.manualForm,
             name: this.transaction.name,
             symbol: this.manualForm ? this.transaction.symbol : this.quote.symbol,
-            currentPrice: this.transaction.currentPrice
+            currentPrice: this.transaction.currentPrice,
+            currency: this.assetCurrency
           })
         })
           .then(response => response.json())
