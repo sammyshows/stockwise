@@ -14,10 +14,19 @@
               <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-normal-cyan sm:mx-0 sm:h-10 sm:w-10">
                 <PencilIcon class="h-6 w-6 text-bright-cyan" aria-hidden="true" />
               </div>
+
               <div class="w-2/3 my-6 mx-auto text-sm">
                 <label for="currentPrice" class="flex items-end">Current price</label>
-                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalidPrice ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the current share price</p>
-                <input @keyup="invalidPrice = false" v-model="price" id="currentPrice" type="number" autocomplete="off" class="w-full mt-1.5 py-1.5 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.price ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the current share price</p>
+                <input @keyup="invalid.price = false" v-model="price" id="currentPrice" type="number" autocomplete="off" class="w-full h-10 mt-1.5 py-1.5 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              </div>
+
+              <div class="w-2/3 my-6 mx-auto text-sm">
+                <label for="currency" class="block">Local currency</label>
+                <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currency ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select the local currency of the stock</p>
+                <select @change="invalid.currency = false" v-model="currency" id="currency" class="w-full h-10 mt-1.5 py-1.5 overflow-hidden truncate text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
+                </select>
               </div>
             </div>
             <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
@@ -35,8 +44,6 @@
 import { useAuth } from "@/store/auth";
 import { Dialog, DialogOverlay, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { PencilIcon } from '@heroicons/vue/outline'
-import {usePortfolios} from "~/store/portfolios";
-import {computed} from "@vue/reactivity";
 
 export default {
   name: 'Update Custom Asset',
@@ -57,7 +64,7 @@ export default {
   },
 
   props: [
-    'open', 'assetId', 'price'
+    'open', 'assetData'
   ],
 
   async mounted() {
@@ -68,17 +75,51 @@ export default {
   data() {
     return {
       token: '',
-      invalidPrice: false,
-      disabledSave: false
+      disabledSave: false,
+      currencies: [
+        { ticker: 'AUD', name: 'Australian Dollar' },
+        { ticker: 'CAD', name: 'Canadian Dollar' },
+        { ticker: 'CHF', name: 'Swiss Franc' },
+        { ticker: 'CNH', name: 'Chinese Yuan Renminbi (HK)' },
+        { ticker: 'CZK', name: 'Czech Koruna' },
+        { ticker: 'DKK', name: 'Danish Krone' },
+        { ticker: 'EUR', name: 'Euro' },
+        { ticker: 'GBP', name: 'British Pound' },
+        { ticker: 'HKD', name: 'Hong Kong Dollar' },
+        { ticker: 'HUF', name: 'Hungarian Forint' },
+        { ticker: 'ILS', name: 'Israeli New Shekel' },
+        { ticker: 'INR', name: 'Indian Rupee' },
+        { ticker: 'JPY', name: 'Japanese Yen' },
+        { ticker: 'MXN', name: 'Mexican Peso' },
+        { ticker: 'NOK', name: 'Norwegian Krone' },
+        { ticker: 'NZD', name: 'New Zealand Dollar' },
+        { ticker: 'PLN', name: 'Polish Zloty' },
+        { ticker: 'RON', name: 'Romanian Leu' },
+        { ticker: 'RUB', name: 'Russian Ruble' },
+        { ticker: 'SEK', name: 'Swedish Krona' },
+        { ticker: 'SGD', name: 'Singapore Dollar' },
+        { ticker: 'THB', name: 'Thai Baht' },
+        { ticker: 'TRY', name: 'Turkish Lira' },
+        { ticker: 'USD', name: 'U.S. Dollar' },
+        { ticker: 'ZAR', name: 'South African Rand' }
+      ],
+      invalid: {
+        price: false,
+        currency: false
+      },
+      price: this.assetData.current_price,
+      currency: this.assetData.currency_symbol
     }
   },
 
   methods: {
     validateForm(): Boolean {
       if (this.price === null || this.price === '' || this.price < 0)
-        this.invalidPrice = true
+        this.invalid.price = true
+      if (!this.currency)
+        this.invalid.currency = true
 
-      return this.invalidPrice === false
+      return this.invalid.price === false && this.invalid.currency === false
     },
 
     async updateAsset(): Promise<void> {
@@ -90,8 +131,9 @@ export default {
           },
           method: 'POST',
           body: JSON.stringify({
-            assetId: this.assetId,
-            currentPrice: this.price
+            assetId: this.assetData.id,
+            currentPrice: this.price,
+            currency: this.currency
           })
         })
 

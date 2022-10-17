@@ -43,8 +43,7 @@
 
     <UpdateAssetModal v-if="assetData"
                       :open="openUpdateModal"
-                      :price="assetData.current_price"
-                      :assetId="assetData.id"
+                      :assetData="assetData"
                       @updateTransactions="getTransactions(); $emit('updateHoldings'); closeUpdateModal();"
                       @close="closeUpdateModal" />
   </div>
