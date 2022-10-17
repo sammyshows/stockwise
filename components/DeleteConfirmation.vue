@@ -45,7 +45,7 @@ export default {
     DialogTitle,
     TransitionChild,
     TransitionRoot,
-    ExclamationIcon,
+    ExclamationIcon
   },
 
   props: [

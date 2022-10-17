@@ -14,11 +14,14 @@
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
       <div class="flex items-center h-20 mb-4 py-3 px-3 border-y border-gray-200 bg-gray-900/30" style="box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
-        <div v-if="assetData">
-          <p class="mr-2 font-normal text-2xl tracking-wider truncate">{{ $formatNumber(assetData.current_price, 2, true, false, assetData.currency_symbol) }}</p>
-          <p class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
-            {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)
-          </p>
+        <div v-if="assetData" class="flex justify-between w-full">
+          <div>
+            <p class="mr-2 font-normal text-2xl tracking-wider truncate">{{ $formatNumber(assetData.current_price, 2, true, false, assetData.currency_symbol) }}</p>
+            <p class="mt-1 font-normal text-sm" :class="{ 'text-bright-red': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() < 0, 'text-bright-green': BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber() > 0 }">
+              {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)
+            </p>
+          </div>
+          <button v-if="assetData.type === 3" @click="openUpdateModal = true" class="w-max h-max px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Edit</button>
         </div>
         <Spinner class="h-20" v-else />
       </div>
@@ -37,6 +40,13 @@
               :assetData="assetData"
               @updateTransactions="getTransactions(); $emit('updateHoldings');"
               @updatePortfolios="$emit('updatePortfolios')" />
+
+    <UpdateAssetModal v-if="assetData"
+                      :open="openUpdateModal"
+                      :price="assetData.current_price"
+                      :assetId="assetData.id"
+                      @updateTransactions="getTransactions(); $emit('updateHoldings'); closeUpdateModal();"
+                      @close="closeUpdateModal" />
   </div>
 </template>
 
@@ -49,6 +59,7 @@ import { useAuth } from "@/store/auth";
 import { computed } from "@vue/reactivity";
 import { useTransactions } from "@/store/transactions";
 import { useHoldings } from "@/store/holdings";
+import UpdateAssetModal from "~/components/UpdateAssetModal.vue";
 
 
 interface StringObject {
@@ -69,6 +80,7 @@ export default defineComponent({
   },
 
   components: {
+    UpdateAssetModal,
     PencilIcon, PlusIcon
   },
 
@@ -99,6 +111,7 @@ export default defineComponent({
   data() {
     return {
       token: '',
+      openUpdateModal: false,
       intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
       holdingId: this.$route.params.holding,
@@ -303,6 +316,10 @@ export default defineComponent({
 
     setActiveTab(newTab) {
       this.tabConfig.activeTab = newTab
+    },
+
+    closeUpdateModal(): void {
+      this.openUpdateModal = false
     },
 
     BigNumber

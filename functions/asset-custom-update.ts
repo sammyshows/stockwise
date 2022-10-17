@@ -7,9 +7,9 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        UPDATE holdings
-        SET portfolio_id = ${eventBody.portfolioId}
-        WHERE id = ${eventBody.holdingId};`
+        UPDATE assets
+        SET current_price = ${eventBody.currentPrice}
+        WHERE id = ${eventBody.assetId};`
 
 
     return {
