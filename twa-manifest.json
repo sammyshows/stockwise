@@ -18,8 +18,8 @@
     "path": "/Users/sammccarthy/code/sammyshows/stockwise/android.keystore",
     "alias": "android"
   },
-  "appVersionName": "1.1.5",
-  "appVersionCode": 30,
+  "appVersionName": "1.1.6",
+  "appVersionCode": 31,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://stockwise.app/manifest.json",
@@ -41,5 +41,5 @@
   ],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "1.1.5"
+  "appVersion": "1.1.6"
 }

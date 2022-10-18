@@ -18,13 +18,13 @@
               <div class="w-2/3 my-6 mx-auto text-sm">
                 <label for="currentPrice" class="flex items-end">Current price</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.price ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add the current share price</p>
-                <input @keyup="invalid.price = false" v-model="price" id="currentPrice" type="number" autocomplete="off" class="w-full h-10 mt-1.5 py-1.5 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <input @keyup="invalid.price = false" v-model="price" id="currentPrice" type="number" tabindex="-1" autocomplete="off" class="w-full h-10 mt-1.5 py-1.5 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
               </div>
 
               <div class="w-2/3 my-6 mx-auto text-sm">
                 <label for="currency" class="block">Local currency</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currency ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select the local currency of the stock</p>
-                <select @change="invalid.currency = false" v-model="currency" id="currency" class="w-full h-10 mt-1.5 py-1.5 overflow-hidden truncate text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <select @change="invalid.currency = false" v-model="currency" id="currency" tabindex="-1" class="w-full h-10 mt-1.5 py-1.5 overflow-hidden truncate text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
                   <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
                 </select>
               </div>
