@@ -1,7 +1,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Origin = "www.stockwise.app"
 
 [dev]
   command = "yarn run dev" # Command to start your dev server
