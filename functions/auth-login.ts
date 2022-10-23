@@ -3,6 +3,7 @@ import { AuthenticationDetails, CognitoUser, CognitoUserPool, CognitoRefreshToke
 import jwt from "jsonwebtoken"
 
 exports.handler = async (event, context) => {
+    console.log('Logging in...')
     const eventBody = JSON.parse(event.body)
 
     let errorMessage = "LoginRequired"
@@ -128,6 +129,7 @@ exports.handler = async (event, context) => {
         console.log('All 3 tokens are present')
 
     if (accessToken && refreshToken && idToken) {
+        console.log('Returning userId...')
         const userId = jwt.decode(idToken)['custom:sw_user_id']
 
         return {
@@ -145,6 +147,7 @@ exports.handler = async (event, context) => {
             })
         }
     } else { // tell the client to redirect to the login page
+        console.log('Returning error...')
         return {
             statusCode: 300,
             body: JSON.stringify({
