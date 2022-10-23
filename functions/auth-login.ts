@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 
 exports.handler = async (event, context) => {
     console.log('Logging in...')
-    console.log(process.env.AWS_POOL_ID)
+    console.log(process.env.DOMAIN)
     const eventBody = JSON.parse(event.body)
 
     let errorMessage = "LoginRequired"
