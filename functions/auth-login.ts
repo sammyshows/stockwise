@@ -139,7 +139,7 @@ exports.handler = async (event, context) => {
                 'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
             },
             headers: {
-                'Allow-Access-Control-Origin': '*',
+                'Access-Control-Allow-Origin': '*',
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
             },
@@ -152,7 +152,7 @@ exports.handler = async (event, context) => {
         console.log('Returning error...')
         return {
             headers: {
-                'Allow-Access-Control-Origin': '*',
+                'Access-Control-Allow-Origin': '*',
             },
             statusCode: 300,
             body: JSON.stringify({
