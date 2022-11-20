@@ -151,9 +151,9 @@ exports.handler = async (event, context) => {
     } else { // tell the client to redirect to the login page
         console.log('Returning error...')
         return {
-            // headers: {
-            //     'Access-Control-Allow-Origin': '*',
-            // },
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
             statusCode: 300,
             body: JSON.stringify({
                 errorMessage: errorMessage
