@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 300) {
                         if (body.errorMessage === "LoginRequired")
-                            window.location.href = `https://www.stockwise.app/auth/login`
+                            window.location.pathname = `/auth/login`
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
