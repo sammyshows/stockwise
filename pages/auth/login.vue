@@ -71,7 +71,7 @@ export default defineComponent({
       if (this.validateForm()) {
         this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
-          window.location.href = `${this.config.DOMAIN}/portfolios`
+          window.location.pathname = `/portfolios`
         else
           this.disabledSignIn = false
       } else {

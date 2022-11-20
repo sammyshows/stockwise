@@ -11,7 +11,7 @@ export default defineNuxtPlugin(() => {
                 if (useAuth().accessToken)
                     return
 
-                const response = await fetch('/api/auth-login', {
+                const response = await fetch('https://stockwise.app/api/auth-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email || null,
@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 300) {
                         if (body.errorMessage === "LoginRequired")
-                            window.location.href = `${config.public.DOMAIN}/auth/login`
+                            window.location.href = `https://stockwise.app/auth/login`
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
@@ -59,19 +59,19 @@ export default defineNuxtPlugin(() => {
             logout: async (): Promise<void> => {
                 const config = useRuntimeConfig()
 
-                const response = await fetch('/api/auth-logout', {
+                const response = await fetch('https://stockwise.app/api/auth-logout', {
                     method: 'POST'
                 })
 
 
                 if (response.status === 200)
-                    window.location.href = `${config.public.DOMAIN}/auth/login`
+                    window.location.pathname = `/auth/login`
             },
 
             signUp: async (email, password): Promise<string> => {
                 const config = useRuntimeConfig()
 
-                return await fetch('/api/auth-signup', {
+                return await fetch('https://stockwise.app/api/auth-signup', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email,
@@ -79,7 +79,7 @@ export default defineNuxtPlugin(() => {
                     })
                 }).then(async (res) => {
                     if (res.status === 200) {
-                        await fetch('/api/auth-login', {
+                        await fetch('https://stockwise.app/api/auth-login', {
                             method: 'POST',
                             body: JSON.stringify({
                                 email: email,
@@ -109,7 +109,7 @@ export default defineNuxtPlugin(() => {
             },
 
             forgotPassword: async (email) => {
-                await fetch('/api/auth-password-forgot', {
+                await fetch('https://stockwise.app/api/auth-password-forgot', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email
@@ -118,7 +118,7 @@ export default defineNuxtPlugin(() => {
             },
 
             confirmPassword: async (verificationCode, email, newPassword) => {
-                return await fetch('/api/auth-password-confirm', {
+                return await fetch('https://stockwise.app/api/auth-password-confirm', {
                     method: 'POST',
                     body: JSON.stringify({
                         verificationCode: verificationCode,
