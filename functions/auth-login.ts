@@ -27,6 +27,8 @@ exports.handler = async (event, context) => {
         refreshToken = cookies.sw_refresh_token
     }
 
+    console.log('Access Token: ', accessToken)
+
     const setCookies = () => {
         const thirtyDays = 30 * 24 * 3600000
         accessCookie = cookie.serialize('sw_access_token', accessToken, {
