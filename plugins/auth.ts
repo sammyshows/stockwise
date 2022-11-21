@@ -73,12 +73,13 @@ export default defineNuxtPlugin(() => {
                         accessToken: response.accessToken
                     })
 
-                    const keys = ['accessToken', 'refreshToken', 'idToken']
-                    keys.forEach((key) => {
-                        const value = response[key]
-                        SecureStoragePlugin.set({ key, value })
-                            .then(success => console.log(success))
-                    })
+                    if (window.location.hostname !== 'www.stockwise.app') {
+                        const keys = ['accessToken', 'refreshToken', 'idToken']
+                        keys.forEach((key) => {
+                            const value = response[key]
+                            SecureStoragePlugin.set({ key, value })
+                        })
+                    }
                 }
 
                 if (response.userId) {
