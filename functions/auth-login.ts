@@ -147,6 +147,8 @@ exports.handler = async (event, context) => {
             },
             body: JSON.stringify({
                 accessToken: accessToken,
+                refreshToken: refreshToken,
+                idToken: idToken,
                 userId: userId
             })
         }
