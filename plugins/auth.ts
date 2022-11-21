@@ -1,5 +1,6 @@
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 
 export default defineNuxtPlugin(() => {
     return {
@@ -11,11 +12,21 @@ export default defineNuxtPlugin(() => {
                 if (useAuth().accessToken)
                     return
 
-                const response = await fetch('https://www.stockwise.app/api/auth-login', {
+                let key = 'accessToken'
+                const accessToken = await SecureStoragePlugin.get({ key })
+                key = 'refreshToken'
+                const refreshToken = await SecureStoragePlugin.get({ key })
+                key = 'idToken'
+                const idToken = await SecureStoragePlugin.get({ key })
+
+                const response = await fetch('/api/auth-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email || null,
-                        password: password || null
+                        password: password || null,
+                        accessToken: accessToken || null,
+                        refreshToken: refreshToken || null,
+                        idToken: idToken || null
                     })
                 }).then(async (res) => {
                     const body = await res.json()
@@ -44,6 +55,13 @@ export default defineNuxtPlugin(() => {
                 if (response.accessToken) {
                     useAuth().$patch({
                         accessToken: response.accessToken
+                    })
+
+                    const keys = ['accessToken', 'refreshToken', 'idToken']
+                    keys.forEach((key) => {
+                        const value = response[key]
+                        SecureStoragePlugin.set({ key, value })
+                            .then(success => console.log(success))
                     })
                 }
 

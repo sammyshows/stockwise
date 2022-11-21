@@ -4,13 +4,15 @@ import jwt from "jsonwebtoken"
 
 exports.handler = async (event, context) => {
     console.log('Logging in...')
+    console.log(event)
+    console.log(context)
     console.log(process.env.DOMAIN)
     const eventBody = JSON.parse(event.body)
 
     let errorMessage = "LoginRequired"
-    let accessToken
-    let idToken
-    let refreshToken
+    let accessToken = eventBody.accessToken
+    let idToken = eventBody.idToken
+    let refreshToken = eventBody.refreshToken
     let accessCookie
     let idCookie
     let refreshCookie
@@ -19,8 +21,8 @@ exports.handler = async (event, context) => {
         ClientId : process.env.AWS_CLIENT_ID
     })
 
-    // See if the access_token, id_token and refresh_token are stored in cookies
-    if (event.headers.cookie) {
+    // If called from the web, see if the access_token, id_token and refresh_token are stored in cookies
+    if (event.headers.origin === 'https://www.stockwise.app' && event.headers.cookie) {
         const cookies = cookie.parse(event.headers.cookie)
         accessToken = cookies.sw_access_token
         idToken = cookies.sw_id_token
