@@ -36,6 +36,7 @@ exports.handler = async (event, context) => {
             'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
         },
         headers: {
+            'Access-Control-Allow-Origin': '*',
             'Cache-Control': 'no-cache',
             'Content-Type': 'text/html'
         },

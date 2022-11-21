@@ -4,9 +4,6 @@ import jwt from "jsonwebtoken"
 
 exports.handler = async (event, context) => {
     console.log('Logging in...')
-    console.log(event)
-    console.log(context)
-    console.log(process.env.DOMAIN)
     const eventBody = JSON.parse(event.body)
 
     let errorMessage = "LoginRequired"
@@ -98,7 +95,7 @@ exports.handler = async (event, context) => {
 
         // -------- If token cookies are present ---------
         if (accessToken && idToken && refreshToken && unexpiredToken(accessToken)) {
-            console.log('Using access token from cookie...')
+            console.log('Using existing tokens...')
             // --------- If there's cookies and the accessToken is valid ---------
             setCookies()
             return
@@ -139,8 +136,10 @@ exports.handler = async (event, context) => {
 
         return {
             statusCode: 200,
+            // Only set cookies if the origin is the web. Apps should not have cookies sent back to them simply for security
+            // reasons - there's no point exposing these tokens when we don't need to
             'multiValueHeaders': {
-                'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
+                'Set-Cookie': event.headers.origin === 'https://www.stockwise.app' ? [ accessCookie, idCookie, refreshCookie ] : []
             },
             headers: {
                 'Access-Control-Allow-Origin': '*',

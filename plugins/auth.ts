@@ -7,19 +7,29 @@ export default defineNuxtPlugin(() => {
         provide: {
             login: async (email?, password?): Promise<string> => {
                 const config = useRuntimeConfig()
+                let accessToken
+                let refreshToken
+                let idToken
+                let key
                 let message = "" // default return message
 
                 if (useAuth().accessToken)
                     return
 
-                let key = 'accessToken'
-                const accessToken = await SecureStoragePlugin.get({ key })
-                key = 'refreshToken'
-                const refreshToken = await SecureStoragePlugin.get({ key })
-                key = 'idToken'
-                const idToken = await SecureStoragePlugin.get({ key })
+                // key has to be defined for this particular capacitor plugin to work.
+                key = 'accessToken'
+                if (localStorage.getItem("cap_sec_accessToken") !== null)
+                    accessToken = await SecureStoragePlugin.get({ key })
 
-                const response = await fetch('/api/auth-login', {
+                key = 'refreshToken'
+                if (localStorage.getItem("cap_sec_refreshToken") !== null)
+                    refreshToken = await SecureStoragePlugin.get({ key })
+
+                key = 'idToken'
+                if (localStorage.getItem("cap_sec_idToken") !== null)
+                    idToken = await SecureStoragePlugin.get({ key })
+
+                const response = await fetch('https://www.stockwise.app/api/auth-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email || null,
