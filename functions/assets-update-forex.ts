@@ -46,6 +46,9 @@ const handler: Handler = async () => {
         WHERE assets.symbol = asset.symbol AND type = 1;`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 }

@@ -123,6 +123,7 @@ exports.handler = async (event, context) => {
                 'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
             },
             headers: {
+                'Access-Control-Allow-Origin': '*',
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
             }
@@ -130,6 +131,9 @@ exports.handler = async (event, context) => {
     } else {
         console.log('failed google login')
         return {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
             statusCode: 500
         }
     }

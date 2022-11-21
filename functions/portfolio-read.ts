@@ -15,6 +15,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         WHERE id = ${eventBody.portfolioId};`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             data: portfolio

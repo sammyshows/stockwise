@@ -10,6 +10,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         .catch(error => console.error(error))
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             data: data

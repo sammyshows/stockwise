@@ -37,6 +37,9 @@ const handler: Handler = requireAuth(async (event, context) => {
     FROM asset_data`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

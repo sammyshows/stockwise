@@ -13,6 +13,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         ORDER BY created_at ASC;`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             chartData: chartData

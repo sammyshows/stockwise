@@ -62,6 +62,9 @@ const handler: Handler = async (event, context) => {
     FROM asset_data`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 }

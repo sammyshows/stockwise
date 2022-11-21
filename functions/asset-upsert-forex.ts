@@ -34,6 +34,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         RETURNING id;`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             data: createdAsset[0]

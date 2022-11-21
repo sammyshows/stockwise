@@ -8,6 +8,20 @@ const handler: Handler = requireAuth(async (event, context) => {
     let transactions
     let assetData
 
+    const forexs = await client`SELECT * FROM assets WHERE type = 1;`
+
+    await forexs.forEach(async (forex) => {
+        let id = forex.id
+        let symbol = forex.symbol.slice(3, 6)
+
+        await client`
+            UPDATE assets SET currency_id = (
+                SELECT id FROM assets WHERE type = 1 AND symbol = ${symbol + 'USD'}
+            )
+            WHERE id = ${id};
+        `
+    })
+
     const getTransactions = () => client`SELECT * FROM uspReadTransactions(${eventBody.holdingId})`
 
     const getAssetData = () => client`
@@ -20,7 +34,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                a.name,
                SUBSTRING(asset_c.symbol, 1, 3) AS currency_symbol
         FROM assets AS a
-        INNER JOIN assets AS asset_c ON asset_c.id = a.currency_id
+        LEFT JOIN assets AS asset_c ON asset_c.id = a.currency_id
         INNER JOIN holdings AS h ON h.asset_id = a.id
         WHERE h.id = ${eventBody.holdingId}`
         .then(response => response[0])
@@ -32,6 +46,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         })
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             transactions: transactions,

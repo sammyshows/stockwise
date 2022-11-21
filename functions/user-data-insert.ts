@@ -136,6 +136,9 @@ const handler: Handler = async (event, context) => {
     // await client`CALL partman.run_maintenance_proc();`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 }

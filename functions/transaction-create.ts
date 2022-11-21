@@ -44,6 +44,9 @@ const handler: Handler = requireAuth(async (event, context) => {
     await Promise.all([await createSplits(), await createSells()])
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

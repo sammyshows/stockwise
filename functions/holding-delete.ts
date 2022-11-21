@@ -10,6 +10,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         DELETE FROM holdings WHERE id = ${eventBody.holdingId}`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

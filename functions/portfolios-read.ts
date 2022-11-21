@@ -73,6 +73,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         GROUP BY cte.portfolio_id, cte.portfolio_name, cte.portfolio_included, cte.hide_closed_positions, cte.currency_symbol;`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             portfolios: portfolios

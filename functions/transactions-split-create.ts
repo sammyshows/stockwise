@@ -78,6 +78,9 @@ const handler: Handler = requireAuth(async (event, context) => {
     //     WHERE transactions.id = sells_total.id`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

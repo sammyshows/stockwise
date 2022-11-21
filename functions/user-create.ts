@@ -11,6 +11,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         VALUES (${eventBody.uuid}, ${eventBody.email}, 0);`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

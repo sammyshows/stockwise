@@ -11,6 +11,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         VALUES (${eventBody.userId}, ${eventBody.portfolio_id}, ${eventBody.portfolio_name}, ${eventBody.included})`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

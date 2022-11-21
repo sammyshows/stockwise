@@ -12,6 +12,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         WHERE id = ${eventBody.id};`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 })

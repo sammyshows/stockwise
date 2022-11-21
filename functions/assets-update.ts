@@ -78,6 +78,9 @@ const handler: Handler = async () => {
     await Promise.all([updateStocks(), updateForexs()])
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 }

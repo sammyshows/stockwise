@@ -37,6 +37,9 @@ const handler: Handler = async (event, context) => {
     })
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200
     }
 }

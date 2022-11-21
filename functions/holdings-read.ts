@@ -51,8 +51,8 @@ const handler: Handler = requireAuth(async (event, context) => {
                      INNER JOIN portfolios AS p ON h.portfolio_id = p.id
                      INNER JOIN assets AS a ON h.asset_id = a.id
                      INNER JOIN user_settings AS u ON p.user_id = u.user_id
-                     INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
-                     INNER JOIN assets AS user_c ON u.currency_id = user_c.id
+                     LEFT JOIN assets AS asset_c ON a.currency_id = asset_c.id
+                     LEFT JOIN assets AS user_c ON u.currency_id = user_c.id
                      INNER JOIN transactions AS t ON h.id = t.holding_id
                      LEFT JOIN sells AS s ON t.id = s.transaction_id
             WHERE p.id = ${eventBody.portfolioId} AND t.type != 1
@@ -78,6 +78,9 @@ const handler: Handler = requireAuth(async (event, context) => {
         GROUP BY cte.holding_id, cte.portfolio_id, cte.current_price, cte.symbol, cte.asset_name, cte.asset_type, cte.currency_symbol;`
 
     return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
         statusCode: 200,
         body: JSON.stringify({
             data: holdings
