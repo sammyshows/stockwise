@@ -45,7 +45,7 @@ const handler: Handler = requireAuth(async (event, context) => {
                 FROM assets
                 WHERE assets.symbol = ${eventBody.symbol} AND assets.type = 0
                 RETURNING id;`
-                    .then(response => response[0]?.id)
+                    .then(response => response[0].id)
             if (!holdingId)
                 throw 'Asset not found'
         } catch (err) {
@@ -63,9 +63,9 @@ const handler: Handler = requireAuth(async (event, context) => {
 
             holdingId = await client`
                 INSERT INTO holdings (portfolio_id, asset_id)
-                VALUES (${eventBody.portfolio}, ${asset['data']?.id})
+                VALUES (${eventBody.portfolio}, ${asset['data'].id}) 
                 RETURNING id;`
-                    .then(response => response[0]?.id)
+                    .then(response => response[0].id)
         }
     }
 
