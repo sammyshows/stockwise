@@ -10,7 +10,8 @@ const verifyJwt = (handler) => async (event, context) => {
         return {
             statusCode: 204,
             headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'authorization'
             }
         }
     }
