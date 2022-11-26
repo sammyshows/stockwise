@@ -5,7 +5,6 @@ import fetch from 'node-fetch'
 
 const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
-    console.log(eventBody)
 
     const asset = await fetch(`${process.env.DOMAIN}/api/stock-quote`, {
         headers: {
@@ -18,7 +17,7 @@ const handler: Handler = requireAuth(async (event, context) => {
     })
         .then(response => response.json())
         .then(asset => asset["data"])
-console.log(asset)
+
     const createdAsset = await client`
         INSERT INTO assets (symbol, current_price, prev_close, name, exchange, currency_id, type)
         SELECT ${asset.symbol}, 
