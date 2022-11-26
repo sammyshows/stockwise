@@ -4,6 +4,14 @@ const client = require("../database/client.ts")
 
 
 const handler: Handler = requireAuth(async (event, context) => {
+    if (event.httpMethod === 'OPTIONS') {
+        return {
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+    }
+
     const eventBody = JSON.parse(event.body)
 
     const portfolios = await client`
