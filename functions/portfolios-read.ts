@@ -4,8 +4,9 @@ const client = require("../database/client.ts")
 
 
 const handler: Handler = requireAuth(async (event, context) => {
-    if (event.httpMethod === 'OPTIONS') {
+    if (event.httpMethod == 'OPTIONS') {
         return {
+            statusCode: 204,
             headers: {
                 'Access-Control-Allow-Origin': '*'
             }
