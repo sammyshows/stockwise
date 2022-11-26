@@ -47,8 +47,8 @@ export default defineComponent({
         email: false,
         password: false
       },
-      email: 'sammymac.eng@gmail.com',
-      password: 'Deranger7',
+      email: '',
+      password: '',
       authMessage: ''
     }
   },

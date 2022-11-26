@@ -74,6 +74,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       disabledSave: false,
       openModal: false,
@@ -104,7 +105,7 @@ export default defineComponent({
     },
 
     async getPortfolioDetails(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
+      const response = await fetch(this.domain + '/api/portfolio-read', {
         headers: {
           authorization: this.token
         },
@@ -124,7 +125,7 @@ export default defineComponent({
     async updatePortfolio(): Promise<void> {
       this.disabledSave = true
       if (this.validateForm()) {
-        const response = await fetch('/api/portfolio-update', {
+        const response = await fetch(this.domain + '/api/portfolio-update', {
           headers: {
             authorization: this.token
           },
@@ -145,7 +146,7 @@ export default defineComponent({
     },
 
     async deletePortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-delete', {
+      const response = await fetch(this.domain + '/api/portfolio-delete', {
         headers: {
           authorization: this.token
         },

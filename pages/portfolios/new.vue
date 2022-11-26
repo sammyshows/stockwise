@@ -52,6 +52,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: null as (string | null),
       disabledSave: false,
       pageDetails: {
@@ -82,7 +83,7 @@ export default defineComponent({
     async createPortfolio(): Promise<void> {
       this.disabledSave = true
       if (this.validateForm()) {
-        const response = await fetch('/api/portfolio-create', {
+        const response = await fetch(this.domain + '/api/portfolio-create', {
           headers: {
             authorization: this.token
           },

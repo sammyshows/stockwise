@@ -64,6 +64,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
         returnPath: '/studies',
@@ -287,7 +288,7 @@ export default defineComponent({
 
   methods: {
     async getStudy(): Promise<void> {
-      const response = await fetch('/api/study-read', {
+      const response = await fetch(this.domain + '/api/study-read', {
         headers: {
           authorization: this.token
         },
@@ -342,7 +343,7 @@ export default defineComponent({
 
     async updateStudy(): Promise<void> {
       if (!this.studyUnchanged()) {
-        const response = await fetch('/api/study-update', {
+        const response = await fetch(this.domain + '/api/study-update', {
           headers: {
             authorization: this.token
           },
@@ -372,7 +373,7 @@ export default defineComponent({
     },
 
     async deleteStudy(): Promise<void> {
-      const response = await fetch('/api/study-delete', {
+      const response = await fetch(this.domain + '/api/study-delete', {
         headers: {
           authorization: this.token
         },

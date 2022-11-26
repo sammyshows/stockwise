@@ -42,6 +42,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
         title: 'Add Holding',
@@ -55,7 +56,7 @@ export default defineComponent({
 
   methods: {
     async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
+      const response = await fetch(this.domain + '/api/portfolio-read', {
         headers: {
           authorization: this.token
         },

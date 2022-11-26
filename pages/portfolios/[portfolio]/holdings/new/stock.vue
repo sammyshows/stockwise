@@ -176,6 +176,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       manualForm: false,
       disabledSave: false,
@@ -275,7 +276,7 @@ export default defineComponent({
     },
 
     async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
+      const response = await fetch(this.domain + '/api/portfolio-read', {
         headers: {
           authorization: this.token
         },
@@ -289,7 +290,7 @@ export default defineComponent({
     },
 
     async fetchSearch(searchTerm: string): Promise<void> {
-      const data = await fetch('/api/stock-search', {
+      const data = await fetch(this.domain + '/api/stock-search', {
         headers: {
           authorization: this.token
         },
@@ -306,7 +307,7 @@ export default defineComponent({
     async fetchQuote(symbol: string): Promise<void> {
       this.searchResults = []
       this.quote = {}
-      const quote = await fetch('/api/stock-quote', {
+      const quote = await fetch(this.domain + '/api/stock-quote', {
         headers: {
           authorization: this.token
         },
@@ -352,7 +353,7 @@ export default defineComponent({
       this.disabledSave = true
       this.validateForm() // This is so that the validation checks are still run even if validateQuote fails below
       if (this.validateQuote() && this.validateForm()) {
-        const holdingId = await fetch('/api/holding-create-stock', {
+        const holdingId = await fetch(this.domain + '/api/holding-create-stock', {
           headers: {
             authorization: this.token
           },
@@ -376,7 +377,7 @@ export default defineComponent({
     },
 
     async addTransaction(holdingId): Promise<void> {
-      const response = await fetch('/api/transaction-create', {
+      const response = await fetch(this.domain + '/api/transaction-create', {
         headers: {
           authorization: this.token
         },

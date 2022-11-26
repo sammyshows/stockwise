@@ -68,6 +68,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
         title: "Search",
@@ -80,7 +81,7 @@ export default defineComponent({
   methods: {
     async fetchSearch(searchTerm: string): Promise<void> {
       if (searchTerm !== '') {
-        const data = await fetch('/api/stock-search', {
+        const data = await fetch(this.domain + '/api/stock-search', {
           headers: {
             authorization: this.token
           },

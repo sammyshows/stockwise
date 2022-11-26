@@ -122,6 +122,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       disabledSave: false,
       pageDetails: {
@@ -199,7 +200,7 @@ export default defineComponent({
     },
 
     async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
+      const response = await fetch(this.domain + '/api/portfolio-read', {
         headers: {
           authorization: this.token
         },
@@ -236,7 +237,7 @@ export default defineComponent({
     async getQuote(): Promise<void> {
       if (this.transaction.from && this.transaction.to) {
         this.quote = {}
-        const data = await fetch('/api/iex-quote-forex', {
+        const data = await fetch(this.domain + '/api/iex-quote-forex', {
           headers: {
             authorization: this.token
           },
@@ -254,7 +255,7 @@ export default defineComponent({
     async addHolding(): Promise<void> {
       this.disabledSave = true
       if (this.validateForm()) {
-        const holdingId = await fetch('/api/holding-create-forex', {
+        const holdingId = await fetch(this.domain + '/api/holding-create-forex', {
           headers: {
             authorization: this.token
           },
@@ -275,7 +276,7 @@ export default defineComponent({
     },
 
     async addTransaction(holdingId): Promise<void> {
-      const response = await fetch('/api/transaction-create', {
+      const response = await fetch(this.domain + '/api/transaction-create', {
         headers: {
           authorization: this.token
         },

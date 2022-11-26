@@ -85,9 +85,8 @@ export default defineComponent({
     const authStore = useAuth()
     const studyStore = useStudies()
     const storeStudy = studyStore.getStudy(route.params.study)
-    const token = await useState('authToken').value
 
-    return { authStore, studyStore, storeStudy, token }
+    return { authStore, studyStore, storeStudy }
   },
 
   components: {
@@ -102,6 +101,8 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
+      token: '',
       pageDetails: {
         returnPath: '/studies/completed',
         title: this.storeStudy?.name,
@@ -170,7 +171,7 @@ export default defineComponent({
 
   methods: {
     async getStudy(): Promise<void> {
-      const response = await fetch('/api/study-read', {
+      const response = await fetch(this.domain + '/api/study-read', {
         headers: {
           authorization: this.token
         },
@@ -206,7 +207,7 @@ export default defineComponent({
     async updateNotes() {
       this.studyDetails.notes = this.notes
       console.log(this.studyDetails.notes)
-      const response = await fetch('/api/study-update', {
+      const response = await fetch(this.domain + '/api/study-update', {
         headers: {
           authorization: this.token
         },
@@ -236,7 +237,7 @@ export default defineComponent({
     },
 
     async deleteStudy(): Promise<void> {
-      const response = await fetch('/api/study-delete', {
+      const response = await fetch(this.domain + '/api/study-delete', {
         headers: {
           authorization: this.token
         },

@@ -72,6 +72,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       uuid: '',
       pageDetails: {
@@ -89,7 +90,7 @@ export default defineComponent({
 
   methods: {
     async getStudies(): Promise<void> {
-      const response = await fetch('/api/studies-read', {
+      const response = await fetch(this.domain + '/api/studies-read', {
         headers: {
           authorization: this.token
         },

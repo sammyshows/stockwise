@@ -89,6 +89,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       disabledSave: false,
       pageDetails: {
@@ -156,7 +157,7 @@ export default defineComponent({
     },
 
     async getPortfolio(): Promise<void> {
-      const response = await fetch('/api/portfolio-read', {
+      const response = await fetch(this.domain + '/api/portfolio-read', {
         headers: {
           authorization: this.token
         },
@@ -193,7 +194,7 @@ export default defineComponent({
     async addHolding(): Promise<void> {
       this.disabledSave = true
       if (this.validateForm()) {
-        const holdingId = await fetch('/api/holding-create-cash', {
+        const holdingId = await fetch(this.domain + '/api/holding-create-cash', {
           headers: {
             authorization: this.token
           },
@@ -213,7 +214,7 @@ export default defineComponent({
     },
 
     async addTransaction(holdingId): Promise<void> {
-      const response = await fetch('/api/transaction-create', {
+      const response = await fetch(this.domain + '/api/transaction-create', {
         headers: {
           authorization: this.token
         },

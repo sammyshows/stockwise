@@ -76,6 +76,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       intervalLoop: null as (NodeJS.Timeout | null),
       portfolioId: this.$route.params.portfolio,
@@ -131,7 +132,7 @@ export default defineComponent({
 
   methods: {
     async getHoldings(): Promise<void> {
-      const response = await fetch('/api/holdings-read', {
+      const response = await fetch(this.domain + '/api/holdings-read', {
         headers: {
           authorization: this.token
         },
@@ -147,7 +148,7 @@ export default defineComponent({
     },
 
     async getOverviewChart() {
-      let chartData = await fetch('/api/portfolio-data-read', {
+      let chartData = await fetch(this.domain + '/api/portfolio-data-read', {
         headers: {
           authorization: this.token
         },

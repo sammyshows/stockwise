@@ -4,9 +4,9 @@ import jwt from "jsonwebtoken"
 let jwks = {}
 
 const verifyJwt = (handler) => async (event, context) => {
-    console.log('httpMethod', event.httpMethod)
-    console.log(event)
+    // this is for preflight requests, allowing the authorization header
     if (event.httpMethod == 'OPTIONS') {
+        console.log('Handling preflight request')
         return {
             statusCode: 204,
             headers: {

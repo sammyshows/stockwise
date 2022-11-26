@@ -109,6 +109,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       openUpdateModal: false,
       intervalLoop: null as (NodeJS.Timeout | null),
@@ -194,7 +195,7 @@ export default defineComponent({
 
   methods: {
     async getTransactions(): Promise<void> {
-      const response = await fetch('/api/transactions-read', {
+      const response = await fetch(this.domain + '/api/transactions-read', {
         headers: {
           authorization: this.token
         },
@@ -220,7 +221,7 @@ export default defineComponent({
     },
 
     async getOverviewChart() {
-      let chartData = await fetch('/api/holding-data-read', {
+      let chartData = await fetch(this.domain + '/api/holding-data-read', {
         headers: {
           authorization: this.token
         },
@@ -254,7 +255,7 @@ export default defineComponent({
     },
 
     async getAssetChart() {
-      const chartData = await fetch('/api/asset-data-read', {
+      const chartData = await fetch(this.domain + '/api/asset-data-read', {
         headers: {
           authorization: this.token
         },
@@ -271,7 +272,7 @@ export default defineComponent({
     },
 
     async fetchQuote(): Promise<void> {
-      this.quote = await fetch('/api/stock-quote', {
+      this.quote = await fetch(this.domain + '/api/stock-quote', {
         headers: {
           authorization: this.token
         },
@@ -285,7 +286,7 @@ export default defineComponent({
     },
 
     async fetchStats(): Promise<void> {
-      this.stats = await fetch('/api/stock-stats', {
+      this.stats = await fetch(this.domain + '/api/stock-stats', {
         headers: {
           authorization: this.token
         },

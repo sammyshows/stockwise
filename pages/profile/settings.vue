@@ -52,6 +52,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       userId: '',
       pageDetails: {
@@ -95,7 +96,7 @@ export default defineComponent({
 
   methods: {
     async getUserSettings(): Promise<void> {
-      const response = await fetch('/api/user-settings-read', {
+      const response = await fetch(this.domain + '/api/user-settings-read', {
         headers: {
           authorization: this.token
         },
@@ -115,7 +116,7 @@ export default defineComponent({
     },
 
     async updateUserSettings(): Promise<void> {
-      const response = await fetch('/api/user-settings-update', {
+      const response = await fetch(this.domain + '/api/user-settings-update', {
         headers: {
           authorization: this.token
         },

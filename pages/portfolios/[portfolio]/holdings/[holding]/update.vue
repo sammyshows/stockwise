@@ -66,6 +66,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       uuid: '',
       disabledSave: '',
@@ -86,7 +87,7 @@ export default defineComponent({
 
   methods: {
     async getHoldingDetails(): Promise<void> {
-      const response = await fetch('/api/asset-read', {
+      const response = await fetch(this.domain + '/api/asset-read', {
         headers: {
           authorization: this.token
         },
@@ -106,7 +107,7 @@ export default defineComponent({
     },
 
     async getPortfolios(): Promise<void> {
-      const response = await fetch('/api/portfolios-read', {
+      const response = await fetch(this.domain + '/api/portfolios-read', {
         headers: {
           authorization: this.token
         },
@@ -121,7 +122,7 @@ export default defineComponent({
 
     async updateHolding(): Promise<void> {
       this.disabledSave = true
-      const response = await fetch('/api/holding-update', {
+      const response = await fetch(this.domain + '/api/holding-update', {
         headers: {
           authorization: this.token
         },
@@ -146,7 +147,7 @@ export default defineComponent({
     },
 
     async deleteHolding(): Promise<void> {
-      const response = await fetch('/api/holding-delete', {
+      const response = await fetch(this.domain + '/api/holding-delete', {
         headers: {
           authorization: this.token
         },

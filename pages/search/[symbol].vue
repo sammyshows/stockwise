@@ -175,6 +175,7 @@ export default defineComponent({
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
         title: this.$route.params.assetSymbol,
@@ -230,7 +231,7 @@ export default defineComponent({
 
   methods: {
     async fetchQuote(): Promise<void> {
-      const response = await fetch('/api/stock-quote', {
+      const response = await fetch(this.domain + '/api/stock-quote', {
         headers: {
           authorization: this.token
         },
@@ -247,7 +248,7 @@ export default defineComponent({
     },
 
     async fetchStats(): Promise<void> {
-      const response = await fetch('/api/stock-stats', {
+      const response = await fetch(this.domain + '/api/stock-stats', {
         headers: {
           authorization: this.token
         },
@@ -262,7 +263,7 @@ export default defineComponent({
     },
 
     async getChartData() {
-      const chartData = await fetch('/api/iex-chart', {
+      const chartData = await fetch(this.domain + '/api/iex-chart', {
         headers: {
           authorization: this.token
         },
