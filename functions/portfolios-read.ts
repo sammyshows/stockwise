@@ -4,6 +4,8 @@ const client = require("../database/client.ts")
 
 
 const handler: Handler = requireAuth(async (event, context) => {
+    console.log('httpMethod', event.httpMethod)
+    console.log(event)
     if (event.httpMethod == 'OPTIONS') {
         return {
             statusCode: 204,
