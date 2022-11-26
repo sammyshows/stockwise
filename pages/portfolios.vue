@@ -126,7 +126,7 @@ export default defineComponent({
 
   methods: {
     async getPortfolios(): Promise<void> {
-      const response = await fetch('/api/portfolios-read', {
+      const response = await fetch('https://www.stockwise.app/api/portfolios-read', {
         headers: {
           authorization: this.token
         },

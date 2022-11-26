@@ -47,8 +47,8 @@ export default defineComponent({
         email: false,
         password: false
       },
-      email: '',
-      password: '',
+      email: 'sammymac.eng@gmail.com',
+      password: 'Deranger7',
       authMessage: ''
     }
   },
@@ -71,7 +71,7 @@ export default defineComponent({
       if (this.validateForm()) {
         this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
-          window.location.pathname = `/portfolios`
+          this.$router.push('/portfolios')
         else
           this.disabledSignIn = false
       } else {

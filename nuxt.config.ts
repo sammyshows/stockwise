@@ -2,6 +2,8 @@ import { defineNuxtConfig } from 'nuxt'
 
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
+    ssr: false,
+
     runtimeConfig: {
         public: {
             DOMAIN: process.env.DOMAIN,
@@ -18,8 +20,7 @@ export default defineNuxtConfig({
 
     modules: [
         '@nuxtjs/tailwindcss',
-        '@pinia/nuxt',
-        '@kevinmarrec/nuxt-pwa'
+        '@pinia/nuxt'
     ],
 
     alias: {
@@ -41,20 +42,5 @@ export default defineNuxtConfig({
 
     css: [
         "@/assets/css/main.css",
-    ],
-
-    pwa: {
-        meta: {
-            author: '@sammyshows',
-            theme_color: '#000000'
-        },
-
-        icon: {
-            source: 'static/icon.png'
-        },
-
-        workbox: {
-            enabled: true
-        }
-    }
+    ]
 });

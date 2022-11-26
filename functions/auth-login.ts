@@ -52,6 +52,7 @@ exports.handler = async (event, context) => {
 
     const unexpiredToken = (token): Boolean => {
         let decodedJwt = jwt.decode(token)
+        console.log(decodedJwt)
         if (decodedJwt.exp < Math.floor(Date.now() / 1000)) {
             console.log("Expired token")
             return false

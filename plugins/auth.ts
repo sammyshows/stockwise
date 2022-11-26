@@ -54,7 +54,7 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 300) {
                         if (body.errorMessage === "LoginRequired")
-                            window.location.href = `/auth/signup`
+                            window.location.href = `/auth/login`
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
