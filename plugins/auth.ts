@@ -54,7 +54,7 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 300) {
                         if (body.errorMessage === "LoginRequired")
-                            window.location.pathname = `/auth/login`
+                            window.location.href = `/auth/signup`
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
@@ -92,15 +92,14 @@ export default defineNuxtPlugin(() => {
             },
 
             logout: async (): Promise<void> => {
-                const config = useRuntimeConfig()
-
                 const response = await fetch('https://www.stockwise.app/api/auth-logout', {
                     method: 'POST'
                 })
 
+                await SecureStoragePlugin.clear()
 
                 if (response.status === 200)
-                    window.location.pathname = `/auth/login`
+                    window.location.href = `/auth/login`
             },
 
             signUp: async (email, password): Promise<string> => {
