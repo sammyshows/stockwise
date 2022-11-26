@@ -4,6 +4,17 @@ import jwt from "jsonwebtoken"
 let jwks = {}
 
 const verifyJwt = (handler) => async (event, context) => {
+    console.log('httpMethod', event.httpMethod)
+    console.log(event)
+    if (event.httpMethod == 'OPTIONS') {
+        return {
+            statusCode: 204,
+            headers: {
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
+    }
+
     const updateJwks = async (): Promise<void> => {
         jwks = await fetch(`https://cognito-idp.${process.env.AWS_POOL_REGION}.amazonaws.com/${process.env.AWS_POOL_ID}/.well-known/jwks.json`)
             .then(response => response.json())
