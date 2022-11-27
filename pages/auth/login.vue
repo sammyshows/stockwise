@@ -15,7 +15,7 @@
       </div>
       <div class="mt-2.5">
         <p class="text-tiny leading-normal" :class="[ invalid.password ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add a valid password</p>
-        <input @keyup="invalid.password = false" v-model="password" autocomplete="off" placeholder="Password" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+        <input @keyup="invalid.password = false" v-model="password" autocomplete="off" placeholder="Password" type="password" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
       </div>
       <a href="/auth/password-reset" class="mt-2 mb-5 float-right text-gray-400 text-xs underline underline-offset-4">Forgot password?</a>
       <button :disabled="disabledSignIn" @click="login" class="flex justify-center items-center w-full h-12 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">
