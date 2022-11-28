@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between h-full pt-10 pb-4">
+  <div class="flex flex-col justify-between h-full" :class="platform === 'ios' ? 'pt-12 pb-6' : 'pt-10 pb-4'">
     <div class="h-full overflow-hidden flex flex-col flex-1">
       <slot></slot>
     </div>
@@ -9,6 +9,7 @@
 
 <script>
 import NavigationBar from "../components/NavigationBar"
+import { Capacitor } from '@capacitor/core';
 
 export default {
   name: "PageContainer",
@@ -19,7 +20,14 @@ export default {
     NavigationBar
   },
 
+  data() {
+    return {
+      platform: Capacitor.getPlatform()
+    }
+  },
+
   mounted() {
+    // Any of this still necessary? There's a meta tag for this in the nuxt.config.ts file
     let viewheight = window.innerHeight;
     let viewwidth = window.innerWidth;
     let viewport = document.querySelector("meta[name=viewport]");
