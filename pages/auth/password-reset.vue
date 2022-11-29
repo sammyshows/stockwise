@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full h-full flex flex-col pt-10 pb-5 overflow-scroll">
+  <div class="relative w-full h-full flex flex-col overflow-scroll" :class="platform === 'ios' ? 'pt-12 pb-6' : 'pt-10 pb-5'">
     <div>
       <img src="/images/logo-cyan.png" alt="Stockwise Logo" class="h-24 mx-auto">
       <h1 class="pt-3 text-3xl font-medium text-bright-cyan text-center">Stockwise</h1>
@@ -56,7 +56,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline';
-
+import { Capacitor } from '@capacitor/core';
 
 export default defineComponent({
   name: "Signup",
@@ -68,6 +68,7 @@ export default defineComponent({
   data() {
     return {
       config: useRuntimeConfig(),
+      platform: Capacitor.getPlatform(),
       invalid: {
         email: false,
         password: false,
