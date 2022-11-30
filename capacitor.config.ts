@@ -7,6 +7,7 @@ const baseConfig: CapacitorConfig = {
   appName: 'Stockwise',
   webDir: '.output/public',
   bundledWebRuntime: false,
+  backgroundColor: '#2B2B2B'
   // server: {
   //   hostname: "www.stockwise.app",
   //   iosScheme: 'https',
