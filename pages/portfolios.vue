@@ -34,7 +34,7 @@ App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
   const slug = event.url.split('.app').pop();
 
   if (slug) {
-    window.location.href = slug
+    app.router.push(slug)
   }
 })
 

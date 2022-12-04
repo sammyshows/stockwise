@@ -2,7 +2,7 @@ import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { TextZoom } from "@capacitor/text-zoom";
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((app) => {
     App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
         // Example url: https://beerswift.app/tabs/tabs2
         // slug = /tabs/tabs2
@@ -10,7 +10,7 @@ export default defineNuxtPlugin(() => {
 
         // We only push to the route if there is a slug present
         if (slug) {
-            window.location.href = slug
+            app.router.push(slug)
         }
     })
 
