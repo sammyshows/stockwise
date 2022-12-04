@@ -13,7 +13,8 @@ export default defineNuxtPlugin(() => {
                 let key
                 let message = "" // default return message
 
-                if (useAuth().accessToken)
+                // check that accessToken is in state && it's got AT LEAST 10s before expiring (plenty time to be used)
+                if (useAuth().accessToken && ((useAuth().accessTokenExp - 10) > Math.floor(Date.now() / 1000)))
                     return
 
                 const keyNames = await SecureStoragePlugin.keys()
@@ -70,7 +71,8 @@ export default defineNuxtPlugin(() => {
 
                 if (response.accessToken) {
                     useAuth().$patch({
-                        accessToken: response.accessToken
+                        accessToken: response.accessToken,
+                        accessTokenExp: response.accessTokenExp
                     })
 
                     if (window.location.hostname !== 'www.stockwise.app') {

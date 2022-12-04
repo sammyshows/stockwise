@@ -149,7 +149,8 @@ exports.handler = async (event, context) => {
                 accessToken: accessToken,
                 refreshToken: refreshToken,
                 idToken: idToken,
-                userId: userId
+                userId: userId,
+                accessTokenExp: jwt.decode(accessToken).exp
             })
         }
     } else { // tell the client to redirect to the login page
