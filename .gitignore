@@ -21,4 +21,3 @@ gradle/
 .idea/
 app-release*
 app/
-public/.well-known/assetlinks.json
