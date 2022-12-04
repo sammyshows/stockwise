@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "app.stockwise.twa",
+                     "sha256_cert_fingerprints": ["9C:B2:AF:7E:7E:E1:CF:86:8D:E5:2E:BF:94:2F:EC:7A:54:30:C9:DA:7E:C3:8D:53:DE:71:B8:14:29:E4:B7:8F"] }
+      }
+]
