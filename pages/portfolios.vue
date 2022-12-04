@@ -28,6 +28,15 @@ import { storeToRefs } from 'pinia'
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
+import { App, URLOpenListenerEvent } from "@capacitor/app";
+
+App.addListener('appUrlOpen', function (event: URLOpenListenerEvent) {
+  const slug = event.url.split('.app').pop();
+
+  if (slug) {
+    window.location.href = slug
+  }
+})
 
 export default defineComponent({
   name: "Portfolio Overview",
