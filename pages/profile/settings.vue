@@ -8,10 +8,19 @@
     <div class="overflow-scroll">
       <div class="flex flex-col gap-y-2.5 px-2 text-xs">
         <div class="w-full py-3 px-3">
-          <label for="currency" class="block">Local currency</label>
+          <label class="block">Local currency</label>
           <select v-model="settings.currency" @change="updateUserSettings()" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
             <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
           </select>
+
+          <button @click="this.openModal = true" class="w-full mt-7 py-1.5 text-xs text-red-400 rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">Delete Account</button>
+
+          <DeleteConfirmation :open="openModal"
+                              title="Delete Account"
+                              message="Are you sure you want to your account? If you proceed, your account and all the data linked to it will be deleted. This action cannot be undone."
+                              :typeToConfirm="userEmail"
+                              @close="closeModal"
+                              @delete="deleteAccount" />
         </div>
       </div>
     </div>
@@ -46,7 +55,7 @@ export default defineComponent({
   async mounted() {
     await this.$login()
     this.token = this.authStore.accessToken
-    this.uuid = this.userStore.userId
+    this.userId = this.userStore.userId
     this.getUserSettings()
   },
 
@@ -55,6 +64,7 @@ export default defineComponent({
       domain: useRuntimeConfig().DOMAIN,
       token: '',
       userId: '',
+      userEmail: '',
       pageDetails: {
         title: 'Settings',
         subtitle: 'PROFILE',
@@ -90,7 +100,8 @@ export default defineComponent({
       settings: {
         id: this.userStore?.id,
         currency: this.userStore?.currency
-      }
+      },
+      openModal: false
     }
   },
 
@@ -102,11 +113,12 @@ export default defineComponent({
         },
         method: 'POST',
         body: JSON.stringify({
-          userId: this.uuid
+          userId: this.userId
         })
       })
           .then(response => response.json())
 
+      this.userEmail = response.data.email
       this.settings.id = response.data.id
       this.settings.currency = response.data.currency
 
@@ -128,6 +140,26 @@ export default defineComponent({
         this.userStore.$patch({
           currency: this.settings?.currency
         })
+      }
+    },
+
+    closeModal(): void {
+      this.openModal = false
+    },
+
+    async deleteAccount() {
+      const response = await fetch(this.domain + '/api/user-delete', {
+        headers: {
+          authorization: this.token
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          userId: this.userId
+        })
+      })
+
+      if (response.status === 200) {
+        this.$logout()
       }
     }
   }
