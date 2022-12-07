@@ -37,6 +37,9 @@ exports.handler = async (event, context) => {
 
     if (errorMessage) {
         return {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+            },
             statusCode: 303,
             body: JSON.stringify({
                 errorMessage: errorMessage

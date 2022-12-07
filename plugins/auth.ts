@@ -108,7 +108,7 @@ export default defineNuxtPlugin(() => {
             signUp: async (email, password): Promise<string> => {
                 const domain = useRuntimeConfig().DOMAIN
 
-                return await fetch(domain + '/api/auth-signup', {
+                const response = await fetch(domain + '/api/auth-signup', {
                     method: 'POST',
                     body: JSON.stringify({
                         email: email,
@@ -116,14 +116,18 @@ export default defineNuxtPlugin(() => {
                     })
                 }).then(async (res) => {
                     if (res.status === 200) {
-                        await fetch(domain + '/api/auth-login', {
+                        return await fetch(domain + '/api/auth-login', {
                             method: 'POST',
                             body: JSON.stringify({
                                 email: email,
                                 password: password
                             })
+                        }).then(async (res) => {
+                            const body = await res.json()
+                            if (res.status === 200) {
+                                return body
+                            }
                         })
-                        return 'success'
                     } else if (res.status === 303) {
                         // Ideally, this doesn't redirect right away but instead displays an error message give the user the option to try login with this email
                         const body = await res.json()
@@ -134,6 +138,30 @@ export default defineNuxtPlugin(() => {
                         return 'error'
                     }
                 })
+
+                if (response.accessToken) {
+                    console.log('response has security token')
+                    await useAuth().$patch({
+                        accessToken: response.accessToken,
+                        accessTokenExp: response.accessTokenExp
+                    })
+
+                    if (window.location.hostname !== 'www.stockwise.app') {
+                        const keys = ['accessToken', 'refreshToken', 'idToken']
+                        await keys.forEach((key) => {
+                            const value = response[key]
+                            SecureStoragePlugin.set({ key, value })
+                        })
+                    }
+                }
+
+                if (response.userId) {
+                    await useUser().$patch({
+                        userId: response.userId
+                    })
+                }
+
+                return 'success'
             },
 
             googleLogin: async (code) => {
