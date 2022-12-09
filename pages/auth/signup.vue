@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full flex flex-col justify-between px-10 overflow-scroll" :class="platform === 'ios' ? 'pt-12 pb-6' : 'pt-10 pb-5'">
+  <div class="w-full h-full flex flex-col justify-between px-10 overflow-scroll" :class="platform === 'ios' ? 'pt-14 pb-6' : 'pt-10 pb-5'">
     <div>
       <img src="/images/logo-cyan.png" alt="Stockwise Logo" class="h-24 mx-auto">
       <h1 class="pt-3 text-3xl font-medium text-bright-cyan text-center">Stockwise</h1>
@@ -93,7 +93,7 @@ export default defineComponent({
         const response = await this.$signUp(this.email.trim(), this.password)
         this.authMessage = response
         if (response === 'success') {
-          window.location.href = `${this.config.DOMAIN}/portfolios`
+          this.$router.push('/portfolios')
         } else {
           this.disabledSignUp = false
         }

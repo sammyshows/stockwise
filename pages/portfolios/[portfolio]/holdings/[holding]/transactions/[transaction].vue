@@ -70,11 +70,11 @@
                 <input v-model="transaction.time" id="time" type="time" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" />
               </div>
             </div>
-          </TransitionGroup>
-        </div>
 
-        <div class="w-full flex justify-end my-7">
-          <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updateTransaction()" />
+            <div key="7" class="w-full flex justify-end my-7">
+              <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'SAVING' : 'SAVE'" @clicked="updateTransaction()" />
+            </div>
+          </TransitionGroup>
         </div>
       </div>
     </div>

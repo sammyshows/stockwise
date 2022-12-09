@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between h-full" :class="platform === 'ios' ? 'pt-12 pb-6' : 'pt-10 pb-4'">
+  <div class="flex flex-col justify-between h-full" :class="platform === 'ios' ? 'pt-14 pb-6' : 'pt-10 pb-4'">
     <div class="h-full overflow-hidden flex flex-col flex-1">
       <slot></slot>
     </div>

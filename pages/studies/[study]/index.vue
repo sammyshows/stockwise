@@ -120,7 +120,7 @@ export default defineComponent({
            <br><br>
             <ul class="px-5 text-xs list-disc">
               <li>Has the company been operating for 10+ years?</li>
-              <li>Does they have a long history of profits?</li>
+              <li>Do they have a long history of profits?</li>
               <li>Has the current management / CEO been in the position for a long period?</li>
             </ul>
             <br><h2 class="font-medium mb-1 text-base text-bright-cyan">Words from The Buff</h2>
@@ -204,7 +204,7 @@ export default defineComponent({
           <div class="text-xs">
             <span class="text-gray-400 italic">Calculating the ROE is relatively advanced and requires you to use a company's financials. If you prefer, you can likely find the ROE on the web and use that instead. Please note that the method used below has been adjusted to get a slightly different but more accurate view of the ROE.            </span>
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">ROE, not EPS?</h2>
-            A lot of analysts like to use the earnings per share (EPS) to guage a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
+            A lot of analysts like to use the earnings per share (EPS) to gauge a company's performance. However, this doesn't give a clear picture of a company's performance since they tend to retain part of the previous year's earnings.
             <br><br>Since the denominator (number of shares) of EPS is generally static, it is not difficult to increase earnings each year since each year they have more capital to generate returns with.
             <br><br><h2 class="font-medium mb-1 text-base text-bright-cyan">Fair enough, so what's ROE?</h2>
             Return on equity (ROE) is a better measure of management's ability to generate a return on the shareholder's capital. Here's the formula:

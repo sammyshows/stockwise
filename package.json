@@ -6,8 +6,7 @@
     "dev": "nuxi dev ",
     "build": "nuxi build",
     "start": "node .output/server/index.mjs",
-    "createdb_dev": "cat schema.sql | psql stockwise -U postgres",
-    "createdb_prod": "cat schema.sql | heroku pg:psql"
+    "createdb_dev": "cat schema.sql | psql stockwise -U postgres"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^5.0.0-4",
