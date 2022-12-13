@@ -10,7 +10,7 @@
             <div key="1" class="mb-2">
               <label for="type" class="flex items-end text-xs">Transaction type</label>
               <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-              <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                 <option value="" disabled selected hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
@@ -41,7 +41,7 @@
 
             <div key="5" v-if="transaction.type === 1" class="mb-2">
               <label for="method" class="flex items-end text-xs">Method</label>
-              <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                 <option :value="0">FIFO</option>
                 <option disabled :value="1">Custom Selection (Coming soon)</option>
               </select>

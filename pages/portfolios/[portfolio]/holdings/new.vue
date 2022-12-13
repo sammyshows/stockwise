@@ -7,7 +7,7 @@
 
       <div class="flex flex-col grow gap-y-10 px-12">
         <p class="text-sm text-center">What type of holding would you like to add?</p>
-        <NuxtLink v-for="holdingType in holdingTypes" :to="{ name: `portfolios-portfolio-holdings-new-${holdingType}` }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+        <NuxtLink v-for="holdingType in holdingTypes" :to="{ name: `portfolios-portfolio-holdings-new-${holdingType}` }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-xl uppercase">{{ holdingType }}</h2>
         </NuxtLink>
       </div>

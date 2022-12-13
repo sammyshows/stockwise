@@ -8,23 +8,23 @@
 
       <div class="overflow-scroll">
         <div class="flex flex-col gap-y-2.5 mt-8 px-7">
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/settings' }">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/settings' }" style="touch-action: manipulation">
             <CogIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Settings</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/faq' }">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/faq' }" style="touch-action: manipulation">
             <AnnotationIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Frequently Asked Questions</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/contact' }">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/contact' }" style="touch-action: manipulation">
             <PhoneIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Contact Us</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/policies' }">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/policies' }" style="touch-action: manipulation">
             <ClipboardListIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Terms and Privacy Policy</p>
           </NuxtLink>
-          <div @click="$logout()" class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20">
+          <div @click="$logout()" class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" style="touch-action: manipulation">
             <LogoutIcon class="h-6 text-red-400" />
             <p class="ml-6 text-sm">Log Out</p>
           </div>

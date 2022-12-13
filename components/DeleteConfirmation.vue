@@ -24,8 +24,8 @@
               <input v-model="textInput" type="text" placeholder="Please type your email to confirm" class="w-full mt-4 py-2.5 text-xs rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">
             </div>
             <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-              <button type="button" :disabled="!confirmed" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-500" @click="$emit('delete')">Delete</button>
-              <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm" @click="$emit('close', false)">Cancel</button>
+              <button type="button" :disabled="!confirmed" style="touch-action: manipulation" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-500" @click="$emit('delete')">Delete</button>
+              <button type="button" style="touch-action: manipulation" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm" @click="$emit('close', false)">Cancel</button>
             </div>
           </div>
         </TransitionChild>

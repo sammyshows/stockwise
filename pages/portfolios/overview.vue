@@ -1,6 +1,6 @@
 <template>
   <div class="px-3 overflow-scroll">
-    <select v-model="chartType" @change="createChart(activePeriod, activeText, activeSlice)" class="flex items-center w-max-c mx-auto mb-2.5 pb-0.5 text-lg bg-transparent border border-0 border-b focus:ring-0 focus:border-gray-300 border-gray-400">Total Value<span class="ml-2 mt-0.5 text-xs">&#9660;</span>
+    <select v-model="chartType" @change="createChart(activePeriod, activeText, activeSlice)" style="touch-action: manipulation" class="flex items-center w-max-c mx-auto mb-2.5 pb-0.5 text-lg bg-transparent border border-0 border-b focus:ring-0 focus:border-gray-300 border-gray-400">Total Value<span class="ml-2 mt-0.5 text-xs">&#9660;</span>
       <option value="current_value">Total Portfolios Value</option>
       <option value="initial_value">Initial Portfolios Value</option>
       <option value="all_time_change">All-time Change</option>
@@ -8,7 +8,7 @@
     </select>
 
     <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !overviewChart }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" class="px-2 py-1" :class="{ 'bg-normal-cyan': activePeriod === range.period }">{{ range.period }}</button>
+      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan': activePeriod === range.period }">{{ range.period }}</button>
     </div>
 
     <p v-if="overviewChart && overviewChart.length === 0" class="grow flex items-center py-2 px-2 text-xs text-bright-cyan text-center">Your portfolios haven't been saved long enough for any daily totals to be recorded yet</p>

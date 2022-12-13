@@ -3,7 +3,7 @@
     <div v-if="viewStudies" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
-        <NuxtLink :to="{ path: '/studies/new' }">
+        <NuxtLink :to="{ path: '/studies/new' }" style="touch-action: manipulation">
           <PlusIcon class="h-8 w-8" />
         </NuxtLink>
       </div>

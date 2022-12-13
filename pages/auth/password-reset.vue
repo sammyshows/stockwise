@@ -13,7 +13,7 @@
             <p class="text-tiny leading-normal" :class="[ invalid.email ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please add your email</p>
             <input @keyup="invalid.email = false" v-model="email" autocomplete="off" placeholder="Email" type="text" class="placeholder:text-gray-500 w-full h-12 mt-1.5 text-sm rounded-xl bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
           </div>
-          <button @click="sendResetEmail" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Send reset email</button>
+          <button @click="sendResetEmail" style="touch-action: manipulation" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Send reset email</button>
           <p class="mt-10 text-center text-gray-200 text-sm">Or go back to <a href="/auth/login" class="underline underline-offset-4 text-bright-cyan">Log in</a> or <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
         </div>
       </Transition>
@@ -37,8 +37,8 @@
             <p :class="{ 'text-bright-green': validPassword.uppercase }">&#8226; Has uppercase letters</p>
             <p :class="{ 'text-bright-green': validPassword.numbers }">&#8226; At least one number</p>
           </div>
-          <button @click="resetPassword" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Reset password</button>
-          <div @click="toggleReset" class="flex w-max mt-5 text-gray-200">
+          <button @click="resetPassword" style="touch-action: manipulation" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Reset password</button>
+          <div @click="toggleReset" class="flex w-max mt-5 text-gray-200" style="touch-action: manipulation">
             <ArrowNarrowRightIcon class="h-4 w-4 mr-2 rotate-180" />
             <p class="text-xs underline underline-offset-4">Return to previous page</p>
           </div>
@@ -48,7 +48,7 @@
 
     <div v-if="resetComplete" class="mt-10 pb-20 px-10">
       <p class="mt-4 text-xs text-center text-gray-200">Your password has successfully been updated. Return to the login page to continue.</p>
-      <button @click="redirectToLogin" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Return to log in</button>
+      <button @click="redirectToLogin" style="touch-action: manipulation" class="w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">Return to log in</button>
     </div>
   </div>
 </template>
@@ -122,7 +122,6 @@ export default defineComponent({
     async resetPassword() {
       if (this.validResetForm()) {
         const responseStatus = await this.$confirmPassword(this.secretCode, this.email, this.password)
-        console.log(responseStatus)
         if (responseStatus === 200)
           this.resetComplete = true
         else
@@ -131,7 +130,7 @@ export default defineComponent({
     },
 
     redirectToLogin() {
-      window.location.href = `${this.config.DOMAIN}/auth/login`
+      this.$router.push('/auth/login')
     }
   }
 })

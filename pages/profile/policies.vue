@@ -6,10 +6,10 @@
       </div>
 
       <div class="flex flex-col grow gap-y-5 px-12">
-        <NuxtLink :to="{ name: 'profile-policies-terms' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+        <NuxtLink :to="{ name: 'profile-policies-terms' }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-lg">TERMS AND CONDITIONS</h2>
         </NuxtLink>
-        <NuxtLink :to="{ name: 'profile-policies-privacy' }" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+        <NuxtLink :to="{ name: 'profile-policies-privacy' }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-lg">PRIVACY POLICY</h2>
         </NuxtLink>
       </div>

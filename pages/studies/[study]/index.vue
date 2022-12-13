@@ -4,7 +4,7 @@
       <PageTitle :pageDetails="pageDetails" class="truncate" />
 
       <div class="flex">
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5 ml-3" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-5 ml-3" style="touch-action: manipulation" />
         <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
@@ -247,7 +247,7 @@ export default defineComponent({
             <div class="px-3 py-2 text-sm rounded-xl border border-bright-cyan/30">
                 <h2 class="font-medium mb-1 text-base text-bright-cyan">Owner earnings formula</h2>
               <p><span class="invisible">+ </span>Net income</p>
-              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Deprecitation, Amortization and other non-cash charges</p></div>
+              <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Depreciation, Amortization and other non-cash charges</p></div>
               <div class="flex"><p class="text-bright-cyan">-&nbsp;</p><p>Capital expenditure (CAPEX)</p></div>
               <div class="flex"><p class="text-bright-cyan">+&nbsp;</p><p>Change in working capital</p></div>
             </div>

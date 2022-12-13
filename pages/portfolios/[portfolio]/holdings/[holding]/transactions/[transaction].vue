@@ -3,7 +3,7 @@
     <div class="h-20 px-3 flex justify-between">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <div>
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-1 mr-3" style="touch-action: manipulation" />
       </div>
     </div>
     <div v-if="assetData" class="flex flex-col grow px-8">
@@ -12,7 +12,7 @@
           <TransitionGroup tag="div" name="form">
             <div :key="1" class="mb-2">
               <label>Transaction type</label>
-              <select v-model="transaction.type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <select v-model="transaction.type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                 <option value="" :selected="!transaction.type" disabled hidden></option>
                 <option :value="0">BUY</option>
                 <option :value="1">SELL</option>
@@ -43,7 +43,7 @@
 
             <div :key="5" v-if="transaction.type === 1" class="mb-2">
               <label for="method" class="flex items-end">Method</label>
-              <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+              <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                 <option :value="0">FIFO</option>
                 <option disabled :value="1">Custom Selection (Coming soon)</option>
               </select>

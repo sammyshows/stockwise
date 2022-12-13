@@ -55,7 +55,7 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 300) {
                         if (body.errorMessage === "LoginRequired")
-                            window.location.href = `/auth/login`
+                            window.location.href = '/auth/login'
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
@@ -102,7 +102,7 @@ export default defineNuxtPlugin(() => {
                 await SecureStoragePlugin.clear()
 
                 if (response.status === 200)
-                    window.location.href = `/auth/login`
+                    window.location.href = '/auth/login'
             },
 
             signUp: async (email, password): Promise<string> => {

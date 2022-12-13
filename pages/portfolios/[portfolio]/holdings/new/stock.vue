@@ -13,19 +13,19 @@
                 <div key="1" v-if="!manualForm">
                   <div class="relative" >
                     <div class="absolute inset-y-0 left-0 px-3 flex items-center pointer-events-none text-gray-600">
-                      <SearchIcon class="h-7 w-7" aria-hidden="true" />
+                      <SearchIcon class="h-7 w-7" :class="{ 'mt-5': invalid.quote }" aria-hidden="true" />
                     </div>
                     <p class="mb-1.5 ml-1 text-tiny leading-normal" :class="[ invalid.quote ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a company</p>
                     <input @keyup="fetchSearch($event.target.value); this.invalid.quote = false" autocomplete="off" type="text" name="search" placeholder="Find your stock..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
                     <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
-                      <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                      <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3" style="touch-action: manipulation">
                         <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
                         <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
                       </div>
                     </div>
                   </div>
 
-                  <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
+                  <button @click="toggleManual" key="5" style="touch-action: manipulation" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Can't find a company?</button>
 
                   <div v-if="quote" class="w-full h-16 px-3 mb-5">
                     <p class="w-full text-center truncate">{{ quote.companyName }}</p>
@@ -73,18 +73,18 @@
                   <div class="mt-2">
                     <label for="currency" class="block">Local currency</label>
                     <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.currency ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select the local currency of the stock</p>
-                    <select @change="invalid.currency = false" v-model="assetCurrency" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                    <select @change="invalid.currency = false" v-model="assetCurrency" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                       <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
                     </select>
                   </div>
 
-                  <button @click="toggleManual" key="5" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
+                  <button @click="toggleManual" key="5" style="touch-action: manipulation" class="w-max mt-4 mb-3 px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Search for a company</button>
                 </div>
 
                 <div :key="3" class="mb-2">
                   <label for="type" class="flex items-end">Transaction type</label>
                   <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-                  <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <select @change="invalid.type = false" v-model="transaction.type" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                     <option value="" disabled selected hidden></option>
                     <option :value="0">BUY</option>
                     <option :value="1" disabled>SELL</option>
@@ -111,7 +111,7 @@
                 </div>
                 <div v-if="transaction.type === 1" :key="5" class="mb-2">
                   <label for="method" class="flex items-end">Method</label>
-                  <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <select v-model="transaction.sellMethod" id="method" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                     <option :value="0">FIFO</option>
                     <option :value="1">Custom Selection</option>
                   </select>
@@ -137,7 +137,7 @@
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->
-    <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0"></div>
+    <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0" style="touch-action: manipulation"></div>
   </div>
 </template>
 

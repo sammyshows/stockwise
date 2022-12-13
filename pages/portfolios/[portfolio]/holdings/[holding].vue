@@ -4,10 +4,10 @@
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }">
+          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }">
+          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -21,7 +21,7 @@
               {{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).toNumber(), 3, false, true) }} ({{ $formatNumber(BigNumber(assetData.current_price).minus(assetData.prev_close).div(assetData.prev_close).times(100).toNumber(), 2, false, true) }}%)
             </p>
           </div>
-          <button v-if="assetData.type === 3" @click="openUpdateModal = true" class="w-max h-max px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Edit</button>
+          <button v-if="assetData.type === 3" @click="openUpdateModal = true" style="touch-action: manipulation" class="w-max h-max px-4 py-1 rounded-lg border border-gray-500 bg-white/10 text-gray-200 text-italic text-xs">Edit</button>
         </div>
         <Spinner class="h-20" v-else />
       </div>

@@ -3,7 +3,7 @@
     <div class="h-full flex flex-col">
       <div class="h-20 flex justify-between">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" style="touch-action: manipulation" />
       </div>
 
       <div v-if="portfolioDetails.portfolio_name" class="flex flex-col grow justify-between px-6">

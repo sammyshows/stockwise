@@ -10,7 +10,7 @@
           </div>
 
           <div v-else class="h-14">
-            <RadioGroup v-model="value" @click="$emit('updateValue' ,moreInfo.question, this.value)">
+            <RadioGroup v-model="value" @click="$emit('updateValue' ,moreInfo.question, this.value)" style="touch-action: manipulation">
               <RadioGroupLabel class="sr-only">Choose a number</RadioGroupLabel>
               <div class="flex rounded divide-x border border-gray-200">
                 <RadioGroupOption as="template" v-for="number in 10" :value="number" v-slot="{ checked }">
@@ -29,16 +29,16 @@
             </div>
           </div>
 
-          <div @click="toggleMoreInfo" class="flex w-max mt-10">
+          <div @click="toggleMoreInfo" class="flex w-max mt-10" style="touch-action: manipulation">
             <p class="text-xs underline underline-offset-4 decoration-gray-400">HOW TO FIGURE THIS OUT</p>
             <ArrowNarrowRightIcon class="h-4 w-4 ml-2" />
           </div>
         </div>
 
         <div class="mb-7 flex justify-between">
-          <button @click="$emit('prevPage')" :class="{ 'invisible': moreInfo.question === 'question_one' }" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
-          <button v-if="moreInfo.question !== 'question_nine'" @click="$emit('nextPage')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
-          <button v-else @click="$emit('submit')" :disabled="!currentValue" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">SUBMIT</button>
+          <button @click="$emit('prevPage')" style="touch-action: manipulation" :class="{ 'invisible': moreInfo.question === 'question_one' }" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
+          <button v-if="moreInfo.question !== 'question_nine'" @click="$emit('nextPage')" :disabled="!currentValue" style="touch-action: manipulation" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
+          <button v-else @click="$emit('submit')" :disabled="!currentValue" style="touch-action: manipulation" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">SUBMIT</button>
         </div>
       </div>
     </Transition>
@@ -50,7 +50,7 @@
           <div v-html="moreInfo.info + disclaimer" class="px-3"></div>
         </div>
         <div class="h-1/6 px-3">
-          <div @click="toggleMoreInfo" class="flex w-max mt-5">
+          <div @click="toggleMoreInfo" class="flex w-max mt-5" style="touch-action: manipulation">
             <ArrowNarrowRightIcon class="h-4 w-4 mr-2 rotate-180" />
             <p class="text-xs underline underline-offset-4 decoration-gray-400">BACK TO QUESTION</p>
           </div>

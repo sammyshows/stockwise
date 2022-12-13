@@ -2,7 +2,7 @@
   <div class="flex flex-col h-full px-3 pb-5 grow overflow-scroll">
     <div class="min-h-min flex justify-between pr-2">
       <PageTitle :pageDetails="pageDetails" class="truncate" />
-      <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-1 ml-3" />
+      <TrashIcon @click="this.openModal = true" class="h-6 w-6 mt-0.75 mr-1 ml-3" style="touch-action: manipulation" />
     </div>
 
     <div class="mt-6 text-xs">
@@ -49,7 +49,7 @@
 
       <div v-if="studyDetails.notes != notes" class="absolute bottom-0 right-0 pl-3 pr-2 py-2 flex justify-between">
         <div class="flex-shrink-0">
-          <button @click="updateNotes" class="px-4 h-8 rounded-lg border border-gray-400 border bg-white/10 text-sm">SAVE</button>
+          <button @click="updateNotes" style="touch-action: manipulation" class="px-4 h-8 rounded-lg border border-gray-400 border bg-white/10 text-sm">SAVE</button>
         </div>
       </div>
     </div>

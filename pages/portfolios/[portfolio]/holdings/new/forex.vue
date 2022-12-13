@@ -13,7 +13,7 @@
                 <div class="grow">
                   <label for="from" class="flex items-end">From</label>
                   <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.from ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
-                  <select v-model="transaction.from" @change="getQuote(); invalid.from = false;" id="from" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <select v-model="transaction.from" @change="getQuote(); invalid.from = false;" id="from" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                     <option value="" disabled selected hidden></option>
                     <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
                   </select>
@@ -21,7 +21,7 @@
                 <div class="grow">
                   <label for="to" class="flex items-end">To</label>
                   <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.to ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Select a currency</p>
-                  <select v-model="transaction.to" @change="getQuote(); invalid.to = false;" id="to" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                  <select v-model="transaction.to" @change="getQuote(); invalid.to = false;" id="to" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                     <option value="" disabled selected hidden></option>
                     <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
                   </select>
@@ -46,7 +46,7 @@
               <div key="3">
                 <label for="type" class="flex items-end">Transaction type</label>
                 <p class="mt-0.5 ml-1 text-tiny leading-normal" :class="[ invalid.type ? 'text-red-600': 'hidden' ]">&#10033;&nbsp;&nbsp;Please select a transaction type</p>
-                <select v-model="transaction.type" @change="invalid.type = false;" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+                <select v-model="transaction.type" @change="invalid.type = false;" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
                   <option value="" disabled selected hidden></option>
                   <option :value="0">BUY</option>
                   <option :value="1" disabled>SELL</option>

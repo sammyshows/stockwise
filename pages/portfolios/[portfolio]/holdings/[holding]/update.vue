@@ -3,14 +3,14 @@
     <div class="h-full flex flex-col">
       <div class="flex justify-between h-20">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
-        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" />
+        <TrashIcon @click="this.openModal = true" class="h-6 w-6 mr-3" style="touch-action: manipulation" />
       </div>
 
       <div class="flex flex-col grow justify-between px-6">
         <div class="flex flex-col grow gap-y-4 text-xs">
           <div>
             <label for="type" class="flex items-end">Portfolio<span></span></label>
-            <select v-model="selectedPortfolio" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+            <select v-model="selectedPortfolio" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
               <option v-for="portfolio in portfolios" :value="portfolio.portfolio_id" :selected="portfolio.portfolio_id === selectedPortfolio">{{ portfolio.portfolio_name }}</option>
             </select>
           </div>

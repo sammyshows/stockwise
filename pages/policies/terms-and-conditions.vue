@@ -9,7 +9,7 @@
       <h2 class="mb-3 text-lg font-medium tracking-wider text-bright-cyan">User accounts</h2>
       <p class="mb-3 text-xs">As a user of this App, you may be asked to register with us and provide private information. You are responsible for ensuring the accuracy of this information, and you are responsible for maintaining the safety and security of your identifying information. You are also responsible for all activities that occur under your account or password.
         <br><br>If you think there are any possible issues regarding the security of your account on the App, inform us immediately so we may address them accordingly.
-        <br><br>The App reserve all rights to terminate accounts, edit or remove content at our sole discretion.
+        <br><br>The App reserves all rights to terminate accounts, edit or remove content at our sole discretion.
       </p>
       <h2 class="mb-3 text-lg font-medium tracking-wider text-bright-cyan">Cookies</h2>
       <p class="mb-3 text-xs">The App uses cookies to enable us to retrieve user details for each visit. Cookies are used in some areas of the App to enable the functionality of this area and ease of use for people using the App. By accessing the App and agreeing to these terms of use, you consent to our use of the required cookies.

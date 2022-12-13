@@ -9,11 +9,11 @@
       <div class="flex flex-col gap-y-2.5 px-2 text-xs">
         <div class="w-full py-3 px-3">
           <label class="block">Local currency</label>
-          <select v-model="settings.currency" @change="updateUserSettings()" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+          <select v-model="settings.currency" @change="updateUserSettings()" id="currency" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
             <option v-for="currency in currencies" :value="currency.ticker">{{ currency.ticker + ' - ' + currency.name }}</option>
           </select>
 
-          <button @click="this.openModal = true" class="w-full mt-7 py-1.5 text-xs text-red-400 rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">Delete Account</button>
+          <button @click="this.openModal = true" style="touch-action: manipulation" class="w-full mt-7 py-1.5 text-xs text-red-400 rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">Delete Account</button>
 
           <DeleteConfirmation :open="openModal"
                               title="Delete Account"

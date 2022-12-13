@@ -16,7 +16,7 @@
                 </div>
                 <input @keyup="fetchSearch($event.target.value); invalid.quote = false;" autocomplete="off" type="text" name="search" placeholder="Search for a company..." class="pl-12 placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full border-gray-400/40 rounded-lg" />
                 <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-700 border border-t-0 border-gray-600 rounded-b-lg z-10">
-                  <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+                  <div v-for="result in searchResults" @click="fetchQuote(result.symbol)" class="flex justify-between items-center h-10 w-full px-3 gap-x-3" style="touch-action: manipulation">
                     <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
                     <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
                   </div>
@@ -66,14 +66,14 @@
 
           <div class="mt-4 text-xs" key="4">
             <label for="type" class="flex items-end">Study type</label>
-            <select v-model="studyType" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white">
+            <select v-model="studyType" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
               <option value="" disabled selected hidden></option>
               <option :value="0">Warren Buffett's Principles</option>
               <option :value="1" disabled>Coming soon...</option>
             </select>
             <p class="mt-1 text-tiny text-center text-gray-400">A study based on Warren Buffett's principles for investing.</p>
           </div>
-          <button @click="toggleManual" key="5" class="w-max px-4 py-1 mt-5 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
+          <button @click="toggleManual" key="5" style="touch-action: manipulation" class="w-max px-4 py-1 mt-5 rounded-lg border border-gray-400 bg-white/10 text-xs">{{ !manualForm ? "Can't find a company?" : "Search for a company" }}</button>
 
           <div key="5" class="mt-5 pt-5 border-t border-bright-cyan/40 text-gray-200">
             <h2 class="mb-1 text-xs">DISCLAIMER</h2>
@@ -90,7 +90,7 @@
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->
-    <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0"></div>
+    <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0" style="touch-action: manipulation"></div>
   </div>
 </template>
 
