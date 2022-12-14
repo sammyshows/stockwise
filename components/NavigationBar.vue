@@ -9,7 +9,7 @@
           <SearchIcon :class="[{ 'text-gray-800': routeBranch !== 'search' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/" style="touch-action: manipulation">
-          <HomeIcon :class="[{ 'text-gray-800': routeBranch !== '' }, 'h-10 w-10']" />
+          <HomeIcon :class="[{ 'text-gray-800': routeBranch !== 'index' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/studies" style="touch-action: manipulation">
           <DocumentSearchIcon :class="[{ 'text-gray-800': routeBranch !== 'studies' }, 'h-10 w-10']" />
@@ -34,7 +34,8 @@ export default {
 
   computed: {
     routeBranch() {
-      return this.$route.path.split('/')[1]
+      // ['notifications', 'search', 'portfolios', 'studies', 'profile']
+      return this.$route.name.split('-')[0]
     }
   }
 }
