@@ -1,13 +1,13 @@
 <template>
   <div class="w-full h-full flex flex-col">
-    <div v-if="$route.path === `/portfolios/${$route.params.portfolio}/holdings/new`">
+    <div v-if="$route.path === `/${$route.params.portfolio}/holdings/new`">
       <div class="flex justify-between h-14 mb-10 px-3">
         <PageTitle v-if="pageDetails.subtitle" :pageDetails="pageDetails" class="truncate mr-3" />
       </div>
 
       <div class="flex flex-col grow gap-y-10 px-12">
         <p class="text-sm text-center">What type of holding would you like to add?</p>
-        <NuxtLink v-for="holdingType in holdingTypes" :to="{ name: `portfolios-portfolio-holdings-new-${holdingType}` }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+        <NuxtLink v-for="holdingType in holdingTypes" :to="{ name: `index-portfolio-holdings-new-${holdingType}` }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-xl uppercase">{{ holdingType }}</h2>
         </NuxtLink>
       </div>
@@ -47,7 +47,7 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Holding',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/portfolios/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,
       holdingTypes: ['stock', 'forex', 'cash']

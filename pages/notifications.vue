@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container" activeButton="notifications">
+  <div class="flex flex-col justify-between h-full">
     <div class="flex flex-col grow px-3">
       <PageTitle :pageDetails="pageDetails" class="min-h-min mb-4" />
 
@@ -7,7 +7,7 @@
         <h2 class="animate-pulse text-xl text-center font-medium tracking-wider text-gray-500">COMING SOON...</h2>
       </div>
     </div>
-  </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts">

@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `grant_type=authorization_code&client_id=${process.env.AWS_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.DOMAIN + '/portfolios')}&code=${eventBody.code}`
+        body: `grant_type=authorization_code&client_id=${process.env.AWS_CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.DOMAIN)}&code=${eventBody.code}`
     }).then(res => {
         return res.json()
     })

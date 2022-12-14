@@ -95,7 +95,7 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Cash',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/portfolios/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`
       },
       portfolioId: this.$route.params.portfolio,
       currencies: {
@@ -233,7 +233,7 @@ export default defineComponent({
 
       if (response.status === 200) {
         this.$emit('updateHoldings')
-        await this.$router.push({name: 'portfolios-portfolio-holdings-holding',
+        await this.$router.push({name: 'index-portfolio-holdings-holding',
           params: {
             portfolio: this.portfolioId,
             holding: holdingId,

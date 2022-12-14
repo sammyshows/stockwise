@@ -2,12 +2,12 @@
   <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
-        <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/portfolios' }" class="truncate mr-3" />
+        <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-new`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-holdings-new`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ name: `portfolios-portfolio-update`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-update`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -69,7 +69,7 @@ export default defineComponent({
 
   watch: {
     $route (to, from) {
-      if (from.name === 'portfolios-portfolio-update')
+      if (from.name === 'index-portfolio-update')
         this.tabConfig.activeTab = 'HOLDINGS'
     }
   },
@@ -83,13 +83,13 @@ export default defineComponent({
       pageDetails: {
         title: this.portfolio?.portfolio_name,
         subtitle: 'PORTFOLIOS',
-        returnPath: '/portfolios'
+        returnPath: '/'
       },
       tabConfig: {
-        activeTab: this.$route.path == `/portfolios/${this.$route.params.portfolio}/overview` ? 'OVERVIEW' : 'HOLDINGS',
+        activeTab: this.$route.path == `/${this.$route.params.portfolio}/overview` ? 'OVERVIEW' : 'HOLDINGS',
         tabs: [
-          { name: 'HOLDINGS', path: `/portfolios/${this.$route.params.portfolio}` },
-          { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/overview` }
+          { name: 'HOLDINGS', path: `/${this.$route.params.portfolio}` },
+          { name: 'OVERVIEW', path: `/${this.$route.params.portfolio}/overview` }
         ]
       },
       responseReceived: false, // used to indicate whether a response has been received yet from the API call to holdings-read

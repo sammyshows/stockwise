@@ -10,7 +10,7 @@
     <div v-if="transactions && transactions.length > 0" class="overflow-scroll grow px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="transaction in transactions" :key="transaction.transaction_id">
-          <NuxtLink :to="{ name: 'portfolios-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.transaction_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.transaction_id } }" style="touch-action: manipulation">
             <!--      STOCKS or FOREX      -->
             <div v-if="transaction.asset_type !== 2" class="mb-3">
               <div v-if="transaction.type === 0" class="flex">

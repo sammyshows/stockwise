@@ -53,7 +53,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    await this.$login
+    await this.$login()
     this.token = this.authStore.accessToken
     this.getStudy()
   },
@@ -300,7 +300,7 @@ export default defineComponent({
           .then(response => response.json())
           .then(response => response.data)
 
-      this.study = {
+      const userStudy = {
         question_one: response.question_one,
         question_two: response.question_two,
         question_three: response.question_three,
@@ -311,6 +311,8 @@ export default defineComponent({
         question_eight: response.question_eight,
         question_nine: response.question_nine
       }
+      this.study = userStudy
+
       this.studyDetails = {
         name: response.name,
         type: response.type,

@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container" activeButton="profile">
+  <div class="flex flex-col justify-between h-full">
     <div v-if="$route.path === '/profile'" class="flex flex-col grow overflow-hidden">
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
@@ -32,7 +32,7 @@
       </div>
     </div>
     <NuxtPage v-else :userSettings="userSettings" />
-  </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts">

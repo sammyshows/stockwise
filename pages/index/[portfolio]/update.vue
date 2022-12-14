@@ -81,7 +81,7 @@ export default defineComponent({
       portfolioId: this.$route.params.portfolio,
       pageDetails: {
         title: 'Edit Portfolio',
-        returnPath: `/portfolios/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`
       },
       portfolioDetails: {
         id: this.portfolio?.portfolio_id,
@@ -135,7 +135,7 @@ export default defineComponent({
 
         if (response.status === 200) {
           setTimeout(() => this.portfolioStoreUpdate(), 600)
-          await this.$router.push(`/portfolios/${this.portfolioId}`)
+          await this.$router.push(`/${this.portfolioId}`)
         }
       }
       this.disabledSave = false
@@ -157,7 +157,7 @@ export default defineComponent({
       })
       if (response.status === 200) {
         setTimeout(() => this.portfolioStoreDelete(), 600)
-        await this.$router.push('/portfolios')
+        await this.$router.push('/')
       }
     },
 

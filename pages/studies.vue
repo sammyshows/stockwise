@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container" activeButton="studies">
+  <div class="flex flex-col justify-between h-full">
     <div v-if="viewStudies" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
@@ -20,7 +20,7 @@
       </div>
     </div>
     <NuxtPage v-else/>
-  </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts">

@@ -20,8 +20,10 @@
                   <p class="text-sm text-gray-400">{{ message }}</p>
                 </div>
               </div>
-              <p v-if="typeToConfirm" class="mt-2 text-xs text-center text-gray-400">Please type <span class="text-red-400">{{ typeToConfirm }}</span> to confirm:</p>
-              <input v-model="textInput" type="text" placeholder="Please type your email to confirm" class="w-full mt-4 py-2.5 text-xs rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">
+              <div v-if="typeToConfirm">
+                <p class="mt-2 text-xs text-center text-gray-400">Please type <span class="text-red-400">{{ typeToConfirm }}</span> to confirm:</p>
+                <input v-model="textInput" type="text" placeholder="Please type your email to confirm" class="w-full mt-4 py-2.5 text-xs rounded-md bg-gray-900/20 border border-red-400/40 focus:ring-0 focus:border-red-500">
+              </div>
             </div>
             <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
               <button type="button" :disabled="!confirmed" style="touch-action: manipulation" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-500" @click="$emit('delete')">Delete</button>

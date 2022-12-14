@@ -3,7 +3,7 @@
     <div class="h-full overflow-hidden flex flex-col flex-1">
       <slot></slot>
     </div>
-    <NavigationBar :activeButton="activeButton"></NavigationBar>
+    <NavigationBar />
   </div>
 </template>
 
@@ -13,8 +13,6 @@ import { Capacitor } from '@capacitor/core';
 
 export default {
   name: "PageContainer",
-
-  props: ['activeButton'],
 
   components: {
     NavigationBar

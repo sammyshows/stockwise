@@ -1,5 +1,5 @@
 <template>
-  <NuxtLayout name="page-container" activeButton="search">
+  <div>
     <div v-if="$route.path === '/search'">
       <div class="h-14 mb-5 px-3">
         <PageTitle :pageDetails="pageDetails" class="min-h-min mb-4" />
@@ -38,7 +38,7 @@
       <div v-if="searchResults.length !== 0" @click="clearSearchResults" class="absolute top-0 left-0 bottom-14 right-0" style="touch-action: manipulation"></div>
     </div>
     <NuxtPage v-else />
-  </NuxtLayout>
+  </div>
 </template>
 
 <script lang="ts">

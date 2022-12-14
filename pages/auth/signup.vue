@@ -22,16 +22,16 @@
         <p :class="{ 'text-bright-green': validPassword.uppercase }">&#8226; Has uppercase letters</p>
         <p :class="{ 'text-bright-green': validPassword.numbers }">&#8226; At least one number</p>
       </div>
-      <button :disabled="disabledSignUp" @click="signUp" class="flex justify-center items-center w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">
+      <button :disabled="disabledSignUp" @click="signUp" style="touch-action: manipulation" class="flex justify-center items-center w-full h-12 mt-5 border border-bright-cyan rounded-xl font-medium text-lg text-bright-cyan">
         <p>{{ disabledSignUp ? 'Creating account' : 'Create account' }}</p>
         <Spinner v-if="disabledSignUp" class="h-5 w-5 my-auto ml-2"></Spinner>
       </button>
       <p class="mt-5 text-center text-gray-200 text-sm">Already have an account? <a href="/auth/login" class="underline underline-offset-4 text-bright-cyan">Log in</a></p>
-      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
-      <div @click="googleLogin()" class="flex items-center bg-white rounded-full">
-        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
-        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
-      </div>
+<!--      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>-->
+<!--      <div @click="googleLogin()" class="flex items-center bg-white rounded-full">-->
+<!--        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">-->
+<!--        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>-->
+<!--      </div>-->
     </div>
     <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
   </div>
@@ -74,7 +74,7 @@ export default defineComponent({
     },
 
     googleLogin() {
-      window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}/portfolios&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
+      window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
     },
 
     validatePassword(): Boolean {
@@ -93,7 +93,7 @@ export default defineComponent({
         const response = await this.$signUp(this.email.trim(), this.password)
         this.authMessage = response
         if (response === 'success') {
-          this.$router.push('/portfolios')
+          this.$router.push('/')
         } else {
           this.disabledSignUp = false
         }

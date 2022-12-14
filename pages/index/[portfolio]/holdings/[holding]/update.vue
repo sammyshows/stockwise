@@ -78,7 +78,7 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
+        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       portfolios: [],
       selectedPortfolio: this.$route.params.portfolio
@@ -136,7 +136,7 @@ export default defineComponent({
       if (response.status === 200) {
         this.$emit('updatePortfolios')
         setTimeout(() => this.holdingStoreUpdate(), 600)
-        this.$router.push(`/portfolios/${this.portfolioId}`)
+        this.$router.push(`/${this.portfolioId}`)
       }
 
       this.disabledSave = false
@@ -160,7 +160,7 @@ export default defineComponent({
       if (response.status === 200) {
         this.$emit('updatePortfolios')
         setTimeout(() => this.holdingStoreDelete(), 600)
-        this.$router.push(`/portfolios/${this.portfolioId}`)
+        this.$router.push(`/${this.portfolioId}`)
       }
     },
 

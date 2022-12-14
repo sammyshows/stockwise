@@ -153,7 +153,7 @@ export default defineComponent({
 
   watch: {
     $route (to, from){
-      if (from.name === 'portfolios-portfolio-holdings-holding-update')
+      if (from.name === 'index-portfolio-holdings-holding-update')
         this.tabConfig.activeTab = 'TRANSACTIONS'
     }
   },
@@ -171,7 +171,7 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
+        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
       },
       assetType: null as (null | number),
       holdingQuantity: null as (null | number),
@@ -287,7 +287,7 @@ export default defineComponent({
 
         if (response.status === 200) {
           this.$emit('updateTransactions')
-          this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
+          this.$router.push(`/${this.portfolioId}/holdings/${this.holdingId}`)
         }
       }
       this.disabledSave = false
@@ -308,7 +308,7 @@ export default defineComponent({
 
       if (response.status === 200) {
         this.$emit('updateTransactions')
-        this.$router.push(`/portfolios/${this.portfolioId}/holdings/${this.holdingId}`)
+        this.$router.push(`/${this.portfolioId}/holdings/${this.holdingId}`)
       }
     },
 

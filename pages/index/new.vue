@@ -57,7 +57,7 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'New Portfolio',
-        returnPath: '/portfolios'
+        returnPath: '/'
       },
       invalid: {
         name: false
@@ -92,7 +92,7 @@ export default defineComponent({
         })
         if (response.status === 200) {
           setTimeout(() => this.portfolioStoreCreate(), 600)
-          await this.$router.push('/portfolios')
+          await this.$router.push('/')
         }
       }
       this.disabledSave = false

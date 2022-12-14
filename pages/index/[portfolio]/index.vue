@@ -9,7 +9,7 @@
     <div v-if="holdings" class="grow overflow-scroll px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="holding in filteredHoldings" :key="holding.holding_id">
-          <NuxtLink :to="{ name: 'portfolios-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id } }" style="touch-action: manipulation">
             <div class="mb-3">
               <div class="flex justify-end">
                 <div class="grow">

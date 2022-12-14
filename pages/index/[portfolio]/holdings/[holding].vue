@@ -4,10 +4,10 @@
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `portfolios-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `portfolios-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }" style="touch-action: manipulation">
+          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `index-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -102,7 +102,7 @@ export default defineComponent({
 
   watch: {
     $route (to, from) {
-      if (from.name === 'portfolios-portfolio-holdings-holding-update')
+      if (from.name === 'index-portfolio-holdings-holding-update')
         this.tabConfig.activeTab = 'TRANSACTIONS'
     }
   },
@@ -122,14 +122,14 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/portfolios/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`
       },
       tabConfig: {
         activeTab: this.getActiveTab(),
         tabs: [
-          { name: 'TRANSACTIONS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}` },
-          { name: 'INSIGHTS', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/insights` },
-          { name: 'OVERVIEW', path: `/portfolios/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/overview` }
+          { name: 'TRANSACTIONS', path: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}` },
+          { name: 'INSIGHTS', path: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/insights` },
+          { name: 'OVERVIEW', path: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}/overview` }
         ]
       },
       transactions: null as ([] | null),
@@ -205,8 +205,6 @@ export default defineComponent({
         })
       })
         .then(response => response.json())
-
-      console.log(response.transactions)
 
       this.transactionStore.replaceTransactions(this.holdingId, response.transactions)
       this.assetData = response.assetData
@@ -308,9 +306,9 @@ export default defineComponent({
     },
 
     getActiveTab(): string {
-      if (this.$route.name === 'portfolios-portfolio-holdings-holding-insights')
+      if (this.$route.name === 'index-portfolio-holdings-holding-insights')
         return 'INSIGHTS'
-      else if (this.$route.name === 'portfolios-portfolio-holdings-holding-overview')
+      else if (this.$route.name === 'index-portfolio-holdings-holding-overview')
         return 'OVERVIEW'
       else
         return 'TRANSACTIONS'
