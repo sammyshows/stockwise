@@ -34,7 +34,7 @@ export default {
 
   computed: {
     routeBranch() {
-      // ['notifications', 'search', 'portfolios', 'studies', 'profile']
+      // ['notifications', 'search', 'index', 'studies', 'profile']
       return this.$route.name.split('-')[0]
     }
   }
