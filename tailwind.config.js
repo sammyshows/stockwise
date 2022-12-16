@@ -24,7 +24,7 @@ module.exports = {
         'bright-yellow': '#FFFF00',
         'opaque-cyan': 'rgba(0, 255, 187, 0.10)',
         'bright-green': '#45FF58',
-        'bright-red': '#E02F2F'
+        'bright-red': '#FA6A6A'
       },
 
       fontSize: {
