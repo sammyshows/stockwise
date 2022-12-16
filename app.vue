@@ -21,7 +21,7 @@ export default {
 
   computed: {
     // ['notifications', 'search', 'index', 'studies', 'profile']
-    routeBranch() { this.$route.name.split('-')[0] }
+    routeBranch() { return this.$route.name.split('-')[0] }
   }
 }
 </script>
