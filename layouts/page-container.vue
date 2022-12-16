@@ -22,14 +22,6 @@ export default {
     return {
       platform: Capacitor.getPlatform()
     }
-  },
-
-  mounted() {
-    // Any of this still necessary? There's a meta tag for this in the nuxt.config.ts file
-    let viewheight = window.innerHeight;
-    let viewwidth = window.innerWidth;
-    let viewport = document.querySelector("meta[name=viewport]");
-    viewport.setAttribute("content", "height=" + viewheight + ", width=" + viewwidth + ", initial-scale=1.0");
   }
 }
 </script>
