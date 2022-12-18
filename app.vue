@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between h-screen w-screen">
+  <div class="flex flex-col justify-between h-full w-full">
     <NuxtLayout v-if="navRoutes.includes(routeBranch)" name="page-container">
       <NuxtPage />
     </NuxtLayout>
