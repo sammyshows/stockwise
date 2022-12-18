@@ -4,6 +4,7 @@
 
     <div class="h-full px-3 overflow-scroll">
       <p class="mb-3 text-xs text-center">Please read these terms and conditions (“Agreement”) carefully before using Stockwise (“App").</p>
+      <p class="mb-3 text-xs text-center">Last updated: December 18, 2022</p>
       <h2 class="mb-3 text-lg font-medium tracking-wider text-bright-cyan">Conditions of use</h2>
       <p class="mb-3 text-xs">By using this App, you certify and acknowledge that you have read and reviewed this Agreement and that you agree to comply with its terms. If you do not want to be bound by the terms of this Agreement, you are advised to leave the App accordingly.</p>
       <h2 class="mb-3 text-lg font-medium tracking-wider text-bright-cyan">User accounts</h2>
