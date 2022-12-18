@@ -1,6 +1,6 @@
 <template>
-  <div class="px-3 overflow-scroll">
-    <div class="flex justify-between min-h-min">
+  <div class="flex flex-col overflow-hidden">
+    <div class="flex justify-between min-h-min px-3">
       <PageTitle :pageDetails="pageDetails" class="truncate mr-3" />
       <img v-if="['NASDAQ', 'NEW YORK STOCK EXCHANGE INC.', 'New York Stock Exchange'].includes(quote.primaryExchange)" class="h-11 text-tiny" :src="`https://storage.googleapis.com/iexcloud-hl37opg/api/logos/${symbol}.png`">
     </div>
@@ -18,124 +18,126 @@
       <Spinner class="h-20" v-else />
     </div>
 
-    <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
-      <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
-      <button disabled style="touch-action: manipulation" class="px-2 py-1 text-gray-600">15Y</button>
-    </div>
+    <div class="overflow-scroll px-3">
+      <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
+        <button disabled style="touch-action: manipulation" class="px-2 py-1 text-gray-600">15Y</button>
+      </div>
 
-    <div class="relative">
-      <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activePeriod) }">
-        <!--  This chart gets replaced on creation  -->
-        <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+      <div class="relative">
+        <div id="chartContainer" :class="{ 'mr-2': !['5D', '1M'].includes(activePeriod) }">
+          <!--  This chart gets replaced on creation  -->
+          <canvas id="chart" height="224" class="w-full" :class="{ 'hidden': !chartDataDay }"></canvas>
+        </div>
+        <div v-if="noDailyChart && activePeriod === '1D'" class="absolute top-1/3 w-full">
+          <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
+        </div>
       </div>
-      <div v-if="noDailyChart && activePeriod === '1D'" class="absolute top-1/3 w-full">
-        <p class="w-max mx-auto py-3 px-5 rounded-lg bg-gray-600/40 text-xs text-gray-400 text-center">Unavailable during market hours</p>
-      </div>
-    </div>
 
-    <div v-if="!chartDataDay" style="height: 250px;">
-      <Spinner></Spinner>
-    </div>
+      <div v-if="!chartDataDay" style="height: 250px;">
+        <Spinner></Spinner>
+      </div>
 
-    <div class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
-      <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
-        <p class="text-tiny mb-0.5">High</p>
-        <p class="text-tiny mb-0.5">{{ quote["high"] || '-' }}</p>
+      <div class="grid grid-cols-2 gap-x-4 mt-4 mb-6">
+        <div class="cols-span-1 flex justify-between"> <!-- Daily high -->
+          <p class="text-tiny mb-0.5">High</p>
+          <p class="text-tiny mb-0.5">{{ quote["high"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 52 week high -->
+          <p class="text-tiny mb-0.5">52wk High</p>
+          <p class="text-tiny mb-0.5">{{ stats["week52high"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Daily low -->
+          <p class="text-tiny mb-0.5">Low</p>
+          <p class="text-tiny mb-0.5">{{ quote["low"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 52 week low -->
+          <p class="text-tiny mb-0.5">52wk Low</p>
+          <p class="text-tiny mb-0.5">{{ stats["week52low"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Prev Close -->
+          <p class="text-tiny mb-0.5">Prev Close</p>
+          <p class="text-tiny mb-0.5">{{ quote["previousClose"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Market Cap -->
+          <p class="text-tiny mb-0.5">Market Cap</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(quote["marketCap"], 2) || '-' }}</p> <!-- May want to use a computed value here? -->
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Open -->
+          <p class="text-tiny mb-0.5">Open</p>
+          <p class="text-tiny mb-0.5">{{ quote["open"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Beta -->
+          <p class="text-tiny mb-0.5">Beta</p>
+          <p class="text-tiny mb-0.5">{{ parseFloat(stats["beta"]).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- P/E Ratio -->
+          <p class="text-tiny mb-0.5">P/E</p>
+          <p class="text-tiny mb-0.5">{{ quote["peRatio"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Fwd P/E Ratio -->
+          <p class="text-tiny mb-0.5">Forward P/E</p>
+          <p class="text-tiny mb-0.5">{{ (parseFloat(stats["forwardPERatio"])).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- EPS -->
+          <p class="text-tiny mb-0.5">EPS</p>
+          <p class="text-tiny mb-0.5">{{ stats["ttmEPS"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Volume -->
+          <p class="text-tiny mb-0.5">Volume</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(quote["volume"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- 1 Year Target -->
+          <p class="text-tiny mb-0.5">EBITDA</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["EBITDA"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Shares -->
+          <p class="text-tiny mb-0.5">Shares</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["sharesOutstanding"], 2) || '-' }}</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Sales -->
+          <p class="text-tiny mb-0.5">Price / Sales</p>
+          <p class="text-tiny mb-0.5">{{ stats["priceToSales"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Price / Book</p>
+          <p class="text-tiny mb-0.5">{{ stats["priceToBook"] || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Cash</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["totalCash"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
+          <p class="text-tiny mb-0.5">Debt</p>
+          <p class="text-tiny mb-0.5">{{ $simplify(stats["currentDebt"], 2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Dividend Per Share -->
+          <p class="text-tiny mb-0.5">Div Per Share</p>
+          <p class="text-tiny mb-0.5">{{ (parseFloat(stats["ttmDividendRate"])).toFixed(2) || '-' }}</p>
+        </div>
+        <div class="cols-span-1 flex justify-between"> <!-- Dividend Yield -->
+          <p class="text-tiny mb-0.5">Div Yield</p>
+          <p class="text-tiny mb-0.5">{{ (stats["dividendYield"] * 100).toFixed(2) || '-' }}%</p>
+        </div>
       </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 52 week high -->
-        <p class="text-tiny mb-0.5">52wk High</p>
-        <p class="text-tiny mb-0.5">{{ stats["week52high"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Daily low -->
-        <p class="text-tiny mb-0.5">Low</p>
-        <p class="text-tiny mb-0.5">{{ quote["low"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 52 week low -->
-        <p class="text-tiny mb-0.5">52wk Low</p>
-        <p class="text-tiny mb-0.5">{{ stats["week52low"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Prev Close -->
-        <p class="text-tiny mb-0.5">Prev Close</p>
-        <p class="text-tiny mb-0.5">{{ quote["previousClose"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Market Cap -->
-        <p class="text-tiny mb-0.5">Market Cap</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(quote["marketCap"], 2) || '-' }}</p> <!-- May want to use a computed value here? -->
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Open -->
-        <p class="text-tiny mb-0.5">Open</p>
-        <p class="text-tiny mb-0.5">{{ quote["open"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Beta -->
-        <p class="text-tiny mb-0.5">Beta</p>
-        <p class="text-tiny mb-0.5">{{ parseFloat(stats["beta"]).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- P/E Ratio -->
-        <p class="text-tiny mb-0.5">P/E</p>
-        <p class="text-tiny mb-0.5">{{ quote["peRatio"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Fwd P/E Ratio -->
-        <p class="text-tiny mb-0.5">Forward P/E</p>
-        <p class="text-tiny mb-0.5">{{ (parseFloat(stats["forwardPERatio"])).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- EPS -->
-        <p class="text-tiny mb-0.5">EPS</p>
-        <p class="text-tiny mb-0.5">{{ stats["ttmEPS"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Volume -->
-        <p class="text-tiny mb-0.5">Volume</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(quote["volume"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- 1 Year Target -->
-        <p class="text-tiny mb-0.5">EBITDA</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["EBITDA"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Shares -->
-        <p class="text-tiny mb-0.5">Shares</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["sharesOutstanding"], 2) || '-' }}</p> <!-- May want to use a computed value here so can choose to display in Thousands(K), Millions(M) or Billions(B) -->
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Sales -->
-        <p class="text-tiny mb-0.5">Price / Sales</p>
-        <p class="text-tiny mb-0.5">{{ stats["priceToSales"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Price / Book</p>
-        <p class="text-tiny mb-0.5">{{ stats["priceToBook"] || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Cash</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["totalCash"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Price / Book -->
-        <p class="text-tiny mb-0.5">Debt</p>
-        <p class="text-tiny mb-0.5">{{ $simplify(stats["currentDebt"], 2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Dividend Per Share -->
-        <p class="text-tiny mb-0.5">Div Per Share</p>
-        <p class="text-tiny mb-0.5">{{ (parseFloat(stats["ttmDividendRate"])).toFixed(2) || '-' }}</p>
-      </div>
-      <div class="cols-span-1 flex justify-between"> <!-- Dividend Yield -->
-        <p class="text-tiny mb-0.5">Div Yield</p>
-        <p class="text-tiny mb-0.5">{{ (stats["dividendYield"] * 100).toFixed(2) || '-' }}%</p>
-      </div>
-    </div>
 
-    <div class="flex px-4 mb-6 gap-x-6">
-      <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
-    </div>
+      <div class="flex px-4 mb-6 gap-x-6">
+        <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
+      </div>
 
-    <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
-    <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Income Statement</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-    </div>
-    <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Balance Sheet</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
-    </div>
-    <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">
-      <p class="text-xs">Cash Flow</p>
-      <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
+      <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Income Statement</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
+      <div class="flex justify-between items-center px-1 py-2 border-t border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Balance Sheet</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
+      <div class="flex justify-between items-center mb-10 px-1 py-2 border-t border-b border-white hover:bg-gray-700 duration-300">
+        <p class="text-xs">Cash Flow</p>
+        <SpeakerphoneIcon class="h-5 w-5 text-bright-cyan" />
+      </div>
     </div>
   </div>
 </template>

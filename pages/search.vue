@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col justify-between h-full">
     <div v-if="$route.path === '/search'">
       <div class="h-14 mb-5 px-3">
         <PageTitle :pageDetails="pageDetails" class="min-h-min mb-4" />
