@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "F74BA3P8QF.app.stockwise.twa",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
