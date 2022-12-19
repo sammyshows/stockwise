@@ -74,6 +74,7 @@ export default {
 
   data() {
     return {
+      domain: useRuntimeConfig().DOMAIN,
       token: '',
       disabledSave: false,
       currencies: [
@@ -107,7 +108,7 @@ export default {
         price: false,
         currency: false
       },
-      price: this.assetData.current_price,
+      price: this.$formatNumber(this.assetData.current_price, 2, false, false),
       currency: this.assetData.currency_symbol
     }
   },
@@ -125,7 +126,7 @@ export default {
     async updateAsset(): Promise<void> {
       this.disabledSave = true
       if (this.validateForm()) {
-        const response = await fetch('/api/asset-custom-update', {
+        const response = await fetch(this.domain + '/api/asset-custom-update', {
           headers: {
             authorization: this.token
           },
