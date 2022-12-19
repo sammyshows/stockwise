@@ -139,8 +139,9 @@ export default defineNuxtPlugin(() => {
                     }
                 })
 
+                // Refactor into a reusable function with identical block below
                 if (response.accessToken) {
-                    console.log('response has security token')
+                    console.log('Response has security token.')
                     await useAuth().$patch({
                         accessToken: response.accessToken,
                         accessTokenExp: response.accessTokenExp
@@ -174,8 +175,9 @@ export default defineNuxtPlugin(() => {
                 })
                     .then((res) => res.json())
 
+                // Refactor into a reusable function with identical block above
                 if (response.accessToken) {
-                    console.log('response has security token')
+                    console.log('Response has security token.')
                     await useAuth().$patch({
                         accessToken: response.accessToken,
                         accessTokenExp: response.accessTokenExp
