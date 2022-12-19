@@ -23,11 +23,11 @@
         <Spinner v-if="disabledSignIn" class="h-5 w-5 my-auto ml-2"></Spinner>
       </button>
       <p class="mt-5 text-center text-gray-100 text-sm">Don't have an account? <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
-<!--      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>-->
-<!--      <div @click="googleLogin" class="flex items-center bg-white rounded-full">-->
-<!--        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">-->
-<!--        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>-->
-<!--      </div>-->
+      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
+      <div @click="googleLogin" class="flex items-center bg-white rounded-full">
+        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
+        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+      </div>
     </div>
     <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
   </div>
@@ -36,6 +36,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 
 export default defineComponent({
   name: "Signup",
@@ -63,8 +64,13 @@ export default defineComponent({
       return this.invalid.email === false && this.invalid.password === false
     },
 
-    googleLogin() {
-      window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
+    async googleLogin() {
+      // If the user is on the web, go directly to the sign in url.
+      if (this.platform === 'web')
+        window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
+      // If the user is in an App, open a Browser within the app so the user is returned to the app using deep links after signing in.
+      else
+        await Browser.open({ url: `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c` })
     },
 
     async login() {

@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 import cookie from 'cookie'
 import { v4 as uuidv4 } from 'uuid';
 import jwt from "jsonwebtoken"
-import {CognitoRefreshToken, CognitoUser, CognitoUserPool} from "amazon-cognito-identity-js";
+import { CognitoRefreshToken, CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 const client = require("../database/client.ts")
 
 
@@ -113,20 +113,30 @@ exports.handler = async (event, context) => {
         })
     }
 
-    setCookies()
+    if (event.headers.origin === 'https://www.stockwise.app')
+        setCookies()
 
     if (accessToken && idToken && refreshToken) {
-        console.log('success google login')
+        console.log('Successful google login')
         return {
             statusCode: 200,
+            // Only set cookies if the origin is the web. Apps should not have cookies sent back to them simply for security
+            // reasons - there's no point exposing these tokens when we don't need to
             'multiValueHeaders': {
-                'Set-Cookie': [ accessCookie, idCookie, refreshCookie ]
+                'Set-Cookie': event.headers.origin === 'https://www.stockwise.app' ? [ accessCookie, idCookie, refreshCookie ] : []
             },
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Cache-Control': 'no-cache',
                 'Content-Type': 'text/html'
-            }
+            },
+            body: JSON.stringify({
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                idToken: idToken,
+                userId: userId,
+                accessTokenExp: jwt.decode(accessToken).exp
+            })
         }
     } else {
         console.log('failed google login')

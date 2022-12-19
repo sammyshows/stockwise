@@ -166,12 +166,35 @@ export default defineNuxtPlugin(() => {
 
             googleLogin: async (code) => {
                 const domain = useRuntimeConfig().DOMAIN
-                await fetch(domain + '/api/auth-google-login', {
+                const response = await fetch(domain + '/api/auth-google-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         code: code
                     })
                 })
+                    .then((res) => res.json())
+
+                if (response.accessToken) {
+                    console.log('response has security token')
+                    await useAuth().$patch({
+                        accessToken: response.accessToken,
+                        accessTokenExp: response.accessTokenExp
+                    })
+
+                    if (window.location.hostname !== 'www.stockwise.app') {
+                        const keys = ['accessToken', 'refreshToken', 'idToken']
+                        await keys.forEach((key) => {
+                            const value = response[key]
+                            SecureStoragePlugin.set({ key, value })
+                        })
+                    }
+                }
+
+                if (response.userId) {
+                    await useUser().$patch({
+                        userId: response.userId
+                    })
+                }
             },
 
             forgotPassword: async (email) => {
