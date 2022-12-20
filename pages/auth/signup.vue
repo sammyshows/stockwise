@@ -27,11 +27,11 @@
         <Spinner v-if="disabledSignUp" class="h-5 w-5 my-auto ml-2"></Spinner>
       </button>
       <p class="mt-5 text-center text-gray-200 text-sm">Already have an account? <a href="/auth/login" class="underline underline-offset-4 text-bright-cyan">Log in</a></p>
-<!--      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>-->
-<!--      <div @click="googleLogin()" class="flex items-center bg-white rounded-full">-->
-<!--        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">-->
-<!--        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>-->
-<!--      </div>-->
+      <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
+      <div @click="googleLogin()" class="flex items-center bg-white rounded-full">
+        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
+        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+      </div>
     </div>
     <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
   </div>

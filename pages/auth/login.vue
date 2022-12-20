@@ -25,8 +25,17 @@
       <p class="mt-5 text-center text-gray-100 text-sm">Don't have an account? <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
       <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
       <div @click="googleLogin" class="flex items-center bg-white rounded-full">
-        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
-        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+        <div class="w-20">
+          <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
+        </div>
+        <h2 class="flex items-center h-12 text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+      </div>
+
+      <div @click="appleLogin" class="flex items-center bg-white rounded-full mt-2.5">
+        <div class="w-20">
+          <img src="/images/apple-icon.svg" alt="" class="rounded-xl h-12 pl-0.5">
+        </div>
+        <h2 class="flex items-center h-12 text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Apple</h2>
       </div>
     </div>
     <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
@@ -71,6 +80,15 @@ export default defineComponent({
       // If the user is in an App, open a Browser within the app so the user is returned to the app using deep links after signing in.
       else
         await Browser.open({ url: `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c` })
+    },
+
+    async appleLogin() {
+      // If the user is on the web, go directly to the sign in url.
+      if (this.platform === 'web')
+        window.location.href = `https://appleid.apple.com/auth/authorize?response_type=code&redirect_uri=https://www.stockwise.app&client_id=app.stockwise.twa-service-id`
+      // If the user is in an App, open a Browser within the app so the user is returned to the app using deep links after signing in.
+      else
+        await Browser.open({ url: `https://appleid.apple.com/auth/authorize?response_type=code&redirect_uri=https://www.stockwise.app&client_id=app.stockwise.twa-service-id` })
     },
 
     async login() {
