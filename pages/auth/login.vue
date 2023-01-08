@@ -48,7 +48,7 @@ import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
 
 export default defineComponent({
-  name: "Signup",
+  name: "Login",
 
   data() {
     return {

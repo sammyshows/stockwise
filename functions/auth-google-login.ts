@@ -59,7 +59,7 @@ exports.handler = async (event, context) => {
     idToken = response["id_token"]
     refreshToken = response["refresh_token"]
 
-    const userId = jwt.decode(idToken)?.["custom:sw_user_id"]
+    let userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
     if (idToken && !userId) {
         console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
@@ -89,6 +89,8 @@ exports.handler = async (event, context) => {
                     VALUES (${uuid}, ${email}, 1) 
                 ON CONFLICT (email, account_type) 
                     WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
+
+                userId = uuid
 
                 const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
