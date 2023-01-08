@@ -86,8 +86,9 @@ exports.handler = async (event, context) => {
 
                 await client`
                 INSERT INTO users (id, email, account_type)
-                VALUES (${uuid}, ${email}, 1) ON CONFLICT (email, account_type) 
-                WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
+                    VALUES (${uuid}, ${email}, 1) 
+                ON CONFLICT (email, account_type) 
+                    WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
 
                 const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
