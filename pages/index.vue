@@ -48,11 +48,11 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.token = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app' });
+    this.token = await AppLauncher.canOpenUrl({ url: 'stockwise://' });
 
     console.log('Can open url: ', this.token);
 
-    await AppLauncher.openUrl({ url: 'twa.stockwise.app' });
+    await AppLauncher.openUrl({ url: 'stockwise://' });
     //
     // if (this.$route.query.code) {
     //   await this.$googleLogin(this.$route.query.code)
