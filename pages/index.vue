@@ -30,6 +30,7 @@ import { storeToRefs } from 'pinia'
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
+import {Capacitor} from "@capacitor/core";
 
 
 export default defineComponent({
@@ -48,11 +49,12 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.token = await AppLauncher.canOpenUrl({ url: 'stockwise://' });
+    this.token = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app://' });
 
     console.log('Can open url: ', this.token);
 
-    await AppLauncher.openUrl({ url: 'stockwise://' });
+    if (Capacitor.getPlatform() === 'web')
+      await AppLauncher.openUrl({ url: 'twa.stockwise.app://' });
     //
     // if (this.$route.query.code) {
     //   await this.$googleLogin(this.$route.query.code)
