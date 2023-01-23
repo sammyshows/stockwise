@@ -8,12 +8,13 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
-      <NuxtPage v-else-if="portfolios"
-                :show="viewPortfolios"
-                :overviewChart="overviewChart"
-                :total="total" />
-      <Spinner class="h-full" v-else />
+      {{ token ? "TRUE" : "FALSE" }}
+<!--      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>-->
+<!--      <NuxtPage v-else-if="portfolios"-->
+<!--                :show="viewPortfolios"-->
+<!--                :overviewChart="overviewChart"-->
+<!--                :total="total" />-->
+<!--      <Spinner class="h-full" v-else />-->
     </div>
     <NuxtPage v-else
               @updatePortfolios="getPortfolios()" />
@@ -47,9 +48,9 @@ export default defineComponent({
   },
 
   async mounted() {
-    const { value } = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app' });
+    this.token = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app' });
 
-    console.log('Can open url: ', value);
+    console.log('Can open url: ', this.token);
 
     await AppLauncher.openUrl({ url: 'twa.stockwise.app' });
     //
