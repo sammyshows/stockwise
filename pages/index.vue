@@ -53,7 +53,7 @@ export default defineComponent({
 
     console.log('Can open url: ', this.token);
 
-    if (Capacitor.getPlatform() === 'web')
+    // if (Capacitor.getPlatform() === 'web')
       await AppLauncher.openUrl({ url: 'twa.stockwise.app://' });
     //
     // if (this.$route.query.code) {
