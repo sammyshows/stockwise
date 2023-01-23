@@ -24,10 +24,12 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js";
+import { AppLauncher } from '@capacitor/app-launcher';
 import { storeToRefs } from 'pinia'
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
+
 
 export default defineComponent({
   name: "Portfolio Overview",
@@ -45,16 +47,22 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (this.$route.query.code) {
-      await this.$googleLogin(this.$route.query.code)
-      this.$router.replace({'query': null})
-    }
-    await this.$login()
-    this.token = this.authStore.accessToken
-    this.uuid = this.userStore.userId
-    await this.getPortfolios()
-    await this.getOverviewChart()
-    this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
+    const { value } = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app' });
+
+    console.log('Can open url: ', value);
+
+    await AppLauncher.openUrl({ url: 'twa.stockwise.app' });
+    //
+    // if (this.$route.query.code) {
+    //   await this.$googleLogin(this.$route.query.code)
+    //   this.$router.replace({'query': null})
+    // }
+    // await this.$login()
+    // this.token = this.authStore.accessToken
+    // this.uuid = this.userStore.userId
+    // await this.getPortfolios()
+    // await this.getOverviewChart()
+    // this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
   },
 
   beforeUnmount() {
