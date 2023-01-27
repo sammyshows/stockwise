@@ -8,13 +8,12 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      ONE
-<!--      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>-->
-<!--      <NuxtPage v-else-if="portfolios"-->
-<!--                :show="viewPortfolios"-->
-<!--                :overviewChart="overviewChart"-->
-<!--                :total="total" />-->
-<!--      <Spinner class="h-full" v-else />-->
+      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>
+      <NuxtPage v-else-if="portfolios"
+                :show="viewPortfolios"
+                :overviewChart="overviewChart"
+                :total="total" />
+      <Spinner class="h-full" v-else />
     </div>
     <NuxtPage v-else
               @updatePortfolios="getPortfolios()" />
@@ -25,12 +24,10 @@
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js";
-import { AppLauncher } from '@capacitor/app-launcher';
 import { storeToRefs } from 'pinia'
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
 import { usePortfolios } from "@/store/portfolios";
-import {Capacitor} from "@capacitor/core";
 
 
 export default defineComponent({
@@ -49,9 +46,6 @@ export default defineComponent({
   },
 
   async mounted() {
-    // if (Capacitor.getPlatform() === 'web')
-    //   await AppLauncher.openUrl({ url: 'app.stockwise.twa://' + window.location.search });
-
     if (this.$route.query.code) {
       await this.$googleLogin(this.$route.query.code)
       this.$router.replace({'query': null})
