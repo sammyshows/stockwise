@@ -6,6 +6,8 @@ export default defineNuxtPlugin(() => {
         // slug = /tabs/tabs2
         const slug = event.url.split('.app').pop();
 
+        console.log('URL', event.url)
+        console.log('slug', slug)
         if (slug && slug === '://')
             window.location.href = ''
         else if (slug)

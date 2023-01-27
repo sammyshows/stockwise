@@ -49,23 +49,19 @@ export default defineComponent({
   },
 
   async mounted() {
-    this.token = await AppLauncher.canOpenUrl({ url: 'twa.stockwise.app://' });
-
-    console.log('Can open url: ', this.token);
-
     if (Capacitor.getPlatform() === 'web')
-      await AppLauncher.openUrl({ url: 'twa.stockwise.app://' });
-    //
-    // if (this.$route.query.code) {
-    //   await this.$googleLogin(this.$route.query.code)
-    //   this.$router.replace({'query': null})
-    // }
-    // await this.$login()
-    // this.token = this.authStore.accessToken
-    // this.uuid = this.userStore.userId
-    // await this.getPortfolios()
-    // await this.getOverviewChart()
-    // this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
+      await AppLauncher.openUrl({ url: 'app.stockwise.twa://' + window.location.search });
+
+    if (this.$route.query.code) {
+      await this.$googleLogin(this.$route.query.code)
+      this.$router.replace({'query': null})
+    }
+    await this.$login()
+    this.token = this.authStore.accessToken
+    this.uuid = this.userStore.userId
+    await this.getPortfolios()
+    await this.getOverviewChart()
+    this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
   },
 
   beforeUnmount() {
