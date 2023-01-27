@@ -8,7 +8,7 @@
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      {{ token ? "TRUE" : "FALSE" }}
+      {{ 1 }}
 <!--      <p v-if="displayMessage()" class="grow flex items-center px-2 text-sm text-bright-cyan text-center">To begin tracking your investments, first use the "+" icon above to create a portfolio</p>-->
 <!--      <NuxtPage v-else-if="portfolios"-->
 <!--                :show="viewPortfolios"-->
@@ -49,8 +49,8 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (Capacitor.getPlatform() === 'web')
-      await AppLauncher.openUrl({ url: 'app.stockwise.twa://' + window.location.search });
+    // if (Capacitor.getPlatform() === 'web')
+    //   await AppLauncher.openUrl({ url: 'app.stockwise.twa://' + window.location.search });
 
     if (this.$route.query.code) {
       await this.$googleLogin(this.$route.query.code)
