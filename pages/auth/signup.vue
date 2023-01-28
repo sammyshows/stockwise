@@ -26,23 +26,40 @@
         <p>{{ disabledSignUp ? 'Creating account' : 'Create account' }}</p>
         <Spinner v-if="disabledSignUp" class="h-5 w-5 my-auto ml-2"></Spinner>
       </button>
-      <p class="mt-5 text-center text-gray-200 text-sm">Already have an account? <a href="/auth/login" class="underline underline-offset-4 text-bright-cyan">Log in</a></p>
+      <p class="mt-5 text-center text-gray-200 text-sm">Already have an account? <a @click="redirectToLogin()" class="underline underline-offset-4 text-bright-cyan">Log in</a></p>
       <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
-      <div @click="googleLogin()" class="flex items-center bg-white rounded-full">
-        <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
-        <h2 class="flex items-center justify-center grow h-12 text-center text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+      <div @click="idpLogin('Google')" class="flex items-center bg-white rounded-full">
+        <div class="w-20">
+          <img src="/images/google-icon.svg" alt="" class="rounded-xl h-9 pl-2">
+        </div>
+        <h2 class="flex items-center h-12 text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Google</h2>
+      </div>
+
+      <div @click="idpLogin('SignInWithApple')" class="flex items-center bg-white rounded-full mt-2.5">
+        <div class="w-20">
+          <img src="/images/apple-icon.svg" alt="" class="rounded-xl h-12 pl-0.5">
+        </div>
+        <h2 class="flex items-center h-12 text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Apple</h2>
       </div>
     </div>
-    <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
+    <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <span @click="redirectToPolicies('/policies/terms-and-conditions')" class="underline">Terms of Use</span> and <span @click="redirectToPolicies('/policies/privacy-policy')" class="underline">Privacy Policy</span></p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { Capacitor } from '@capacitor/core';
+import { Browser } from "@capacitor/browser";
+import { useUtility } from "@/store/utility";
 
 export default defineComponent({
   name: "Signup",
+
+  setup() {
+    const utilityStore = useUtility()
+
+    return { utilityStore }
+  },
 
   data() {
     return {
@@ -73,8 +90,15 @@ export default defineComponent({
       return this.invalid.email === false && this.invalid.password === false
     },
 
-    googleLogin() {
-      window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=Google&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
+    async idpLogin(identityProvider) {
+      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on an IDP sign in option.")
+
+      // If the user is on the web or iOS, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
+      if (this.platform === 'web' || this.platform === 'ios')
+        window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=${identityProvider}&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
+      // If the user is using the Android App, open a Browser within the app so the user is returned to the app using deep links after signing in.
+      else
+        await Browser.open({ url: `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=${identityProvider}&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c` })
     },
 
     validatePassword(): Boolean {
@@ -90,6 +114,8 @@ export default defineComponent({
       this.disabledSignUp = true
       this.authMessage = ''
       if (this.validateForm()) {
+        this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on the 'Create account' button (email / password).")
+
         const response = await this.$signUp(this.email.trim(), this.password)
         this.authMessage = response
         if (response === 'success') {
@@ -99,7 +125,18 @@ export default defineComponent({
         }
       } else {
         this.disabledSignUp = false
+        this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on the 'Create account' button (email / password) but the form was invalid.")
       }
+    },
+
+    redirectToLogin() {
+      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on a link to the login page.")
+      window.location.href = '/auth/login'
+    },
+
+    redirectToPolicies(href) {
+      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on a link to Terms and Conditions or Privacy Policy.")
+      window.location.href = href
     }
   }
 })

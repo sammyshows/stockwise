@@ -1,6 +1,8 @@
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
+import { useUtility } from "@/store/utility.js";
 import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
+
 
 export default defineNuxtPlugin(() => {
     return {

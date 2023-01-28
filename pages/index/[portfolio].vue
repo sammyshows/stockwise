@@ -4,10 +4,10 @@
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `index-portfolio-holdings-new`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-holdings-new` }" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ name: `index-portfolio-update`, params: { portfolioId: portfolioId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-update` }" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -31,7 +31,7 @@
 import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
-import {BigNumber} from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { computed } from "@vue/reactivity";
 import { usePortfolios } from "@/store/portfolios";
 import { useHoldings } from "@/store/holdings";

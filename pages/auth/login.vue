@@ -22,7 +22,7 @@
         <p>{{ disabledSignIn ? 'Signing in' : 'Sign in' }}</p>
         <Spinner v-if="disabledSignIn" class="h-5 w-5 my-auto ml-2"></Spinner>
       </button>
-      <p class="mt-5 text-center text-gray-100 text-sm">Don't have an account? <a href="/auth/signup" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
+      <p class="mt-5 text-center text-gray-100 text-sm">Don't have an account? <a @click="redirectToSignup()" class="underline underline-offset-4 text-bright-cyan">Sign up</a></p>
       <p class="line w-5/6 mx-auto text-center overflow-hidden">or</p>
       <div @click="idpLogin('Google')" class="flex items-center bg-white rounded-full">
         <div class="w-20">
@@ -38,7 +38,7 @@
         <h2 class="flex items-center h-12 text-gray-600 text-lg" style="font-family: Roboto, Poppins; font-weight: 500;">Sign in with Apple</h2>
       </div>
     </div>
-    <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <a href="/policies/terms-and-conditions" class="underline">Terms of Use</a> and <a href="/policies/privacy-policy" class="underline">Privacy Policy</a></p>
+    <p class="mt-3 text-xs text-center text-gray-200">By continuing, you agree to Stockwise's <span @click="redirectToPolicies('/policies/terms-and-conditions')" class="underline">Terms of Use</span> and <span @click="redirectToPolicies('/policies/privacy-policy')" class="underline">Privacy Policy</span></p>
   </div>
 </template>
 
@@ -46,9 +46,17 @@
 import { defineComponent } from 'vue'
 import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
+import { useUtility } from "@/store/utility";
+
 
 export default defineComponent({
   name: "Login",
+
+  setup() {
+    const utilityStore = useUtility()
+
+    return { utilityStore }
+  },
 
   data() {
     return {
@@ -74,7 +82,9 @@ export default defineComponent({
     },
 
     async idpLogin(identityProvider) {
-      // If the user is on the web, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
+      this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on an IDP sign in option.")
+
+      // If the user is on the web or iOS, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
       if (this.platform === 'web' || this.platform === 'ios')
         window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=${identityProvider}&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
       // If the user is using the Android App, open a Browser within the app so the user is returned to the app using deep links after signing in.
@@ -86,6 +96,8 @@ export default defineComponent({
       this.disabledSignIn = true
       this.authMessage = ''
       if (this.validateForm()) {
+        this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on the 'Sign in' button (email / password).")
+
         this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
           this.$router.push('/')
@@ -93,7 +105,18 @@ export default defineComponent({
           this.disabledSignIn = false
       } else {
         this.disabledSignIn = false
+        this.utilityStore.logUserActivity("login Page", "INFO", "User clicked on the 'Sign in' button (email / password) but the form was invalid.")
       }
+    },
+
+    redirectToSignup() {
+      this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on a link to the signup page.")
+      window.location.href = '/auth/signup'
+    },
+
+    redirectToPolicies(href) {
+      this.utilityStore.logUserActivity("Login Page", "INFO","User clicked on a link to Terms and Conditions or Privacy Policy.")
+      window.location.href = href
     }
   }
 })
