@@ -17,9 +17,15 @@
 
 <script lang="ts">
 import { ChevronLeftIcon} from "@heroicons/vue/outline";
+import { useUtility } from '@/store/utility'
 
 export default {
   name: "PageTitle",
+
+  setup() {
+    const utilityStore = useUtility()
+    return { utilityStore }
+  },
 
   props: [
     'pageDetails'
@@ -30,7 +36,7 @@ export default {
   },
 
   methods: {
-    logNavigation(path: string) {
+    logNavigation() {
       if (this.pageDetails.logCode)
         this.utilityStore.logUserActivity(this.pageDetails.logCode, this.pageDetails.logSource, "INFO", `User navigated back to the '${this.pageDetails.logTo}' page.`)
     }

@@ -46,7 +46,16 @@ export default {
 
   watch: {
     routeBranch(oldRouteName: string, newRouteName: string) {
-      this.utilityStore.logUserActivity(100, "Navigation Bar", "INFO", `User navigated from route name '${oldRouteName}' to '${newRouteName}'.`)
+      this.utilityStore.logUserActivity(100, "Navigation Bar", "INFO", `User navigated to the '${this.getPageName(newRouteName)}' page.`)
+    }
+  },
+
+  methods: {
+    getPageName(routeName: string) {
+      if (routeName === 'index')
+        return 'Portfolios'
+      else
+        return routeName.charAt(0).toUpperCase() + routeName.slice(1);
     }
   }
 }

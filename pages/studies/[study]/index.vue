@@ -332,17 +332,17 @@ export default defineComponent({
     },
 
     prevPage() {
-      this.utilityStore.logUserActivity(127, "Study Question Page", "INFO", `User navigated back to the previous question. (Question ${this.currentQuestion} to Question ${this.currentQuestion - 1}`, "studyId", this.studyId)
+      this.utilityStore.logUserActivity(127, "Study Question Page", "INFO", `User navigated back to the previous question. (Question ${this.currentQuestion} to Question ${this.currentQuestion - 1})`, "studyId", this.studyId)
       this.currentQuestion -= 1
     },
 
     nextPage() {
-      this.utilityStore.logUserActivity(128, "Study Question Page", "INFO", `User navigated back to the next question. (Question ${this.currentQuestion} to Question ${this.currentQuestion + 1}`, "studyId", this.studyId)
+      this.utilityStore.logUserActivity(128, "Study Question Page", "INFO", `User navigated back to the next question. (Question ${this.currentQuestion} to Question ${this.currentQuestion + 1})`, "studyId", this.studyId)
       this.currentQuestion += 1
     },
 
     studyUnchanged() {
-      return this.storeStudy?.question_one === this.study.question_one && this.storeStudy?.question_two === this.study.question_two && this.storeStudy?.question_three === this.study.question_three && this.storeStudy?.question_four === this.study.question_four && this.storeStudy?.question_five === this.study.question_five && this.storeStudy?.question_six === this.study.question_six && this.storeStudy?.question_seven === this.study.question_seven && this.storeStudy?.question_eight === this.study.question_eight
+      return this.storeStudy?.question_one === this.study.question_one && this.storeStudy?.question_two === this.study.question_two && this.storeStudy?.question_three === this.study.question_three && this.storeStudy?.question_four === this.study.question_four && this.storeStudy?.question_five === this.study.question_five && this.storeStudy?.question_six === this.study.question_six && this.storeStudy?.question_seven === this.study.question_seven && this.storeStudy?.question_eight === this.study.question_eight && this.storeStudy?.question_nine === this.study.question_nine
     },
 
     async submit() {
