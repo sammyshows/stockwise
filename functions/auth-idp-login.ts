@@ -62,6 +62,7 @@ exports.handler = async (event, context) => {
     let userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
     if (idToken && !userId) {
+        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (16, 'auth-idp-login Endpoint', 'INFO', 'Successfully exchanged Authorization Code for auth tokens, however, no Stockwise userId was found for the user. Creating Stockwise user.');`
         console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
 
         const cognito = new AWS.CognitoIdentityServiceProvider();

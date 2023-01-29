@@ -34,18 +34,20 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { TrashIcon } from "@heroicons/vue/outline";
-import { useStudies } from "@/store/studies";
+import { useUtility } from "@/store/utility";
 import { useAuth } from "@/store/auth";
+import { useStudies } from "@/store/studies";
 
 export default defineComponent({
   name: "Study Questions",
 
   async setup() {
     const route = useRoute()
+    const utilityStore = useUtility()
     const authStore = useAuth()
     const studyStore = useStudies()
     const storeStudy = studyStore.getStudy(route.params.study)
-    return { authStore, studyStore, storeStudy }
+    return { utilityStore, authStore, studyStore, storeStudy }
   },
 
   components: {
@@ -69,9 +71,12 @@ export default defineComponent({
       pageDetails: {
         returnPath: '/studies',
         title: this.storeStudy?.name,
-        subtitle: 'STUDIES'
+        subtitle: 'STUDIES',
+        logCode: 123,
+        logSource: 'Study Questions Page',
+        logTo: 'Studies'
       },
-      studyId: this.$route.params.study,
+      studyId: this.$route.params.study as (string | null),
       studyDetails: {
         type: this.storeStudy?.type
       },
@@ -327,10 +332,12 @@ export default defineComponent({
     },
 
     prevPage() {
+      this.utilityStore.logUserActivity(127, "Study Question Page", "INFO", `User navigated back to the previous question. (Question ${this.currentQuestion} to Question ${this.currentQuestion - 1}`, "studyId", this.studyId)
       this.currentQuestion -= 1
     },
 
     nextPage() {
+      this.utilityStore.logUserActivity(128, "Study Question Page", "INFO", `User navigated back to the next question. (Question ${this.currentQuestion} to Question ${this.currentQuestion + 1}`, "studyId", this.studyId)
       this.currentQuestion += 1
     },
 
@@ -420,7 +427,11 @@ export default defineComponent({
 
     studyStoreDelete() {
       this.studyStore.deleteStudy(this.studyId)
-    }
+    },
+
+    logMoreInfo(code: number, page: string) {
+      this.utilityStore.logUserActivity(code, "Study Questions Page", "INFO", `User navigated to the ${page}.`)
+    },
   }
 })
 </script>

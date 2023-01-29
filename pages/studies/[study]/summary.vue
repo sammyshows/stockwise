@@ -106,7 +106,10 @@ export default defineComponent({
       pageDetails: {
         returnPath: '/studies/completed',
         title: this.storeStudy?.name,
-        subtitle: 'STUDIES'
+        subtitle: 'STUDIES',
+        logCode: 124,
+        logSource: 'Study Summary',
+        logTo: 'Studies'
       },
       studyId: this.$route.params.study,
       studyDetails: {

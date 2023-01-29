@@ -132,7 +132,10 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         returnPath: '/studies',
-        title: 'Start a Study'
+        title: 'Start a Study',
+        logCode: 121,
+        logSource: 'New Study Page',
+        logTo: 'Studies'
       },
       manualForm: false,
       searchResults: [],

@@ -8,7 +8,7 @@
     <div v-if="studies" class="overflow-scroll flex flex-col grow px-3 divide-y divide-gray-700">
       <TransitionGroup tag="div" name="form">
         <div v-for="study in studies" :key="study.study_id">
-          <NuxtLink :to="{ name: 'studies-study', params: { study: study.study_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'studies-study', params: { study: study.study_id } }" @click="logNavigation(study.study_id)" style="touch-action: manipulation">
             <div class="flex justify-end py-2">
               <div class="w-32 flex flex-col justify-around grow">
                 <h2 class="text-bright-cyan font-bold tracking-wider truncate">{{ study.symbol }}</h2>
@@ -35,17 +35,25 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { computed } from "@vue/reactivity";
+import { useUtility } from "@/store/utility";
 import { useStudies } from "@/store/studies";
 
 export default defineComponent({
   name: "Studies",
 
   async setup() {
+    const utilityStore = useUtility()
     const studyStore = useStudies()
     let studies = computed(() => studyStore.getUncompleted())
-    return { studies }
+    return { utilityStore, studies }
   },
 
-  props: ['show']
+  props: ['show'],
+
+  methods: {
+    logNavigation(studyId: string) {
+      this.utilityStore.logUserActivity(121, "Studies", "INFO", "User navigated to the 'Study Questions' page.", "studyId", studyId)
+    }
+  }
 })
 </script>
