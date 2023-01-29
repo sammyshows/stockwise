@@ -62,7 +62,7 @@ exports.handler = async (event, context) => {
     let userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
     if (idToken && !userId) {
-        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (16, 'auth-idp-login Endpoint', 'INFO', 'Successfully exchanged Authorization Code for auth tokens, however, no Stockwise userId was found for the user. Creating Stockwise user.');`
+        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (16, '/api/auth-idp-login', 'INFO', 'Successfully exchanged Authorization Code for auth tokens, however, no Stockwise userId was found for the user. Creating Stockwise user.');`
         console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
 
         const cognito = new AWS.CognitoIdentityServiceProvider();
@@ -82,6 +82,7 @@ exports.handler = async (event, context) => {
         await new Promise((resolve, reject): void => {
             cognito.updateUserAttributes(params, async (error, session): Promise<void> => {
                 if (error) {
+                    await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'INFO', 'Failed to update AWS user with Stockwise userId.');`
                     resolve(console.log(error.message))
                 }
 
@@ -143,6 +144,7 @@ exports.handler = async (event, context) => {
             })
         }
     } else {
+        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (18, '/api/auth-idp-login', 'INFO', 'Failed idp login.');`
         console.log('failed google login')
         return {
             headers: {

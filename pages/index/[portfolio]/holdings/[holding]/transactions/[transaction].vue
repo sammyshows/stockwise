@@ -171,7 +171,10 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
+        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`,
+        logCode: 114,
+        logSource: 'Edit Transaction Page',
+        logTo: 'Transactions'
       },
       assetType: null as (null | number),
       holdingQuantity: null as (null | number),

@@ -2,12 +2,12 @@
   <div class="flex h-full">
     <div v-if="viewHoldings" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
-        <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/' }" class="truncate mr-3" />
+        <PageTitle :pageDetails="{ title: this?.portfolio?.portfolio_name, subtitle: 'PORTFOLIOS', returnPath: '/', logCode: 112, logSource: 'Holdings Page', logTo: 'Portfolios' }" class="truncate mr-3" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `index-portfolio-holdings-new` }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-holdings-new` }" @click="logNavigationTo(106, 'New Holding')" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :to="{ name: `index-portfolio-update` }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-update` }" @click="logNavigationTo(107, 'Edit Portfolio')" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -33,6 +33,7 @@ import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js";
 import { computed } from "@vue/reactivity";
+import { useUtility } from "@/store/utility";
 import { usePortfolios } from "@/store/portfolios";
 import { useHoldings } from "@/store/holdings";
 import { useAuth } from "@/store/auth";
@@ -43,12 +44,13 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const utilityStore = useUtility()
     const authStore = useAuth()
     const portfolioStore = usePortfolios()
     const portfolio = computed(() => portfolioStore.getPortfolio(route.params.portfolio))
     const holdingStore = useHoldings()
     const holdings = computed(() => holdingStore.getHoldings(route.params.portfolio))
-    return { authStore, portfolio, holdingStore, holdings }
+    return { utilityStore, authStore, portfolio, holdingStore, holdings }
   },
 
   components: {
@@ -189,8 +191,13 @@ export default defineComponent({
       return currentDate.toISOString().split('T')[0]
     },
 
-    setActiveTab(newTab) {
+    setActiveTab(newTab: string) {
       this.tabConfig.activeTab = newTab
+      this.utilityStore.logUserActivity(105, "Holdings Page", "INFO", `User switched to the '${newTab}' tab.`)
+    },
+
+    logNavigationTo(code: number, page: string) {
+      this.utilityStore.logUserActivity(code, "Holdings Page", "INFO", `User navigated to the '${page}' page.`)
     }
   }
 })

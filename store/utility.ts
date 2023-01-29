@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useUser } from '@/store/user'
-import { userActivityLog } from "@/helpers/schemas";
+import { UserActivityLog } from "@/interfaces/utility";
 
 
 export const useUtility = defineStore('utility', {
@@ -11,23 +11,31 @@ export const useUtility = defineStore('utility', {
     },
 
     actions: {
-        logUserActivity(source, tag, message, referenceType = null, referenceId = null) {
-            // e.g. ("User created portfolio", "INFO", "account", "portfolioId", "a3ergdhsejfghgtfevd-vfedvfd-dvfdfdv-dvddvdv")
+        logUserActivity(code: number, source: string, tag: string, message: string, referenceType: (string | null) = null, referenceId: (string | null) = null) {
+            // e.g. (23, "User created portfolio", "INFO", "account", "portfolioId", "7ad8b5e6-2bcd-4466-93b9-1833eea45d59")
+            // IDEA: If we need more than one reference, add another optional Type and Id pair, e.g. referenceType2
             const user = useUser()
-            const activityLog = structuredClone(userActivityLog)
 
-            activityLog.userId = user.userId || null
-            activityLog.platform = user.platform || null
-            activityLog.source = source
-            activityLog.tag = tag
-            activityLog.message = message
+            const userActivityLog: UserActivityLog = {
+                userId: user.userId || null,
+                code: code,
+                message: message,
+                source: source,
+                tag: tag,
+                platform: user.platform || null,
+                studyId: null,
+                portfolioId: null,
+                assetId: null,
+                holdingId: null,
+                transactionId: null
+            }
+
             if (referenceType && referenceId)
-                activityLog[referenceType] = referenceId
+                userActivityLog[referenceType] = referenceId
 
-            console.log(activityLog)
             fetch(this.domain + '/api/user-activity-logs-create', {
                 method: 'POST',
-                body: JSON.stringify(activityLog)
+                body: JSON.stringify(userActivityLog)
             })
         }
     }

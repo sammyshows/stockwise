@@ -10,7 +10,7 @@
     <div v-if="transactions && transactions.length > 0" class="overflow-scroll grow px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="transaction in transactions" :key="transaction.transaction_id">
-          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.transaction_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding-transactions-transaction', params: { portfolio: $route.params.portfolio, holding: $route.params.holding, transaction: transaction.transaction_id } }" @click="logNavigationToTransaction(transaction.transaction_id)" style="touch-action: manipulation">
             <!--      STOCKS or FOREX      -->
             <div v-if="transaction.asset_type !== 2" class="mb-3">
               <div v-if="transaction.type === 0" class="flex">
@@ -187,6 +187,7 @@ import BigNumber from 'bignumber.js';
 import { defineComponent } from "vue";
 import { ExclamationIcon } from "@heroicons/vue/outline";
 import { computed } from "@vue/reactivity";
+import { useUtility } from "@/store/utility";
 import { useTransactions } from "@/store/transactions";
 
 export default defineComponent({
@@ -194,8 +195,9 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const utilityStore = useUtility()
     const transactions = computed(() => useTransactions().getTransactions(route.params.holding))
-    return { transactions }
+    return { utilityStore, transactions }
   },
 
   props: [
@@ -213,6 +215,10 @@ export default defineComponent({
   },
 
   methods: {
+    logNavigationToTransaction(transactionId: string) {
+      this.utilityStore.logUserActivity(108, "Transactions Page", "INFO", "User navigated to a transaction.", "transactionId", transactionId)
+    },
+
     BigNumber
   }
 })

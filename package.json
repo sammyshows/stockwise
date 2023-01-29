@@ -9,7 +9,7 @@
     "createdb_dev": "cat schema.sql | psql stockwise -U postgres"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^5.0.0-4",
+    "@nuxtjs/tailwindcss": "^6.3.0",
     "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.3.11",
@@ -40,8 +40,8 @@
     "jwk-to-pem": "^2.0.5",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^3.2.3",
-    "nuxt": "3.0.0-rc.8",
-    "pinia": "^2.0.20",
+    "nuxt": "3.0.0",
+    "pinia": "^2.0.29",
     "postgres": "^3.0.2",
     "typescript": "^4.8.4",
     "uuid": "^8.3.2",

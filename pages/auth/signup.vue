@@ -91,7 +91,7 @@ export default defineComponent({
     },
 
     async idpLogin(identityProvider) {
-      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on an IDP sign in option.")
+      this.utilityStore.logUserActivity(11, "Signup Page", "INFO", "User clicked on an IDP sign in option.")
 
       // If the user is on the web or iOS, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
       if (this.platform === 'web' || this.platform === 'ios')
@@ -114,7 +114,7 @@ export default defineComponent({
       this.disabledSignUp = true
       this.authMessage = ''
       if (this.validateForm()) {
-        this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on the 'Create account' button (email / password).")
+        this.utilityStore.logUserActivity(12, "Signup Page", "INFO", "User clicked on the 'Create account' button (email / password).")
 
         const response = await this.$signUp(this.email.trim(), this.password)
         this.authMessage = response
@@ -125,17 +125,17 @@ export default defineComponent({
         }
       } else {
         this.disabledSignUp = false
-        this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on the 'Create account' button (email / password) but the form was invalid.")
+        this.utilityStore.logUserActivity(13, "Signup Page", "INFO", "User clicked on the 'Create account' button (email / password) but the form was invalid.")
       }
     },
 
     redirectToLogin() {
-      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on a link to the login page.")
+      this.utilityStore.logUserActivity(14, "Signup Page", "INFO", "User clicked on a link to the login page.")
       window.location.href = '/auth/login'
     },
 
-    redirectToPolicies(href) {
-      this.utilityStore.logUserActivity("Signup Page", "INFO", "User clicked on a link to Terms and Conditions or Privacy Policy.")
+    redirectToPolicies(href: string) {
+      this.utilityStore.logUserActivity(15, "Signup Page", "INFO", "User clicked on a link to Terms and Conditions or Privacy Policy.")
       window.location.href = href
     }
   }

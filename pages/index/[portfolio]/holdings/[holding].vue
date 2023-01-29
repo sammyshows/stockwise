@@ -4,10 +4,10 @@
       <div class="min-h-min flex justify-between px-3">
         <PageTitle :pageDetails="pageDetails" />
         <div class="flex mr-1 gap-x-3">
-          <NuxtLink :to="{ name: `index-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: `index-portfolio-holdings-holding-transactions-new`, params: { portfolio: portfolioId, holding: holdingId } }" @click="logNavigationTo(110, 'New Transaction')" style="touch-action: manipulation">
             <PlusIcon class="h-8 w-8" />
           </NuxtLink>
-          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `index-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }" style="touch-action: manipulation">
+          <NuxtLink :assetSymbol="pageDetails.title" :to="{ name: `index-portfolio-holdings-holding-update`, params: { portfolio: $route.params.portfolio, holding: $route.params.holding } }" @click="logNavigationTo(111, 'Edit Holding')" style="touch-action: manipulation">
             <PencilIcon class="h-7 w-7 mt-0.5" />
           </NuxtLink>
         </div>
@@ -54,8 +54,9 @@ import { defineComponent } from "vue";
 import { PencilIcon } from "@heroicons/vue/outline";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js"
-import { useAuth } from "@/store/auth";
 import { computed } from "@vue/reactivity";
+import { useUtility } from "@/store/utility";
+import { useAuth } from "@/store/auth";
 import { useTransactions } from "@/store/transactions";
 import { useHoldings } from "@/store/holdings";
 import UpdateAssetModal from "~/components/UpdateAssetModal.vue";
@@ -70,12 +71,13 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const utilityStore = useUtility()
     const authStore = useAuth()
     const holdingStore = useHoldings()
     const holding = computed(() => holdingStore.getHolding(route.params?.holding))
     const transactionStore = useTransactions()
     const transactions = computed(() => transactionStore.getTransactions(route.params.holding))
-    return { authStore, holding, transactionStore, transactions }
+    return { utilityStore, authStore, holding, transactionStore, transactions }
   },
 
   components: {
@@ -122,7 +124,10 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`,
+        logCode: 113,
+        logSource: 'Transactions Page',
+        logTo: 'Holdings'
       },
       tabConfig: {
         activeTab: this.getActiveTab(),
@@ -314,8 +319,13 @@ export default defineComponent({
         return 'TRANSACTIONS'
     },
 
-    setActiveTab(newTab) {
+    setActiveTab(newTab: string) {
       this.tabConfig.activeTab = newTab
+      this.utilityStore.logUserActivity(109, "Transactions Page", "INFO", `User switched to the ${newTab} tab.`)
+    },
+
+    logNavigationTo(code: number, page: string) {
+      this.utilityStore.logUserActivity(code, "Transactions Page", "INFO", `User navigated to the '${page}' page.`)
     },
 
     closeUpdateModal(): void {

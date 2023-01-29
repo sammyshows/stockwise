@@ -1,5 +1,3 @@
-import { defineNuxtConfig } from 'nuxt'
-
 // https://v3.nuxtjs.org/docs/directory-structure/nuxt.config
 export default defineNuxtConfig({
     ssr: false,
@@ -30,9 +28,6 @@ export default defineNuxtConfig({
     meta: {
         meta: [
             { name: 'viewport', content: 'viewport-fit=cover, width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no' }
-        ],
-        link: [
-            { rel: 'manifest', href: '/manifest.json' }
         ],
         script: [
             { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },

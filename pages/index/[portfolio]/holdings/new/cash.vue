@@ -95,7 +95,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Cash',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`,
+        logCode: 119,
+        logSource: 'New Cash Holding Page',
+        logTo: 'Holdings'
       },
       portfolioId: this.$route.params.portfolio,
       currencies: {

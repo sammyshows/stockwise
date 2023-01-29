@@ -57,7 +57,10 @@ export default defineComponent({
       disabledSave: false,
       pageDetails: {
         title: 'New Portfolio',
-        returnPath: '/'
+        returnPath: '/',
+        logCode: 120,
+        logSource: 'New Portfolio Page',
+        logTo: 'Portfolios'
       },
       invalid: {
         name: false

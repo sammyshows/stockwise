@@ -81,9 +81,12 @@ exports.handler = async (event, context) => {
                         accessToken = result.getAccessToken().getJwtToken()
                         idToken = result.getIdToken().getJwtToken()
                         refreshToken = result.getRefreshToken().getToken()
+                        // commented out for performance purposes - no need to log every time a login is successful, it's already inferable from other logs. Remove if still not needed.
+                        // await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (1, ${jwt.decode(idToken)['custom:sw_user_id']}, '/api/auth-login', 'INFO', 'User was successfully authenticated via an email / password login');`
                         resolve(await setCookies())
                     },
                     onFailure: async (err) => {
+                        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (2, '/api/auth-login', 'INFO', 'User attempted an email / password login but authentication failed. ERR CODE: ${err.code}');`
                         errorMessage = err.code
                         resolve(err.code)
                     }
@@ -94,15 +97,14 @@ exports.handler = async (event, context) => {
 
         // -------- If token cookies are present ---------
         if (accessToken && idToken && refreshToken && unexpiredToken(accessToken)) {
-            console.log("INSERTING LOG...")
-            await client`INSERT INTO user_activity_logs (user_id, source, tag, message) VALUES (${jwt.decode(idToken)['custom:sw_user_id']}, 'auth-login endpoint', 'INFO', 'User''s auth tokens are present and the accessToken is unexpired - returning tokens.');`
+            await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (3, ${jwt.decode(idToken)['custom:sw_user_id']}, '/api/auth-login', 'INFO', 'User''s auth tokens are present and the accessToken is unexpired - returning tokens.');`
             // --------- If there's cookies and the accessToken is valid ---------
             console.log('Using existing tokens...')
             setCookies()
             return
         } else if (accessToken && refreshToken) {
             if (idToken)
-                await client`INSERT INTO user_activity_logs (user_id, source, tag, message) VALUES (${jwt.decode(idToken)['custom:sw_user_id']}, 'auth-login endpoint', 'INFO', 'User''s auth tokens are present, however, the accessToken is expired - refreshing tokens.');`
+                await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (4, ${jwt.decode(idToken)['custom:sw_user_id']}, '/api/auth-login', 'INFO', 'User''s auth tokens are present, however, the accessToken is expired - refreshing tokens.');`
             // --------- If there's a valid refreshToken ---------
             console.log('Refreshing token...')
             const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});

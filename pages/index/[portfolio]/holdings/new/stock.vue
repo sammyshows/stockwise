@@ -183,7 +183,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Stock',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`,
+        logCode: 117,
+        logSource: 'New Stock Holding Page',
+        logTo: 'Holdings'
       },
       portfolioId: this.$route.params.portfolio,
       searchResults: [],

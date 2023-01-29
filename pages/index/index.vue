@@ -9,7 +9,7 @@
     <div v-if="portfolios" class="overflow-scroll grow px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="portfolio in portfolios" :key="portfolio.portfolio_id">
-          <NuxtLink :to="{ name: 'index-portfolio', params: { portfolio: portfolio.portfolio_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'index-portfolio', params: { portfolio: portfolio.portfolio_id } }" @click="logNavigation(portfolio.portfolio_id)" style="touch-action: manipulation">
             <div class="mb-3">
               <div class="flex justify-end">
                 <div class="grow">
@@ -70,6 +70,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import BigNumber from "bignumber.js";
+import { useUtility } from "@/store/utility";
 import { usePortfolios } from "@/store/portfolios";
 import { storeToRefs } from "pinia";
 
@@ -77,13 +78,18 @@ export default defineComponent({
   name: "Portfolios Index",
 
   async setup() {
+    const utilityStore = useUtility()
     const { portfolios } = storeToRefs(usePortfolios())
-    return { portfolios }
+    return { utilityStore, portfolios }
   },
 
   props: ['show', 'total'],
 
   methods: {
+    logNavigation(portfolioId: string) {
+      this.utilityStore.logUserActivity(101, "Portfolios Overview Page", "INFO", "User navigated to the 'Holdings' page.", "portfolioId", portfolioId)
+    },
+
     BigNumber
   }
 })

@@ -47,7 +47,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Holding',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`,
+        logCode: 116,
+        logSource: 'New Holding Selection',
+        logTo: 'Holdings'
       },
       portfolioId: this.$route.params.portfolio,
       holdingTypes: ['stock', 'forex', 'cash']

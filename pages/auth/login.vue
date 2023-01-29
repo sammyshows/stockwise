@@ -82,7 +82,7 @@ export default defineComponent({
     },
 
     async idpLogin(identityProvider) {
-      this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on an IDP sign in option.")
+      this.utilityStore.logUserActivity(6, "Login Page", "INFO", "User clicked on an IDP sign in option.")
 
       // If the user is on the web or iOS, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
       if (this.platform === 'web' || this.platform === 'ios')
@@ -96,7 +96,7 @@ export default defineComponent({
       this.disabledSignIn = true
       this.authMessage = ''
       if (this.validateForm()) {
-        this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on the 'Sign in' button (email / password).")
+        this.utilityStore.logUserActivity(7, "Login Page", "INFO", "User clicked on the 'Sign in' button (email / password).")
 
         this.authMessage = await this.$login(this.email.trim(), this.password)
         if (this.authMessage === 'authorized')
@@ -105,17 +105,17 @@ export default defineComponent({
           this.disabledSignIn = false
       } else {
         this.disabledSignIn = false
-        this.utilityStore.logUserActivity("login Page", "INFO", "User clicked on the 'Sign in' button (email / password) but the form was invalid.")
+        this.utilityStore.logUserActivity(8, "login Page", "INFO", "User clicked on the 'Sign in' button (email / password) but the form was invalid.")
       }
     },
 
     redirectToSignup() {
-      this.utilityStore.logUserActivity("Login Page", "INFO", "User clicked on a link to the signup page.")
+      this.utilityStore.logUserActivity(9, "Login Page", "INFO", "User clicked on a link to the signup page.")
       window.location.href = '/auth/signup'
     },
 
     redirectToPolicies(href) {
-      this.utilityStore.logUserActivity("Login Page", "INFO","User clicked on a link to Terms and Conditions or Privacy Policy.")
+      this.utilityStore.logUserActivity(10, "Login Page", "INFO","User clicked on a link to Terms and Conditions or Privacy Policy.")
       window.location.href = href
     }
   }

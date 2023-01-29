@@ -64,9 +64,15 @@
 import { defineComponent } from "vue";
 import { RadioGroup, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline';
+import { useUtility } from '@/store/utility'
 
 export default defineComponent({
   name: "Question Standard Five",
+
+  setup() {
+    const utilityStore = useUtility()
+    return { utilityStore }
+  },
 
   props: ['currentValue', 'moreInfo'],
 
@@ -82,6 +88,7 @@ export default defineComponent({
 
   data() {
     return {
+      studyId: this.$route.params.study as (string | null),
       value: this.currentValue,
       showMoreInfo: false,
       disclaimer: `
@@ -98,6 +105,11 @@ export default defineComponent({
 
   methods: {
     toggleMoreInfo() {
+      if (this.showMoreInfo)
+        this.utilityStore.logUserActivity(126, "Study Question Info Page", "INFO", "User navigated back to the 'Study Question' page.", "studyId", this.studyId)
+      else
+        this.utilityStore.logUserActivity(125, "Study Question Page", "INFO", `User navigated to the 'Study Question Info' page (${this.moreInfo.question}).`, "studyId", this.studyId)
+
       this.showMoreInfo = !this.showMoreInfo
     }
   }

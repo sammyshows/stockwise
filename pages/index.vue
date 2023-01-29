@@ -3,7 +3,7 @@
     <div v-if="viewPortfolios" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
-        <NuxtLink :to="{ path: '/new' }" style="touch-action: manipulation">
+        <NuxtLink :to="{ path: '/new' }" @click="logNavigationToNew()" style="touch-action: manipulation">
           <PlusIcon class="h-8 w-8" />
         </NuxtLink>
       </div>
@@ -27,6 +27,7 @@ import { BigNumber } from "bignumber.js";
 import { storeToRefs } from 'pinia'
 import { useAuth } from "@/store/auth.js";
 import { useUser } from "@/store/user.js";
+import { useUtility } from "@/store/utility";
 import { usePortfolios } from "@/store/portfolios";
 
 
@@ -36,9 +37,10 @@ export default defineComponent({
   async setup() {
     const authStore = useAuth()
     const userStore = useUser()
+    const utilityStore = useUtility()
     const portfolioStore = usePortfolios()
     const { portfolios } = storeToRefs(portfolioStore)
-    return { authStore, userStore, portfolioStore, portfolios }
+    return { authStore, userStore, utilityStore, portfolioStore, portfolios }
   },
 
   components: {
@@ -47,12 +49,16 @@ export default defineComponent({
 
   async mounted() {
     if (this.$route.query.code) {
-      await this.$googleLogin(this.$route.query.code)
+      this.utilityStore.logUserActivity(19, "Portfolios Overview Page", "INFO", "IDP Authorization code found in the URL.")
+      await this.$idpLogin(this.$route.query.code)
       this.$router.replace({'query': null})
     }
     await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
+    if (!this.uuid) // After logging in user should have an associated Stockwise userId
+      this.utilityStore.logUserActivity(20, "Portfolios Overview Page", "WARN", "After logging in, the userId has not been added to state.")
+
     await this.getPortfolios()
     await this.getOverviewChart()
     this.intervalLoop = setInterval(() => this.getPortfolios(), 60000)
@@ -196,8 +202,13 @@ export default defineComponent({
       return this.$route.path === '/' && this.portfolios != null && this.portfolios.length === 0
     },
 
-    setActiveTab(newTab) {
+    setActiveTab(newTab: string) {
       this.tabConfig.activeTab = newTab
+      this.utilityStore.logUserActivity(102, "Portfolios Overview Page", "INFO", `User switched to the ${newTab} tab.`)
+    },
+
+    logNavigationToNew() {
+      this.utilityStore.logUserActivity(103, "Portfolios Overview Page", "INFO", "User navigated to the 'New Portfolio' page.")
     }
   }
 })

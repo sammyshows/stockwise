@@ -127,7 +127,10 @@ export default defineComponent({
         showLogo: this.holding?.asset_type === 0,
         title: this.holding?.symbol,
         subtitle: this.holding?.asset_name,
-        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`
+        returnPath: `/${this.$route.params.portfolio}/holdings/${this.$route.params.holding}`,
+        logCode: 115,
+        logSource: 'New Transaction Page',
+        logTo: 'Transactions'
       },
       assetType: this.holding?.asset_type,
       holdingQuantity: null as (null | number),

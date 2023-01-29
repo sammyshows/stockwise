@@ -128,7 +128,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Add Forex',
         subtitle: this.portfolio?.portfolio_name,
-        returnPath: `/${this.$route.params.portfolio}`
+        returnPath: `/${this.$route.params.portfolio}`,
+        logCode: 118,
+        logSource: 'New Forex Holding Page',
+        logTo: 'Holdings'
       },
       portfolioId: this.$route.params.portfolio,
       currencies: {

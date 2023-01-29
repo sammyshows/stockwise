@@ -51,6 +51,7 @@ export default defineNuxtPlugin(() => {
                     const body = await res.json()
 
                     if (res.status === 200) {
+                        useUtility().logUserActivity(5, "Auth Plugin (Login)", "INFO","User authenticated successfully and started a logged-in session")
                         message = "authorized"
                         return body
                     }
@@ -107,7 +108,7 @@ export default defineNuxtPlugin(() => {
                     window.location.href = '/auth/login'
             },
 
-            signUp: async (email, password): Promise<string> => {
+            signUp: async (email: string, password: string): Promise<string> => {
                 const domain = useRuntimeConfig().DOMAIN
 
                 const response = await fetch(domain + '/api/auth-signup', {
@@ -167,9 +168,9 @@ export default defineNuxtPlugin(() => {
                 return 'success'
             },
 
-            googleLogin: async (code) => {
+            idpLogin: async (code) => {
                 const domain = useRuntimeConfig().DOMAIN
-                const response = await fetch(domain + '/api/auth-google-login', {
+                const response = await fetch(domain + '/api/auth-idp-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         code: code

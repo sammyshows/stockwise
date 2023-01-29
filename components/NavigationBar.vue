@@ -24,18 +24,29 @@
 
 <script lang="ts">
 import { BellIcon, SearchIcon, HomeIcon, DocumentSearchIcon, UserCircleIcon } from '@heroicons/vue/outline'
+import { useUtility } from "@/store/utility";
 
 export default {
   name: "NavigationBar",
+
+  setup() {
+    const utilityStore = useUtility()
+
+    return { utilityStore }
+  },
 
   components: {
     BellIcon, SearchIcon, HomeIcon, DocumentSearchIcon, UserCircleIcon
   },
 
   computed: {
-    routeBranch() {
-      // ['notifications', 'search', 'index', 'studies', 'profile']
-      return this.$route.name.split('-')[0]
+    // ['notifications', 'search', 'index', 'studies', 'profile']
+    routeBranch() { return this.$route.name.split('-')[0] },
+  },
+
+  watch: {
+    routeBranch(oldRouteName: string, newRouteName: string) {
+      this.utilityStore.logUserActivity(100, "Navigation Bar", "INFO", `User navigated from route name '${oldRouteName}' to '${newRouteName}'.`)
     }
   }
 }

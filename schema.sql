@@ -223,7 +223,7 @@ INSERT INTO studies (user_id, asset_id, name, symbol, type, notes, question_one,
 INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight, question_nine) VALUES ('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'c3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Microsoft Inc', 'MSFT', 0, 9, 4, 5, 3, 9, 3, 15.98, 20000643, 400094745);
 INSERT INTO studies (user_id, asset_id, name, symbol, type, question_one, question_two, question_three, question_four, question_five, question_six, question_seven, question_eight, question_nine) VALUES ('8c5810e0-9aba-4dc3-a0aa-55fcf521cb02', 'd3113ec5-d9c8-4c76-aea0-6bd28b239edc', 'Nano X Technology', 'NNOX', 0, 4, 5, 3, 4, 9, 3, 10.9, 300863, 5686844);
 
-CREATE TABLE user_activity_logs (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, source VARCHAR (50), message VARCHAR (300), tag VARCHAR (50), platform VARCHAR (50), user_id uuid NULL, study_id uuid NULL, portfolio_id uuid NULL, asset_id uuid NULL, holding_id uuid NULL, transaction_id uuid NULL, created_at timestamptz default now());
+CREATE TABLE user_activity_logs (id uuid DEFAULT gen_random_uuid() PRIMARY KEY, code SMALLINT, source VARCHAR, message VARCHAR, tag VARCHAR, platform VARCHAR, user_id uuid NULL, study_id uuid NULL, portfolio_id uuid NULL, asset_id uuid NULL, holding_id uuid NULL, transaction_id uuid NULL, created_at timestamptz default now());
 
 
 CREATE OR REPLACE FUNCTION updateColumnUpdatedAt()

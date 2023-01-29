@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-14 ml-5 mr-2 overflow-hidden">
-    <NuxtLink v-if="pageDetails?.returnPath" :to="pageDetails?.returnPath" style="touch-action: manipulation">
+    <NuxtLink v-if="pageDetails?.returnPath" :to="pageDetails?.returnPath" @click="logNavigation()" style="touch-action: manipulation">
       <ChevronLeftIcon class="h-8 w-8 mr-6 -ml-2.5" />
     </NuxtLink>
 
@@ -27,6 +27,13 @@ export default {
 
   components: {
     ChevronLeftIcon
+  },
+
+  methods: {
+    logNavigation(path: string) {
+      if (this.pageDetails.logCode)
+        this.utilityStore.logUserActivity(this.pageDetails.logCode, this.pageDetails.logSource, "INFO", `User navigated back to the '${this.pageDetails.logTo}' page.`)
+    }
   }
 }
 </script>

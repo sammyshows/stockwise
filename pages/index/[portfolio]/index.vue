@@ -9,7 +9,7 @@
     <div v-if="holdings" class="grow overflow-scroll px-3">
       <TransitionGroup tag="div" name="form">
         <div v-for="holding in filteredHoldings" :key="holding.holding_id">
-          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id } }" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'index-portfolio-holdings-holding', params: { portfolio: $route.params.portfolio, holding: holding.holding_id } }" @click="logNavigationToHolding(holding.holding_id)" style="touch-action: manipulation">
             <div class="mb-3">
               <div class="flex justify-end">
                 <div class="grow">
@@ -74,6 +74,7 @@
 import { defineComponent } from "vue";
 import BigNumber from "bignumber.js";
 import { computed } from "@vue/reactivity";
+import { useUtility } from "@/store/utility";
 import { useHoldings } from "@/store/holdings";
 
 export default defineComponent({
@@ -81,8 +82,9 @@ export default defineComponent({
 
   async setup() {
     const route = useRoute()
+    const utilityStore = useUtility()
     const holdings = computed(() => useHoldings().getHoldings(route.params.portfolio))
-    return { holdings }
+    return { utilityStore, holdings }
   },
 
   props: [
@@ -96,6 +98,10 @@ export default defineComponent({
   },
 
   methods: {
+    logNavigationToHolding(holdingId: string) {
+      this.utilityStore.logUserActivity(104, "Holdings Page", "INFO", "User navigated to a holding.", "holdingId", holdingId)
+    },
+
     BigNumber
   }
 })
