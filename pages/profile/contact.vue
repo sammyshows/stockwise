@@ -32,7 +32,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Contact Us',
         subtitle: 'PROFILE',
-        returnPath: '/profile'
+        returnPath: '/profile',
+        logCode: 139,
+        logSource: 'Contact Us Page',
+        logTo: 'Profile'
       }
     }
   }

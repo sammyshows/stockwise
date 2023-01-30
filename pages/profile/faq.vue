@@ -34,7 +34,10 @@ export default defineComponent({
       pageDetails: {
         title: 'FAQ',
         subtitle: 'PROFILE',
-        returnPath: '/profile'
+        returnPath: '/profile',
+        logCode: 138,
+        logSource: 'Frequently Asked Questions Page',
+        logTo: 'Profile'
       }
     }
   }

@@ -29,7 +29,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Policies',
         subtitle: 'PROFILE',
-        returnPath: '/profile'
+        returnPath: '/profile',
+        logCode: 140,
+        logSource: 'Terms and Privacy Policy Page',
+        logTo: 'Profile'
       }
     }
   }

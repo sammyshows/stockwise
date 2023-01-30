@@ -45,7 +45,7 @@ export default {
   },
 
   watch: {
-    routeBranch(oldRouteName: string, newRouteName: string) {
+    routeBranch(newRouteName: string, oldRouteName: string) {
       this.utilityStore.logUserActivity(100, "Navigation Bar", "INFO", `User navigated to the '${this.getPageName(newRouteName)}' page.`)
     }
   },

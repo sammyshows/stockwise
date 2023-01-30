@@ -92,3 +92,33 @@
 > - **127**: User navigated back to the previous question.
 > - **128**: User navigated back to the next question.
 
+###### Search Page
+
+> - **129**: User navigated to the 'Search Insights' page (clicked on a search result).
+> - **130**: User navigated to the 'Search Insights' page (clicked on a recent search).
+> - **131**: User navigated back to the 'Search' page from the 'Search Insights' page.  
+> - **132**: User navigated to the 'New Study' page from the 'Search Insights' page.  
+
+###### Profile Page
+
+> - **133**: User navigated to the 'Settings' Page.
+> - **134**: User navigated to the 'Frequently Asked Questions' Page.
+> - **135**: User navigated to the 'Contact Us' Page.
+> - **136**: User navigated to the 'Terms and Privacy Policy' Page.
+> - **137**: User navigated back to the 'Profile' page from the 'Settings' page.
+> - **138**: User navigated back to the 'Profile' page from the 'Frequently Asked Questions' page.
+> - **139**: User navigated back to the 'Profile' page from the 'Contact Us' page.
+> - **140**: User navigated back to the 'Profile' page from the 'Terms and Privacy Policy' page.
+
+<br>
+
+## Assets (400-599)
+#### e.g. Stocks, Forex, Cash.
+
+###### Search Page
+
+> - **400**: User changed the 'Search Insights' chart range.
+
+###### Holdings Page
+
+> - **401**: User changed the 'Holding Insights' chart range.  

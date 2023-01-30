@@ -11,7 +11,7 @@ export const useUtility = defineStore('utility', {
     },
 
     actions: {
-        logUserActivity(code: number, source: string, tag: string, message: string, referenceType: (string | null) = null, referenceId: (string | null) = null) {
+        logUserActivity(code: number, source: string, tag: string, message: string, referenceOneType: (string | null) = null, referenceOneId: (string | null) = null, referenceTwoType: (string | null) = null, referenceTwoId: (string | null) = null) {
             // e.g. (23, "User created portfolio", "INFO", "account", "portfolioId", "7ad8b5e6-2bcd-4466-93b9-1833eea45d59")
             // IDEA: If we need more than one reference, add another optional Type and Id pair, e.g. referenceType2
             const user = useUser()
@@ -30,8 +30,11 @@ export const useUtility = defineStore('utility', {
                 transactionId: null
             }
 
-            if (referenceType && referenceId)
-                userActivityLog[referenceType] = referenceId
+            if (referenceOneType && referenceOneId)
+                userActivityLog[referenceOneType] = referenceOneId
+
+            if (referenceTwoType && referenceTwoId)
+                userActivityLog[referenceTwoType] = referenceTwoId
 
             fetch(this.domain + '/api/user-activity-logs-create', {
                 method: 'POST',

@@ -68,7 +68,10 @@ export default defineComponent({
       pageDetails: {
         title: 'Settings',
         subtitle: 'PROFILE',
-        returnPath: '/profile'
+        returnPath: '/profile',
+        logCode: 137,
+        logSource: 'Settings Page',
+        logTo: 'Profile'
       },
       currencies: [
         { ticker: 'AUD', name: 'Australian Dollar' },

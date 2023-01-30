@@ -337,7 +337,7 @@ export default defineComponent({
     },
 
     nextPage() {
-      this.utilityStore.logUserActivity(128, "Study Question Page", "INFO", `User navigated back to the next question. (Question ${this.currentQuestion} to Question ${this.currentQuestion + 1})`, "studyId", this.studyId)
+      this.utilityStore.logUserActivity(128, "Study Question Page", "INFO", `User navigated to the next question. (Question ${this.currentQuestion} to Question ${this.currentQuestion + 1})`, "studyId", this.studyId)
       this.currentQuestion += 1
     },
 

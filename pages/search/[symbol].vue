@@ -20,7 +20,7 @@
 
     <div class="overflow-scroll px-3">
       <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !chartDataDay }">
-        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice); logChartChange(range.period, range.periodText)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
         <button disabled style="touch-action: manipulation" class="px-2 py-1 text-gray-600">15Y</button>
       </div>
 
@@ -122,7 +122,7 @@
       </div>
 
       <div class="flex px-4 mb-6 gap-x-6">
-        <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
+        <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" @click="logNavigation()" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
       </div>
 
       <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>
@@ -148,6 +148,7 @@ import * as pkg from 'chart.js';
 const { Chart, registerables } = pkg
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
+import { useUtility } from "@/store/utility";
 import { useAuth } from "@/store/auth";
 
 interface StringObject {
@@ -158,9 +159,10 @@ export default defineComponent({
   name: "Asset Detail",
 
   setup() {
+    const utilityStore = useUtility()
     const authStore = useAuth()
 
-    return { authStore }
+    return { utilityStore, authStore }
   },
 
   components: {
@@ -183,6 +185,9 @@ export default defineComponent({
         title: this.$route.params.assetSymbol,
         subtitle: this.$route.params.assetName,
         returnPath: "/search",
+        logCode: 131,
+        logSource: 'Search Insights Page',
+        logTo: 'Search'
       },
       symbol: this.$route.params.symbol,
       activePeriod: '',
@@ -429,6 +434,14 @@ export default defineComponent({
           }
         }
       });
+    },
+
+    logNavigation() {
+      this.utilityStore.logUserActivity(132, "Search Insights Page", "INFO", "User navigated to the 'New Study' page.")
+    },
+
+    logChartChange(range: string, periodText: string) {
+      this.utilityStore.logUserActivity(400, "Search Page", "INFO", `User changed the 'Search Insights' chart range to ${range} (${periodText}).`)
     },
 
     BigNumber

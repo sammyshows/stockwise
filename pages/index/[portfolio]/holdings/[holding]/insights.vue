@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div class="flex justify-center w-full h-8 pt-1 text-xs" :class="{ 'hidden': !assetChartMax }">
-        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice)" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
+        <button v-for="range in ranges" @click="createChart(range.period, range.periodText, range.slice); logChartChange(range.period, range.periodText);" :disabled="activePeriod === range.period" style="touch-action: manipulation" class="px-2 py-1" :class="{ 'bg-normal-cyan/50': activePeriod === range.period }">{{ range.period }}</button>
         <button disabled class="px-2 py-1 text-gray-600">15Y</button>
       </div>
 
@@ -140,15 +140,17 @@ const { Chart, registerables } = pkg;
 import BigNumber from "bignumber.js";
 import { SpeakerphoneIcon } from "@heroicons/vue/solid"
 import Spinner from "~/components/Spinner.vue";
+import { useUtility } from "@/store/utility";
 
 export default defineComponent({
   name: "Asset Detail",
 
   async setup() {
+    const utilityStore = useUtility()
     const chartContainer = ref(null)
     const chart = ref(null)
 
-    return { chartContainer, chart }
+    return { utilityStore, chartContainer, chart }
   },
 
   props: [
@@ -372,6 +374,10 @@ export default defineComponent({
       });
 
       this.initialLoad = false
+    },
+
+    logChartChange(range: string, periodText: string) {
+      this.utilityStore.logUserActivity(401, "Search Page", "INFO", `User changed the 'Search Insights' chart range to ${range} (${periodText}).`, "assetId", this.assetData.id, "holdingId", this.$route.params.holding)
     },
 
     BigNumber

@@ -8,19 +8,19 @@
 
       <div class="overflow-scroll">
         <div class="flex flex-col gap-y-2.5 mt-8 px-7">
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/settings' }" style="touch-action: manipulation">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/settings' }" @click="logNavigationTo(133, 'Settings')" style="touch-action: manipulation">
             <CogIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Settings</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/faq' }" style="touch-action: manipulation">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/faq' }" @click="logNavigationTo(134, 'Frequently Asked Questions')" style="touch-action: manipulation">
             <AnnotationIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Frequently Asked Questions</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/contact' }" style="touch-action: manipulation">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/contact' }" @click="logNavigationTo(135, 'Contact Us')" style="touch-action: manipulation">
             <PhoneIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Contact Us</p>
           </NuxtLink>
-          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/policies' }" style="touch-action: manipulation">
+          <NuxtLink class="flex items-center w-full py-3 px-3 rounded-2xl bg-gray-600/20" :to="{ path: '/profile/policies' }" @click="logNavigationTo(136, 'Terms and Privacy Policy')" style="touch-action: manipulation">
             <ClipboardListIcon class="h-6 text-bright-cyan" />
             <p class="ml-6 text-sm">Terms and Privacy Policy</p>
           </NuxtLink>
@@ -38,6 +38,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { CogIcon, AnnotationIcon, PhoneIcon, ClipboardListIcon, LogoutIcon } from "@heroicons/vue/outline";
+import { useUtility } from "@/store/utility";
 import { useAuth } from "@/store/auth";
 import { useUser } from "@/store/user";
 
@@ -46,9 +47,11 @@ export default defineComponent({
   name: "Portfolio Overview",
 
   async setup() {
+    const utilityStore = useUtility()
     const authStore = useAuth()
     const userStore = useUser()
-    return { authStore, userStore }
+
+    return { utilityStore, authStore, userStore }
   },
 
   components: {
@@ -92,7 +95,11 @@ export default defineComponent({
       this.userStore.$patch({
         currency: response.data.currency
       })
-    }
+    },
+
+    logNavigationTo(code: number, page: string) {
+      this.utilityStore.logUserActivity(code, "Profile Page", "INFO", `User navigated to the '${ page }' page.`)
+    },
   }
 })
 </script>

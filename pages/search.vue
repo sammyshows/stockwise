@@ -12,7 +12,7 @@
           </div>
           <input @keyup="fetchSearch($event.target.value)" autocomplete="off" type="text" name="search" placeholder="Search for a company..." class="placeholder:text-sm placeholder:text-gray-600 placeholder:italic focus:ring-0 focus:border-white block bg-gray-900/20 w-full pl-12 border-gray-400/40 rounded-lg" />
           <div v-if="searchResults.length !== 0" class="absolute max-h-64 w-full overflow-scroll mt-0.5 divide-y divide-gray-700 bg-gray-600 border border-t-0 border-gray-600 rounded-b-lg z-10">
-            <NuxtLink v-for="result in searchResults" @click="clearSearchResults(); setSearches(result);" :to="{ name: 'search-symbol', params: { symbol: result.symbol, assetSymbol: result.symbol, assetName: result.securityName } }" style="touch-action: manipulation" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
+            <NuxtLink v-for="result in searchResults" @click="clearSearchResults(); setSearches(result, false);" :to="{ name: 'search-symbol', params: { symbol: result.symbol } }" style="touch-action: manipulation" class="flex justify-between items-center h-10 w-full px-3 gap-x-3">
               <p class="w-2/5 whitespace-nowrap">{{ result.symbol + " : " + result.exchange }}</p>
               <p class="w-2/5 text-right truncate">{{ result.securityName }}</p>
             </NuxtLink>
@@ -23,7 +23,7 @@
           <h2 class="py-2 border-b-4 border-gray-400 w-max font-medium text-gray-400">Recent</h2>
 
           <div class="mt-2 divide-y divide-gray-300/20">
-            <NuxtLink v-if="recentSearches" v-for="asset in recentSearches" @click="setSearches(asset)" :to="{ name: 'search-symbol', params: { symbol: asset.symbol, assetSymbol: asset.symbol, assetName: asset.name } }" style="touch-action: manipulation" class="w-full flex justify-between p-2">
+            <NuxtLink v-if="recentSearches" v-for="asset in recentSearches" @click="setSearches(asset, true)" :to="{ name: 'search-symbol', params: { symbol: asset.symbol } }" style="touch-action: manipulation" class="w-full flex justify-between p-2">
               <div class="flex">
                 <p class="w-20 my-auto text-xs truncate">{{ asset.symbol + " : " + asset.exchange }}</p>
                 <p class="w-44 my-auto ml-3 text-xs truncate">{{ asset.securityName }}</p>
@@ -45,6 +45,7 @@
 import { defineComponent } from "vue"
 import { SearchIcon } from '@heroicons/vue/solid'
 import { ArrowNarrowRightIcon } from '@heroicons/vue/outline'
+import { useUtility } from "@/store/utility";
 import { useAuth } from "@/store/auth";
 
 
@@ -52,8 +53,10 @@ export default defineComponent({
   name: "Search",
 
   async setup() {
+    const utilityStore = useUtility()
     const authStore = useAuth()
-    return { authStore }
+
+    return { utilityStore, authStore }
   },
 
   components: {
@@ -107,7 +110,9 @@ export default defineComponent({
         this.recentSearches = []
     },
 
-    setSearches(asset) {
+    setSearches(asset: object, isRecent: Boolean) {
+      this.utilityStore.logUserActivity(isRecent ? 130 : 129, "Search Page", "INFO", `User navigated to the ${ asset.symbol } stock insights page (${ isRecent ? 'clicked on a recent search option' : 'clicked on a search result' }).`)
+
       const search = { securityName: asset.securityName, symbol: asset.symbol, exchange: asset.exchange }
       let searches = this.recentSearches
 
