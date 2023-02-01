@@ -122,7 +122,7 @@ export default defineComponent({
 }
 
 .question-leave-to, .question-enter-from {
-  transform: translateX(-360px);
+  transform: translateX(-100%);
 }
 
 .info-enter-active, .info-leave-active {
@@ -130,6 +130,6 @@ export default defineComponent({
 }
 
 .info-enter-from, .info-leave-to {
-  transform: translateX(360px);
+  transform: translateX(100%);
 }
 </style>
