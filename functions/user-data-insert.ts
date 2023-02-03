@@ -1,5 +1,4 @@
 import { Handler } from "@netlify/functions";
-import {consoleLog} from "vite-plugin-checker/lib/logger";
 import BigNumber from "bignumber.js";
 const client = require("../database/client.ts")
 const { requireAuth } = require('../api/auth');
@@ -12,19 +11,34 @@ const handler: Handler = async (event, context) => {
             SELECT u.user_id AS user_id,
                    p.id AS portfolio_id,
                    h.id AS holding_id,
-                   (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) as initial_value,
-                   a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price AS current_value,
-                   (a.current_price * (t.quantity - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price) - (t.quantity - COALESCE(SUM(s.quantity), 0)) * t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) + COALESCE(SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0) as all_time_change,
-                   t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price) AS all_time_initial
+                   CASE t.type
+                       WHEN 0 THEN (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                       ELSE 0
+                   END AS initial_value,
+                   CASE t.type
+                       WHEN 0 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                       WHEN 3 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                   END AS current_value,
+                   CASE t.type
+                   WHEN 0 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                            - (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                            + COALESCE(SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price) - t.initial_price / t.split_multiplier * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price))), 0)
+                   WHEN 2 THEN t.quantity * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                   WHEN 3 THEN a.current_price * (t.quantity * t.split_multiplier - COALESCE(SUM(s.quantity), 0)) * asset_c.current_price * user_c.current_price
+                            + COALESCE(SUM(s.quantity * (s.sell_price * COALESCE(s.exchange_rate, asset_c.current_price * user_c.current_price))), 0)
+                   END AS all_time_change,
+                   CASE t.type
+                       WHEN 0 THEN t.initial_value * COALESCE(t.exchange_rate, asset_c.current_price * user_c.current_price)
+                       ELSE 0
+                   END AS all_time_initial
             FROM holdings AS h
                 INNER JOIN portfolios AS p ON h.portfolio_id = p.id
                 INNER JOIN assets AS a ON h.asset_id = a.id
                 INNER JOIN user_settings AS u ON p.user_id = u.user_id
                 INNER JOIN assets AS asset_c ON a.currency_id = asset_c.id
                 INNER JOIN assets AS user_c ON u.currency_id = user_c.id
-                INNER JOIN transactions AS t ON h.id = t.holding_id
+                INNER JOIN transactions AS t ON t.type != 1 AND h.id = t.holding_id
                 LEFT JOIN sells AS s ON t.id = s.transaction_id
-            WHERE t.type = 0
             GROUP BY u.id, h.id, a.id, p.id, asset_c.id, user_c.id, t.id
         )
         SELECT cte.user_id,
@@ -36,7 +50,7 @@ const handler: Handler = async (event, context) => {
                SUM(cte.all_time_initial) AS all_time_initial,
                SUBSTRING((CURRENT_DATE - 1)::TEXT, 1 ,10) AS date
         FROM cte
-        GROUP BY cte.user_id, cte.holding_id, cte.portfolio_id`
+        GROUP BY cte.user_id, cte.holding_id, cte.portfolio_id;`
 
     // sort data into categorised arrays (unnested into rows for postgres)
     const holdingIds = holdingTotals.map(holding => holding["holding_id"])
@@ -45,7 +59,7 @@ const handler: Handler = async (event, context) => {
     const holdingAllTimes = holdingTotals.map(holding => holding["all_time_change"])
     const holdingAllTimePcs = holdingTotals.map(holding => holding["all_time_change"] / holding["all_time_initial"])
     const holdingDates = holdingTotals.map(holding => holding["date"])
-    console.log(holdingCurrents)
+
     await client`
         WITH holding (holding_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
             SELECT *
@@ -80,6 +94,7 @@ const handler: Handler = async (event, context) => {
     const portfolioAllTimes = portfolioTotals.map(portfolio => portfolio["all_time_change"])
     const portfolioAllTimePcs = portfolioTotals.map(portfolio => portfolio["all_time_change"] / portfolio["all_time_initial"])
     const portfolioDates = portfolioTotals.map(portfolio => portfolio["date"])
+
     await client`
         WITH portfolio (portfolio_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
             SELECT *
@@ -114,6 +129,7 @@ const handler: Handler = async (event, context) => {
     const userAllTimes = userTotals.map(user => user["all_time_change"])
     const userAllTimePcs = userTotals.map(user => user["all_time_change"] / user["all_time_initial"])
     const userDates = userTotals.map(user => user["date"])
+
 
     await client`
         WITH user_data (user_id, initial_value, current_value, all_time_change, all_time_percent, date) AS (
