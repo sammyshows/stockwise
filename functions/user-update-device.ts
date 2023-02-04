@@ -1,0 +1,22 @@
+import { Handler } from "@netlify/functions";
+const client = require("../database/client.ts")
+const { requireAuth } = require('../api/auth');
+
+
+const handler: Handler = requireAuth(async (event, context) => {
+    const eventBody = JSON.parse(event.body)
+
+    await client`
+        UPDATE users SET (device_model, device_os, stockwise_version)
+        VALUES (${eventBody.deviceModel}, ${eventBody.deviceOS}, ${eventBody.stockwiseVersion})
+        WHERE users.id = ${eventBody.userId};`
+
+    return {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
+        statusCode: 200
+    }
+})
+
+export { handler }

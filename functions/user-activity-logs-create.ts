@@ -5,7 +5,7 @@ const client = require("../database/client.ts")
 
 const handler: Handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
-    console.log('got to the endpoint')
+
     await client`
         INSERT INTO user_activity_logs (user_id, code, source, tag, platform, message, study_id, portfolio_id, asset_id, holding_id, transaction_id) 
         VALUES (${eventBody.userId}, 
