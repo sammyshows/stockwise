@@ -37,7 +37,7 @@
 
         <div class="mb-7 flex justify-between">
           <button @click="$emit('prevPage')" style="touch-action: manipulation" :class="{ 'invisible': moreInfo.question === 'question_one' }" class="w-28 h-8 rounded-lg border border-gray-400 bg-white/10 text-xl">PREV</button>
-          <button v-if="moreInfo.question !== 'question_nine'" @click="$emit('nextPage')" :disabled="!currentValue" style="touch-action: manipulation" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
+          <button v-if="!isLastQuestion" @click="$emit('nextPage')" :disabled="!currentValue" style="touch-action: manipulation" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">NEXT</button>
           <button v-else @click="$emit('submit')" :disabled="!currentValue" style="touch-action: manipulation" :class="{ 'border-gray-500 text-gray-500': !currentValue }" class="w-28 h-8 rounded-lg border border-gray-400 border bg-white/10 text-xl">SUBMIT</button>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default defineComponent({
     return { utilityStore }
   },
 
-  props: ['currentValue', 'moreInfo'],
+  props: ['currentValue', 'moreInfo', 'type'],
 
   watch: {
     currentValue(newNumber) {
@@ -100,6 +100,15 @@ export default defineComponent({
               You should not make any decision, financial, investment, trading, or otherwise, based on any information presented in this app, including this page, without undertaking independent due diligence and consultation with a professional broker or financial advisor.
             </p>
           </div>`
+    }
+  },
+
+  computed: {
+    isLastQuestion(): Boolean {
+      if (this.type === 0)
+        return this.moreInfo.question === 'question_six'
+      else if (this.type === 1)
+        return this.moreInfo.question === 'question_nine'
     }
   },
 

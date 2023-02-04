@@ -9,6 +9,7 @@ export default defineNuxtPlugin(() => {
         provide: {
             login: async (email?, password?): Promise<string> => {
                 const domain = useRuntimeConfig().DOMAIN
+                let version = ""
                 let accessToken
                 let refreshToken
                 let idToken
@@ -36,6 +37,11 @@ export default defineNuxtPlugin(() => {
                 key = 'idToken'
                 if (keyNames.includes(key))
                     idToken = await SecureStoragePlugin.get({ key })
+                        .then(result => result.value)
+
+                key = 'version'
+                if (keyNames.includes(key))
+                    version = await SecureStoragePlugin.get({ key })
                         .then(result => result.value)
 
                 const response = await fetch(domain + '/api/auth-login', {
@@ -91,6 +97,8 @@ export default defineNuxtPlugin(() => {
                     useUser().$patch({
                         userId: response.userId
                     })
+
+                    useUtility().updateUserInfo(version)
                 }
 
                 return message
@@ -163,6 +171,7 @@ export default defineNuxtPlugin(() => {
                     await useUser().$patch({
                         userId: response.userId
                     })
+                    useUtility().updateUserInfo()
                 }
 
                 return 'success'

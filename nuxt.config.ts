@@ -2,6 +2,10 @@
 export default defineNuxtConfig({
     ssr: false,
 
+    experimental:{
+        treeshakeClientOnly: false
+    },
+
     runtimeConfig: {
         public: {
             DOMAIN: process.env.DOMAIN,

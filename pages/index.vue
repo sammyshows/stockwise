@@ -70,7 +70,7 @@ export default defineComponent({
 
   watch: {
     $route (to) {
-      if (to.name === '')
+      if (to.name === 'index')
         this.tabConfig.activeTab = 'PORTFOLIOS'
     }
   },

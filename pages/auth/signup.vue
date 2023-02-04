@@ -116,7 +116,7 @@ export default defineComponent({
       if (this.validateForm()) {
         this.utilityStore.logUserActivity(12, "Signup Page", "INFO", "User clicked on the 'Create account' button (email / password).")
 
-        const response = await this.$signUp(this.email.trim(), this.password)
+        const response = await this.$signUp(this.email.trim().toLowerCase(), this.password)
         this.authMessage = response
         if (response === 'success') {
           this.$router.push('/')

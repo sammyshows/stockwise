@@ -8,7 +8,7 @@
         <div class="relative w-12 h-12 float-right rounded-full border border-bright-cyan">
           <p class="absolute left-2.5 top-1">{{ currentQuestion }}</p>
           <div class="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-0.5 -rotate-45 bg-white"></div>
-          <p class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '9' : '0' }}</p>
+          <p class="absolute right-2.5 bottom-1">{{ studyDetails.type === 0 ? '6' : '9' }}</p>
         </div>
       </div>
     </div>
@@ -16,6 +16,7 @@
     <QuestionsStandard v-if="storeStudy"
                        :currentValue="study[moreInfo[currentQuestion - 1]?.question]"
                        :moreInfo="moreInfo[currentQuestion - 1]"
+                       :type="studyDetails.type"
                        @updateValue="updateValue"
                        @prevPage="prevPage"
                        @nextPage="nextPage"

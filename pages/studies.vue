@@ -14,8 +14,8 @@
         <Spinner class="h-full" v-else />
       </div>
       <div v-else-if="$route.path === '/studies/completed'" class="flex grow">
-        <p v-if="uncompletedStudies != null && uncompletedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
-        <NuxtPage v-else-if="uncompletedStudies" :show="viewStudies" />
+        <p v-if="completedStudies != null && completedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
+        <NuxtPage v-else-if="completedStudies" :show="viewStudies" />
         <Spinner class="h-full" v-else />
       </div>
     </div>
@@ -38,9 +38,10 @@ export default defineComponent({
   async setup() {
     const studyStore = useStudies()
     const uncompletedStudies = computed(() => studyStore.getUncompleted())
+    const completedStudies = computed(() => studyStore.getCompleted())
     const authStore = useAuth()
     const userStore = useUser()
-    return { studyStore, uncompletedStudies, authStore, userStore }
+    return { studyStore, uncompletedStudies, completedStudies, authStore, userStore }
   },
 
   components: {
@@ -56,7 +57,7 @@ export default defineComponent({
 
   computed: {
     viewStudies() {
-      return ['/studies', '/studies/completed'].includes(this.$route.path)
+      return ['studies', 'studies-completed'].includes(this.$route.name)
     }
   },
 

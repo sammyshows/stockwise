@@ -68,8 +68,8 @@
             <label for="type" class="flex items-end">Study type</label>
             <select v-model="studyType" id="type" class="w-full mt-1.5 py-1.5 text-xs rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
               <option value="" disabled selected hidden></option>
-              <option :value="0">Warren Buffett's Principles</option>
-              <option :value="1" disabled>Coming soon...</option>
+              <option :value="0">Standard - Warren Buffett's Principles</option>
+              <option :value="1">Advanced - Warren Buffett's Principles</option>
             </select>
             <p class="mt-1 text-tiny text-center text-gray-400">A study based on Warren Buffett's principles for investing.</p>
           </div>
@@ -86,7 +86,7 @@
         </TransitionGroup>
       </div>
       <div class="grow flex items-end justify-end my-7 text-right">
-        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'CREATE'" @clicked="addStudy()" />
+        <ButtonsCyan :disabled="disabledSave" :text="disabledSave ? 'CREATING' : 'BEGIN'" @clicked="addStudy()" />
       </div>
     </div>
     <!--  this div below is used to "close" the search results box when a user clicks away  -->
@@ -248,6 +248,7 @@ export default defineComponent({
           question_six: null,
           question_three: null,
           question_two: null,
+          question_nine: null,
           study_id: this.studyId,
           symbol: this.manualForm ? this.symbol : this.quote.symbol,
           type: this.studyType

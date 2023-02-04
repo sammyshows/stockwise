@@ -18,14 +18,16 @@
         <p class="px-4">{{ study?.[question.question] }}</p>
       </div>
 
-      <h2 class="mt-1 mb-0.5">FINANCIAL</h2>
-      <div class="flex justify-between ml-8 pt-0.5">
-        <p class="text-bright-cyan">{{ questions[6].title }}</p>
-        <p class="px-4">{{ study?.[questions[6].question] }}</p>
-      </div>
-      <div v-for="question in questions.slice(7, 9)" class="flex justify-between ml-8 pt-0.5">
-        <p class="text-bright-cyan">{{ question.title }}</p>
-        <p class="px-4">{{ $simplify(study?.[question.question], 2) }}</p>
+      <div v-if="studyDetails.type === 1">
+        <h2 class="mt-1 mb-0.5">FINANCIAL</h2>
+        <div class="flex justify-between ml-8 pt-0.5">
+          <p class="text-bright-cyan">{{ questions[6].title }}</p>
+          <p class="px-4">{{ study?.[questions[6].question] }}</p>
+        </div>
+        <div v-for="question in questions.slice(7, 9)" class="flex justify-between ml-8 pt-0.5">
+          <p class="text-bright-cyan">{{ question.title }}</p>
+          <p class="px-4">{{ $simplify(study?.[question.question], 2) }}</p>
+        </div>
       </div>
     </div>
 
