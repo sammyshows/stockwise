@@ -171,6 +171,7 @@ export default defineNuxtPlugin(() => {
                     await useUser().$patch({
                         userId: response.userId
                     })
+
                     useUtility().updateUserInfo()
                 }
 
@@ -208,6 +209,8 @@ export default defineNuxtPlugin(() => {
                     await useUser().$patch({
                         userId: response.userId
                     })
+
+                    useUtility().updateUserInfo()
                 }
             },
 

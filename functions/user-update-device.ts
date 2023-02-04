@@ -7,8 +7,10 @@ const handler: Handler = requireAuth(async (event, context) => {
     const eventBody = JSON.parse(event.body)
 
     await client`
-        UPDATE users SET (device_model, device_os, stockwise_version)
-        VALUES (${eventBody.deviceModel}, ${eventBody.deviceOS}, ${eventBody.stockwiseVersion})
+        UPDATE users
+        SET device_model = ${eventBody.deviceModel},
+            device_os = ${eventBody.deviceOS},
+            stockwise_version = ${eventBody.stockwiseVersion}
         WHERE users.id = ${eventBody.userId};`
 
     return {
