@@ -72,11 +72,11 @@ exports.handler = async (event, context) => {
         const uuid = uuidv4()
         console.log('Created UUID: ', uuid)
         const params = {
-            AccessToken: 'accessToken',
+            AccessToken: accessToken,
             UserAttributes: [
                 {
-                    Name: 'custom:sw_user_id',
-                    Value: uuid
+                    Name: 'email_verified',
+                    Value: false
                 }
             ]
         }
