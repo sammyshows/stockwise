@@ -75,8 +75,8 @@ exports.handler = async (event, context) => {
             AccessToken: accessToken,
             UserAttributes: [
                 {
-                    Name: 'email_verified',
-                    Value: false
+                    Name: 'custom:sw_user_id',
+                    Value: uuid
                 }
             ]
         }
