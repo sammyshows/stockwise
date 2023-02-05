@@ -70,6 +70,7 @@ exports.handler = async (event, context) => {
         const username = jwt.decode(accessToken)["username"]
         const email = jwt.decode(idToken)["email"]
         const uuid = uuidv4()
+        console.log('Created UUID: ', uuid)
         const params = {
             UserAttributes: [
                 {
@@ -83,9 +84,30 @@ exports.handler = async (event, context) => {
         await new Promise((resolve, reject): void => {
             cognito.updateUserAttributes(params, async (error, session): Promise<void> => {
                 if (error) {
-                    await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'ERR', 'Failed to update AWS user with Stockwise userId.');`
+                    // await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'ERR', 'Failed to update AWS user with Stockwise userId.');`
                     resolve(console.log(error.message))
                 }
+
+                let RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
+
+                const userData = {
+                    Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
+                    Pool: userPool
+                };
+
+                const cognitoUser = new CognitoUser(userData);
+
+                await new Promise(function(resolve, reject) {
+                    cognitoUser.refreshSession(RefreshToken, async (err, session) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            accessToken = session.accessToken.jwtToken
+                            idToken = session.idToken.jwtToken
+                            resolve(refreshToken = session.refreshToken.token)
+                        }
+                    })
+                })
 
                 await client`
                 INSERT INTO users (id, email, account_type)
@@ -95,7 +117,7 @@ exports.handler = async (event, context) => {
 
                 userId = uuid
 
-                const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
+                RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
                 const userData = {
                     Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
