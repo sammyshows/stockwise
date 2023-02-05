@@ -180,7 +180,7 @@ export default defineNuxtPlugin(() => {
 
             idpLogin: async (code) => {
                 const domain = useRuntimeConfig().DOMAIN
-                const response = await fetch(domain + '/api/auth-google-login', {
+                const response = await fetch(domain + '/api/auth-idp-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         code: code
@@ -190,6 +190,7 @@ export default defineNuxtPlugin(() => {
 
                 // Refactor into a reusable function with identical block above
                 if (response.accessToken) {
+                    console.log('token', response.accessToken)
                     console.log('Response has security token.')
                     await useAuth().$patch({
                         accessToken: response.accessToken,
