@@ -68,6 +68,7 @@ exports.handler = async (event, context) => {
 
         const cognito = new AWS.CognitoIdentityServiceProvider();
         const username = jwt.decode(accessToken)["username"]
+        console.log('user', username)
         const email = jwt.decode(idToken)["email"]
         const uuid = uuidv4()
         console.log('Created UUID: ', uuid)
