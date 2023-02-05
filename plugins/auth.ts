@@ -180,7 +180,7 @@ export default defineNuxtPlugin(() => {
 
             idpLogin: async (code) => {
                 const domain = useRuntimeConfig().DOMAIN
-                const response = await fetch(domain + '/api/auth-idp-login', {
+                const response = await fetch(domain + '/api/auth-google-login', {
                     method: 'POST',
                     body: JSON.stringify({
                         code: code
