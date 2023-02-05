@@ -97,14 +97,14 @@ exports.handler = async (event, context) => {
 
         // -------- If token cookies are present ---------
         if (accessToken && idToken && refreshToken && unexpiredToken(accessToken)) {
-            await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (3, ${jwt.decode(idToken)['custom:sw_user_id']}, '/api/auth-login', 'INFO', 'User''s auth tokens are present and the accessToken is unexpired - returning tokens.');`
+            await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (3, ${jwt.decode(idToken)['custom:sw_user_id'] || null}, '/api/auth-login', 'INFO', 'User''s auth tokens are present and the accessToken is unexpired - returning tokens.');`
             // --------- If there's cookies and the accessToken is valid ---------
             console.log('Using existing tokens...')
             setCookies()
             return
         } else if (accessToken && refreshToken) {
             if (idToken)
-                await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (4, ${jwt.decode(idToken)['custom:sw_user_id']}, '/api/auth-login', 'INFO', 'User''s auth tokens are present, however, the accessToken is expired - refreshing tokens.');`
+                await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (4, ${jwt.decode(idToken)['custom:sw_user_id'] || null}, '/api/auth-login', 'INFO', 'User''s auth tokens are present, however, the accessToken is expired - refreshing tokens.');`
             // --------- If there's a valid refreshToken ---------
             console.log('Refreshing token...')
             const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});

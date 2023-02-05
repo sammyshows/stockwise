@@ -85,8 +85,8 @@ exports.handler = async (event, context) => {
             cognito.updateUserAttributes(params, async (error, session): Promise<void> => {
                 if (error) {
                     await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'ERR', 'Failed to update AWS user with Stockwise userId.');`
-                    resolve(console.log('updateUserAttributes message: ', error.message))
-                    resolve(console.log('updateUserAttributes: ', error))
+                    console.log('updateUserAttributes: ', error)
+                    reject(console.log('updateUserAttributes message: ', error.message))
                 }
 
                 await client`
