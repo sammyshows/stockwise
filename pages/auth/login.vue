@@ -75,9 +75,9 @@ export default defineComponent({
 
   methods: {
     validateForm() {
-      this.invalid.email = !this.email.includes('@')
-      this.invalid.password = this.password === ''
-
+      // I pulled the number 6 out of my arse :)
+      this.invalid.email = !this.email.includes('@') || this.email.length < 6
+      this.invalid.password = this.password.length < 6
       return this.invalid.email === false && this.invalid.password === false
     },
 

@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-const AWS = require('aws-sdk');
 import cookie from 'cookie'
 import { v4 as uuidv4 } from 'uuid';
 import jwt from "jsonwebtoken"
@@ -9,17 +8,12 @@ const client = require("../database/client.ts")
 
 exports.handler = async (event, context) => {
     const eventBody = JSON.parse(event.body)
-
     let accessToken
     let idToken
     let refreshToken
     let accessCookie
     let idCookie
     let refreshCookie
-    let userPool = new CognitoUserPool({
-        UserPoolId : process.env.AWS_POOL_ID,
-        ClientId : process.env.AWS_CLIENT_ID
-    })
 
     const setCookies = () => {
         const thirtyDays = 30 * 24 * 3600000
@@ -66,7 +60,6 @@ exports.handler = async (event, context) => {
         await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (16, '/api/auth-idp-login', 'INFO', 'Successfully exchanged Authorization Code for auth tokens, however, no Stockwise userId was found for the user. Creating Stockwise user.');`
         console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
 
-        const username = jwt.decode(accessToken)["username"]
         const email = jwt.decode(idToken)["email"]
 
         await client`
@@ -74,27 +67,6 @@ exports.handler = async (event, context) => {
                 VALUES (${userId}, ${email}, 1) 
             ON CONFLICT (email, account_type) 
                 WHERE ((email)::text = ${email}::text AND (account_type)::int = 1) DO NOTHING;`
-        //
-        // const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
-        //
-        // const userData = {
-        //     Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
-        //     Pool: userPool
-        // };
-        //
-        // const cognitoUser = new CognitoUser(userData);
-        //
-        // resolve(await new Promise(function(resolve, reject) {
-        //     cognitoUser.refreshSession(RefreshToken, async (err, session) => {
-        //         if (err) {
-        //             console.log(err);
-        //         } else {
-        //             accessToken = session.accessToken.jwtToken
-        //             idToken = session.idToken.jwtToken
-        //             resolve(refreshToken = session.refreshToken.token)
-        //         }
-        //     })
-        // }))
     }
 
     if (event.headers.origin === 'https://www.stockwise.app')
