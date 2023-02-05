@@ -55,6 +55,8 @@ exports.handler = async (event, context) => {
         return res.json()
     })
 
+    console.log('response: ', response)
+
     accessToken = response["access_token"]
     idToken = response["id_token"]
     refreshToken = response["refresh_token"]
@@ -72,13 +74,13 @@ exports.handler = async (event, context) => {
         const uuid = uuidv4()
         console.log('Created UUID: ', uuid)
         const params = {
+            AccessToken: accessToken,
             UserAttributes: [
                 {
                     Name: 'custom:sw_user_id',
                     Value: uuid
                 }
-            ],
-            AccessToken: accessToken
+            ]
         }
 
         await new Promise((resolve, reject): void => {
