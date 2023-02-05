@@ -84,30 +84,10 @@ exports.handler = async (event, context) => {
         await new Promise((resolve, reject): void => {
             cognito.updateUserAttributes(params, async (error, session): Promise<void> => {
                 if (error) {
-                    // await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'ERR', 'Failed to update AWS user with Stockwise userId.');`
-                    resolve(console.log(error.message))
+                    await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (17, '/api/auth-idp-login', 'ERR', 'Failed to update AWS user with Stockwise userId.');`
+                    resolve(console.log('updateUserAttributes message: ', error.message))
+                    resolve(console.log('updateUserAttributes: ', error))
                 }
-
-                let RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
-
-                let userData = {
-                    Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
-                    Pool: userPool
-                };
-
-                let cognitoUser = new CognitoUser(userData);
-
-                await new Promise(function(resolve, reject) {
-                    cognitoUser.refreshSession(RefreshToken, async (err, session) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            accessToken = session.accessToken.jwtToken
-                            idToken = session.idToken.jwtToken
-                            resolve(refreshToken = session.refreshToken.token)
-                        }
-                    })
-                })
 
                 await client`
                 INSERT INTO users (id, email, account_type)
@@ -117,14 +97,14 @@ exports.handler = async (event, context) => {
 
                 userId = uuid
 
-                RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
+                const RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
-                userData = {
+                const userData = {
                     Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
                     Pool: userPool
                 };
 
-                cognitoUser = new CognitoUser(userData);
+                const cognitoUser = new CognitoUser(userData);
 
                 resolve(await new Promise(function(resolve, reject) {
                     cognitoUser.refreshSession(RefreshToken, async (err, session) => {
