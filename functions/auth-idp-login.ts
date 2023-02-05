@@ -58,7 +58,6 @@ exports.handler = async (event, context) => {
     accessToken = response["access_token"]
     idToken = response["id_token"]
     refreshToken = response["refresh_token"]
-    console.log('Token1', accessToken)
 
     let userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
@@ -67,9 +66,9 @@ exports.handler = async (event, context) => {
         console.log('idToken && !userId (AWS Cognito user has signed up but doesnt have a stockwise userId associated with it yet.)')
 
         const cognito = new AWS.CognitoIdentityServiceProvider();
-        const username = jwt.decode(accessToken)["username"]
-        console.log('user', username)
-        const email = jwt.decode(idToken)["email"]
+        // const username = jwt.decode(accessToken)["username"]
+        // console.log('user', username)
+        // const email = jwt.decode(idToken)["email"]
         const uuid = uuidv4()
         console.log('Created UUID: ', uuid)
         const params = {
