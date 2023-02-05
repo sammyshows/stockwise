@@ -2,7 +2,6 @@ import fetch from 'node-fetch'
 const AWS = require('aws-sdk');
 import cookie from 'cookie'
 import { v4 as uuidv4 } from 'uuid';
-import jwkToPem from "jwk-to-pem"
 import jwt from "jsonwebtoken"
 import { CognitoRefreshToken, CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 const client = require("../database/client.ts")
@@ -61,44 +60,6 @@ exports.handler = async (event, context) => {
     refreshToken = response["refresh_token"]
     console.log('Token1', accessToken)
 
-        let jwks = await fetch(`https://cognito-idp.${process.env.AWS_POOL_REGION}.amazonaws.com/${process.env.AWS_POOL_ID}/.well-known/jwks.json`)
-            .then(response => response.json())
-
-        let pems = {}
-        let keys = jwks['keys']
-        for (let i = 0; i < keys.length; i++) {
-            // Convert each key to PEM
-            let key_id = keys[i].kid
-            let modulus = keys[i].n
-            let exponent = keys[i].e
-            let key_type = keys[i].kty
-            let jwk = { kty: key_type, n: modulus, e: exponent }
-            let pem = jwkToPem(jwk)
-            pems[key_id] = pem
-        }
-        // validate the token
-        let decodedJwt = jwt.decode(accessToken, {complete: true})
-        if (!decodedJwt) {
-            console.log("Not a valid JWT token")
-            return false
-        }
-
-        let kid = decodedJwt.header.kid
-        let pem = pems[kid]
-        if (!pem) {
-            console.log('Invalid token.')
-            throw 'Invalid token.'
-            return false
-        }
-
-        jwt.verify(accessToken, pem, function (err) {
-            if (err) {
-                console.log("Invalid token..")
-            } else {
-                console.log("Valid token.")
-            }
-        })
-
     let userId = jwt.decode(idToken)?.["custom:sw_user_id"]
 
     if (idToken && !userId) {
@@ -111,7 +72,6 @@ exports.handler = async (event, context) => {
         const uuid = uuidv4()
         console.log('Created UUID: ', uuid)
         const params = {
-            AccessToken: accessToken,
             UserAttributes: [
                 {
                     Name: 'custom:sw_user_id',
