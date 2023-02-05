@@ -90,12 +90,12 @@ exports.handler = async (event, context) => {
 
                 let RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
-                const userData = {
+                let userData = {
                     Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
                     Pool: userPool
                 };
 
-                const cognitoUser = new CognitoUser(userData);
+                let cognitoUser = new CognitoUser(userData);
 
                 await new Promise(function(resolve, reject) {
                     cognitoUser.refreshSession(RefreshToken, async (err, session) => {
@@ -119,12 +119,12 @@ exports.handler = async (event, context) => {
 
                 RefreshToken = new CognitoRefreshToken({RefreshToken: refreshToken});
 
-                const userData = {
+                userData = {
                     Username: email, // This is required, even though it seems it can be anything. In this case I've put the email here in case it's used for logs.
                     Pool: userPool
                 };
 
-                const cognitoUser = new CognitoUser(userData);
+                cognitoUser = new CognitoUser(userData);
 
                 resolve(await new Promise(function(resolve, reject) {
                     cognitoUser.refreshSession(RefreshToken, async (err, session) => {
