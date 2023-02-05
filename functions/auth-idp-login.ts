@@ -61,14 +61,8 @@ exports.handler = async (event, context) => {
     refreshToken = response["refresh_token"]
     console.log('Token1', accessToken)
 
-    let jwks = {}
-    const updateJwks = async (): Promise<void> => {
-        jwks = await fetch(`https://cognito-idp.${process.env.AWS_POOL_REGION}.amazonaws.com/${process.env.AWS_POOL_ID}/.well-known/jwks.json`)
+        let jwks = await fetch(`https://cognito-idp.${process.env.AWS_POOL_REGION}.amazonaws.com/${process.env.AWS_POOL_ID}/.well-known/jwks.json`)
             .then(response => response.json())
-    }
-
-        if (jwks == {})
-            await updateJwks()
 
         let pems = {}
         let keys = jwks['keys']
