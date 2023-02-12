@@ -108,7 +108,7 @@ export default {
         price: false,
         currency: false
       },
-      price: this.$formatNumber(this.assetData.current_price, 2, false, false),
+      price: this.$formatNumber(this.assetData.current_price, 10, false, false),
       currency: this.assetData.currency_symbol
     }
   },
