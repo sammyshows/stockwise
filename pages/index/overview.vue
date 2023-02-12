@@ -83,6 +83,7 @@ export default defineComponent({
       chartType: 'current_value',
       chartInitialValue: 0,
       chartFinalValue: 0,
+      labels: [],
       ranges: [
         {
           period: '1W',
@@ -141,8 +142,6 @@ export default defineComponent({
       this.chartInitialValue = prices[0]
       this.chartFinalValue = prices[prices.length - 1]
 
-      const labels = this.overviewChart.slice(dataSlice).map(dailyData => dailyData.date.slice(0, 10))
-
       const verticalLine = {
         id: 'verticalLine',
         afterDraw: chart => {
@@ -169,7 +168,7 @@ export default defineComponent({
         plugins: [verticalLine],
         type: 'line',
         data: {
-          labels: labels,
+          labels: this.labels,
           datasets: [{
             label: 'Value',
             data: prices,
@@ -254,15 +253,17 @@ export default defineComponent({
       let chartData;
       if (dataSlice) {
         chartData = this.overviewChart.slice(dataSlice)
+        this.labels = chartData.map(dailyData => dailyData.date.slice(0, 10))
         return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
       } else if (range === 'YTD') {
         const year = this.overviewChart[this.overviewChart.length - 1].date.slice(0,4)
         const firstOfYear = this.overviewChart.findIndex(day => day.date.slice(0,4) === year)
         chartData = this.overviewChart.slice(firstOfYear)
+        this.labels = chartData.map(dailyData => dailyData.date.slice(0, 10))
         return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
       } else {
-        chartData = this.overviewChart
-        return chartData.map(data => parseFloat(data[this.chartType]).toFixed(2))
+        this.labels = this.overviewChart.map(dailyData => dailyData.date.slice(0, 10))
+        return this.overviewChart.map(data => parseFloat(data[this.chartType]).toFixed(2))
       }
     },
 
