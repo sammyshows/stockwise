@@ -57,7 +57,7 @@ const handler: Handler = async (event, context) => {
     const holdingInitials = holdingTotals.map(holding => holding["initial_value"])
     const holdingCurrents = holdingTotals.map(holding => holding["current_value"])
     const holdingAllTimes = holdingTotals.map(holding => holding["all_time_change"])
-    const holdingAllTimePcs = holdingTotals.map(holding => holding["all_time_change"] / holding["all_time_initial"])
+    const holdingAllTimePcs = holdingTotals.map(holding => (holding["all_time_change"] / holding["all_time_initial"]) * 100)
     const holdingDates = holdingTotals.map(holding => holding["date"])
 
     await client`
@@ -92,7 +92,7 @@ const handler: Handler = async (event, context) => {
     const portfolioInitials = portfolioTotals.map(portfolio => portfolio["initial_value"])
     const portfolioCurrents = portfolioTotals.map(portfolio => portfolio["current_value"])
     const portfolioAllTimes = portfolioTotals.map(portfolio => portfolio["all_time_change"])
-    const portfolioAllTimePcs = portfolioTotals.map(portfolio => portfolio["all_time_change"] / portfolio["all_time_initial"])
+    const portfolioAllTimePcs = portfolioTotals.map(portfolio => (portfolio["all_time_change"] / portfolio["all_time_initial"]) * 100)
     const portfolioDates = portfolioTotals.map(portfolio => portfolio["date"])
 
     await client`
@@ -127,7 +127,7 @@ const handler: Handler = async (event, context) => {
     const userInitials = userTotals.map(user => user["initial_value"])
     const userCurrents = userTotals.map(user => user["current_value"])
     const userAllTimes = userTotals.map(user => user["all_time_change"])
-    const userAllTimePcs = userTotals.map(user => user["all_time_change"] / user["all_time_initial"])
+    const userAllTimePcs = userTotals.map(user => (user["all_time_change"] / user["all_time_initial"]) * 100)
     const userDates = userTotals.map(user => user["date"])
 
 
