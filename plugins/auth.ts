@@ -57,7 +57,6 @@ export default defineNuxtPlugin(() => {
                     const body = await res.json()
 
                     if (res.status === 200) {
-                        useUtility().logUserActivity(5, "Auth Plugin (Login)", "INFO","User authenticated successfully and started a logged-in session")
                         message = "authorized"
                         return body
                     }
@@ -97,7 +96,7 @@ export default defineNuxtPlugin(() => {
                     useUser().$patch({
                         userId: response.userId
                     })
-
+                    useUtility().logUserActivity(5, "Auth Plugin (Login)", "INFO","User authenticated successfully and started a logged-in session")
                     useUtility().updateUserInfo(version)
                 }
 
