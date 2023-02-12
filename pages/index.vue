@@ -204,7 +204,7 @@ export default defineComponent({
 
     setActiveTab(newTab: string) {
       this.tabConfig.activeTab = newTab
-      this.utilityStore.logUserActivity(102, "Portfolios Overview Page", "INFO", `User switched to the ${newTab} tab.`)
+      this.utilityStore.logUserActivity(102, "Portfolios Overview Page", "INFO", `User switched to the PORTFOLIOS ${newTab} tab.`)
     },
 
     logNavigationToNew() {

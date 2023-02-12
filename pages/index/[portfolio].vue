@@ -193,7 +193,7 @@ export default defineComponent({
 
     setActiveTab(newTab: string) {
       this.tabConfig.activeTab = newTab
-      this.utilityStore.logUserActivity(105, "Holdings Page", "INFO", `User switched to the '${newTab}' tab.`)
+      this.utilityStore.logUserActivity(105, "Holdings Page", "INFO", `User switched to the 'HOLDINGS ${newTab}' tab.`)
     },
 
     logNavigationTo(code: number, page: string) {
