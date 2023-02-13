@@ -5,7 +5,7 @@ import fetch from 'node-fetch'
 
 const handler: Handler = async (event, context) => {
     const assets = await client`
-        SELECT id, symbol FROM assets WHERE type = 0;`
+        SELECT DISTINCT a.id, a.symbol FROM assets AS a LEFT OUTER JOIN holdings AS h ON h.asset_id = a.id WHERE type = 0 AND h.asset_id IS NOT NULL;`
 
     const allSymbols = assets.map(obj => obj.symbol)
     let symbolIds = {}
@@ -17,8 +17,6 @@ const handler: Handler = async (event, context) => {
     let data;
     data = await fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${allSymbols.join(',')}&types=chart&range=5y&includeToday=true&chartCloseOnly=true&token=${process.env.IEXTOKEN}`)
         .then(response => response.json())
-
-    console.log(data)
 
     let assetArrays = Object.values(data)
     assetArrays = assetArrays.map(asset => Object.values(asset))
