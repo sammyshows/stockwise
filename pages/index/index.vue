@@ -94,3 +94,25 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.form-move, /* apply transition to moving elements */
+.form-enter-active {
+  transition: all 0.5s ease;
+}
+.form-leave-active {
+  transition: all 0.3s ease;
+}
+
+.form-enter-from {
+  opacity: 0;
+  transform: translate(30px, 0);
+}
+.form-leave-to {
+  opacity: 0;
+  transform: translate(30px, 0px);
+}
+
+.form-leave-active {
+  position: absolute;
+}</style>
