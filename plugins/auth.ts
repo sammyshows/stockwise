@@ -58,23 +58,17 @@ export default defineNuxtPlugin(() => {
 
                     if (res.status === 200) {
                         message = "authorized"
-                        return body
-                    }
-
-                    if (res.status === 300) {
-                        if (body.errorMessage === "LoginRequired")
+                    } else if (res.status === 300) {
+                        if ([ "LoginRequired", "BadRefresh" ].includes(body.errorMessage))
                             window.location.href = '/auth/login'
 
                         if (body.errorMessage === "NotAuthorizedException")
                             message = "notAuthorized"
-
-                        return body
                     } else {
                         message = "error"
                     }
 
-                    // Should it just return the body here once for all the above cases? Because currently if the else
-                    // case is reached, no body is returned and the next check for an accessToken will give an error.
+                    return body
                 })
 
                 if (response.accessToken) {

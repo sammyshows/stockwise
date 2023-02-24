@@ -86,7 +86,7 @@ exports.handler = async (event, context) => {
                         resolve(await setCookies())
                     },
                     onFailure: async (err) => {
-                        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (2, '/api/auth-login', 'INFO', 'User attempted an email / password login but authentication failed. ERR CODE: ${err.code}');`
+                        await client`INSERT INTO user_activity_logs (code, source, tag, message) VALUES (2, '/api/auth-login', 'INFO', ${'User attempted an email / password login but authentication failed. ERR CODE: ' + err.code});`
                         errorMessage = err.code
                         resolve(err.code)
                     }
@@ -119,7 +119,9 @@ exports.handler = async (event, context) => {
             await new Promise(function(resolve, reject) {
                 cognitoUser.refreshSession(RefreshToken, async (err, session) => {
                     if (err) {
-                        console.log(err);
+                        console.log('Refresh error:', err);
+                        errorMessage = 'BadRefresh'
+                        await client`INSERT INTO user_activity_logs (code, user_id, source, tag, message) VALUES (4, ${jwt.decode(idToken)['custom:sw_user_id'] || null}, '/api/auth-login', 'INFO', 'User token refresh failed (likely an expired refresh token).');`
                     } else {
                         accessToken = session.accessToken.jwtToken
                         idToken = session.idToken.jwtToken
@@ -132,7 +134,7 @@ exports.handler = async (event, context) => {
         }
     })()
 
-    if (accessToken && refreshToken && idToken) {
+    if (accessToken && refreshToken && idToken && errorMessage !== 'BadRefresh') {
         console.log('All 3 tokens are present')
         console.log('Returning userId...')
         const userId = jwt.decode(idToken)['custom:sw_user_id']

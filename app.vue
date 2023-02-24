@@ -8,10 +8,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, BannerAdPluginEvents, AdMobBannerSize } from '@capacitor-community/admob';
+import { useUser } from "@/store/user";
 
 export default {
   name: "App",
+
+  setup() {
+    const userStore = useUser()
+
+    return { userStore }
+  },
 
   data() {
     return {
@@ -25,3 +33,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* This ensures that this App.vue is inside a flexbox i.e. so we can position the page at the bottom when we have a top banner */
+#__nuxt {
+  display: flex;
+}
+</style>
