@@ -122,3 +122,14 @@
 ###### Holdings Page
 
 > - **401**: User changed the 'Holding Insights' chart range.  
+
+<br>
+
+## Ads (600-700)
+
+###### Search Page
+
+> - **600**: A BANNER ad loaded.
+> - **601**: A BANNER ad failed to load.
+> - **602**: User clicked on a BANNER ad (opened full page ad).
+> - **603**: User closed full page BANNER ad.
