@@ -29,6 +29,7 @@ exports.handler = async (event, context) => {
     }
 
     await fetch(`${process.env.AWS_AUTH_URL}/logout?client_id=${process.env.AWS_CLIENT_ID}&logout_uri=https://stockwise.app/auth/login`)
+    await fetch('https://www.google.com/accounts/Logout')
 
     return {
         statusCode: 200,
