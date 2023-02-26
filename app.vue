@@ -137,12 +137,14 @@ export default defineComponent({
 }
 
 .page {
-  flex: 1;
+  height: 100%;
+  max-height: 100%;
   margin: auto 0 0 0;
-  transition: flex 0.7s ease-in-out;
+  transition: max-height 0.7s ease-in-out;
 }
 
 .reduced-space {
-  flex: 0.965 !important;
+  max-height: calc(100% - 25px) !important;
 }
 </style>
+[
