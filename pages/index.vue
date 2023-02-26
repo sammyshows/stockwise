@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { AppLauncher } from '@capacitor/app-launcher';
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js";
 import { storeToRefs } from 'pinia'
@@ -49,10 +50,19 @@ export default defineComponent({
 
   async mounted() {
     if (this.$route.query.code) {
+      console.log(this.$route.query.code)
       this.utilityStore.logUserActivity(19, "Portfolios Overview Page", "INFO", "IDP Authorization code found in the URL.")
-      await this.$idpLogin(this.$route.query.code)
-      this.$router.replace({'query': null})
+      const { canOpenApp } = await AppLauncher.canOpenUrl({ url: 'app.stockwise.twa' });
+      console.log('Can open url: ', canOpenApp);
+
+      if (canOpenApp)
+        await AppLauncher.openUrl({ url: `app.stockwise.twa://?code=${this.$route.query.code}` });
+      else {
+        await this.$idpLogin(this.$route.query.code)
+        this.$router.replace({'query': null})
+      }
     }
+
     await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
