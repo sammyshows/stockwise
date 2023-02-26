@@ -55,7 +55,7 @@ export default defineComponent({
       const { value } = await AppLauncher.canOpenUrl({ url: 'app.stockwise.twa' });
       console.log('Can open url: ', value);
 
-      if (canOpenApp)
+      if (value)
         await AppLauncher.openUrl({ url: `app.stockwise.twa://?code=${this.$route.query.code}` });
       else {
         await this.$idpLogin(this.$route.query.code)
