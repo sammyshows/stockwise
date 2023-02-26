@@ -52,8 +52,8 @@ export default defineComponent({
     if (this.$route.query.code) {
       console.log(this.$route.query.code)
       this.utilityStore.logUserActivity(19, "Portfolios Overview Page", "INFO", "IDP Authorization code found in the URL.")
-      const { canOpenApp } = await AppLauncher.canOpenUrl({ url: 'app.stockwise.twa' });
-      console.log('Can open url: ', canOpenApp);
+      const { value } = await AppLauncher.canOpenUrl({ url: 'app.stockwise.twa' });
+      console.log('Can open url: ', value);
 
       if (canOpenApp)
         await AppLauncher.openUrl({ url: `app.stockwise.twa://?code=${this.$route.query.code}` });
