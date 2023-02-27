@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, BannerAdPluginEvents, AdMobBannerSize } from '@capacitor-community/admob';
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, BannerAdPluginEvents } from '@capacitor-community/admob';
 import { useUser } from '@/store/user'
 import { useUtility } from '@/store/utility'
 
@@ -33,13 +33,13 @@ export default defineComponent({
       showAd: false,
       noAdRoutes: ['/auth'],
       bannerOptions: {
-        adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951', // testing
-        // adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/8002483602' : 'ca-app-pub-7719091147897476/2112788715', // production
+        // adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951', // testing
+        adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/8002483602' : 'ca-app-pub-7719091147897476/2112788715', // production
         adSize: BannerAdSize.BANNER,
         position: BannerAdPosition.TOP_CENTER,
         margin: 0,
         isTesting: false,
-        npa: this.userStore.platform !== 'android'
+        npa: false // Non Personalised Ads
       } as BannerAdOptions
     }
   },
@@ -51,12 +51,15 @@ export default defineComponent({
 
   watch: {
     async $route(to, from) {
-      if (this.userStore.platform !== 'web') {
+      if (this.userStore.platform === 'android') {
         // Check if we're navigating from a page where an ad was hidden (or not loaded at all), to a page where there should be an ad.
         const mustLoadAd = !this.navRoutes.includes(from.name.split('-')[0]) && this.navRoutes.includes(to.name.split('-')[0])
 
         if (mustLoadAd) {
-          this.showBanner()
+          if (this.adLoaded)
+            AdMob.resumeBanner()
+          else
+            this.showBanner()
         } else if (!this.navRoutes.includes(to.name.split('-')[0])) {
           this.showAd = false
           AdMob.hideBanner()
@@ -69,7 +72,7 @@ export default defineComponent({
   },
 
   async mounted() {
-    if (this.userStore.platform !== 'web') {
+    if (this.userStore.platform === 'android') {
       await this.initialiseBanner()
       if (this.navRoutes.includes(this.routeBranch))
         this.showBanner()
@@ -87,19 +90,6 @@ export default defineComponent({
 
     async initialiseBanner() {
       const {status} = await AdMob.trackingAuthorizationStatus();
-
-      if (status === 'notDetermined') {
-        /**
-         * If you want to explain TrackingAuthorization before showing the iOS dialog,
-         * you can show the modal here.
-         * ex)
-         * const modal = await this.modalCtrl.create({
-         *   component: RequestTrackingPage,
-         * });
-         * await modal.present();
-         * await modal.onDidDismiss();  // Wait for close modal
-         **/
-      }
 
       AdMob.initialize({
         requestTrackingAuthorization: true,

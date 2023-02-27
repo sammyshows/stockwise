@@ -29,14 +29,16 @@ export default defineNuxtConfig({
         'amazon-cognito-identity-js': 'amazon-cognito-identity-js/lib'
     },
 
-    meta: {
-        meta: [
-            { name: 'viewport', content: 'viewport-fit=cover, width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no' }
-        ],
-        script: [
-            { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },
-            { src: '/js/polyfills.js' }
-        ]
+    app: {
+        head: {
+            meta: [
+                { name: 'viewport', content: 'viewport-fit=cover, width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no' }
+            ],
+            script: [
+                { src: 'https://cdn.jsdelivr.net/npm/big.js@6.2.0/big.min.js' },
+                { src: '/js/polyfills.js' }
+            ]
+        }
     },
 
     css: [
