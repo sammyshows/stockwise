@@ -1,6 +1,6 @@
 <template>
   <div class="max-h-full flex flex-col h-full w-full">
-    <div :class="{ 'reduced-space': showAd }" class="flex flex-col justify-between page overflow-hidden">
+    <div :style="[ showAd ? 'max-height: calc(100% - 25px)' : 'max-height: 100%' ]" class="flex flex-col justify-between page overflow-hidden">
       <NuxtLayout v-if="navRoutes.includes(routeBranch)" name="page-container">
         <NuxtPage />
       </NuxtLayout>
@@ -29,16 +29,17 @@ export default defineComponent({
   data() {
     return {
       navRoutes: ['notifications', 'search', 'index', 'studies', 'profile'],
+      adLoaded: false, // indicates whether or not the initial ad has been loaded
       showAd: false,
       noAdRoutes: ['/auth'],
       bannerOptions: {
-        // adId: 'ca-app-pub-3940256099942544/6300978111', // TEST AD ID
-        adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951',
+        adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951', // testing
+        // adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/8002483602' : 'ca-app-pub-7719091147897476/2112788715', // production
         adSize: BannerAdSize.BANNER,
         position: BannerAdPosition.TOP_CENTER,
         margin: 0,
-        isTesting: true,
-        npa: true
+        isTesting: false,
+        npa: this.userStore.platform !== 'android'
       } as BannerAdOptions
     }
   },
@@ -55,12 +56,11 @@ export default defineComponent({
         const mustLoadAd = !this.navRoutes.includes(from.name.split('-')[0]) && this.navRoutes.includes(to.name.split('-')[0])
 
         if (mustLoadAd) {
-          await this.initialiseBanner()
           this.showBanner()
         } else if (!this.navRoutes.includes(to.name.split('-')[0])) {
           this.showAd = false
           AdMob.hideBanner()
-        } else { // this else case is essentially saying 'we navigated from an ad page to another ad page' - nothing should need to change. Calling resumeBanner() just to be safe...
+        } else if (this.adLoaded) { // this else case is essentially saying 'we navigated from an ad page to another ad page' - nothing should need to change. Calling resumeBanner() just to be safe...
           AdMob.resumeBanner();
           this.showAd = true
         }
@@ -104,12 +104,15 @@ export default defineComponent({
       AdMob.initialize({
         requestTrackingAuthorization: true,
         testingDevices: ['B480F0393703070BEEF8D0B02FF711F5'], // If interested add test ids here such as laptop, my phone, Celine's phone: https://developers.google.com/admob/android/test-ads#add_your_test_device_in_the_admob_ui
-        initializeForTesting: true,
+        initializeForTesting: false,
       });
 
       AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
-        if (this.navRoutes.includes(to.name.split('-')[0]))
+        if (this.navRoutes.includes(this.$route.name.split('-')[0])) {
+          AdMob.resumeBanner()
+          this.adLoaded = true
           this.showAd = true
+        }
 
         this.utilityStore.logUserActivity(600, this.$route.name, "INFO", "A BANNER ad loaded.")
       });
@@ -138,13 +141,8 @@ export default defineComponent({
 
 .page {
   height: 100%;
-  max-height: 100%;
   margin: auto 0 0 0;
   transition: max-height 0.7s ease-in-out;
 }
 
-.reduced-space {
-  max-height: calc(100% - 25px) !important;
-}
 </style>
-[
