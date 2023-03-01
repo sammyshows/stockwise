@@ -72,6 +72,15 @@ export default defineComponent({
   },
 
   async mounted() {
+    // Temporary until ads are actually enabled. I updated privacy info so now Apple wants to see the request be made
+    if (this.userStore.platform === 'ios') {
+      AdMob.initialize({
+        requestTrackingAuthorization: true,
+        testingDevices: ['B480F0393703070BEEF8D0B02FF711F5'], // If interested add test ids here such as laptop, my phone, Celine's phone: https://developers.google.com/admob/android/test-ads#add_your_test_device_in_the_admob_ui
+        initializeForTesting: false,
+      });
+    }
+
     if (this.userStore.platform === 'android') {
       await this.initialiseBanner()
       if (this.navRoutes.includes(this.routeBranch))
