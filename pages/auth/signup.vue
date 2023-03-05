@@ -82,6 +82,10 @@ export default defineComponent({
     }
   },
 
+  mounted() {
+    Browser.close()
+  },
+
   methods: {
     validateForm(): Boolean {
       this.invalid.email = !this.email.includes('@')
@@ -94,7 +98,7 @@ export default defineComponent({
       this.utilityStore.logUserActivity(11, "Signup Page", "INFO", "User clicked on an IDP sign in option.")
 
       // If the user is on the web or iOS, go directly to the sign in url. On iOS the user is returned to the app after login via deep links / universal links
-      if (this.platform === 'web' || this.platform === 'ios')
+      if (this.platform === 'web')
         window.location.href = `${this.config.AWS_AUTH_URL}/oauth2/authorize?redirect_uri=${this.config.DOMAIN}&response_type=code&client_id=${this.config.AWS_CLIENT_ID}&identity_provider=${identityProvider}&nonce=42466df4-5557-45d0-b4d4-a474dd0a7b6c`
       // If the user is using the Android App, open a Browser within the app so the user is returned to the app using deep links after signing in.
       else

@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import { Browser } from '@capacitor/browser';
 import { defineComponent } from "vue";
 import { PlusIcon } from "@heroicons/vue/solid";
 import { BigNumber } from "bignumber.js";
@@ -48,6 +49,8 @@ export default defineComponent({
   },
 
   async mounted() {
+    Browser.close()
+
     if (this.$route.query.code) {
       this.utilityStore.logUserActivity(19, "Portfolios Overview Page", "INFO", "IDP Authorization code found in the URL.")
       await this.$idpLogin(this.$route.query.code)
