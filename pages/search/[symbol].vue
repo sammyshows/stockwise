@@ -122,7 +122,7 @@
       </div>
 
       <div class="flex px-4 mb-6 gap-x-6">
-        <NuxtLink :to="{ name: 'studies-new', query: { symbol: this?.quote.symbol } }" @click="logNavigation()" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
+        <NuxtLink :to="{ name: 'toolbox-studies-new', query: { symbol: this?.quote.symbol } }" @click="logNavigation()" style="touch-action: manipulation" class="mx-auto px-10 py-2 font-normal text-center bg-normal-cyan rounded-lg drop-shadow-md">Start a Study</NuxtLink>
       </div>
 
       <h2 class="font-medium mb-2">RECENT FINANCIALS</h2>

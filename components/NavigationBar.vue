@@ -3,19 +3,19 @@
     <div class="sm:block">
       <nav class="flex justify-around px-2.5" aria-label="Tabs">
         <NuxtLink to="/notifications" style="touch-action: manipulation">
-          <BellIcon :class="[{ 'text-gray-800': routeBranch !== 'notifications' }, 'h-10 w-10']" />
+          <IconsBell :class="[{ 'text-gray-800': routeBranch !== 'notifications' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/search" style="touch-action: manipulation">
-          <SearchIcon :class="[{ 'text-gray-800': routeBranch !== 'search' }, 'h-10 w-10']" />
+          <IconsSearch :class="[{ 'text-gray-800': routeBranch !== 'search' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/" style="touch-action: manipulation">
-          <HomeIcon :class="[{ 'text-gray-800': routeBranch !== 'index' }, 'h-10 w-10']" />
+          <IconsHome :class="[{ 'text-gray-800': routeBranch !== 'index' }, 'h-10 w-10']" />
         </NuxtLink>
-        <NuxtLink to="/studies" style="touch-action: manipulation">
-          <DocumentSearchIcon :class="[{ 'text-gray-800': routeBranch !== 'studies' }, 'h-10 w-10']" />
+        <NuxtLink to="/toolbox" style="touch-action: manipulation">
+          <IconsWrench :class="[{ 'text-gray-800': routeBranch !== 'toolbox' }, 'h-10 w-10']" />
         </NuxtLink>
         <NuxtLink to="/profile" style="touch-action: manipulation">
-          <UserCircleIcon :class="[{ 'text-gray-800': routeBranch !== 'profile' }, 'h-10 w-10']" />
+          <IconsProfile :class="[{ 'text-gray-800': routeBranch !== 'profile' }, 'h-10 w-10']" />
         </NuxtLink>
       </nav>
     </div>
@@ -23,7 +23,6 @@
 </template>
 
 <script lang="ts">
-import { BellIcon, SearchIcon, HomeIcon, DocumentSearchIcon, UserCircleIcon } from '@heroicons/vue/outline'
 import { useUtility } from "@/store/utility";
 
 export default {
@@ -35,12 +34,8 @@ export default {
     return { utilityStore }
   },
 
-  components: {
-    BellIcon, SearchIcon, HomeIcon, DocumentSearchIcon, UserCircleIcon
-  },
-
   computed: {
-    // ['notifications', 'search', 'index', 'studies', 'profile']
+    // ['notifications', 'search', 'index', 'toolbox', 'profile']
     routeBranch() { return this.$route.name.split('-')[0] },
   },
 

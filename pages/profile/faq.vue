@@ -14,8 +14,8 @@
         <NuxtLink :to="{ name: 'profile-faq-financial-data' }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
           <h2 class="text-center text-lg">FINANCIAL DATA</h2>
         </NuxtLink>
-        <NuxtLink :to="{ name: 'profile-faq-studies' }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
-          <h2 class="text-center text-lg">STUDIES</h2>
+        <NuxtLink :to="{ name: 'profile-faq-toolbox' }" style="touch-action: manipulation" class="w-full py-3 border-2 border-bright-cyan bg-opaque-cyan rounded-lg">
+          <h2 class="text-center text-lg">TOOLBOX</h2>
         </NuxtLink>
       </div>
     </div>

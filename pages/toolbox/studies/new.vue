@@ -131,7 +131,7 @@ export default defineComponent({
       userId: '',
       disabledSave: false,
       pageDetails: {
-        returnPath: '/studies',
+        returnPath: '/toolbox/studies',
         title: 'Start a Study',
         logCode: 121,
         logSource: 'New Study Page',
@@ -228,7 +228,7 @@ export default defineComponent({
         })
         if (response.status === 200) {
           this.studyStoreCreate()
-          await this.$router.push({name: 'studies-study', params: {study: this.studyId}})
+          await this.$router.push({name: 'toolbox-studies-study', params: {study: this.studyId}})
         }
       }
       this.disabledSave = false

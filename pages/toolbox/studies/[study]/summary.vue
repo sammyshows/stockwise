@@ -106,7 +106,7 @@ export default defineComponent({
       domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
-        returnPath: '/studies/completed',
+        returnPath: '/toolbox/studies/completed',
         title: this.storeStudy?.name,
         subtitle: 'STUDIES',
         logCode: 124,
@@ -254,7 +254,7 @@ export default defineComponent({
 
       if (response.status === 200) {
         setTimeout(() => this.studyStoreDelete(), 600)
-        this.$router.push('/studies/completed')
+        this.$router.push('/toolbox/studies/completed')
       }
     },
 

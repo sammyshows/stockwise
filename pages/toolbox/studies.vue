@@ -3,17 +3,17 @@
     <div v-if="viewStudies" class="flex flex-col grow overflow-hidden">
       <div class="flex justify-between min-h-min px-3">
         <PageTitle :pageDetails="pageDetails" class="truncate" />
-        <NuxtLink :to="{ path: '/studies/new' }" style="touch-action: manipulation">
+        <NuxtLink :to="{ path: '/toolbox/studies/new' }" style="touch-action: manipulation">
           <PlusIcon class="h-8 w-8" />
         </NuxtLink>
       </div>
       <NavigationTabs :tabConfig="tabConfig" @setActiveTab="setActiveTab" />
-      <div v-if="$route.path === '/studies'" class="flex grow">
+      <div v-if="$route.path === '/toolbox/studies'" class="flex grow">
         <p v-if="uncompletedStudies != null && uncompletedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
         <NuxtPage v-else-if="uncompletedStudies" :show="viewStudies" />
         <Spinner class="h-full" v-else />
       </div>
-      <div v-else-if="$route.path === '/studies/completed'" class="flex grow">
+      <div v-else-if="$route.path === '/toolbox/studies/completed'" class="flex grow">
         <p v-if="completedStudies != null && completedStudies.length === 0" class="grow flex items-center justify-center px-2 text-sm text-bright-cyan text-center">To start a study, use the "+" icon above</p>
         <NuxtPage v-else-if="completedStudies" :show="viewStudies" />
         <Spinner class="h-full" v-else />
@@ -57,16 +57,16 @@ export default defineComponent({
 
   computed: {
     viewStudies() {
-      return ['studies', 'studies-completed'].includes(this.$route.name)
+      return ['toolbox-studies', 'toolbox-studies-completed'].includes(this.$route.name)
     }
   },
 
   watch: {
     $route (to, from) {
-      if (from.name === 'studies-study-summary')
+      if (from.name === 'toolbox-studies-study-summary')
         this.tabConfig.activeTab = 'COMPLETED'
 
-      if (to.name === 'studies')
+      if (to.name === 'toolbox-studies')
         this.tabConfig.activeTab = 'IN PROGRESS'
     }
   },
@@ -77,13 +77,15 @@ export default defineComponent({
       token: '',
       uuid: '',
       pageDetails: {
-        title: 'Studies'
+        title: 'Studies',
+        subtitle: 'TOOLBOX',
+        returnPath: '/toolbox'
       },
       tabConfig: {
-        activeTab: this.$route.name === 'studies-completed' ? 'COMPLETED' : 'IN PROGRESS',
+        activeTab: this.$route.name === 'toolbox-studies-completed' ? 'COMPLETED' : 'IN PROGRESS',
         tabs: [
-          { name: 'IN PROGRESS', path: `/studies` },
-          { name: 'COMPLETED', path: `/studies/completed` }
+          { name: 'IN PROGRESS', path: `/toolbox/studies` },
+          { name: 'COMPLETED', path: `/toolbox/studies/completed` }
         ]
       }
     }

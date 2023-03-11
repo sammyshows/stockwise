@@ -249,7 +249,7 @@ export default defineComponent({
             to: this.transaction.to
           })
         })
-            .then(response => response.json())
+          .then(response => response.json())
         this.quote = data
       }
     },

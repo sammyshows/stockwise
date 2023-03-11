@@ -70,7 +70,7 @@ export default defineComponent({
       domain: useRuntimeConfig().DOMAIN,
       token: '',
       pageDetails: {
-        returnPath: '/studies',
+        returnPath: '/toolbox/studies',
         title: this.storeStudy?.name,
         subtitle: 'STUDIES',
         logCode: 123,
@@ -348,7 +348,7 @@ export default defineComponent({
 
     async submit() {
       await this.updateStudy()
-      await this.$router.push({ name: 'studies-study-summary', params: { studyId: this.studyId } })
+      await this.$router.push({ name: 'toolbox-studies-study-summary', params: { studyId: this.studyId } })
     },
 
     async updateStudy(): Promise<void> {
@@ -395,7 +395,7 @@ export default defineComponent({
 
       if (response.status === 200) {
         setTimeout(() => this.studyStoreDelete(), 600)
-        this.$router.push('/studies')
+        this.$router.push('/toolbox/studies')
       }
     },
 

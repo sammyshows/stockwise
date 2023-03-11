@@ -8,7 +8,7 @@
     <div v-if="studies" class="overflow-scroll flex flex-col grow px-3 divide-y divide-gray-700">
       <TransitionGroup tag="div" name="form">
         <div v-for="study in studies" :key="study.study_id">
-          <NuxtLink :to="{ name: 'studies-study', params: { study: study.study_id } }" @click="logNavigation(study.study_id)" style="touch-action: manipulation">
+          <NuxtLink :to="{ name: 'toolbox-studies-study', params: { study: study.study_id } }" @click="logNavigation(study.study_id)" style="touch-action: manipulation">
             <div class="flex justify-end py-2">
               <div class="w-32 flex flex-col justify-around grow">
                 <h2 class="text-bright-cyan font-bold tracking-wider truncate">{{ study.symbol }}</h2>

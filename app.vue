@@ -28,10 +28,9 @@ export default defineComponent({
 
   data() {
     return {
-      navRoutes: ['notifications', 'search', 'index', 'studies', 'profile'],
+      navRoutes: ['notifications', 'search', 'index', 'toolbox', 'profile'],
       adLoaded: false, // indicates whether or not the initial ad has been loaded
       showAd: false,
-      noAdRoutes: ['/auth'],
       bannerOptions: {
         // adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951', // testing
         adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/8002483602' : 'ca-app-pub-7719091147897476/2112788715', // production
