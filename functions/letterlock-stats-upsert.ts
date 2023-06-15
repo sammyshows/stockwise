@@ -1,6 +1,6 @@
 const client = require("../database/client.ts")
 import postgres from 'postgres'
-const sql = postgres({  })
+
 const handler = async (event, context) => {
   const eventBody = JSON.parse(event.body)
 
@@ -9,7 +9,7 @@ const handler = async (event, context) => {
   // Upsert into letterlock_user_stats
   await client`
     INSERT INTO letterlock_user_stats (user_id, ads_watched_for_lives, ads_watched_for_moves, zero_lives_tally, level_history)
-    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${sql.json(eventBody.levelHistory)})
+    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${postgres().json(eventBody.levelHistory)})
     ON CONFLICT (user_id)
     DO UPDATE SET
         ads_watched_for_lives = EXCLUDED.ads_watched_for_lives,
@@ -28,8 +28,6 @@ const handler = async (event, context) => {
         sound = EXCLUDED.sound,
         vibrations = EXCLUDED.vibrations
   `;
-
-  const stuff = await client`SELECT lus.level_history AS best_remaining_moves FROM letterlock_user_stats lus;`
 
   return {
     headers: { 'Access-Control-Allow-Origin': '*' },
