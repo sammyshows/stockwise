@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-4 border-t border-gray-300">
+  <div class="pt-4 border-t border-gray-300" :class="[ platform === 'ios' ? 'pb-6' : 'pb-4' ]">
     <div class="sm:block">
       <nav class="flex justify-around px-2.5" aria-label="Tabs">
         <NuxtLink to="/notifications" style="touch-action: manipulation">
@@ -11,8 +11,9 @@
         <NuxtLink to="/" style="touch-action: manipulation">
           <IconsHome :class="[{ 'text-gray-800': routeBranch !== 'index' }, 'h-10 w-10']" />
         </NuxtLink>
-        <NuxtLink to="/toolbox" style="touch-action: manipulation">
+        <NuxtLink to="/toolbox" style="touch-action: manipulation; position: relative;">
           <IconsWrench :class="[{ 'text-gray-800': routeBranch !== 'toolbox' }, 'h-10 w-10']" />
+          <p class="absolute -top-1 -left-2.5 text-xs text-bright-cyan/80">NEW</p>
         </NuxtLink>
         <NuxtLink to="/profile" style="touch-action: manipulation">
           <IconsProfile :class="[{ 'text-gray-800': routeBranch !== 'profile' }, 'h-10 w-10']" />
@@ -23,6 +24,7 @@
 </template>
 
 <script lang="ts">
+import { Capacitor } from '@capacitor/core'
 import { useUtility } from "@/store/utility";
 
 export default {
@@ -32,6 +34,12 @@ export default {
     const utilityStore = useUtility()
 
     return { utilityStore }
+  },
+
+  data() {
+    return {
+      platform: Capacitor.getPlatform()
+    }
   },
 
   computed: {

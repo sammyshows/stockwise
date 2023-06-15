@@ -291,3 +291,11 @@ BEGIN
         ORDER BY MIN(t.timestamp) DESC;
 END;
 $$;
+
+
+
+
+
+------------------------ Letter Lock --------------------------
+
+-- CREATE TABLE level_history (user_id uuid PRIMARY KEY, level_id integer NOT NULL, best_remaining_moves integer NOT NULL, attempt_tally integer NOT NULL, success_tally integer NOT NULL, extra_moves_used boolean NOT NULL, created_at timestamptz DEFAULT now(), updated_at timestamptz DEFAULT now());

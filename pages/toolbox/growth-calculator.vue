@@ -10,7 +10,7 @@
 
         <div class="flex flex-col items-center justify-center w-full mt-6 mb-3 py-4 px-3 border-y border-gray-200 bg-gray-900/30 text-bright-cyan" style="font-family: Poppins-Light; box-shadow: 0 -5px 25px -20px rgb(75 85 99);">
           <div class="flex items-center uppercase mb-4">
-            <input v-model="initialValue" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-24 h-8 mr-3 text-center text-gray-200 border-gray-600 rounded-md tracking-wide" />
+            <input v-model="initialValue" @focus="clearIfZero($event)" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-24 h-8 mr-3 text-center text-gray-200 border-gray-600 rounded-md tracking-wide" />
             <p>invested at an</p>
           </div>
 
@@ -81,6 +81,8 @@
         </TransitionGroup>
       </div>
     </div>
+
+    <AnimationsFullScreenText v-if="accessGranted" text="Access Granted" />
   </div>
 </template>
 
@@ -89,6 +91,7 @@ import { defineComponent } from "vue";
 import BigNumber from "bignumber.js";
 import { useAuth } from "@/store/auth";
 import { useUser } from "@/store/user";
+import { useUtility } from "@/store/utility";
 
 export default defineComponent({
   name: "Toolbox",
@@ -96,13 +99,22 @@ export default defineComponent({
   async setup() {
     const authStore = useAuth()
     const userStore = useUser()
-    return { authStore, userStore }
+    const utilityStore = useUtility()
+    return { authStore, userStore, utilityStore }
   },
 
   async mounted() {
     await this.$login()
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
+
+    if (this.$route.query.accessGranted) {
+      this.accessGranted = true
+      this.$router.replace({
+        path: this.$route.path,
+        query: {}
+      })
+    }
   },
 
   data() {
@@ -112,9 +124,12 @@ export default defineComponent({
       pageDetails: {
         title: 'Growth Calculator',
         subtitle: 'TOOLBOX',
-        returnPath: '/toolbox'
+        returnPath: '/toolbox',
+        logCode: 147,
+        logSource: 'Growth Calculator',
+        logTo: 'Toolbox'
       },
-
+      accessGranted: false,
       initialValue: 0 as (number | null),
       growthRate: null as (number | null),
       duration: null as (number | null),
@@ -148,8 +163,8 @@ export default defineComponent({
         let g = new BigNumber(this.paymentGrowth).div(100).div(this.paymentGrowsPerPayment ? 1 : n).toNumber() || 0
         let PMT = (this.additionalPayments || 0) - (this.fees || 0)
 
-        // Growth of principal: [P(1 +r/n) ^ (nt)] * (1 + r)
-        futureValueFromPrincipal = new BigNumber(P).times(Math.pow(new BigNumber(r).div(n).plus(1).toNumber(), new BigNumber(n).times(t).toNumber())).toNumber()
+        // Growth of principal: [P(1 + r/n) ^ (nt)] * (1 + r)
+        futureValueFromPrincipal = new BigNumber(P).times(Math.pow(new BigNumber(r).plus(1).toNumber(), new BigNumber(n).times(t).toNumber())).toNumber()
 
         // Growth of Payments (annuity due): PMT * (1 + r) * [(((1 + r) ^ (nt)) - ((1 + g) ^ (nt)) ) / (r - g)]
         if (r === g) // If the interest rate and growth rate are the same, we must use this formula instead:
@@ -183,9 +198,52 @@ export default defineComponent({
     }
   },
 
+  watch: {
+    initialValue() {
+      this.logUserActivity(700, 'Initial Value Changed');
+    },
+    growthRate() {
+      this.logUserActivity(701, 'Growth Rate Changed');
+    },
+    duration() {
+      this.logUserActivity(702, 'Duration Changed');
+    },
+    compoundFrequency() {
+      this.logUserActivity(703, 'Compound Frequency Changed');
+    },
+    showAdvanced() {
+      this.logUserActivity(704, 'Show Advanced Option Toggled');
+    },
+    additionalPayments() {
+      this.logUserActivity(705, 'Additional Payments Changed');
+    },
+    paymentGrowth() {
+      this.logUserActivity(706, 'Payment Growth Changed');
+    },
+    paymentGrowsPerPayment() {
+      this.logUserActivity(707, 'Payment Grows Per Payment Changed');
+    },
+    fees() {
+      this.logUserActivity(708, 'Fees Changed');
+    },
+    annuityType() {
+      this.logUserActivity(709, 'Annuity Type Changed');
+    }
+  },
+
   methods: {
     setShowAdvanced(value: boolean) {
       this.showAdvanced = value
+    },
+
+    clearIfZero(event) {
+      console.log(event.target.value)
+      if (event.target.value == 0)
+        event.target.value = null
+    },
+
+    logUserActivity(code, message) {
+      this.utilityStore.logUserActivity(code, "Growth Calculator", "INFO", `User ${message}.`);
     },
 
     BigNumber

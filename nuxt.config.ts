@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     ssr: false,
 
-    experimental:{
+    experimental: {
         treeshakeClientOnly: false
     },
 

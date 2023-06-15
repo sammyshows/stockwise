@@ -20,6 +20,8 @@
       </div>
     </div>
     <NuxtPage v-else/>
+
+    <AnimationsFullScreenText v-if="accessGranted" text="Access Granted" />
   </div>
 </template>
 
@@ -30,6 +32,7 @@ import { computed } from "@vue/reactivity";
 import { useStudies } from "@/store/studies";
 import { useAuth } from "@/store/auth";
 import { useUser } from "@/store/user";
+import { useUtility } from "@/store/utility";
 
 
 export default defineComponent({
@@ -41,7 +44,9 @@ export default defineComponent({
     const completedStudies = computed(() => studyStore.getCompleted())
     const authStore = useAuth()
     const userStore = useUser()
-    return { studyStore, uncompletedStudies, completedStudies, authStore, userStore }
+    const utilityStore = useUtility()
+
+    return { studyStore, uncompletedStudies, completedStudies, authStore, userStore, utilityStore }
   },
 
   components: {
@@ -53,6 +58,14 @@ export default defineComponent({
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
     this.getStudies()
+
+    if (this.$route.query.accessGranted) {
+      this.accessGranted = true
+      this.$router.replace({
+        path: this.$route.path,
+        query: {}
+      })
+    }
   },
 
   computed: {
@@ -79,8 +92,12 @@ export default defineComponent({
       pageDetails: {
         title: 'Studies',
         subtitle: 'TOOLBOX',
-        returnPath: '/toolbox'
+        returnPath: '/toolbox',
+        logCode: 145,
+        logSource: 'Studies',
+        logTo: 'Toolbox'
       },
+      accessGranted: false,
       tabConfig: {
         activeTab: this.$route.name === 'toolbox-studies-completed' ? 'COMPLETED' : 'IN PROGRESS',
         tabs: [
@@ -111,6 +128,7 @@ export default defineComponent({
 
     setActiveTab(newTab) {
       this.tabConfig.activeTab = newTab
+      this.utilityStore.logUserActivity(142, "Studies Page (Tools)", "INFO", `User clicked on the "${newTab}" studies tab.`)
     }
   }
 })

@@ -81,7 +81,7 @@
 > - **114**: User navigated back to the 'Transactions' page from the 'Edit Transaction' page.
 > - **115**: User navigated back to the 'Transactions' page from the 'New Transaction' page.
 
-###### Studies Page
+###### Toolbox Pages
 
 > - **121**: User navigated back to the 'Study' page from the 'Studies' page.
 > - **122**: User navigated back to the 'Study Summary' page from the 'Studies' page.
@@ -91,6 +91,9 @@
 > - **126**: User navigated back to the 'Study Question' page from the 'Study Question Info' page.
 > - **127**: User navigated back to the previous question.
 > - **128**: User navigated back to the next question.
+> - **145**: User navigated back to the 'Toolbox' page from the 'Studies' page.
+> - **146**: User navigated back to the 'Toolbox' page from the 'Currency Converter' page.
+> - **147**: User navigated back to the 'Toolbox' page from the 'Growth Calculator' page.
 
 ###### Search Page
 
@@ -109,6 +112,13 @@
 > - **138**: User navigated back to the 'Profile' page from the 'Frequently Asked Questions' page.
 > - **139**: User navigated back to the 'Profile' page from the 'Contact Us' page.
 > - **140**: User navigated back to the 'Profile' page from the 'Terms and Privacy Policy' page.
+
+###### Tools Page
+
+> - **141**: User navigated click on a Tool (includes tool name).
+> - **142**: User navigated to the IN PROGRESS or COMPLETED studies tab.
+> - **143**: User clicked on the "Swap Currencies" icon in the Currency Converter.
+> - **144**: User navigates to a tool (includes tool name).
 
 <br>
 
@@ -133,3 +143,35 @@
 > - **601**: A BANNER ad failed to load.
 > - **602**: User clicked on a BANNER ad (opened full page ad).
 > - **603**: User closed full page BANNER ad.
+> - **604**: Opening REWARD Ad Modal.
+> - **605**: closeRewardModal function is called.
+> - **606**: A REWARD ad loaded.
+> - **607**: A REWARD ad failed to load.
+> - **608**: User dismissed a REWARD ad.
+> - **609**: A REWARD ad failed to show - giving content access to user.
+> - **610**: User finished watching a REWARD ad.
+ 
+<br>
+
+ ## Tools (700-1000)
+
+###### Growth Calculator
+
+> - **700**: Initial Value Changed.
+> - **701**: Interest Rate Changed.
+> - **702**: Contribution Changed.
+> - **703**: Contribution Frequency Changed.
+> - **704**: Calculation Type Changed.
+> - **705**: User initiated a new calculation.
+> - **706**: Not available in the provided code.
+> - **707**: Payment Grows Per Payment Changed.
+> - **708**: Fees Changed.
+> - **709**: Annuity Type Changed.
+> - **713**: Tool access has expired.
+> - **714**: Tool access is valid.
+
+###### Currency Converter
+
+> - **710**: User converted from one currency to another.
+> - **711**: User changed a value.
+> - **712**: User clicked on the "Swap Currencies" icon.

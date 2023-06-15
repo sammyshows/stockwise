@@ -1,6 +1,6 @@
 <template>
   <div class="max-h-full flex flex-col h-full w-full">
-    <div :style="[ showAd ? 'max-height: calc(100% - 25px)' : 'max-height: 100%' ]" class="flex flex-col justify-between page overflow-hidden">
+    <div :style="[ showBannerAd ? 'max-height: calc(100% - 25px)' : 'max-height: 100%' ]" class="flex flex-col justify-between page overflow-hidden">
       <NuxtLayout v-if="navRoutes.includes(routeBranch)" name="page-container">
         <NuxtPage />
       </NuxtLayout>
@@ -12,9 +12,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { storeToRefs } from 'pinia'
 import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, BannerAdPluginEvents } from '@capacitor-community/admob';
 import { useUser } from '@/store/user'
 import { useUtility } from '@/store/utility'
+import { useAds } from '@/store/ads'
 
 export default defineComponent({
   name: "App",
@@ -22,18 +24,19 @@ export default defineComponent({
   setup() {
     const userStore = useUser()
     const utilityStore = useUtility()
+    const adStore = useAds()
+    const { showBannerAd } = storeToRefs(adStore)
 
-    return { userStore, utilityStore }
+    return { userStore, utilityStore, adStore, showBannerAd }
   },
 
   data() {
     return {
       navRoutes: ['notifications', 'search', 'index', 'toolbox', 'profile'],
       adLoaded: false, // indicates whether or not the initial ad has been loaded
-      showAd: false,
       bannerOptions: {
         // adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/6009621957' : 'ca-app-pub-7719091147897476/9567664951', // testing
-        adId: this.userStore.platform === 'android' ? 'ca-app-pub-7719091147897476/8002483602' : 'ca-app-pub-7719091147897476/2112788715', // production
+        adId: this.getBannerId(),
         adSize: BannerAdSize.BANNER,
         position: BannerAdPosition.TOP_CENTER,
         margin: 0,
@@ -60,20 +63,23 @@ export default defineComponent({
           else
             this.showBanner()
         } else if (!this.navRoutes.includes(to.name.split('-')[0])) {
-          this.showAd = false
+          this.adStore.patch({ showBannerAd: false })
           AdMob.hideBanner()
         } else if (this.adLoaded) { // this else case is essentially saying 'we navigated from an ad page to another ad page' - nothing should need to change. Calling resumeBanner() just to be safe...
           AdMob.resumeBanner();
-          this.showAd = true
+          this.adStore.patch({ showBannerAd: true })
         }
       }
     }
   },
 
   async mounted() {
+    this.adStore.initialiseBannerAd() // REMOVE, just here for web testing
     // Temporary until ads are actually enabled. I updated privacy info so now Apple wants to see the request be made
     if (this.userStore.platform === 'ios') {
-      const {status} = await AdMob.trackingAuthorizationStatus();
+      this.adStore.initialiseRewardAd()
+      this.adStore.prepareRewardAd()
+      // const { status } = await AdMob.trackingAuthorizationStatus(); // gets the tracking authorization status
 
       AdMob.initialize({
         requestTrackingAuthorization: true,
@@ -83,51 +89,34 @@ export default defineComponent({
     }
 
     if (this.userStore.platform === 'android') {
-      await this.initialiseBanner()
+      this.adStore.initialiseRewardAd()
+      this.adStore.prepareRewardAd()
+      this.adStore.initialiseBannerAd()
       if (this.navRoutes.includes(this.routeBranch))
         this.showBanner()
       else {
-        this.showAd = false
+        this.adStore.$patch({ bannerAdShow: true })
         AdMob.hideBanner()
       }
     }
   },
 
   methods: {
-    showBanner() {
-      AdMob.showBanner(this.bannerOptions)
+    getBannerId() {
+      if (this.userStore.platform === 'android')
+        if (this.userStore.userId === '987336b9-2cce-454a-a711-230b74bd1140')
+          return 'ca-app-pub-7719091147897476/6009621957' // testing
+        else
+          return 'ca-app-pub-7719091147897476/8002483602' // production
+      else if (this.userStore.platform === 'ios') // ios
+        if (this.userStore.userId === '987336b9-2cce-454a-a711-230b74bd1140')
+          return 'ca-app-pub-7719091147897476/9567664951' // testing
+        else
+          return 'ca-app-pub-7719091147897476/2112788715' // production
     },
 
-    async initialiseBanner() {
-      const {status} = await AdMob.trackingAuthorizationStatus();
-
-      AdMob.initialize({
-        requestTrackingAuthorization: true,
-        testingDevices: ['B480F0393703070BEEF8D0B02FF711F5'], // If interested add test ids here such as laptop, my phone, Celine's phone: https://developers.google.com/admob/android/test-ads#add_your_test_device_in_the_admob_ui
-        initializeForTesting: false,
-      });
-
-      AdMob.addListener(BannerAdPluginEvents.Loaded, () => {
-        if (this.navRoutes.includes(this.$route.name.split('-')[0])) {
-          AdMob.resumeBanner()
-          this.adLoaded = true
-          this.showAd = true
-        }
-
-        this.utilityStore.logUserActivity(600, this.$route.name, "INFO", "A BANNER ad loaded.")
-      });
-
-      AdMob.addListener(BannerAdPluginEvents.FailedToLoad, () => {
-        this.utilityStore.logUserActivity(601, this.$route.name, "WARN", "A BANNER ad failed to load.")
-      });
-
-      AdMob.addListener(BannerAdPluginEvents.Opened, () => {
-        this.utilityStore.logUserActivity(602, this.$route.name, "INFO", "User clicked on a BANNER ad.")
-      });
-
-      AdMob.addListener(BannerAdPluginEvents.Closed, () => {
-        this.utilityStore.logUserActivity(603, this.$route.name, "INFO", "User closed a full page BANNER ad.")
-      });
+    showBanner() {
+      AdMob.showBanner(this.bannerOptions)
     }
   }
 })

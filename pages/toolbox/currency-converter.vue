@@ -60,6 +60,7 @@ import { defineComponent } from "vue";
 import BigNumber from "bignumber.js";
 import { useAuth } from "@/store/auth";
 import { useUser } from "@/store/user";
+import { useUtility } from "@/store/utility";
 
 export default defineComponent({
   name: "Toolbox",
@@ -67,7 +68,8 @@ export default defineComponent({
   async setup() {
     const authStore = useAuth()
     const userStore = useUser()
-    return { authStore, userStore }
+    const utilityStore = useUtility()
+    return { authStore, userStore, utilityStore }
   },
 
   async mounted() {
@@ -75,8 +77,11 @@ export default defineComponent({
     this.token = this.authStore.accessToken
     this.uuid = this.userStore.userId
 
+    this.getCurrencyData()
     await this.getQuote()
-    this.fromValue = 1000
+    this.initialLoad = false
+    if (!this.fromValue)
+      this.fromValue = 1000
     this.updateValue('toValue')
   },
 
@@ -88,8 +93,12 @@ export default defineComponent({
       pageDetails: {
         title: 'Currency Converter',
         subtitle: 'TOOLBOX',
-        returnPath: '/toolbox'
+        returnPath: '/toolbox',
+        logCode: 146,
+        logSource: 'Currency Converter',
+        logTo: 'Toolbox'
       },
+      initialLoad: true, // switched to false after the quote has been fetched on mount
       fromCurrency: 'USD',
       toCurrency: 'EUR',
       fromValue: null as (number | null),
@@ -126,9 +135,33 @@ export default defineComponent({
   },
 
   methods: {
+    getCurrencyData() {
+      if (localStorage.getItem('currencyConverter')) {
+        const currencyData = JSON.parse(localStorage.getItem('currencyConverter'))
+        this.fromCurrency = currencyData.fromCurrency
+        this.toCurrency = currencyData.toCurrency
+        this.fromValue = currencyData.fromValue
+        this.toValue = currencyData.toValue
+        this.quote = currencyData.quote
+      }
+    },
+
+    setCurrencyData() {
+      const currencyData = {
+        fromCurrency: this.fromCurrency,
+        toCurrency: this.toCurrency,
+        fromValue: this.fromValue,
+        toValue: this.toValue,
+        quote: this.quote
+      }
+
+      localStorage.setItem('currencyConverter', JSON.stringify(currencyData))
+    },
+
     async getQuote(valueToUpdate?): Promise<void> {
       if (this.fromCurrency && this.toCurrency) {
-        this.quote = null
+        if (!this.initialLoad)
+          this.quote = null
         const data = await fetch(this.domain + '/api/iex-quote-forex', {
           headers: {
             authorization: this.token
@@ -144,6 +177,11 @@ export default defineComponent({
         this.quote = data
         if (valueToUpdate)
           this.updateValue(valueToUpdate)
+
+        if (this.fromValue) {
+          this.setCurrencyData()
+          this.utilityStore.logUserActivity(710, "Currency Converter", "INFO", `User converted from ${this.fromCurrency} to ${this.toCurrency}.`)
+        }
       }
     },
 
@@ -152,6 +190,10 @@ export default defineComponent({
         this.toValue = this.BigNumber(this.fromValue).times(this.quote.currentPrice).toNumber().toFixed(2)
       else
         this.fromValue = this.BigNumber(this.toValue).div(this.quote.currentPrice).toNumber().toFixed(2)
+
+      this.setCurrencyData()
+      if (!this.initialLoad)
+        this.utilityStore.logUserActivity(711, "Currency Converter", "INFO", `User changed a value.`)
     },
 
     async swapCurrencies() {
@@ -163,6 +205,7 @@ export default defineComponent({
 
       await this.getQuote()
       this.updateValue('toValue')
+      this.utilityStore.logUserActivity(712, "Currency Converter", "INFO", `User clicked on the "Swap Currencies" icon.`)
     },
 
     BigNumber

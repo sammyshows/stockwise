@@ -1,15 +1,16 @@
 <template>
-  <div class="flex flex-col justify-between h-full w-full overflow-hidden" :class="[ platform === 'ios' ? 'pt-14 pb-6' : 'pt-10 pb-4' ]">
+  <div class="flex flex-col justify-between h-full w-full overflow-hidden" :class="[ platform === 'ios' ? 'pt-14' : 'pt-10' ]">
     <div class="h-full w-full overflow-hidden flex flex-col flex-1">
       <slot />
     </div>
-    <NavigationBar />
+    <NavigationBar v-show="showNavbar" />
   </div>
 </template>
 
 <script lang="ts">
 import NavigationBar from "../components/NavigationBar"
-import { Capacitor } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core'
+import { Keyboard } from '@capacitor/keyboard'
 
 export default {
   name: "PageContainer",
@@ -20,10 +21,29 @@ export default {
 
   data() {
     return {
-      platform: Capacitor.getPlatform()
+      platform: Capacitor.getPlatform(),
+      showNavbar: true
     }
   },
 
+  mounted() {
+    if (['ios', 'android'].includes(this.platform)) {
+      Keyboard.addListener('keyboardWillShow', info => {
+        this.showNavbar = false
+      });
 
+      Keyboard.addListener('keyboardDidShow', info => {
+        this.showNavbar = false
+      });
+
+      Keyboard.addListener('keyboardWillHide', () => {
+        this.showNavbar = true
+      });
+
+      Keyboard.addListener('keyboardDidHide', () => {
+        this.showNavbar = true
+      });
+    }
+  }
 }
 </script>
