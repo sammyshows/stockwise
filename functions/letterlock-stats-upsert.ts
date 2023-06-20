@@ -30,6 +30,13 @@ const handler = async (event, context) => {
         sound = EXCLUDED.sound,
         vibrations = EXCLUDED.vibrations`
 
+  // Insert into letterlock_ads_watched
+  for (const ad of eventBody.adsWatched) {
+    await client`
+      INSERT INTO letterlock_ads_watched (user_id, streak, ad_type, current_level_id, level_attempts, level_successes)
+      VALUES (${userId}, ${eventBody.stats.streak}, ${ad.adType}, ${ad.levelId}, ${ad.levelAttemptTally}, ${ad.levelSuccessTally})`
+  }
+
   return {
     headers: { 'Access-Control-Allow-Origin': '*' },
     statusCode: 200
