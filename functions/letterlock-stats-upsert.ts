@@ -34,7 +34,7 @@ const handler = async (event, context) => {
   for (const ad of eventBody.adsWatched) {
     await client`
       INSERT INTO letterlock_ads_watched (user_id, streak, ad_type, current_level_id, level_attempts, level_successes)
-      VALUES (${userId}, ${eventBody.stats.streak}, ${ad.adType}, ${ad.levelId}, ${ad.levelAttemptTally}, ${ad.levelSuccessTally})`
+      VALUES (${userId}, ${ad.levelStreak}, ${ad.adType}, ${ad.levelId}, ${ad.levelAttemptTally}, ${ad.levelSuccessTally})`
   }
 
   return {
