@@ -1,15 +1,24 @@
 const client = require("../database/client.ts")
-import postgres from 'postgres'
 
 const handler = async (event, context) => {
   const eventBody = JSON.parse(event.body)
 
-  const userId = eventBody.settings.id;
+  const userId = eventBody.settings.id
+
+  // We will cast this to json in the query below, so it must be a string.
+  let levelHistoryJson
+  if (typeof eventBody.levelHistory === 'string') {
+      // Already a string, use as is
+      levelHistoryJson = eventBody.levelHistory
+  } else {
+      // Not a string, so stringify it
+      levelHistoryJson = JSON.stringify(eventBody.levelHistory)
+  }
 
   // Upsert into letterlock_user_stats
   await client`
     INSERT INTO letterlock_user_stats (user_id, ads_watched_for_lives, ads_watched_for_moves, zero_lives_tally, level_history, device_os, device_model, stockwise_version)
-    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${postgres().json(eventBody.levelHistory)}, ${eventBody.deviceOS}, ${eventBody.deviceModel}, ${eventBody.stockwiseVersion})
+    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${levelHistoryJson}::jsonb, ${eventBody.deviceOS}, ${eventBody.deviceModel}, ${eventBody.stockwiseVersion})
     ON CONFLICT (user_id)
     DO UPDATE SET
         ads_watched_for_lives = EXCLUDED.ads_watched_for_lives,
