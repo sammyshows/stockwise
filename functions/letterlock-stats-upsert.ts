@@ -6,13 +6,9 @@ const handler = async (event, context) => {
   const userId = eventBody.settings.id
 
   // We will cast this to json in the query below, so it must be a string.
-  let levelHistoryJson
+  let levelHistoryJson = eventBody.levelHistory
   if (typeof eventBody.levelHistory === 'string') {
-      // Already a string, use as is
-      levelHistoryJson = eventBody.levelHistory
-  } else {
-      // Not a string, so stringify it
-      levelHistoryJson = JSON.stringify(eventBody.levelHistory)
+      levelHistoryJson = JSON.parse(eventBody.levelHistory)
   }
 
   // Upsert into letterlock_user_stats
