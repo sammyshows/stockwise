@@ -13,8 +13,8 @@ const handler = async (event, context) => {
 
   // Upsert into letterlock_user_stats
   await client`
-    INSERT INTO letterlock_user_stats (user_id, ads_watched_for_lives, ads_watched_for_moves, zero_lives_tally, level_history, device_os, device_model, stockwise_version)
-    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${levelHistoryJson}::jsonb, ${eventBody.deviceOS}, ${eventBody.deviceModel}, ${eventBody.stockwiseVersion})
+    INSERT INTO letterlock_user_stats (user_id, ads_watched_for_lives, ads_watched_for_moves, zero_lives_tally, level_history, device_os, device_model, stockwise_version, platform)
+    VALUES (${userId}, ${eventBody.stats.adsWatchedForLives}, ${eventBody.stats.adsWatchedForMoves}, ${eventBody.stats.zeroLivesTally}, ${levelHistoryJson}::jsonb, ${eventBody.deviceOS}, ${eventBody.deviceModel}, ${eventBody.stockwiseVersion}, ${eventBody.platform}})
     ON CONFLICT (user_id)
     DO UPDATE SET
         ads_watched_for_lives = EXCLUDED.ads_watched_for_lives,
@@ -23,7 +23,8 @@ const handler = async (event, context) => {
         level_history = EXCLUDED.level_history,
         device_os = EXCLUDED.device_os,
         device_model = EXCLUDED.device_model,
-        stockwise_version = EXCLUDED.stockwise_version`
+        stockwise_version = EXCLUDED.stockwise_version,
+        platform = EXCLUDED.platform`
 
   // Upsert into letterlock_settings
   await client`
