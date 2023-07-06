@@ -23,7 +23,7 @@ const handler = async (event, context) => {
         level_history = EXCLUDED.level_history,
         device_os = EXCLUDED.device_os,
         device_model = EXCLUDED.device_model,
-        stockwise_version = EXCLUDED.stockwise_version,
+        letterlock_version = EXCLUDED.letterlock_version,
         platform = EXCLUDED.platform`
 
   // Upsert into letterlock_settings
