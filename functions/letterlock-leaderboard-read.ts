@@ -17,7 +17,7 @@ const handler = async (event, context) => {
             ROW_NUMBER() OVER (ORDER BY ((SELECT COUNT(*) FROM jsonb_object_keys(CAST(stats.level_history AS jsonb))) - 1) DESC) as position
         FROM letterlock_user_stats AS stats
         JOIN letterlock_settings AS settings ON stats.user_id = settings.user_id
-        WHERE letterlock_user_stats.user_id NOT IN ('81845c27-18fb-4a7b-8fb6-9046c949deb7', '9e5a2c95-4244-4a2a-87bb-3cdb377c67e7')
+        WHERE stats.user_id NOT IN ('81845c27-18fb-4a7b-8fb6-9046c949deb7', '9e5a2c95-4244-4a2a-87bb-3cdb377c67e7')
     )
     SELECT user_id, username, device_model, levels_completed_count, updated_at, created_at, position FROM (
         (SELECT * FROM ranked_users WHERE user_id != ${userId} LIMIT 4)
