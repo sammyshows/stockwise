@@ -32,6 +32,7 @@ const handler = async (event, context) => {
     VALUES (${userId}, ${eventBody.settings.username || ''}, ${eventBody.settings.notifications}, ${eventBody.settings.sound}, ${eventBody.settings.vibrations})
     ON CONFLICT (user_id)
     DO UPDATE SET
+        username = EXCLUDED.username,
         notifications = EXCLUDED.notifications,
         sound = EXCLUDED.sound,
         vibrations = EXCLUDED.vibrations`
