@@ -28,8 +28,8 @@ const handler = async (event, context) => {
 
   // Upsert into letterlock_settings
   await client`
-    INSERT INTO letterlock_settings (user_id, notifications, sound, vibrations)
-    VALUES (${userId}, ${eventBody.settings.notifications}, ${eventBody.settings.sound}, ${eventBody.settings.vibrations})
+    INSERT INTO letterlock_settings (user_id, username, notifications, sound, vibrations)
+    VALUES (${userId}, ${eventBody.settings.username || ''}, ${eventBody.settings.notifications}, ${eventBody.settings.sound}, ${eventBody.settings.vibrations})
     ON CONFLICT (user_id)
     DO UPDATE SET
         notifications = EXCLUDED.notifications,
