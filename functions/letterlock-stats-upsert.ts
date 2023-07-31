@@ -2,8 +2,6 @@ const client = require("../database/client.ts")
 
 const handler = async (event, context) => {
   const eventBody = JSON.parse(event.body)
-  console.log(eventBody)
-
   const userId = eventBody.settings.id
 
   // We will cast this to json in the query below, so it must be a string.
@@ -28,7 +26,7 @@ const handler = async (event, context) => {
         platform = EXCLUDED.platform`
 
   // Upsert into letterlock_settings
-  const usernameEnabled = parseFloat(eventBody.letterlockVersion) >= 2.1 || parseFloat(eventBody.stockwiseVersion) >= 2.1
+  const usernameEnabled = !!eventBody.letterlockVersion // username was only added in 2.1 - the same time the variable was named letterlockVersion instead of stockwiseVersion
 
   await client`
     INSERT INTO letterlock_settings (user_id, username, notifications, sound, vibrations)
