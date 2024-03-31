@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
     ssr: false,
 
+    security: {
+        rateLimiter: {
+            toeknsPerInterval: 100,
+        }
+    },
+
     experimental: {
         treeshakeClientOnly: false
     },
@@ -22,7 +28,8 @@ export default defineNuxtConfig({
 
     modules: [
         '@nuxtjs/tailwindcss',
-        '@pinia/nuxt'
+        '@pinia/nuxt',
+        'nuxt-security'
     ],
 
     alias: {

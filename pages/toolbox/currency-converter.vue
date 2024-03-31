@@ -28,9 +28,9 @@
 
         <div class="mt-7">
           <div class="flex items-center justify-center">
-            <input v-model="fromValue" @keyup="updateValue('toValue')" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-1/3 text-center border-gray-600 rounded-md tracking-wide" />
+            <input v-model="fromValue" @keyup="updateValue('intoValue')" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-1/3 text-center border-gray-600 rounded-md tracking-wide" />
             <span class="w-6 mx-4 text-3xl text-bright-cyan">=</span>
-            <input v-model="toValue" @keyup="updateValue('fromValue')" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-1/3 text-center border-gray-600 rounded-md tracking-wide" />
+            <input v-model="intoValue" @keyup="updateValue('fromValue')" autocomplete="off" type="number" class="focus:ring-0 focus:border-white block bg-gray-500/20 w-1/3 text-center border-gray-600 rounded-md tracking-wide" />
           </div>
 
           <div class="flex justify-center mt-3">
@@ -38,16 +38,16 @@
               <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
             </select>
             <span class="w-6 mx-4"></span>
-            <select v-model="toCurrency" @change="getQuote('toValue')" class="w-1/3 mt-1.5 py-2 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
+            <select v-model="toCurrency" @change="getQuote('intoValue')" class="w-1/3 mt-1.5 py-2 rounded-md bg-gray-900/20 border border-gray-400/40 focus:ring-0 focus:border-white" style="touch-action: manipulation">
               <option v-for="currency in Object.keys(currencies)" :value="currency">{{ currency }}</option>
             </select>
           </div>
         </div>
 
-        <p v-if="fromValue > 0 && toValue > 0 && quote" class="mt-10 px-8 text-xs text-gray-400 text-center">
+        <p v-if="fromValue > 0 && intoValue > 0 && quote" class="mt-10 px-8 text-xs text-gray-400 text-center">
           <span class="text-bright-cyan">{{ $formatNumber(fromValue, 2, true, false, fromCurrency) }} ({{ fromCurrency }})</span>
           is equal to approximately
-          <span class="text-bright-cyan">{{ $formatNumber(toValue, 2, true, false, toCurrency) }} ({{ toCurrency }})</span> at exchange rate of
+          <span class="text-bright-cyan">{{ $formatNumber(intoValue, 2, true, false, toCurrency) }} ({{ toCurrency }})</span> at exchange rate of
           <span class="text-bright-cyan">{{ $formatNumber(quote.currentPrice, 3) }}</span>.
         </p>
       </div>
@@ -82,7 +82,8 @@ export default defineComponent({
     this.initialLoad = false
     if (!this.fromValue)
       this.fromValue = 1000
-    this.updateValue('toValue')
+    
+    this.updateValue('intoValue')
   },
 
   data() {
@@ -102,7 +103,7 @@ export default defineComponent({
       fromCurrency: 'USD',
       toCurrency: 'EUR',
       fromValue: null as (number | null),
-      toValue: null as (number | null),
+      intoValue: null as (number | null),
       quote: null as ({} | null),
       currencies: {
         AUD: "Australian Dollar",
@@ -141,7 +142,7 @@ export default defineComponent({
         this.fromCurrency = currencyData.fromCurrency
         this.toCurrency = currencyData.toCurrency
         this.fromValue = currencyData.fromValue
-        this.toValue = currencyData.toValue
+        this.intoValue = currencyData.intoValue
         this.quote = currencyData.quote
       }
     },
@@ -151,7 +152,7 @@ export default defineComponent({
         fromCurrency: this.fromCurrency,
         toCurrency: this.toCurrency,
         fromValue: this.fromValue,
-        toValue: this.toValue,
+        intoValue: this.intoValue,
         quote: this.quote
       }
 
@@ -186,10 +187,10 @@ export default defineComponent({
     },
 
     updateValue(valueToUpdate: string) {
-      if (valueToUpdate === 'toValue')
-        this.toValue = this.BigNumber(this.fromValue).times(this.quote.currentPrice).toNumber().toFixed(2)
+      if (valueToUpdate === 'intoValue')
+        this.intoValue = this.BigNumber(this.fromValue).times(this.quote.currentPrice).toNumber().toFixed(2)
       else
-        this.fromValue = this.BigNumber(this.toValue).div(this.quote.currentPrice).toNumber().toFixed(2)
+        this.fromValue = this.BigNumber(this.intoValue).div(this.quote.currentPrice).toNumber().toFixed(2)
 
       this.setCurrencyData()
       if (!this.initialLoad)
@@ -204,7 +205,7 @@ export default defineComponent({
       this.toCurrency = oldFrom
 
       await this.getQuote()
-      this.updateValue('toValue')
+      this.updateValue('intoValue')
       this.utilityStore.logUserActivity(712, "Currency Converter", "INFO", `User clicked on the "Swap Currencies" icon.`)
     },
 

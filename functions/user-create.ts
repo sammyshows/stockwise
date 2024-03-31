@@ -4,7 +4,10 @@ const client = require("../database/client.ts")
 
 
 const handler: Handler = async (event, context) => {
+    console.log(event)
     const eventBody = JSON.parse(event.body)
+
+    console.log(eventBody)
 
     await client`
         INSERT INTO users (id, email, account_type)
