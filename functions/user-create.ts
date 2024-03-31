@@ -8,7 +8,7 @@ const handler: Handler = async (event, context) => {
 
     await client`
         INSERT INTO users (id, email, account_type)
-        VALUES (${eventBody.uuid}, ${eventBody.email}, 0);`
+        VALUES (${eventBody.uuid}, ${eventBody.email}, ${eventBody.accountType || 0});`
 
     return {
         headers: {
