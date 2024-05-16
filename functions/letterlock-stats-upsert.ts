@@ -51,6 +51,15 @@ const handler = async (event, context) => {
       VALUES (${userId}, ${ad.levelStreak}, ${ad.adType}, ${ad.levelId}, ${ad.levelAttemptTally}, ${ad.levelSuccessTally})`
   }
 
+  // Insert logs into letterlock_logs
+  if (eventBody.logs) {
+    for (const log of eventBody.logs) {
+      await client`
+        INSERT INTO letterlock_logs (log_type, user_id, level_id, created_at)
+        VALUES (${log.logType}, ${userId}, ${log.levelId}, ${log.createdAt})`;
+    }
+  }
+
   return {
     headers: { 'Access-Control-Allow-Origin': '*' },
     statusCode: 200
