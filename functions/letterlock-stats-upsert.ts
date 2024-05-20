@@ -27,22 +27,25 @@ const handler = async (event, context) => {
 
   // Upsert into letterlock_settings
   const usernameEnabled = !!eventBody.letterlockVersion // username was only added in 2.1 - the same time the variable was named letterlockVersion instead of stockwiseVersion
-
+  // Columns 'music' and 'sound_effects' were added in 3.0. Prior to that, it was 'sound', though it didn't do anything. Versions prior to 3.0 will be missing these two columns.
   await client`
-    INSERT INTO letterlock_settings (user_id, username, notifications, sound, vibrations)
+    INSERT INTO letterlock_settings (user_id, username, notifications, music, sound_effects, vibrations)
     VALUES (
         ${userId},
         ${eventBody.settings.username || ''},
         ${eventBody.settings.notifications},
-        ${eventBody.settings.sound},
+        ${eventBody.settings.music !== undefined ? eventBody.settings.music : true},
+        ${eventBody.settings.soundEffects !== undefined ? eventBody.settings.soundEffects : true},
         ${eventBody.settings.vibrations}
     )
     ON CONFLICT (user_id)
     DO UPDATE SET
         username = CASE WHEN ${usernameEnabled} THEN EXCLUDED.username ELSE letterlock_settings.username END,
         notifications = EXCLUDED.notifications,
-        sound = EXCLUDED.sound,
-        vibrations = EXCLUDED.vibrations`
+        music = EXCLUDED.music,
+        sound_effects = EXCLUDED.sound_effects,
+        vibrations = EXCLUDED.vibrations`;
+
 
   // Insert into letterlock_ads_watched
   for (const ad of eventBody.adsWatched) {
