@@ -13,7 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { storeToRefs } from 'pinia'
-import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition, BannerAdPluginEvents } from '@capacitor-community/admob';
+import { AdMob, BannerAdSize, BannerAdPosition, BannerAdPluginEvents } from '@capacitor-community/admob';
 import { useUser } from '@/store/user'
 import { useUtility } from '@/store/utility'
 import { useAds } from '@/store/ads'
@@ -42,7 +42,7 @@ export default defineComponent({
         margin: 0,
         isTesting: false,
         npa: false // Non Personalised Ads
-      } as BannerAdOptions
+      }
     }
   },
 
