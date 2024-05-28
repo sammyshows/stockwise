@@ -17,7 +17,7 @@ const handler = async (event, context) => {
           ROW_NUMBER() OVER (
               ORDER BY 
                   CASE 
-                      WHEN stats.user_id IN ('81845c27-18fb-4a7b-8fb6-9046c949deb7', '9e5a2c95-4244-4a2a-87bb-3cdb377c67e7', '11fd76ee-7cc5-4adb-bac0-3aa7051515ae', '79eb1e98-9c2f-4133-84cc-584ed8cebef2') THEN 1
+                      WHEN stats.test_user = true THEN 1
                       ELSE 0 
                   END, 
                   ((SELECT COUNT(*) FROM jsonb_object_keys(CAST(stats.level_history AS jsonb))) - 1) DESC
